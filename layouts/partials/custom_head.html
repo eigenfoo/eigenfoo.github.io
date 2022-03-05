@@ -1,5 +1,8 @@
 <!-- MathJax -->
 <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
 
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +21,7 @@
   body {
     font-family: 'Source Serif Pro', Georgia, serif;
     font-size: 120%;
+    background-color: #fffff8;
   }
 
   code {
@@ -27,5 +31,12 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: NicholsonGothic, Verdana, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #333;
+      color: #ddd;
+    }
   }
 </style>
