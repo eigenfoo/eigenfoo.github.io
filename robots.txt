@@ -1,2 +1,2 @@
 User-Agent: *
-Sitemap: https://www.georgeho.org/sitemap.xml
+Sitemap: http://www.georgeho.org/georgeho/sitemap.xml

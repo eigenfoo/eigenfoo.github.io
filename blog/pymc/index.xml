@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>pymc on ⁂ George Ho</title><link>https://www.georgeho.org/blog/pymc/</link><description>Recent content in pymc on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 06 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/pymc/index.xml" rel="self" type="application/rss+xml"/><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>https://www.georgeho.org/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/littlemcmc/</guid><description>&lt;center>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>pymc on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/pymc/</link><description>Recent content in pymc on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 06 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/pymc/index.xml" rel="self" type="application/rss+xml"/><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>http://www.georgeho.org/georgeho/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/littlemcmc/</guid><description>&lt;center>
 &lt;img
 src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
 alt="LittleMCMC logo">
@@ -29,7 +29,7 @@ the PyMC3 community.&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
-&lt;/ul></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>https://www.georgeho.org/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
+&lt;/ul></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>http://www.georgeho.org/georgeho/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
 API by manipulating the &lt;a href="https://docs.python.org/3/library/ast.html">Python abstract syntax
 tree&lt;/a> (AST) of the model code. The PyMC
 developers didn&amp;rsquo;t end up pursuing those API changes any further, but not until I had the
@@ -232,7 +232,7 @@ StackOverflow
 answer&lt;/a>.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>https://www.georgeho.org/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
+&lt;/section></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>http://www.georgeho.org/georgeho/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
 Retreat&lt;/a> earlier this month. It was an entire week
 on a beautiful island with some amazingly intelligent Bayesians, and no demands
 on my time other than the self-set (and admittedly vague) goal of contributing
@@ -241,8 +241,8 @@ to probabilistic programming in some way.&lt;/p>
 but I quickly readjusted my goals to something more achievable: running some
 benchmarks with tuning in Hamiltonian Monte Carlo (HMC).&lt;/p>
 &lt;figure>
-&lt;a href="https://www.georgeho.org/assets/images/galiano.jpg">&lt;img src="https://www.georgeho.org/assets/images/galiano.jpg" alt="A view of a forest on Galiano Island">&lt;/a>
-&lt;a href="https://www.georgeho.org/assets/images/galiano2.jpg">&lt;img src="https://www.georgeho.org/assets/images/galiano2.jpg" alt="The view from a bluff on Galiano Island">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/galiano.jpg">&lt;img src="http://www.georgeho.org/georgeho/assets/images/galiano.jpg" alt="A view of a forest on Galiano Island">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/galiano2.jpg">&lt;img src="http://www.georgeho.org/georgeho/assets/images/galiano2.jpg" alt="The view from a bluff on Galiano Island">&lt;/a>
 &lt;figcaption>Pictures from Galiano Island.&lt;/figcaption>
 &lt;/figure>
 &lt;p>A quick rundown for those unfamiliar: &lt;em>tuning&lt;/em> is what happens before sampling,
@@ -525,7 +525,7 @@ time when I thought that I would have the patience to run each model and
 adaptation method multiple times.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>https://www.georgeho.org/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
+&lt;/section></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>http://www.georgeho.org/georgeho/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
 abstract&lt;/a> to the &lt;a href="https://program-transformations.github.io/">&lt;em>Program Transformations
 for Machine Learning&lt;/em> NeurIPS workshop&lt;/a>. I
 realized that despite knowing a thing or two about Bayesian modelling, I don&amp;rsquo;t
@@ -577,7 +577,7 @@ algorithm and optimizer&lt;/li>
 &lt;li>A suite of diagnostics to monitor and analyze the quality of inference&lt;/li>
 &lt;/ol>
 &lt;p>These six pieces come together like so:&lt;/p>
-&lt;p>&lt;img src="https://www.georgeho.org/assets/images/prob-prog-flowchart.png" alt="Flowchart illustrating the structure of a probabilistic programmingframeworks">&lt;/p>
+&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/prob-prog-flowchart.png" alt="Flowchart illustrating the structure of a probabilistic programmingframeworks">&lt;/p>
 &lt;p>Let&amp;rsquo;s break this down one by one.&lt;/p>
 &lt;h3 id="specifying-the-model-languageapi">Specifying the model: language/API&lt;/h3>
 &lt;p>This is what users will use to specify their models. Most frameworks will let users
@@ -850,7 +850,7 @@ path of a crazy person.&lt;/p>
 &lt;/blockquote>
 &amp;#160;&lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
+&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>http://www.georgeho.org/georgeho/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
 Bayesian modelling, and it&amp;rsquo;s an amazing piece of software! The API only exposes
 as much of heavy machinery of MCMC as you need — by which I mean, just the
 &lt;code>pm.sample()&lt;/code> method (a.k.a., as &lt;a href="http://twiecki.github.io/blog/2013/08/12/bayesian-glms-1/">Thomas
@@ -867,7 +867,7 @@ everywhere: papers, documentation, peppering my &lt;a href="https://twitter.com/
 experienced&lt;/a>
 &lt;a href="https://twitter.com/aseyboldt">colleagues&lt;/a> with questions. It&amp;rsquo;s still very much
 a work in progress, but hopefully somebody else finds it useful!&lt;/p>
-&lt;p>&lt;img src="https://www.georgeho.org/assets/images/pymc-logo.png" alt="PyMC logo">&lt;/p>
+&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/pymc-logo.png" alt="PyMC logo">&lt;/p>
 &lt;div>
 &lt;h2>Contents&lt;/h2>
 &lt;nav id="TableOfContents">

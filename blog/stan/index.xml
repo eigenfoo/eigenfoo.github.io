@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>stan on ⁂ George Ho</title><link>https://www.georgeho.org/blog/stan/</link><description>Recent content in stan on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Mon, 11 Nov 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/stan/index.xml" rel="self" type="application/rss+xml"/><item><title>Introducing `stan-vim`</title><link>https://www.georgeho.org/stan-vim/</link><pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stan-vim/</guid><description>&lt;center>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>stan on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/stan/</link><description>Recent content in stan on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Mon, 11 Nov 2019 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/stan/index.xml" rel="self" type="application/rss+xml"/><item><title>Introducing `stan-vim`</title><link>http://www.georgeho.org/georgeho/stan-vim/</link><pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/stan-vim/</guid><description>&lt;center>
 &lt;img
-src="https://www.georgeho.org/assets/images/stan-logo.png"
+src="http://www.georgeho.org/georgeho/assets/images/stan-logo.png"
 alt="Stan logo">
 &lt;/center>
 &lt;p>I made a Vim plugin for Stan!&lt;/p>

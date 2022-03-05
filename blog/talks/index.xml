@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>talks on ⁂ George Ho</title><link>https://www.georgeho.org/blog/talks/</link><description>Recent content in talks on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 13 Oct 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/talks/index.xml" rel="self" type="application/rss+xml"/><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>talks on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/talks/</link><description>Recent content in talks on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 13 Oct 2018 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/talks/index.xml" rel="self" type="application/rss+xml"/><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>http://www.georgeho.org/georgeho/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
 late bloomer (as far as machine learning subfields go), and it&amp;rsquo;s not immediately
 obvious how close the field is to viable, large-scale, production-ready
 techniques (in the same way that, say, &lt;a href="https://clarifai.com/models/">computer vision
@@ -57,7 +57,7 @@ but with uncorrelated (a.k.a. “spherical”) multivariate Gaussian priors plac
 on the rows and columns of $U$ and $V$. Expressed as a graphical model, PMF
 would look like this:&lt;/p>
 &lt;figure>
-&lt;a href="https://www.georgeho.org/assets/images/pmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/pmf.png" alt="Graphical model (using plate notation) for probabilistic matrix factorization (PMF)">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/pmf.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/pmf.png" alt="Graphical model (using plate notation) for probabilistic matrix factorization (PMF)">&lt;/a>
 &lt;/figure>
 &lt;p>Note that the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$ matrices.&lt;/p>
 &lt;p>The authors then (somewhat disappointing) proceed to find the MAP estimate of
@@ -92,7 +92,7 @@ Gaussian priors on the means (with mean $\mu_0$ and covariance equal to the
 covariance given by the Wishart prior). Expressed as a graphical model, BPMF
 would look like this:&lt;/p>
 &lt;figure>
-&lt;a href="https://www.georgeho.org/assets/images/bpmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bpmf.png" alt="Graphical model (using plate notation) for Bayesian probabilistic matrix factorization (BPMF)">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/bpmf.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bpmf.png" alt="Graphical model (using plate notation) for Bayesian probabilistic matrix factorization (BPMF)">&lt;/a>
 &lt;/figure>
 &lt;p>Note that, as above, the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$
 matrices, and that $n$ is the dimensionality of latent space (i.e. the number
@@ -148,7 +148,7 @@ machine learning.&lt;/p>
 learning&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>https://www.georgeho.org/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
+&lt;/section></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>http://www.georgeho.org/georgeho/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
 speech on Reddit&lt;/a>. If you haven&amp;rsquo;t
 taken a look at my first post, please do!&lt;/p>
 &lt;p>I recently gave a talk on the technical, data science side of the project,

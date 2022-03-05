@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>machine-learning on ⁂ George Ho</title><link>https://www.georgeho.org/blog/machine-learning/</link><description>Recent content in machine-learning on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 15 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/machine-learning/index.xml" rel="self" type="application/rss+xml"/><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>https://www.georgeho.org/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tensor-computation-libraries/</guid><description>&lt;div>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>machine-learning on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/machine-learning/</link><description>Recent content in machine-learning on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 15 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/machine-learning/index.xml" rel="self" type="application/rss+xml"/><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>http://www.georgeho.org/georgeho/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/tensor-computation-libraries/</guid><description>&lt;div>
 &lt;h2>Contents&lt;/h2>
 &lt;nav id="TableOfContents">
 &lt;ul>
@@ -304,7 +304,7 @@ you would only need to do once.&lt;/p>
 &lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>https://www.georgeho.org/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/floating-point-deep-learning/</guid><description>&lt;div>
+&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>http://www.georgeho.org/georgeho/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/floating-point-deep-learning/</guid><description>&lt;div>
 &lt;h2>Contents&lt;/h2>
 &lt;nav id="TableOfContents">
 &lt;ul>
@@ -435,7 +435,7 @@ modern GPUs.&lt;/p>
 same as FP16, but 3 mantissa bits become exponent bits (i.e. bfloat16 trades 3 bits'
 worth of precision for scale).&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bfloat16.png" alt="Diagram illustrating the number and type of bits in bfloat16.">
+&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bfloat16.png" alt="Diagram illustrating the number and type of bits in bfloat16.">
 &lt;figcaption>The number and type of bits in bfloat16. Source: &lt;a href="https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus">Google Cloud blog&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;p>When it comes to deep learning, there are generally three &amp;ldquo;flavors&amp;rdquo; of values: weights,
@@ -464,7 +464,7 @@ in order to execute on Tensor Cores. Thus, it has the precision of FP16 (10 bits
 the range of FP32 (8 bits). However, if you&amp;rsquo;re not using Tensor Cores, it&amp;rsquo;s just a
 32-bit float; if you&amp;rsquo;re only thinking about storage, it&amp;rsquo;s just a 32-bit float.&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/tensorfloat32.png" alt="Diagram illustrating the number and type of bits in an NVIDIA TensorFloat">
+&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/tensorfloat32.png" alt="Diagram illustrating the number and type of bits in an NVIDIA TensorFloat">
 &lt;figcaption>The number and type of bits in an NVIDIA TensorFloat. Source: &lt;a href="https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/">NVIDIA blog&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;p>One distinct advantage of TF32 is that they&amp;rsquo;re kind of like FP32. To quote from the
@@ -537,7 +537,7 @@ the machine learning community thinks of the various low precision options avail
 &lt;p>A Tensor Core is essentially a mixed-precision FP16/FP32 core, which NVIDIA has optimized for deep learning applications.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+&lt;/section></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>http://www.georgeho.org/georgeho/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
 Transformer-based NLP models.&lt;/p>
 &lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
 models&lt;/a>, this blog post is a write-up
@@ -572,7 +572,7 @@ network must still be trained from scratch.&lt;/p>
 representation, and there are linear vector relationships can encode common-sense
 semantic meanings of words.&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/linear-relationships.png" alt="Linear vector relationships in word embeddings">
+&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/linear-relationships.png" alt="Linear vector relationships in word embeddings">
 &lt;figcaption>Linear vector relationships in word embeddings. Source: &lt;a href="https://www.tensorflow.org/images/linear-relationships.png">TensorFlow documentation&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -629,7 +629,7 @@ worthwhile to dig into the details a bit. The architecture is illustrated below:
 note that its feed-forward nature and multi-head self attention are critical
 aspects of this architecture!&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="https://www.georgeho.org/asset/images/transformer-block.png" alt="Graphical representation of BERT">
+&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/asset/images/transformer-block.png" alt="Graphical representation of BERT">
 &lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -691,7 +691,7 @@ then be fine-tuned with just one additional output layer to achieve
 state-of-the-art performance for many NLP tasks, without substantial task-specific
 architecture changes, as illustrated below.&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bert.png" alt="Graphical representation of BERT">
+&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bert.png" alt="Graphical representation of BERT">
 &lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -902,7 +902,7 @@ surprising conclusions!&lt;/li>
 &lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link>https://www.georgeho.org/bayesian-bandits-2/</link><pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits-2/</guid><description>&lt;blockquote>
+&lt;/section></description></item><item><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link>http://www.georgeho.org/georgeho/bayesian-bandits-2/</link><pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/bayesian-bandits-2/</guid><description>&lt;blockquote>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
 Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -915,7 +915,7 @@ as the rewards are bounded.&lt;/p>
 multi-armed bandit. The first allows the bandit to model nonstationary rewards
 distributions, whereas the second allows the bandit to model context. Jump in!&lt;/p>
 &lt;figure>
-&lt;a href="https://www.georgeho.org/assets/images/multi-armed-bandit.jpg">&lt;img src="https://www.georgeho.org/assets/images/multi-armed-bandit.jpg" alt="Cartoon of a multi-armed bandit">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/multi-armed-bandit.jpg">&lt;img src="http://www.georgeho.org/georgeho/assets/images/multi-armed-bandit.jpg" alt="Cartoon of a multi-armed bandit">&lt;/a>
 &lt;figcaption>An example of a multi-armed bandit situation. Source: &lt;a href="https://www.inverse.com/article/13762-how-the-multi-armed-bandit-determines-what-ads-and-stories-you-see-online">Inverse&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;h2 id="nonstationary-bandits">Nonstationary Bandits&lt;/h2>
@@ -1065,7 +1065,7 @@ solutions manual &lt;a href="https://github.com/GoldenCheese/PRML-Solution-Manua
 GitHub&lt;/a> 😉&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
+&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>http://www.georgeho.org/georgeho/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/bayesian-bandits/</guid><description>&lt;blockquote>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -1180,7 +1180,7 @@ to keep track of the number of times we win and the number of times we played
 out the &lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">Jupyter notebook on my
 GitHub&lt;/a>&lt;/p>
 &lt;figure>
-&lt;a href="https://www.georgeho.org/assets/images/beta-binomial.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/beta-binomial.png" alt="Posterior distribution after several pulls for the Beta-Binomial model">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/beta-binomial.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/beta-binomial.png" alt="Posterior distribution after several pulls for the Beta-Binomial model">&lt;/a>
 &lt;/figure>
 &lt;h3 id="generalizing-to-conjugate-models">Generalizing to conjugate models&lt;/h3>
 &lt;p>In fact, this algorithm isn&amp;rsquo;t just limited to Bernoulli-distributed rewards: it
@@ -1235,7 +1235,7 @@ in production!)&lt;/li>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
-&lt;a href="https://www.georgeho.org/assets/images/gamma-poisson.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/gamma-poisson.png" alt="Posterior distribution after several pulls for the Gamma-Poisson model">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/gamma-poisson.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/gamma-poisson.png" alt="Posterior distribution after several pulls for the Gamma-Poisson model">&lt;/a>
 &lt;/figure>
 &lt;p>This really demonstrates how lean and mean conjugate models can be, especially
 considering how much of a pain MCMC or approximate inference methods would be,
@@ -1310,7 +1310,7 @@ function.&lt;/p>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
-&lt;a href="https://www.georgeho.org/assets/images/bounded.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bounded.png" alt="Posterior distribution after several pulls with an arbitrary reward distribution (e.g. the logit normal)">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/bounded.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bounded.png" alt="Posterior distribution after several pulls with an arbitrary reward distribution (e.g. the logit normal)">&lt;/a>
 &lt;/figure>
 &lt;h2 id="final-remarks">Final Remarks&lt;/h2>
 &lt;p>None of this theory is new: I&amp;rsquo;m just advertising it! See Cam Davidson-Pilon&amp;rsquo;s
@@ -1339,7 +1339,7 @@ library or even a class. Just two functions!&amp;#160;&lt;a href="#fnref:1" clas
 &lt;p>&lt;a href="https://arxiv.org/abs/1111.1797">arXiv:1111.1797&lt;/a> [cs.LG]&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Understanding Hate Speech on Reddit through Text Clustering</title><link>https://www.georgeho.org/reddit-clusters/</link><pubDate>Sun, 18 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-clusters/</guid><description>&lt;blockquote>
+&lt;/section></description></item><item><title>Understanding Hate Speech on Reddit through Text Clustering</title><link>http://www.georgeho.org/georgeho/reddit-clusters/</link><pubDate>Sun, 18 Mar 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/reddit-clusters/</guid><description>&lt;blockquote>
 &lt;p>Note: the following article contains several examples of hate speech
 (including but not limited to racist, misogynistic and homophobic views).&lt;/p>
 &lt;/blockquote>
@@ -1459,7 +1459,7 @@ subreddits.&lt;/p>
 technique in which we’re given data points, and tasked with grouping them in
 some way. A picture will explain better than words:&lt;/p>
 &lt;figure>
-&lt;a href="https://www.georgeho.org/assets/images/clusters.png">&lt;img src="https://www.georgeho.org/assets/images/clusters.png" alt="Illustration of clustering">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/clusters.png">&lt;img src="http://www.georgeho.org/georgeho/assets/images/clusters.png" alt="Illustration of clustering">&lt;/a>
 &lt;figcaption>Clustering.&lt;/figcaption>
 &lt;/figure>
 &lt;p>The clustering algorithm was hard to decide on. After several dead ends were
@@ -1604,7 +1604,7 @@ Medium&lt;/a>
 and &lt;a href="https://bts.nomadgate.com/medium-evergreen-content">deleted my account&lt;/a> and
 &lt;a href="https://www.joshjahans.com/ditching-medium/">all my stories&lt;/a>.&lt;/em>&lt;/p>
 &lt;p>&lt;em>This post was also reprinted in the inaugural issue of The Cooper Union&amp;rsquo;s
-&lt;a href="https://www.facebook.com/theunionjournal/">UNION Journal&lt;/a>.&lt;/em>&lt;/p></description></item><item><title>Why Latent Dirichlet Allocation Sucks</title><link>https://www.georgeho.org/lda-sucks/</link><pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda-sucks/</guid><description>&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
+&lt;a href="https://www.facebook.com/theunionjournal/">UNION Journal&lt;/a>.&lt;/em>&lt;/p></description></item><item><title>Why Latent Dirichlet Allocation Sucks</title><link>http://www.georgeho.org/georgeho/lda-sucks/</link><pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/lda-sucks/</guid><description>&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
 that a lot of resources out there go something like this:&lt;/p>
 &lt;blockquote>
 &lt;p>Check out this thing! It&amp;rsquo;s great at this task! The important task! The one
@@ -1639,7 +1639,7 @@ LDA&lt;/a>, which I wrote a blog post about before).&lt;/p>
 &lt;p>If you&amp;rsquo;ve already encountered LDA and have seen &lt;a href="https://en.wikipedia.org/wiki/Plate_notation">plate
 notation&lt;/a> before, this picture
 will probably refresh your memory:&lt;/p>
-&lt;p>&lt;img src="https://www.georgeho.org/assets/images/latent-dirichlet-allocation.png" alt="Latent Dirichlet allocation">&lt;/p>
+&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/latent-dirichlet-allocation.png" alt="Latent Dirichlet allocation">&lt;/p>
 &lt;p>If you don&amp;rsquo;t know what LDA is, fret not, for there is
 &lt;a href="http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf">no&lt;/a>
 &lt;a href="http://obphio.us/pdfs/lda_tutorial.pdf">shortage&lt;/a>
@@ -1694,7 +1694,7 @@ the EM algorthm, instead of using MCMC-based algorithms, which &lt;code>lda&lt;/
 seems that variational Bayes scales better to very large corpora than collapsed
 Gibbs sampling.)&lt;/p>
 &lt;p>Here are the results:&lt;/p>
-&lt;p>&lt;img src="https://www.georgeho.org/assets/images/lda-sucks.png" alt="LDA followed by t-SNE on the Reddit dataset">&lt;/p>
+&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/lda-sucks.png" alt="LDA followed by t-SNE on the Reddit dataset">&lt;/p>
 &lt;p>Horrible, right? Nowhere near the well-separated clusters that Shuai got with
 the 20 newsgroups. In fact, the tiny little huddles of around 5 to 10 comments
 are probably artifacts of the dimensionality reduction done by t-SNE, so those
@@ -1713,8 +1713,8 @@ visualizations for multiple other values and the results aren&amp;rsquo;t so hot
 Note that I did these on a random subsample of 1000 comments, so as to reduce
 compute time.&lt;/p>
 &lt;figure>
-&lt;a href="https://www.georgeho.org/assets/images/perplexity50.png">&lt;img src="https://www.georgeho.org/assets/images/perplexity50.png" alt="t-SNE with perplexity value of 50">&lt;/a>
-&lt;a href="https://www.georgeho.org/assets/images/perplexity100.png">&lt;img src="https://www.georgeho.org/assets/images/perplexity100.png" alt="t-SNE with perplexity value of 100">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/perplexity50.png">&lt;img src="http://www.georgeho.org/georgeho/assets/images/perplexity50.png" alt="t-SNE with perplexity value of 50">&lt;/a>
+&lt;a href="http://www.georgeho.org/georgeho/assets/images/perplexity100.png">&lt;img src="http://www.georgeho.org/georgeho/assets/images/perplexity100.png" alt="t-SNE with perplexity value of 100">&lt;/a>
 &lt;figcaption>t-SNE with perplexity values of 50 and 100, respectively.&lt;/figcaption>
 &lt;/figure>
 &lt;p>So, what went wrong? There&amp;rsquo;s a &lt;a href="https://stackoverflow.com/questions/29786985/whats-the-disadvantage-of-lda-for-short-texts">nice StackOverflow
@@ -1805,7 +1805,7 @@ hard to justify that there are topic clusters in the first place.&lt;/p>
 am linking to the Internet Archive of his blog post instead.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>https://www.georgeho.org/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
+&lt;/section></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>http://www.georgeho.org/georgeho/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
 &lt;em>Machine Learning Algorithm&lt;/em>. It&amp;rsquo;s got two modes: training mode and testing
 mode. You set it to training mode, and throw in a lot (sometimes &lt;em>a lot&lt;/em> a lot)
 of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called
@@ -1995,7 +1995,7 @@ can supply do not all share the same features&lt;/li>
 &lt;p>Clearly, there&amp;rsquo;s a lot of potential in the LUPI paradigm, as well as a lot of
 reasons to be skeptical. It&amp;rsquo;s very much a nascent perspective of machine
 learning, so I&amp;rsquo;m interested in keeping an eye on it going forward. I&amp;rsquo;m hoping
-to write more posts on LUPI in the future!&lt;/p></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>https://www.georgeho.org/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
+to write more posts on LUPI in the future!&lt;/p></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>http://www.georgeho.org/georgeho/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
 speech on Reddit&lt;/a>. If you haven&amp;rsquo;t
 taken a look at my first post, please do!&lt;/p>
 &lt;p>I recently gave a talk on the technical, data science side of the project,
