@@ -18,7 +18,7 @@ enableRobotsTXT = true
 disableKinds = ["taxonomy"]
 ignoreErrors = ["error-disable-taxonomy"]
 [permalinks]
-  blog = "/:slug/"
+  blog = "/:filename/"
   tags = "/blog/:slug"
 
 # Render inline (and potentially dangerous) HTML and JavaScript
