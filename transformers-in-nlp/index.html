@@ -1,0 +1,265 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" href=https://www.georgeho.org/assets/images/favicon.ico>
+<title>Transformers in Natural Language Processing — A Brief Survey | ⁂ George Ho</title><meta name=title content="Transformers in Natural Language Processing — A Brief Survey">
+<meta name=description content="I&rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically Transformer-based NLP models.
+Similar to my previous blog post on deep autoregressive models, this blog post is a write-up of my reading and research: I assume basic familiarity with deep learning, and aim to highlight general trends in deep NLP, instead of commenting on individual architectures or systems.
+As a disclaimer, this post is by no means exhaustive and is biased towards Transformer-based models, which seem to be the dominant breed of NLP systems (at least, at the time of writing).">
+<meta name=keywords content="machine-learning,deep learning,natural-language-processing,">
+<meta property="og:title" content="Transformers in Natural Language Processing — A Brief Survey">
+<meta property="og:description" content="I&rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically Transformer-based NLP models.
+Similar to my previous blog post on deep autoregressive models, this blog post is a write-up of my reading and research: I assume basic familiarity with deep learning, and aim to highlight general trends in deep NLP, instead of commenting on individual architectures or systems.
+As a disclaimer, this post is by no means exhaustive and is biased towards Transformer-based models, which seem to be the dominant breed of NLP systems (at least, at the time of writing).">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.georgeho.org/transformers-in-nlp/"><meta property="og:image" content="https://www.georgeho.org/images/share.png"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2020-05-23T00:00:00+00:00">
+<meta property="article:modified_time" content="2020-05-23T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.georgeho.org/images/share.png">
+<meta name=twitter:title content="Transformers in Natural Language Processing — A Brief Survey">
+<meta name=twitter:description content="I&rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically Transformer-based NLP models.
+Similar to my previous blog post on deep autoregressive models, this blog post is a write-up of my reading and research: I assume basic familiarity with deep learning, and aim to highlight general trends in deep NLP, instead of commenting on individual architectures or systems.
+As a disclaimer, this post is by no means exhaustive and is biased towards Transformer-based models, which seem to be the dominant breed of NLP systems (at least, at the time of writing).">
+<meta itemprop=name content="Transformers in Natural Language Processing — A Brief Survey">
+<meta itemprop=description content="I&rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically Transformer-based NLP models.
+Similar to my previous blog post on deep autoregressive models, this blog post is a write-up of my reading and research: I assume basic familiarity with deep learning, and aim to highlight general trends in deep NLP, instead of commenting on individual architectures or systems.
+As a disclaimer, this post is by no means exhaustive and is biased towards Transformer-based models, which seem to be the dominant breed of NLP systems (at least, at the time of writing)."><meta itemprop=datePublished content="2020-05-23T00:00:00+00:00">
+<meta itemprop=dateModified content="2020-05-23T00:00:00+00:00">
+<meta itemprop=wordCount content="2011"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=keywords content="machine-learning,deep learning,natural-language-processing,">
+<meta name=referrer content="no-referrer-when-downgrade">
+<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<header><a href=/ class=title>
+<h2>⁂ George Ho</h2></a>
+<nav><a href=/>Home</a>
+<a href=/work/>Work</a>
+<a href=/blog>Blog</a>
+</nav></header><main>
+<h1>Transformers in Natural Language Processing — A Brief Survey</h1><p>
+<i>
+<time datetime=2020-05-23 pubdate>
+23 May, 2020
+</time>
+</i>
+</p><content>
+<p>I&rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+Transformer-based NLP models.</p><p>Similar to my previous blog post on <a href=https://www.georgeho.org/deep-autoregressive-models/>deep autoregressive
+models</a>, this blog post is a write-up
+of my reading and research: I assume basic familiarity with deep learning, and aim to
+highlight general trends in deep NLP, instead of commenting on individual architectures
+or systems.</p><p>As a disclaimer, this post is by no means exhaustive and is biased towards
+Transformer-based models, which seem to be the dominant breed of NLP systems (at least,
+at the time of writing).</p><h2 id=some-architectures-and-developments>Some Architectures and Developments</h2><p>Here&rsquo;s an (obviously) abbreviated history of Transformer-based models in NLP<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup> in
+(roughly) chronological order. I also cover some other non-Transformer-based models,
+because I think they illuminate the history of NLP.</p><ol>
+<li>
+<p>word2vec and GloVe</p><ul>
+<li>
+<p>These were the first instances of word embeddings pre-trained on large amounts of
+unlabeled text. These word embeddings generalized well to most other tasks (even
+with limited amounts of labeled data), and usually led to appreciable improvements
+in performance.</p></li><li>
+<p>These ideas were immensely influential and have served NLP extraordinarily well.
+However, they suffer from a major limitation. They are <em>shallow</em> representations
+that can only be used in the first layer of any network: the remainder of the
+network must still be trained from scratch.</p></li><li>
+<p>The main appeal is well illustrated below: each word has its own vector
+representation, and there are linear vector relationships can encode common-sense
+semantic meanings of words.</p><figure class=align-center>
+<img style=float:middle src=/assets/images/linear-relationships.png alt="Linear vector relationships in word embeddings">
+<figcaption>Linear vector relationships in word embeddings. Source: <a href=https://www.tensorflow.org/images/linear-relationships.png>TensorFlow documentation</a>.</figcaption></figure></li><li>
+<p>Further reading</p><ul>
+<li><a href=http://arxiv.org/abs/1301.3781>word2vec: Mikolov et al., Google. January 2013</a>
+and <a href=http://arxiv.org/abs/1310.4546>October 2013</a>.</li><li><a href=https://nlp.stanford.edu/projects/glove/>GloVe: Pennington et al., Stanford CS. EMNLP
+2014.</a></li></ul></li></ul></li><li>
+<p>Broadly speaking, after word2vec/GloVe and before Transformers, a lot of ink was
+spilled on other different approaches to NLP, including (but certainly not limited
+to)</p><ol>
+<li>Convolutional neural networks</li><li>Recurrent neural networks</li><li>Reinforcement learning approaches</li><li>Memory-augmented deep learning</li></ol><ul>
+<li>Perhaps the most famous of such models is <a href=https://allennlp.org/elmo>ELMo (Embeddings from Language
+Models)</a> by AI2, which learned bidirectional word
+embeddings using LSTMs, and began NLP&rsquo;s fondness of Sesame Street.</li><li>I won&rsquo;t go into much more detail here: partly because not all of these approaches
+have held up as well as current Transformer-based models, and partly because I have
+plans for my computer that don&rsquo;t involve blogging about recent advances in NLP.</li><li>Here is <a href=https://arxiv.org/abs/1708.02709>a survey paper</a> (and an <a href=https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d>associated blog
+post</a>)
+published shortly after the Transformer was invented, which summarizes a lot of the
+work that was being done during this period.</li></ul></li><li>
+<p>Transformer</p><ul>
+<li>
+<p>The authors introduce a feed-forward network architecture, using only attention
+mechanisms and dispensing with convolutions and recurrence entirely (which were not
+uncommon techniques in NLP at the time).</p></li><li>
+<p>It achieved state-of-the-art performance on several tasks, and (perhaps more
+importantly) was found to generalize very well to other NLP tasks, even with
+limited data.</p></li><li>
+<p>Since this architecture was the progenitor of so many other NLP models, it&rsquo;s
+worthwhile to dig into the details a bit. The architecture is illustrated below:
+note that its feed-forward nature and multi-head self attention are critical
+aspects of this architecture!</p><figure class=align-center>
+<img style=float:middle src=/asset/images/transformer-block.png alt="Graphical representation of BERT">
+<figcaption>Graphical representation of BERT. Source: <a href=https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png>Pinterest</a>.</figcaption></figure></li><li>
+<p>Further reading</p><ul>
+<li><a href=https://arxiv.org/pdf/1706.03762.pdf>Vaswani et al., Google Brain. December 2017.</a></li><li><a href=https://jalammar.github.io/illustrated-transformer/><em>The Illustrated Transformer</em> blog post</a></li><li><a href=http://nlp.seas.harvard.edu/2018/04/03/attention.html><em>The Annotated Transformer</em> blog post</a></li></ul></li></ul></li><li>
+<p>ULMFiT (Universal Language Model Fine-tuning for Text Classification)</p><ul>
+<li>The authors introduce an effective transfer learning method that can be applied to
+any task in NLP: this paper introduced the idea of general-domain, unsupervised
+pre-training, followed by task-specific fine-tuning. They also introduce other
+techniques that are fairly common in NLP now, such as slanted triangular learning
+rate schedules. (what some researchers now call warm-up).</li><li>Further reading
+<ul>
+<li><a href=https://arxiv.org/pdf/1801.06146.pdf>Howard and Ruder. January 2018.</a></li></ul></li></ul></li><li>
+<p>GPT-1 and GPT-2 (Generative Pre-trained Transformers)</p><ul>
+<li>At the risk of peeking ahead, GPT is largely BERT but with Transformer decoder
+blocks, instead of encoder blocks. Note that in doing this, we lose the
+autoregressive/unidirectional nature of the model.</li><li>Arguably the main contribution of GPT-2 is that it demonstrated the value of
+training larger Transformer models (a trend that I personally refer to as the
+<em>Embiggening</em>).</li><li>GPT-2 generated some controversy, as OpenAI <a href=https://www.theverge.com/2019/2/14/18224704/ai-machine-learning-language-models-read-write-openai-gpt2>initially refused to open-source the
+model</a>,
+citing potential malicious uses, but <a href=https://www.theverge.com/2019/11/7/20953040/openai-text-generation-ai-gpt-2-full-model-release-1-5b-parameters>ended up releasing the model
+later</a>.</li><li>Further reading
+<ul>
+<li><a href=https://openai.com/blog/language-unsupervised/>Radford et al., OpenAI. June
+2018</a> and <a href=https://openai.com/blog/better-language-models/>February
+2019</a>.</li><li><a href=http://jalammar.github.io/illustrated-gpt2/><em>The Illustrated GPT-2</em> blog post</a></li></ul></li></ul></li><li>
+<p>BERT (Bidirectional Encoder Representations from Transformers)</p><ul>
+<li>
+<p>The authors use the Transformer encoder (and only the encoder) to pre-train deep
+bidirectional representations from unlabeled text. This pre-trained BERT model can
+then be fine-tuned with just one additional output layer to achieve
+state-of-the-art performance for many NLP tasks, without substantial task-specific
+architecture changes, as illustrated below.</p><figure class=align-center>
+<img style=float:middle src=/assets/images/bert.png alt="Graphical representation of BERT">
+<figcaption>Graphical representation of BERT. Source: <a href=https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png>Pinterest</a>.</figcaption></figure></li><li>
+<p>BERT was a drastic development in the NLP landscape: it became almost a cliche to
+conclude that BERT performs &ldquo;surprisingly well&rdquo; on whatever task or dataset you
+throw at it.</p></li><li>
+<p>Further reading</p><ul>
+<li><a href=https://arxiv.org/pdf/1810.04805.pdf>Devlin et al., Google AI Language, May 2019.</a></li><li><a href=https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html>Accompanying blog post</a></li><li><a href=https://jalammar.github.io/illustrated-bert/><em>The Illustrated BERT</em> blog post</a></li></ul></li></ul></li><li>
+<p>RoBERTa (Robustly Optimized BERT Approach)</p><ul>
+<li>
+<p>The scientific contributions of this paper are best quoted from its abstract:</p><blockquote>
+<p>We find that BERT was significantly under-trained, and can match or exceed the
+performance of every model published after it. [&mldr;] These results highlight the
+importance of previously overlooked design choices, and raise questions about the
+source of recently reported improvements.</p></blockquote></li><li>
+<p>The authors use an identical architecture to BERT, but propose several improvements
+to the training routine, such as changing the dataset and removing the
+next-sentence-prediction (NSP) pre-training task. Funnily enough, far and away the
+best thing the authors did to improve BERT was just the most obvious thing: train
+BERT for longer!</p></li><li>
+<p>Further reading:</p><ul>
+<li><a href=https://arxiv.org/abs/1907.11692>Liu et al., Facebook AI. June 2019.</a></li><li><a href=https://ai.facebook.com/blog/roberta-an-optimized-method-for-pretraining-self-supervised-nlp-systems/>Accompanying blog post</a></li></ul></li></ul></li><li>
+<p>T5 (Text-to-Text Transfer Transformer)</p><ul>
+<li>There are two main contributions of this paper:
+<ol>
+<li>The authors recast all NLP tasks into a text-to-text format: for example,
+instead of performing a two-way softmax for binary classification, one could
+simply teach an NLP model to output the tokens &ldquo;spam&rdquo; or &ldquo;ham&rdquo;. This provides a
+unified text-to-text format for all NLP tasks.</li><li>The authors systematically study and compare the effects of pre-training
+objectives, architectures, unlabeled datasets, transfer approaches, and other
+factors on dozens of canonical NLP tasks.</li></ol></li><li>This paper (and especially the tables in the appendices!) probably cost the Google
+team an incredible amount of money, and the authors were very thorough in ablating
+what does and doesn&rsquo;t help for a good NLP system.</li><li>Further reading
+<ul>
+<li><a href=https://arxiv.org/pdf/1910.10683.pdf>Raffel et al., Google. October 2019.</a></li><li><a href=https://ai.googleblog.com/2020/02/exploring-transfer-learning-with-t5.html>Accompanying blog post</a></li></ul></li></ul></li></ol><h2 id=some-thoughts-and-observations>Some Thoughts and Observations</h2><p>Here I comment on some general trends that I see in Transformer-based models in NLP.</p><ol>
+<li>
+<p>Ever since Google developed the Transformer in 2017, most NLP contributions are not
+architectural: instead most recent advances have used the Transformer model as-is, or
+using some subset of the Transformer (e.g. BERT and GPT use exclusively Transformer
+encoder and decoder blocks, respectively). Instead, recent research has focused on
+the way NLP models are pre-trained or fine-tuned, or creating a new dataset, or
+formulating a new NLP task to measure &ldquo;language understanding&rdquo;, etc.</p><ul>
+<li>I&rsquo;m personally not sure what to make of this development: why did we collectively
+agree that architectural research wasn&rsquo;t worth pursuing anymore?</li><li>But spinning this the other way, we see that Transformers are a <em>fascinating</em>
+architecture: the model has proven so surprisingly versatile and easy to teach that
+we are still making meaningful advances with the same architecture. In fact, it is
+still an open question how and why Transformers perform as well as they do: there
+is an open field of research focusing on answering this question for BERT (since
+BERT has been uniquely successful model) called
+<a href=https://huggingface.co/transformers/bertology.html>BERTology</a>.</li></ul></li><li>
+<p>It was never a question of <em>whether</em> NLP systems would follow computer vision&rsquo;s model
+of fine-tuning pre-trained models (i.e. training a model on ImageNet and then doing
+task-specific fine-tuning for downstream applications), but rather <em>how</em>.</p><ol>
+<li>What specific task and/or dataset should NLP models be pre-trained on?
+<ul>
+<li>Language modelling has really won out here: BERT was originally published with a
+<em>next-sentence prediction</em> (NSP) pre-training task, which RoBERTa completely did
+away with.</li></ul></li><li>Exactly <em>what</em> is being learnt during pre-training?
+<ul>
+<li>Initially it was a separate vector for each token (i.e. pre-training a shallow
+representation of text), and these days it is an entire network is pre-trained.</li><li>Sebastian Ruder <a href=https://thegradient.pub/nlp-imagenet/>wrote a great article</a>
+that delves more into this topic.</li></ul></li></ol></li><li>
+<p>There are (generally speaking) three flavors of Transformer models.</p><ol>
+<li>Autoregressive models</li><li>Autoencoding models</li><li>Sequence-to-sequence models</li></ol><ul>
+<li>Hugging Face does an excellent job of summarizing the differences between these
+three flavors of models in <a href=https://huggingface.co/transformers/summary.html>their <em>Summary of the
+Models</em></a>, which I&rsquo;ve reproduced
+here:</li></ul><blockquote>
+<p>Autoregressive models are pretrained on the classic language modeling task: guess
+the next token having read all the previous ones. They correspond to the decoder of
+the original transformer model, and a mask is used on top of the full sentence so
+that the attention heads can only see what was before in the next, and not what’s
+after. Although those models can be fine-tuned and achieve great results on many
+tasks, the most natural application is text generation. A typical example of such
+models is GPT.</p><p>Autoencoding models are pretrained by corrupting the input tokens in some way and
+trying to reconstruct the original sentence. They correspond to the encoder of the
+original transformer model in the sense that they get access to the full inputs
+without any mask. Those models usually build a bidirectional representation of the
+whole sentence. They can be fine-tuned and achieve great results on many tasks such
+as text generation, but their most natural application is sentence classification
+or token classification. A typical example of such models is BERT.</p><p>[&mldr;]</p><p>Sequence-to-sequence models use both the encoder and the decoder of the original
+transformer, either for translation tasks or by transforming other tasks to
+sequence-to-sequence problems. They can be fine-tuned to many tasks but their most
+natural applications are translation, summarization and question answering. The
+original transformer model is an example of such a model (only for translation), T5
+is an example that can be fine-tuned on other tasks.</p></blockquote></li><li>
+<p>Different NLP models learn different kinds of embeddings, and it&rsquo;s worth
+understanding the differences between these various learnt representations.</p><ol>
+<li>Contextual vs non-contextual embeddings
+<ul>
+<li>The first word embeddings (that is, word2vec and GloVe) were <em>non-contextual</em>:
+each word had its own embedding, independent of the words that came before or
+after it.</li><li>Almost all other embeddings are <em>contextual</em> now: when embedding a token, they
+also consider the tokens before &/ after it.</li></ul></li><li>Unidirectional vs bidirectional embeddings
+<ul>
+<li>When considering the context of a token, the question is whether you should
+consider the tokens both before and after it (i.e. bidirectional embeddings), or
+just the tokens that came before (i.e. unidirectional embeddings).</li><li>Unidirectional embeddings make the sense when generating text (i.e. text
+generation must be done in the way humans write text: in one direction). On the
+other hand, bidirectional embeddings make sense when performing sentence-level
+tasks such as summarization or rewriting.</li><li>The Transformer was notable in that it had bidirectional encoder blocks and
+unidirectional decoder blocks. That&rsquo;s why BERT [GPT-2] produces bidirectional
+[unidirectional] embeddings, since it&rsquo;s a stack of Transformer encoders
+[decoders].</li><li>Note that the unidirectional/bidirectional distinction is related to whether or
+not the model is autoregressive: autoregressive models learn unidirectional
+embeddings.</li></ul></li></ol></li><li>
+<p>Transformer-based models have had an interesting history with scaling.</p><ul>
+<li>This trend probably started when GPT-2 was published: &ldquo;it sounds very dumb and too
+easy, but magical things happen if you make your Transformer model bigger&rdquo;.</li><li>An open question is, how do Transformer models scale (along any dimension of
+interest)? For example, how much does dataset size or the number of layers or the
+number of training iterations matter in the ultimate performance of a Transformer
+model? At what point does making your Transformer model &ldquo;bigger&rdquo; (along any
+dimension of interest) provide diminishing returns?</li><li>There is some <a href=https://github.com/huggingface/awesome-papers#march-24-2020>solid
+work</a> being done to
+answer this question, and there seems to be good evidence for some fairly
+surprising conclusions!</li></ul></li></ol><section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the <a href=https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html>Reformer</a> from Google and <a href=https://arxiv.org/abs/2005.14165>GPT-3</a> from OpenAI. Because I can&rsquo;t possibly keep up with <em>all</em> new Transformer-based models, I won&rsquo;t be writing about them.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content>
+<p>
+<a href=https://www.georgeho.org/blog/machine-learning/>#machine-learning</a>
+<a href=https://www.georgeho.org/blog/deep-learning/>#deep-learning</a>
+<a href=https://www.georgeho.org/blog/natural-language-processing/>#natural-language-processing</a>
+</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer></body></html>

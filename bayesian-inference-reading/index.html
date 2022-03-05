@@ -1,0 +1,159 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" href=https://www.georgeho.org/assets/images/favicon.ico>
+<title>Modern Computational Methods for Bayesian Inference — A Reading List | ⁂ George Ho</title><meta name=title content="Modern Computational Methods for Bayesian Inference — A Reading List">
+<meta name=description content="Lately I&rsquo;ve been troubled by how little I actually knew about how Bayesian inference really worked. I could explain to you many other machine learning techniques, but with Bayesian modelling&mldr; well, there&rsquo;s a model (which is basically the likelihood, I think?), and then there&rsquo;s a prior, and then, um&mldr;
+What actually happens when you run a sampler? What makes inference &ldquo;variational&rdquo;? And what is this automatic differentiation doing in my variational inference?">
+<meta name=keywords content="bayes,">
+<meta property="og:title" content="Modern Computational Methods for Bayesian Inference — A Reading List">
+<meta property="og:description" content="Lately I&rsquo;ve been troubled by how little I actually knew about how Bayesian inference really worked. I could explain to you many other machine learning techniques, but with Bayesian modelling&mldr; well, there&rsquo;s a model (which is basically the likelihood, I think?), and then there&rsquo;s a prior, and then, um&mldr;
+What actually happens when you run a sampler? What makes inference &ldquo;variational&rdquo;? And what is this automatic differentiation doing in my variational inference?">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.georgeho.org/bayesian-inference-reading/"><meta property="og:image" content="https://www.georgeho.org/images/share.png"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2019-01-02T00:00:00+00:00">
+<meta property="article:modified_time" content="2019-01-02T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.georgeho.org/images/share.png">
+<meta name=twitter:title content="Modern Computational Methods for Bayesian Inference — A Reading List">
+<meta name=twitter:description content="Lately I&rsquo;ve been troubled by how little I actually knew about how Bayesian inference really worked. I could explain to you many other machine learning techniques, but with Bayesian modelling&mldr; well, there&rsquo;s a model (which is basically the likelihood, I think?), and then there&rsquo;s a prior, and then, um&mldr;
+What actually happens when you run a sampler? What makes inference &ldquo;variational&rdquo;? And what is this automatic differentiation doing in my variational inference?">
+<meta itemprop=name content="Modern Computational Methods for Bayesian Inference — A Reading List">
+<meta itemprop=description content="Lately I&rsquo;ve been troubled by how little I actually knew about how Bayesian inference really worked. I could explain to you many other machine learning techniques, but with Bayesian modelling&mldr; well, there&rsquo;s a model (which is basically the likelihood, I think?), and then there&rsquo;s a prior, and then, um&mldr;
+What actually happens when you run a sampler? What makes inference &ldquo;variational&rdquo;? And what is this automatic differentiation doing in my variational inference?"><meta itemprop=datePublished content="2019-01-02T00:00:00+00:00">
+<meta itemprop=dateModified content="2019-01-02T00:00:00+00:00">
+<meta itemprop=wordCount content="858"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=keywords content="bayes,">
+<meta name=referrer content="no-referrer-when-downgrade">
+<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<header><a href=/ class=title>
+<h2>⁂ George Ho</h2></a>
+<nav><a href=/>Home</a>
+<a href=/work/>Work</a>
+<a href=/blog>Blog</a>
+</nav></header><main>
+<h1>Modern Computational Methods for Bayesian Inference — A Reading List</h1><p>
+<i>
+<time datetime=2019-01-02 pubdate>
+02 Jan, 2019
+</time>
+</i>
+</p><content>
+<p>Lately I&rsquo;ve been troubled by how little I actually knew about how Bayesian
+inference <em>really worked</em>. I could explain to you <a href=https://maria-antoniak.github.io/2018/11/19/data-science-crash-course.html>many other machine learning
+techniques</a>,
+but with Bayesian modelling&mldr; well, there&rsquo;s a model (which is basically the
+likelihood, I think?), and then there&rsquo;s a prior, and then, um&mldr;</p><p>What actually happens when you run a sampler? What makes inference
+&ldquo;variational&rdquo;? And what is this automatic differentiation doing in my
+variational inference? <em>Cue long sleepless nights, contemplating my own
+ignorance.</em></p><p>So to celebrate the new year<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>, I compiled a list of things to read — blog
+posts, journal papers, books, anything that would help me understand (or at
+least, appreciate) the math and computation that happens when I press the <em>Magic
+Inference Button™</em>. Again, this reading list isn&rsquo;t focused on how to use
+Bayesian modelling for a <em>specific</em> use case<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>; it’s focused on how modern
+computational methods for Bayesian inference work <em>in general</em>.</p><p>So without further ado&mldr;</p><div>
+<h2>Contents</h2><nav id=TableOfContents>
+<ul>
+<li><a href=#markov-chain-monte-carlo>Markov-Chain Monte Carlo</a>
+<ul>
+<li><a href=#for-the-uninitiated>For the uninitiated</a></li><li><a href=#hamiltonian-monte-carlo-and-the-no-u-turn-sampler>Hamiltonian Monte Carlo and the No-U-Turn Sampler</a></li><li><a href=#sequential-monte-carlo-and-other-sampling-methods>Sequential Monte Carlo and other sampling methods</a></li></ul></li><li><a href=#variational-inference>Variational Inference</a>
+<ul>
+<li><a href=#for-the-uninitiated-1>For the uninitiated</a></li><li><a href=#automatic-differentiation-variational-inference-advi>Automatic differentiation variational inference (ADVI)</a></li></ul></li><li><a href=#open-source-software-for-bayesian-inference>Open-Source Software for Bayesian Inference</a></li><li><a href=#further-topics>Further Topics</a>
+<ul>
+<li><a href=#approximate-bayesian-computation-abc-and-likelihood-free-methods>Approximate Bayesian computation (ABC) and likelihood-free methods</a></li><li><a href=#expectation-propagation>Expectation propagation</a></li><li><a href=#operator-variational-inference-opvi>Operator variational inference (OPVI)</a></li></ul></li></ul></nav></div><h2 id=markov-chain-monte-carlo>Markov-Chain Monte Carlo</h2><h3 id=for-the-uninitiated>For the uninitiated</h3><ol>
+<li><a href=https://twiecki.github.io/blog/2015/11/10/mcmc-sampling/>MCMC Sampling for
+Dummies</a> by Thomas
+Wiecki. A basic introduction to MCMC with accompanying Python snippets. The
+Metropolis sampler is used an introduction to sampling.</li><li><a href=http://www.mcmchandbook.net/HandbookChapter1.pdf>Introduction to Markov Chain Monte
+Carlo</a> by Charles Geyer.
+The first chapter of the aptly-named <a href=http://www.mcmchandbook.net/><em>Handbook of Markov Chain Monte
+Carlo</em></a>.</li><li><a href=https://arxiv.org/abs/2001.06249>Markov Chain Monte Carlo Methods, a survey with some frequent
+misunderstandings</a> is an instructive
+collection of Cross-Validated questions that clear up common
+misunderstandings of MCMC.</li></ol><h3 id=hamiltonian-monte-carlo-and-the-no-u-turn-sampler>Hamiltonian Monte Carlo and the No-U-Turn Sampler</h3><ol>
+<li><a href=https://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html>Hamiltonian Monte Carlo
+explained</a>.
+A visual and intuitive explanation of HMC: great for starters.</li><li><a href=https://arxiv.org/abs/1701.02434>A Conceptual Introduction to Hamiltonian Monte
+Carlo</a> by Michael Betancourt. An excellent
+paper for a solid conceptual understanding and principled intuition for HMC.</li><li><a href=https://colindcarroll.com/2019/04/06/exercises-in-automatic-differentiation-using-autograd-and-jax/>Exercises in Automatic Differentiation using <code>autograd</code> and
+<code>jax</code></a>
+by Colin Carroll. This is the first in a series of blog posts that explain
+HMC from the very beginning. See also <a href=https://colindcarroll.com/2019/04/11/hamiltonian-monte-carlo-from-scratch/>Hamiltonian Monte Carlo from
+Scratch</a>,
+<a href=https://colindcarroll.com/2019/04/21/step-size-adaptation-in-hamiltonian-monte-carlo/>Step Size Adaptation in Hamiltonian Monte
+Carlo</a>,
+and <a href=https://colindcarroll.com/2019/04/28/choice-of-symplectic-integrator-in-hamiltonian-monte-carlo/>Choice of Symplectic Integrator in Hamiltonian Monte
+Carlo</a>.</li><li><a href=https://arxiv.org/abs/1111.4246>The No-U-Turn Sampler: Adaptively Setting Path Lengths in Hamiltonian Monte
+Carlo</a> by Matthew Hoffman and Andrew Gelman.
+The original NUTS paper.</li><li><a href=http://www.mcmchandbook.net/HandbookChapter5.pdf>MCMC Using Hamiltonian
+Dynamics</a> by Radford Neal.</li><li><a href=https://colindcarroll.com/talk/hamiltonian-monte-carlo/>Hamiltonian Monte Carlo in
+PyMC3</a> by Colin
+Carroll.</li></ol><h3 id=sequential-monte-carlo-and-other-sampling-methods>Sequential Monte Carlo and other sampling methods</h3><ol>
+<li>Chapter 11 (Sampling Methods) of <a href=https://www.microsoft.com/en-us/research/people/cmbishop/#!prml-book>Pattern Recognition and Machine
+Learning</a>
+by Christopher Bishop. Covers rejection, importance, Metropolis-Hastings,
+Gibbs and slice sampling. Perhaps not as rampantly useful as NUTS, but good
+to know nevertheless.</li><li><a href=https://chi-feng.github.io/mcmc-demo/>The Markov-chain Monte Carlo Interactive
+Gallery</a> by Chi Feng. A fantastic
+library of visualizations of various MCMC samplers.</li><li>For non-Markov chain based Monte Carlo methods, there is <a href=https://www.stats.ox.ac.uk/~doucet/doucet_defreitas_gordon_smcbookintro.pdf>An Introdution to
+Sequential Monte Carlo
+Methods</a>
+by Arnaud Doucet, Nando de Freitas and Neil Gordon. This chapter from <a href=https://www.springer.com/us/book/9780387951461>the
+authors&rsquo; textbook on SMC</a>
+provides motivation for using SMC methods, and gives a brief introduction to
+a basic particle filter.</li><li><a href=http://www.stats.ox.ac.uk/~doucet/smc_resources.html>Sequential Monte Carlo Methods & Particle Filters
+Resources</a> by Arnaud
+Doucet. A list of resources on SMC and particle filters: way more than you
+probably ever need to know about them.</li></ol><h2 id=variational-inference>Variational Inference</h2><h3 id=for-the-uninitiated-1>For the uninitiated</h3><ol>
+<li><a href=http://willwolf.io/2018/11/11/em-for-lda/>Deriving
+Expectation-Maximization</a> by Will
+Wolf. The first blog post in a series that builds from EM all the way to VI.
+Also check out <a href=http://willwolf.io/2018/11/23/mean-field-variational-bayes/>Deriving Mean-Field Variational
+Bayes</a>.</li><li><a href=https://arxiv.org/abs/1601.00670>Variational Inference: A Review for
+Statisticians</a> by David Blei, Alp
+Kucukelbir and Jon McAuliffe. An high-level overview of variational
+inference: the authors go over one example (performing VI on GMMs) in depth.</li><li>Chapter 10 (Approximate Inference) of <a href=https://www.microsoft.com/en-us/research/people/cmbishop/#!prml-book>Pattern Recognition and Machine
+Learning</a>
+by Christopher Bishop.</li></ol><h3 id=automatic-differentiation-variational-inference-advi>Automatic differentiation variational inference (ADVI)</h3><ol>
+<li><a href=https://arxiv.org/abs/1603.00788>Automatic Differentiation Variational
+Inference</a> by Alp Kucukelbir, Dustin Tran
+et al. The original ADVI paper.</li><li><a href=https://papers.nips.cc/paper/5758-automatic-variational-inference-in-stan>Automatic Variational Inference in
+Stan</a>
+by Alp Kucukelbir, Rajesh Ranganath, Andrew Gelman and David Blei.</li></ol><h2 id=open-source-software-for-bayesian-inference>Open-Source Software for Bayesian Inference</h2><p>There are many open-source software libraries for Bayesian modelling and
+inference, and it is instructive to look into the inference methods that they do
+(or do not!) implement.</p><ol>
+<li><a href=http://mc-stan.org/>Stan</a></li><li><a href=http://docs.pymc.io/>PyMC3</a></li><li><a href=http://pyro.ai/>Pyro</a></li><li><a href=https://www.tensorflow.org/probability/>Tensorflow Probability</a></li><li><a href=http://edwardlib.org/>Edward</a></li><li><a href=https://greta-stats.org/>Greta</a></li><li><a href=https://dotnet.github.io/infer/>Infer.NET</a></li><li><a href=https://www.mrc-bsu.cam.ac.uk/software/bugs/>BUGS</a></li><li><a href=http://mcmc-jags.sourceforge.net/>JAGS</a></li></ol><h2 id=further-topics>Further Topics</h2><p>Bayesian inference doesn&rsquo;t stop at MCMC and VI: there is bleeding-edge research
+being done on other methods of inference. While they aren&rsquo;t ready for real-world
+use, it is interesting to see what they are.</p><h3 id=approximate-bayesian-computation-abc-and-likelihood-free-methods>Approximate Bayesian computation (ABC) and likelihood-free methods</h3><ol>
+<li><a href=https://arxiv.org/abs/1001.2058>Likelihood-free Monte Carlo</a> by Scott
+Sisson and Yanan Fan.</li></ol><h3 id=expectation-propagation>Expectation propagation</h3><ol>
+<li><a href=https://arxiv.org/abs/1412.4869>Expectation propagation as a way of life: A framework for Bayesian inference
+on partitioned data</a> by Aki Vehtari, Andrew
+Gelman, et al.</li></ol><h3 id=operator-variational-inference-opvi>Operator variational inference (OPVI)</h3><ol>
+<li><a href=https://arxiv.org/abs/1610.09033>Operator Variational Inference</a> by Rajesh
+Ranganath, Jaan Altosaar, Dustin Tran and David Blei. The original OPVI
+paper.</li></ol><p>(I&rsquo;ve tried to include as many relevant and helpful resources as I could find,
+but if you feel like I&rsquo;ve missed something, <a href=https://twitter.com/@_eigenfoo>drop me a
+line</a>!)</p><section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p><a href=https://twitter.com/year_progress/status/1079889949871300608>Relevant tweet
+here.</a>&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
+<p>If that’s what you’re looking for, check out my <a href=https://www.georgeho.org/bayesian-modelling-cookbook>Bayesian modelling
+cookbook</a> or <a href=https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html>Michael
+Betancourt’s excellent essay on a principles Bayesian
+workflow</a>.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content>
+<p>
+<a href=https://www.georgeho.org/blog/bayes/>#bayes</a>
+</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer></body></html>

@@ -1,0 +1,233 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" href=https://www.georgeho.org/assets/images/favicon.ico>
+<title>Linear Discriminant Analysis for Starters | ⁂ George Ho</title><meta name=title content="Linear Discriminant Analysis for Starters">
+<meta name=description content="Contents  LDA as an Algorithm  Problem statement Solution   LDA as a Theorem LDA as a Machine Learning Technique  Regularization (a.k.a. shrinkage) LDA as a classifier Close relatives: PCA, QDA, ANOVA      Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.">
+<meta name=keywords content="mathematics,">
+<meta property="og:title" content="Linear Discriminant Analysis for Starters">
+<meta property="og:description" content="Contents  LDA as an Algorithm  Problem statement Solution   LDA as a Theorem LDA as a Machine Learning Technique  Regularization (a.k.a. shrinkage) LDA as a classifier Close relatives: PCA, QDA, ANOVA      Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.georgeho.org/lda/"><meta property="og:image" content="https://www.georgeho.org/images/share.png"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2017-12-30T00:00:00+00:00">
+<meta property="article:modified_time" content="2017-12-30T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.georgeho.org/images/share.png">
+<meta name=twitter:title content="Linear Discriminant Analysis for Starters">
+<meta name=twitter:description content="Contents  LDA as an Algorithm  Problem statement Solution   LDA as a Theorem LDA as a Machine Learning Technique  Regularization (a.k.a. shrinkage) LDA as a classifier Close relatives: PCA, QDA, ANOVA      Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.">
+<meta itemprop=name content="Linear Discriminant Analysis for Starters">
+<meta itemprop=description content="Contents  LDA as an Algorithm  Problem statement Solution   LDA as a Theorem LDA as a Machine Learning Technique  Regularization (a.k.a. shrinkage) LDA as a classifier Close relatives: PCA, QDA, ANOVA      Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction."><meta itemprop=datePublished content="2017-12-30T00:00:00+00:00">
+<meta itemprop=dateModified content="2017-12-30T00:00:00+00:00">
+<meta itemprop=wordCount content="2287"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=keywords content="mathematics,">
+<meta name=referrer content="no-referrer-when-downgrade">
+<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<header><a href=/ class=title>
+<h2>⁂ George Ho</h2></a>
+<nav><a href=/>Home</a>
+<a href=/work/>Work</a>
+<a href=/blog>Blog</a>
+</nav></header><main>
+<h1>Linear Discriminant Analysis for Starters</h1><p>
+<i>
+<time datetime=2017-12-30 pubdate>
+30 Dec, 2017
+</time>
+</i>
+</p><content>
+<div>
+<h2>Contents</h2><nav id=TableOfContents>
+<ul>
+<li><a href=#lda-as-an-algorithm>LDA as an Algorithm</a>
+<ul>
+<li><a href=#problem-statement>Problem statement</a></li><li><a href=#solution>Solution</a></li></ul></li><li><a href=#lda-as-a-theorem>LDA as a Theorem</a></li><li><a href=#lda-as-a-machine-learning-technique>LDA as a Machine Learning Technique</a>
+<ul>
+<li><a href=#regularization-aka-shrinkage>Regularization (a.k.a. shrinkage)</a></li><li><a href=#lda-as-a-classifier>LDA as a classifier</a></li><li><a href=#close-relatives-pca-qda-anova>Close relatives: PCA, QDA, ANOVA</a></li></ul></li></ul></nav></div><p><em>Linear discriminant analysis</em> (commonly abbreviated to LDA, and not to be
+confused with <a href=https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation>the other
+LDA</a>) is a very
+common dimensionality reduction technique for classification problems. However,
+that&rsquo;s something of an understatement: it does so much more than “just”
+dimensionality reduction.</p><p>In plain English, if you have high-dimensional data (i.e. a large number of
+features) from which you wish to classify observations, LDA will help you
+transform your data so as to make the classes as distinct as possible. More
+rigorously, LDA will find the linear projection of your data into a
+lower-dimensional subspace that optimizes some measure of class separation. The
+dimension of this subspace is necessarily strictly less than the number of
+classes.</p><p>This separation-maximizing property of LDA makes it so good at its job that it&rsquo;s
+sometimes considered a classification algorithm in and of itself, which leads to
+some confusion. <em>Linear discriminant analysis</em> is a form of dimensionality
+reduction, but with a few extra assumptions, it can be turned into a classifier.
+(Avoiding these assumptions gives its relative, <em>quadratic discriminant
+analysis</em>, but more on that later). Somewhat confusingly, some authors call the
+dimensionality reduction technique “discriminant analysis”, and only prepend the
+“linear” once we begin classifying. I actually like this naming convention more
+(it tracks the mathematical assumptions a bit better, I think), but most people
+nowadays call the entire technique “LDA”, so that&rsquo;s what I&rsquo;ll call it.</p><p>The goal of this post is to give a comprehensive introduction to, and
+explanation of, LDA. I&rsquo;ll look at LDA in three ways:</p><ol>
+<li>LDA as an algorithm: what does it do, and how does it do it?</li><li>LDA as a theorem: a mathematical derivation of LDA</li><li>LDA as a machine learning technique: practical considerations when using LDA</li></ol><p>This is a lot for one post, but my hope is that there&rsquo;s something in here for
+everyone.</p><h2 id=lda-as-an-algorithm>LDA as an Algorithm</h2><h3 id=problem-statement>Problem statement</h3><p>Before we dive into LDA, it&rsquo;s good to get an intuitive grasp of what LDA
+tries to accomplish.</p><p>Suppose that:</p><ol>
+<li>You have very high-dimensional data, and that</li><li>You are dealing with a classification problem</li></ol><p>This could mean that the number of features is greater than the number of
+observations, or it could mean that you suspect there are noisy features that
+contain little information, or anything in between.</p><p>Given that this is the problem at hand, you wish to accomplish two things:</p><ol>
+<li>Reduce the number of features (i.e. reduce the dimensionality of your feature
+space), and</li><li>Preserve (or even increase!) the “distinguishability” of your classes or the
+“separatedness” of the classes in your feature space.</li></ol><p>This is the problem that LDA attempts to solve. It should be fairly obvious why
+this problem might be worth solving.</p><p>To judiciously appropriate a term from signal processing, we are interested in
+increasing the signal-to-noise ratio of our data, by both extracting or
+synthesizing features that are useful in classifying our data (amplifying our
+signal), and throwing out the features that are not as useful (attenuating our
+noise).</p><p>Below is simple illustration I made, inspired by <a href=https://www.quora.com/Can-you-explain-the-comparison-between-principal-component-analysis-and-linear-discriminant-analysis-in-dimensionality-reduction-with-MATLAB-code-Which-one-is-more-efficient>Sebastian
+Raschka</a>
+that may help our intuition about the problem:</p><p><img src=/assets/images/lda-pic.png alt="Projections of two-dimensional data (in two clusters) onto the x and y axes"></p><p>A couple of points to make:</p><ul>
+<li>LD1 and LD2 are among the projections that LDA would consider. In reality, LDA
+would consider <em>all possible</em> projections, not just those along the x and y
+axes.</li><li>LD1 is the one that LDA would actually come up with: this projection gives the
+best “separation” of the two classes.</li><li>LD2 is a horrible projection by this metric: both classes get horribly
+overlapped… (this actually relates to PCA, but more on that later)</li></ul><p><strong>UPDATE:</strong> For another illustration, Rahul Sangole made a simple but great
+interactive visualization of LDA
+<a href=https://rsangole.shinyapps.io/LDA_Visual/>here</a> using
+<a href=https://shiny.rstudio.com/>Shiny</a>.</p><h3 id=solution>Solution</h3><p>First, some definitions:</p><p>Let:</p><ul>
+<li>$n$ be the number of classes</li><li>$\mu$ be the mean of all observations</li><li>$N_i$ be the number of observations in the $i$th class</li><li>$\mu_i$ be the mean of the $i$th class</li><li>$\Sigma_i$ be the <a href=https://en.wikipedia.org/wiki/Scatter_matrix>scatter
+matrix</a> of the $i$th class</li></ul><p>Now, define $S_W$ to be the <em>within-class scatter matrix</em>, given by</p><p>$$
+\begin{align*}
+S_W = \sum_{i=1}^{n}{\Sigma_i}
+\end{align*}
+$$</p><p>and define $S_B$ to be the <em>between-class scatter matrix</em>, given by</p><p>$$
+\begin{align*}
+S_B = \sum_{i=1}^{n}{N_i (\mu_i - \mu) (\mu_i - \mu)^T}
+\end{align*}
+$$</p><p><a href=https://en.wikipedia.org/wiki/Diagonalizable_matrix>Diagonalize</a> $S_W^{-1}
+S_B$ to get its eigenvalues and eigenvectors.</p><p>Pick the $k$ largest eigenvalues, and their associated eigenvectors. We will
+project our observations onto the subspace spanned by these vectors.</p><p>Concretely, what this means is that we form the matrix $A$, whose columns are the
+$k$ eigenvectors chosen above. $W$ will allow us to transform our
+observations into the new subspace via the equation $y = A^T x$, where $y$ is
+our transformed observation, and $x$ is our original observation.</p><p>And that&rsquo;s it!</p><p>For a more detailed and intuitive explanation of the LDA “recipe”, see
+<a href=http://sebastianraschka.com/Articles/2014_python_lda.html>Sebastian Raschka&rsquo;s blog post on
+LDA</a>.</p><h2 id=lda-as-a-theorem>LDA as a Theorem</h2><p><strong>Sketch of Derivation:</strong></p><p>In order to maximize class separability, we need some way of measuring it as a
+number. This number should be bigger when the between-class scatter is bigger,
+and smaller when the within-class scatter is larger. There are many such
+formulas/numbers that have this property: <a href=https://www.elsevier.com/books/introduction-to-statistical-pattern-recognition/fukunaga/978-0-08-047865-4>Fukunaga&rsquo;s <em>Introduction to
+Statistical Pattern
+Recognition</em></a>
+considers no less than four! Here, we&rsquo;ll concern ourselves with just one:</p><p>$$ J_1 = tr(S_{WY}^{-1} S_{BY}) $$</p><p>where I denote the within and between-class scatter matrices of the projection
+vector $Y$ by $S_{WY}$ and $S_{BY}$, to avoid confusion with the
+corresponding matrices for the projected vector $X$.</p><p>Now, a standard result from probability is that for any random variable $X$
+and matrix $A$, we have $cov(A^T X) = A^T cov(X) A$. We&rsquo;ll apply this
+result to our projection $y = A^T x$. It follows that</p><p>$$ S_{WY} = A^T S_{WX} A $$</p><p>and</p><p>$$ S_{BY} = A^T S_{BX} A $$</p><p>where $S_{BX}$ and $S_{BY}$ are the between-class scatter matrices, and
+$S_{WX}$ and $S_{WY}$ are the within-class scatter matrices, for $X$
+and its projection $Y$, respectively.</p><p>It&rsquo;s now a simple matter to write $J_1$ in terms of $A$, and maximize
+$J_1$. Without going into the details, we set $\frac{\partial J_1}{\partial
+A} = 0$ (whatever that means), and use the fact that <a href=https://math.stackexchange.com/questions/546155/proof-that-the-trace-of-a-matrix-is-the-sum-of-its-eigenvalues>the trace of a matrix is
+the sum of its
+eigenvalues</a>.</p><p>I don&rsquo;t want to go into the weeds with this here, but if you really want to see
+the algebra, Fukunaga is a great resource. The end result, however, is the same
+condition on the eigenvalues and eigenvectors as stated above: in other words,
+the optimization gives us LDA as presented.</p><p>There&rsquo;s one more quirk of LDA that&rsquo;s very much worth knowing. Suppose you have
+10 classes, and you run LDA. It turns out that the <em>maximum</em> number of features
+LDA can give you is one less than the number of class, so in this case, 9!</p><p><strong>Proposition:</strong> $S_W^{-1} S_B$ has at most $n-1$ non-zero eigenvalues, which
+implies that LDA is must reduce the dimension to <em>at least</em> $n-1$.</p><p>To prove this, we first need a lemma.</p><p><strong>Lemma:</strong> Suppose ${v_i}<em>{i=1}^{n}$ is a set of linearly dependent vectors, and
+let $\alpha_i$ be $n$ coefficients. Then, $M = \sum</em>{i=1}^{n}{\alpha_i v_i
+v_i^{T}}$, a linear combination of outer products of the vectors with
+themselves, is rank deficient.</p><p><strong>Proof:</strong> The row space of $M$ is generated by the set of vectors ${v_1, v_2,
+&mldr;, v_n}$. However, because this set of vectors is linearly dependent, it must
+span a vector space of dimension strictly less than $n$, or in other words
+less than or equal to $n-1$. But the dimension of the row space is precisely
+the rank of the matrix $M$. Thus, $rank(M) \leq n-1$, as desired.</p><p>With the lemma, we&rsquo;re now ready to prove our proposition.</p><p><strong>Proof:</strong> We have that</p><p>$$
+\begin{align*}
+\frac{1}{n} \sum_{i=1}^{n}{\mu_i} = \mu \implies \sum_{i=1}^{n}{\mu_i-\mu} = 0
+\end{align*}
+$$</p><p>So ${\mu_i-\mu}_{i=1}^{n}$ is a linearly dependent set. Applying our lemma, we
+see that</p><p>$$ S_B = \sum_{i=1}^{n}{N_i (\mu_i-\mu)(\mu_i-\mu)^{T}} $$</p><p>must be rank deficient. Thus, $rank(S_W) \leq n-1$. Now, $rank(AB) \leq
+rank(A)rank(B)$, so</p><p>$$
+\begin{align*}
+rank(S_W^{-1}S_B) \leq \min{(rank(S_W^{-1}), rank(S_B))} = n-1
+\end{align*}
+$$</p><p>as desired.</p><h2 id=lda-as-a-machine-learning-technique>LDA as a Machine Learning Technique</h2><p>OK so we&rsquo;re done with the math, but how is LDA actually used in practice? One of
+the easiest ways is to look at how LDA is actually implemented in the real
+world. <code>scikit-learn</code> has <a href=http://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html#sklearn.discriminant_analysis.LinearDiscriminantAnalysis>a very well-documented implementation of
+LDA</a>:
+I find that reading the docs is a great way to learn stuff.</p><p>Below are a few miscellaneous comments on practical considerations when using
+LDA.</p><h3 id=regularization-aka-shrinkage>Regularization (a.k.a. shrinkage)</h3><p><code>scikit-learn</code>&rsquo;s implementation of LDA has an interesting optional parameter:
+<code>shrinkage</code>. What&rsquo;s that about?</p><p><a href=https://stats.stackexchange.com/questions/106121/does-it-make-sense-to-combine-pca-and-lda/109810#109810>Here&rsquo;s a wonderful Cross Validated
+post</a>
+on how LDA can introduce overfitting. In essence, matrix inversion is an
+extremely sensitive operation (in that small changes in the matrix may lead to
+large changes in its inverse, so that even a tiny bit of noise will be amplified
+upon inverting the matrix), and so unless the estimate of the within-class
+scatter matrix $S_W$ is very good, its inversion is likely to introduce
+overfitting.</p><p>One way to combat that is through regularizing LDA. It basically replaces
+$S_W$ with $(1-t)S_W + tI$, where $I$ is the identity matrix, and $t$ is
+the <em>regularization parameter</em>, or the <em>shrinkage constant</em>. That&rsquo;s what
+<code>scikit</code>&rsquo;s <code>shrinkage</code> parameter is: it&rsquo;s $t$.</p><p>If you&rsquo;re interested in <em>why</em> this linear combination of the within-class
+scatter and the identity give such a well-conditioned estimate of $S_W$, check
+out <a href=https://www.semanticscholar.org/paper/A-well-conditioned-estimator-for-large-dimensional-Ledoit-Wolf/23d8219db1aff006b41007effc696fca6fbcabcf>the original paper by Ledoit and
+Wolf</a>.
+Their original motivation was in financial portfolio optimization, so they&rsquo;ve
+also authored several other papers
+(<a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=433840&rec=1&srcabs=290916&alg=7&pos=6">here</a>
+and
+<a href=https://www.semanticscholar.org/paper/A-well-conditioned-estimator-for-large-dimensional-Ledoit-Wolf/23d8219db1aff006b41007effc696fca6fbcabcf>here</a>)
+that go into the more financial details. That needn&rsquo;t concern us though:
+covariance matrices are literally everywhere.</p><p>For an illustration of this, <code>amoeba</code>&rsquo;s post on Cross Validated gives a good
+example of LDA overfitting, and how regularization can help combat that.</p><h3 id=lda-as-a-classifier>LDA as a classifier</h3><p>We&rsquo;ve talked a lot about how LDA is a dimensionality reduction technique. But in
+addition to it, you can make two extra assumptions, and LDA becomes a very
+robust classifier as well! Here they are:</p><ol>
+<li>Assume that the class conditional distributions are Gaussian, and</li><li>Assume that these Gaussians have the same covariance matrix (a.k.a.
+assume <a href=https://en.wikipedia.org/wiki/Homoscedasticity>homoskedasticity</a>)</li></ol><p>Now, <em>how</em> LDA acts as a classifier is a bit complicated: the problem is solved
+fairly easily if there are only two classes. In this case, the optimal Bayesian
+solution is to classify the observation depending on whether the log of the
+likelihood ratio is less than or greater than some threshold. This turns out to
+be a simple dot product: $\vec{w} \cdot \vec{x} > c$, where $\vec{w} =
+\Sigma^{-1} (\vec{\mu_1} - \vec{\mu_2})$. <a href=https://en.wikipedia.org/wiki/Linear_discriminant_analysis#LDA_for_two_classes>Wikipedia has a good derivation of
+this</a>.</p><p>There isn&rsquo;t really a nice dot-product solution for the multiclass case. So,
+what&rsquo;s commonly done is to take a “one-against-the-rest” approach, in which
+there are $k$ binary classifiers, one for each of the $k$ classes. Another
+common technique is to take a pairwise approach, in which there are $k(k-1)/2$
+classifiers, one for each pair of classes. In either case, the outputs of all
+the classifiers are combined in some way to give the final classification.</p><h3 id=close-relatives-pca-qda-anova>Close relatives: PCA, QDA, ANOVA</h3><p>LDA is similar to a lot of other techniques, and the fact that they all go by
+acronyms doesn&rsquo;t do anyone a favor. My goal here isn&rsquo;t to introduce or explain
+these various techniques, but rather point out their differences.</p><p><em>1) Principal components analysis (PCA):</em></p><p>LDA is very similar to <a href=http://setosa.io/ev/principal-component-analysis>PCA</a>:
+in fact, the question posted in the Cross Validated post above was actually
+about whether or not it would make sense to perform PCA followed by LDA.</p><p>There is a crucial difference between the two techniques, though. PCA tries to
+find the axes with <em>maximum variance</em> for the whole data set, whereas LDA tries
+to find the axes for best <em>class separability</em>.</p><p><img src=/assets/images/lda-pic.png alt="Projections of two-dimensional data (in two clusters) onto the x and y axes"></p><p>Going back to the illustration from before (reproduced above), it&rsquo;s not hard to
+see that PCA would give us LD2, whereas LDA would give us LD1. This makes the
+main difference between PCA and LDA painfully obvious: just because a feature
+has a high variance, doesn&rsquo;t mean that it&rsquo;s predictive of the classes!</p><p><em>2) Quadratic discriminant analysis (QDA):</em></p><p>QDA is a generalization of LDA as a classifer. As mentioned above, LDA must
+assume that the class contidtional distributions are Gaussian with the same
+covariance matrix, if we want it to do any classification for us.</p><p>QDA doesn&rsquo;t make this homoskedasticity assumption (assumption number 2 above),
+and attempts to estimate the covariance of all classes. While this might seem
+like a more robust algorithm (fewer assumptions! Occam&rsquo;s razor!), this means
+there is a much larger number of parameters to estimate. In fact, the number of
+parameters grows quadratically with the number of classes! So unless you can
+guarantee that your covariance estimates are reliable, you might not want to use
+QDA.</p><p>After all of this, there might be some confusion about the relationship between
+LDA, QDA, what&rsquo;s for dimensionality reduction, what&rsquo;s for classification, etc.
+<a href=https://stats.stackexchange.com/questions/71489/three-versions-of-discriminant-analysis-differences-and-how-to-use-them/71571#71571>This CrossValidated
+post</a>
+and everything that it links to, might help clear things up.</p><p><em>3) Analysis of variance (ANOVA):</em></p><p>LDA and <a href=https://en.wikipedia.org/wiki/Analysis_of_variance>ANOVA</a> seem to have
+similar aims: both try to “decompose” an observed variable into several
+explanatory/discriminatory variables. However, there is an important difference
+that <a href=https://en.wikipedia.org/wiki/Linear_discriminant_analysis>the Wikipedia article on
+LDA</a> puts very
+succinctly (my emphases):</p><blockquote>
+<p>LDA is closely related to analysis of variance (ANOVA) and regression
+analysis, which also attempt to express one dependent variable as a linear
+combination of other features or measurements. However, ANOVA uses
+<strong>categorical</strong> independent variables and a <strong>continuous</strong> dependent variable,
+whereas discriminant analysis has <strong>continuous</strong> independent variables and a
+<strong>categorical</strong> dependent variable (i.e. the class label).</p></blockquote></content>
+<p>
+<a href=https://www.georgeho.org/blog/mathematics/>#mathematics</a>
+</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer></body></html>

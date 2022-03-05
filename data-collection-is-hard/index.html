@@ -1,0 +1,134 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" href=https://www.georgeho.org/assets/images/favicon.ico>
+<title>Data Collection is Hard. You Should Try It. | ⁂ George Ho</title><meta name=title content="Data Collection is Hard. You Should Try It.">
+<meta name=description content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection, and many data scientists don&rsquo;t even seem to feel the need to develop experience collecting data.
+Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous data work like data cleaning (where people generally accept that data cleaning is not grunt work).
+With this blog post I want to give a defense of data collection — not as an activity that&rsquo;s inherently worthwhile pursuing (I assume data scientists don&rsquo;t need to be convinced of that!">
+<meta name=keywords content="dataset,">
+<meta property="og:title" content="Data Collection is Hard. You Should Try It.">
+<meta property="og:description" content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection, and many data scientists don&rsquo;t even seem to feel the need to develop experience collecting data.
+Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous data work like data cleaning (where people generally accept that data cleaning is not grunt work).
+With this blog post I want to give a defense of data collection — not as an activity that&rsquo;s inherently worthwhile pursuing (I assume data scientists don&rsquo;t need to be convinced of that!">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.georgeho.org/data-collection-is-hard/"><meta property="og:image" content="https://www.georgeho.org/images/share.png"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2022-03-03T00:00:00+00:00">
+<meta property="article:modified_time" content="2022-03-03T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.georgeho.org/images/share.png">
+<meta name=twitter:title content="Data Collection is Hard. You Should Try It.">
+<meta name=twitter:description content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection, and many data scientists don&rsquo;t even seem to feel the need to develop experience collecting data.
+Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous data work like data cleaning (where people generally accept that data cleaning is not grunt work).
+With this blog post I want to give a defense of data collection — not as an activity that&rsquo;s inherently worthwhile pursuing (I assume data scientists don&rsquo;t need to be convinced of that!">
+<meta itemprop=name content="Data Collection is Hard. You Should Try It.">
+<meta itemprop=description content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection, and many data scientists don&rsquo;t even seem to feel the need to develop experience collecting data.
+Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous data work like data cleaning (where people generally accept that data cleaning is not grunt work).
+With this blog post I want to give a defense of data collection — not as an activity that&rsquo;s inherently worthwhile pursuing (I assume data scientists don&rsquo;t need to be convinced of that!"><meta itemprop=datePublished content="2022-03-03T00:00:00+00:00">
+<meta itemprop=dateModified content="2022-03-03T00:00:00+00:00">
+<meta itemprop=wordCount content="889"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=keywords content="dataset,">
+<meta name=referrer content="no-referrer-when-downgrade">
+<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<header><a href=/ class=title>
+<h2>⁂ George Ho</h2></a>
+<nav><a href=/>Home</a>
+<a href=/work/>Work</a>
+<a href=/blog>Blog</a>
+</nav></header><main>
+<h1>Data Collection is Hard. You Should Try It.</h1><p>
+<i>
+<time datetime=2022-03-03 pubdate>
+03 Mar, 2022
+</time>
+</i>
+</p><content>
+<p>For people who make careers out of data, data scientists don&rsquo;t have <em>nearly</em>
+enough experience in data collection, and many data scientists don&rsquo;t even seem
+to feel the need to develop experience collecting data.</p><p>Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous
+data work like data cleaning (where people generally accept that <a href=https://counting.substack.com/p/data-cleaning-is-analysis-not-grunt>data cleaning
+is not grunt
+work</a>).</p><p>With this blog post I want to give a defense of data collection — not as an
+activity that&rsquo;s inherently worthwhile pursuing (I assume data scientists don&rsquo;t
+need to be convinced of that!), but as something that is worth doing even for
+<em>selfish</em> reasons. Why should you spend time learning about that data
+collection system that&rsquo;s being maintained by that other team at work? Why
+should you consider collecting some data for your next side project? <em>What&rsquo;s in
+it for you?</em></p><p>Throughout this blog post, I’ll be making comparisons to a recent project of
+mine, <a href=https://cryptics.georgeho.org/><code>cryptics.georgeho.org</code></a>, a dataset of
+cryptic crossword clues.</p><h2 id=learn-data-adjacent-technologies>Learn Data-Adjacent Technologies</h2><p>The most obvious reason is that <strong>collecting data is a fantastic opportunity to
+learn many staple technologies in data</strong> - and there aren&rsquo;t that many kinds of
+projects that run the entire data tech stack.</p><p>To enumerate these technologies:</p><ol>
+<li>Compute services
+<ul>
+<li>Your data collection pipelines will obviously need to run somewhere. Will
+that be in the cloud, or on your local computer? How do you think about
+trading off cost, compute and convenience?</li><li>I ran most of my web scraping on DigitalOcean Droplets, but I could just
+as easily have taken the opportunity to learn more about cloud compute
+solutions or serverless functions like AWS EC2 or Lambda. These days, the
+project runs incremental scrapes entirely on my laptop.</li></ul></li><li>Data storage
+<ul>
+<li>You’ll need to store your data somewhere, whether it be a relational or
+NoSQL database, or just flat files. Since your data will outlive any code
+you write, careful design of the data storage solution and schema will
+pay dividends in the long run.</li><li>I used SQLite for its simplicity and performance. However, as the scope
+of the project expanded, I had to redesign the schema multiple times,
+which was painful.</li></ul></li><li>Labeling, annotation or other data transformations
+<ul>
+<li>After collecting your data, you may want to label, annotate or other
+structure or transform your data. For example, perhaps you’ll want to
+pull structured tabular data out of unstructured PDFs or HTML tag soups;
+another example might be to have a human label the data.</li><li>This is the main “value-add” of your dataset — while the time and effort
+required to collect and store the data constitutes a moat, ultimately
+what will distinguish your dataset to <em>users</em> will be the transformations
+done here.</li><li>For me, this involved a lot of <code>BeautifulSoup</code> to parse structured data
+out of HTML pages. This required a <a href=https://cryptics.georgeho.org/datasheet#collection-process>significant amount of development and
+engineering
+effort</a>.</li></ul></li><li>Data licensing and copyright
+<ul>
+<li>Once you have your dataset, what is the legality of licensing, sharing or
+even selling your data? The legality of data are a huge grey area
+(especially if there&rsquo;s any web scraping involved), and while navigating
+these waters will be tricky, it&rsquo;s instructive to learn about it.</li><li>I feel like the collection and structuring of cryptic crossword clues for
+academic/archival purposes was fair use, and so didn&rsquo;t worry too much
+about the legality of my project — but it was an educational rabbit hole
+to fall down!</li></ul></li><li>Sharing and publishing data
+<ul>
+<li>The legal nuances of data aside, the technical problem of sharing data is
+pretty tricky!</li><li>This problem sits at the intersection of MLOps and information design:
+you want to share the data in a standardized way, while having an
+interface that making it easy for users to explore your data. Serving a
+tarball on a web server technically works, but leaves so much on the
+table.</li><li><code>cryptics.georgeho.org</code> uses <a href=https://datasette.io/>Datasette</a>, which I
+can&rsquo;t recommend highly enough.</li></ul></li><li>Writing documentation
+<ul>
+<li>If you think it&rsquo;s hard to write and maintain good documentation for
+software, imagine how difficult it must be to do the same for data, which
+outlives software and is much harder to both create and version control.</li><li>I&rsquo;ve found <a href=https://arxiv.org/abs/1803.09010>Gebru et al.&rsquo;s <em>Datasheets for Datasets</em></a> to be an excellent template
+for documenting data.</li></ul></li></ol><h2 id=design-a-data-collection-system>Design a Data Collection System</h2><p>Hopefully by now you can appreciate that every part of the data collection
+pipeline involves not just technical proficiency with some system or framework,
+but also an element sound architecture.</p><p><strong>Collecting data is a great way to get experience designing an entire data
+pipeline from end to end, from creation to delivery.</strong> This kind of opportunity
+doesn&rsquo;t come easily (even in industry!), and while your data pipeline won&rsquo;t be
+as sophisticated as the kinds you&rsquo;ll find at data companies, you&rsquo;ll still be
+able to take away some valuable lessons from it.</p><p>For <code>cryptics.georgeho.org</code>, I found that the most valuable pattern for storing
+data was to dump raw and unstructured data into a database (a &ldquo;data lake&rdquo;), and
+then extract useful and structured data into a separate database (a &ldquo;data
+warehouse&rdquo;). I also learnt that the historical backfilling ETL job required a
+lot of time and compute, but subsequent incremental ETL jobs could just run off
+of my laptop. These best practice patterns around data collection and
+management are all applicable beyond my simple side project, and were valuable
+lessons to learn first-hand.</p></content>
+<p>
+<a href=https://www.georgeho.org/blog/dataset/>#dataset</a>
+</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer></body></html>

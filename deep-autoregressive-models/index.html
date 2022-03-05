@@ -1,0 +1,238 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" href=https://www.georgeho.org/assets/images/favicon.ico>
+<title>Autoregressive Models in Deep Learning — A Brief Survey | ⁂ George Ho</title><meta name=title content="Autoregressive Models in Deep Learning — A Brief Survey">
+<meta name=description content="My current project involves working with deep autoregressive models: a class of remarkable neural networks that aren&rsquo;t usually seen on a first pass through deep learning. These notes are a quick write-up of my reading and research: I assume basic familiarity with deep learning, and aim to highlight general trends and similarities across autoregressive models, instead of commenting on individual architectures.
+tldr: Deep autoregressive models are sequence models, yet feed-forward (i.">
+<meta name=keywords content="deep-learning,">
+<meta property="og:title" content="Autoregressive Models in Deep Learning — A Brief Survey">
+<meta property="og:description" content="My current project involves working with deep autoregressive models: a class of remarkable neural networks that aren&rsquo;t usually seen on a first pass through deep learning. These notes are a quick write-up of my reading and research: I assume basic familiarity with deep learning, and aim to highlight general trends and similarities across autoregressive models, instead of commenting on individual architectures.
+tldr: Deep autoregressive models are sequence models, yet feed-forward (i.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.georgeho.org/deep-autoregressive-models/"><meta property="og:image" content="https://www.georgeho.org/images/share.png"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2019-03-09T00:00:00+00:00">
+<meta property="article:modified_time" content="2019-03-09T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.georgeho.org/images/share.png">
+<meta name=twitter:title content="Autoregressive Models in Deep Learning — A Brief Survey">
+<meta name=twitter:description content="My current project involves working with deep autoregressive models: a class of remarkable neural networks that aren&rsquo;t usually seen on a first pass through deep learning. These notes are a quick write-up of my reading and research: I assume basic familiarity with deep learning, and aim to highlight general trends and similarities across autoregressive models, instead of commenting on individual architectures.
+tldr: Deep autoregressive models are sequence models, yet feed-forward (i.">
+<meta itemprop=name content="Autoregressive Models in Deep Learning — A Brief Survey">
+<meta itemprop=description content="My current project involves working with deep autoregressive models: a class of remarkable neural networks that aren&rsquo;t usually seen on a first pass through deep learning. These notes are a quick write-up of my reading and research: I assume basic familiarity with deep learning, and aim to highlight general trends and similarities across autoregressive models, instead of commenting on individual architectures.
+tldr: Deep autoregressive models are sequence models, yet feed-forward (i."><meta itemprop=datePublished content="2019-03-09T00:00:00+00:00">
+<meta itemprop=dateModified content="2019-03-09T00:00:00+00:00">
+<meta itemprop=wordCount content="1743"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=keywords content="deep-learning,">
+<meta name=referrer content="no-referrer-when-downgrade">
+<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<header><a href=/ class=title>
+<h2>⁂ George Ho</h2></a>
+<nav><a href=/>Home</a>
+<a href=/work/>Work</a>
+<a href=/blog>Blog</a>
+</nav></header><main>
+<h1>Autoregressive Models in Deep Learning — A Brief Survey</h1><p>
+<i>
+<time datetime=2019-03-09 pubdate>
+09 Mar, 2019
+</time>
+</i>
+</p><content>
+<p>My current project involves working with deep autoregressive models: a class of
+remarkable neural networks that aren&rsquo;t usually seen on a first pass through deep
+learning. These notes are a quick write-up of my reading and research: I assume
+basic familiarity with deep learning, and aim to highlight general trends and
+similarities across autoregressive models, instead of commenting on individual
+architectures.</p><p><strong>tldr:</strong> <em>Deep autoregressive models are sequence models, yet feed-forward
+(i.e. not recurrent); generative models, yet supervised. They are a compelling
+alternative to RNNs for sequential data, and GANs for generation tasks.</em></p><h2 id=deep-autoregressive-models>Deep Autoregressive Models</h2><p>To be explicit (at the expense of redundancy), this blog post is about <em>deep
+autoregressive generative sequence models</em>. That&rsquo;s quite a mouthful of jargon
+(and two of those words are actually unnecessary), so let&rsquo;s unpack that.</p><ol>
+<li>
+<p>Deep</p><ul>
+<li>Well, these papers are using TensorFlow or PyTorch&mldr; so they must be
+&ldquo;deep&rdquo; 😉</li><li>You would think this word is unnecessary, but it&rsquo;s actually not!
+Autoregressive linear models like
+<a href=https://en.wikipedia.org/wiki/Autoregressive%E2%80%93moving-average_model>ARMA</a>
+or
+<a href=https://en.wikipedia.org/wiki/Autoregressive_conditional_heteroskedasticity>ARCH</a>
+have been used in statistics, econometrics and financial modelling for
+ages.</li></ul></li><li>
+<p>Autoregressive</p><ul>
+<li>
+<p><a href=https://deepgenerativemodels.github.io/notes/autoregressive/>Stanford has a good
+introduction</a>
+to autoregressive models, but I think a good way to explain these models is
+to compare them to recurrent neural networks (RNNs), which are far more
+well-known.</p><figure>
+<a href=/assets/images/rnn-unrolled.png><img src=/assets/images/rnn-unrolled.png alt="Recurrent neural network (RNN) block diagram, both rolled and unrolled"></a>
+<figcaption>Obligatory RNN diagram. Source: <a href=https://colah.github.io/posts/2015-08-Understanding-LSTMs/>Chris Olah</a>.</figcaption></figure><ul>
+<li>
+<p>Like an RNN, an autoregressive model&rsquo;s output $h_t$ at time $t$
+depends on not just $x_t$, but also $x$&rsquo;s from previous time steps.
+However, <em>unlike</em> an RNN, the previous $x$&rsquo;s are not provided via some
+hidden state: they are given as just another input to the model.</p></li><li>
+<p>The following animation of Google DeepMind&rsquo;s WaveNet illustrates this
+well: the $t$th output is generated in a <em>feed-forward</em> fashion from
+several input $x$ values.<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup></p><figure>
+<a href=/assets/images/wavenet-animation.gif><img src=/assets/images/wavenet-animation.gif alt="WaveNet animation"></a>
+<figcaption>WaveNet animation. Source: <a href=https://deepmind.com/blog/wavenet-generative-model-raw-audio/>Google DeepMind</a>.</figcaption></figure></li><li>
+<p>Put simply, <strong>an autoregressive model is merely a feed-forward model which
+predicts future values from past values.</strong></p></li><li>
+<p>I&rsquo;ll explain this more later, but it&rsquo;s worth saying now: autoregressive
+models offer a compelling bargain. You can have stable, parallel and
+easy-to-optimize training, faster inference computations, and completely
+do away with the fickleness of <a href=https://en.wikipedia.org/wiki/Backpropagation_through_time>truncated backpropagation through
+time</a>, if you
+are willing to accept a model that (by design) <em>cannot have</em> infinite
+memory. There is <a href=http://www.offconvex.org/2018/07/27/approximating-recurrent/>recent
+research</a> to
+suggest that this is a worthwhile tradeoff.</p></li></ul></li></ul></li><li>
+<p>Generative</p><ul>
+<li>Informally, a generative model is one that can generate new data after
+learning from the dataset.</li><li>More formally, a generative model models the joint distribution $P(X, Y)$
+of the observation $X$ and the target $Y$. Contrast this to a
+discriminative model that models the conditional distribution $P(Y|X)$.</li><li>GANs and VAEs are two families of popular generative models.</li><li>This is unnecessary word #1: any autoregressive model can be run
+sequentially to generate a new sequence! Start with your seed $x_1, x_2,
+&mldr;, x_k$ and predict $x_{k+1}$. Then use $x_2, x_3, &mldr;, x_{k+1}$ to
+predict $x_{k+2}$, and so on.</li></ul></li><li>
+<p>Sequence model</p><ul>
+<li>Fairly self explanatory: a model that deals with sequential data, whether
+it is mapping sequences to scalars (e.g. language models), or mapping
+sequences to sequences (e.g. machine translation models).</li><li>Although sequence models are designed for sequential data (duh), there has
+been success at applying them to non-sequential data. For example,
+PixelCNN (discussed below) can generate entire images, even though images
+are not sequential in nature: the model generates a pixel at a time, in
+sequence!<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup></li><li>Notice that an autoregressive model must be a sequence model, so it&rsquo;s
+redundant to further describe these models as sequential (which makes this
+unnecessary word #2).</li></ul></li></ol><p>A good distinction is that &ldquo;generative&rdquo; and &ldquo;sequential&rdquo; describe <em>what</em> these
+models do, or what kind of data they deal with. &ldquo;Autoregressive&rdquo; describes <em>how</em>
+these models do what they do: i.e. they describe properties of the network or
+its architecture.</p><h2 id=some-architectures-and-applications>Some Architectures and Applications</h2><p>Deep autoregressive models have seen a good degree of success: below is a list
+of some of examples. Each architecture merits exposition and discussion, but
+unfortunately there isn&rsquo;t enough space here to devote to do any of them justice.</p><ul>
+<li><a href=https://arxiv.org/abs/1601.06759>PixelCNN by Google DeepMind</a> was probably
+the first deep autoregressive model, and the progenitor of most of the other
+models below. Ironically, the authors spend the bulk of the paper discussing a
+recurrent model, PixelRNN, and consider PixelCNN as a &ldquo;workaround&rdquo; to avoid
+excessive computation. However, PixelCNN is probably this paper&rsquo;s most lasting
+contribution.</li><li><a href=https://arxiv.org/abs/1701.05517>PixelCNN++ by OpenAI</a> is, unsurprisingly,
+PixelCNN but with various improvements.</li><li><a href=https://deepmind.com/blog/wavenet-generative-model-raw-audio/>WaveNet by Google
+DeepMind</a> is
+heavily inspired by PixelCNN, and models raw audio, not just encoded music.
+They had to pull <a href=https://en.wikipedia.org/wiki/%CE%9C-law_algorithm>a neat trick from telecommunications/signals
+processing</a> in order to
+cope with the sheer size of audio (high-quality audio involves at least 16-bit
+precision samples, which means a 65,536-way-softmax per time step!)</li><li><a href=https://arxiv.org/abs/1706.03762>Transformer, a.k.a. <em>the &ldquo;attention is all you need&rdquo; model</em> by Google
+Brain</a> is now a mainstay of NLP, performing
+very well at many NLP tasks and being incorporated into subsequent models like
+<a href=https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html>BERT</a>.</li></ul><p>These models have also found applications: for example, <a href=https://arxiv.org/abs/1610.10099>Google DeepMind&rsquo;s
+ByteNet can perform neural machine translation (in linear
+time!)</a> and <a href=https://arxiv.org/abs/1610.00527>Google DeepMind&rsquo;s Video Pixel
+Network can model video</a>.<sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup></p><h2 id=some-thoughts-and-observations>Some Thoughts and Observations</h2><ol>
+<li>
+<p>Given previous values $x_1, x_2, &mldr;, x_t$, these models do not output a
+<em>value</em> for $x_{t+1}$, they output the <em>predictive probability
+distribution</em> $P(x_{t+1} | x_1, x_2, &mldr;, x_t)$ for $x_{t+1}$.</p><ul>
+<li>If the $x$&rsquo;s are discrete, then you can do this by outputting an $N$-way
+softmaxxed tensor, where $N$ is the number of discrete classes. This is
+what the original PixelCNN did, but gets problematic when $N$ is large
+(e.g. in the case of WaveNet, where $N = 2^{16}$).</li><li>If the $x$&rsquo;s are continuous, you can model the probability distribution
+itself as the sum of basis functions, and having the model output the
+parameters of these basis functions. This massively reduces the memory
+footprint of the model, and was an important contribution of PixelCNN++.</li><li>Theoretically you could have an autoregressive model that <em>doesn&rsquo;t</em> model
+the conditional distribution&mldr; but most recent models do.</li></ul></li><li>
+<p>Autoregressive models are supervised.</p><ul>
+<li>With the success and hype of GANs and VAEs, it is easy to assume that all
+generative models are unsupervised: this is not true!</li><li>This means that that training is stable and highly parallelizable, that it
+is straightfoward to tune hyperparameters, and that inference is
+computationally inexpensive. We can also break out all the good stuff from
+ML-101: train-valid-test splits, cross validation, loss metrics, etc. These
+are all things that we lose when we resort to e.g. GANs.</li></ul></li><li>
+<p>Autoregressive models work on both continuous and discrete data.</p><ul>
+<li>Autoregressive sequential models have worked for audio (WaveNet), images
+(PixelCNN++) and text (Transformer): these models are very flexible in the
+kind of data that they can model.</li><li>Contrast this to GANs, which (as far as I&rsquo;m aware) cannot model discrete
+data.</li></ul></li><li>
+<p>Autoregressive models are very amenable to conditioning.</p><ul>
+<li>There are many options for conditioning! You can condition on both discrete
+and continuous variables; you can condition at multiple time scales; you can
+even condition on latent embeddings or the outputs of other neural networks.</li><li>There is one ostensible problem with using autoregressive models as
+generative models: you can only condition on your data&rsquo;s labels. I.e.
+unlike a GAN, you cannot condition on random noise and expect the model to
+shape the noise space into a semantically (stylistically) meaningful latent
+space.</li><li>Google DeepMind followed up their original PixelRNN paper with <a href=https://arxiv.org/abs/1606.05328>another
+paper</a> that describes one way to overcome
+this problem. Briefly: to condition, they incorporate the latent vector into
+the PixelCNN&rsquo;s activation functions; to produce/learn the latent vectors,
+they use a convolutional encoder; and to generate an image given a latent
+vector, they replace the traditional deconvolutional decoder with a
+conditional PixelCNN.</li><li>WaveNet goes even futher and employs &ldquo;global&rdquo; and &ldquo;local&rdquo; conditioning (both
+are achieved by incorporating the latent vectors into WaveNet&rsquo;s activation
+functions). The authors devise a battery of conditioning schemes to capture
+speaker identity, linguistic features of input text, music genre, musical
+instrument, etc.</li></ul></li><li>
+<p>Generating output sequences of variable length is not straightforward.</p><ul>
+<li>Neither WaveNet nor PixelCNN needed to worry about a variable output length:
+both audio and images are comprised of a fixed number of outputs (i.e. audio
+is just $N$ samples, and images are just $N^2$ pixels).</li><li>Text, on the other hand, is different: sentences can be of variable length.
+One would think that this is a nail in a coffin, but thankfully text is
+discrete: the standard trick is to have a &ldquo;stop token&rdquo; that indicates that
+the sentence is finished (i.e. model a full stop as its own token).</li><li>As far as I am aware, there is no prior literature on having both problems:
+a variable-length output of continuous values.</li></ul></li><li>
+<p>Autoregressive models can model multiple time scales</p><ul>
+<li>
+<p>In the case of music, there are important patterns to model at multiple
+time scales: individual musical notes drive correlations between audio
+samples at the millisecond scale, and music exhibits rhythmic patterns
+over the course of minutes. This is well illustrated by the following
+animation:</p><figure>
+<a href=/assets/images/audio-animation.gif><img src=/assets/images/audio-animation.gif alt="Audio at multiple time scales"></a>
+<figcaption>Audio exhibits patterns at multiple time scales. Source: <a href=https://deepmind.com/blog/wavenet-generative-model-raw-audio/>Google DeepMind</a>.</figcaption></figure></li><li>
+<p>There are two main ways model many patterns at many different time scales:
+either make the receptive field of your model <em>extremely</em> wide (e.g.
+through dilated convolutions), or condition your model on a subsampled
+version of your generated output, which is in turn produced by an
+unconditioned model.</p><ul>
+<li>Google DeepMind composes an unconditional PixelRNN with one or more
+conditional PixelRNNs to form a so-called &ldquo;multi-scale&rdquo; PixelRNN: the
+first PixelRNN generates a lower-resolution image that conditions the
+subsequent PixelRNNs.</li><li>WaveNet employs a different technique and calls them &ldquo;context stacks&rdquo;.</li></ul></li></ul></li><li>
+<p>How the hell can any of this stuff work?</p><ul>
+<li>
+<p>RNNs are theoretically more expressive and powerful than autoregressive
+models. However, recent work suggests that such infinite-horizon memory is
+seldom achieved in practice.</p></li><li>
+<p>To quote <a href=http://www.offconvex.org/2018/07/27/approximating-recurrent/>John Miller at the Berkeley AI Research
+lab</a>:</p><blockquote>
+<p><strong>Recurrent models trained in practice are effectively feed-forward.</strong>
+This could happen either because truncated backpropagation through time
+cannot learn patterns significantly longer than $k$ steps, or, more
+provocatively, because models <em>trainable by gradient descent</em> cannot have
+long-term memory.</p></blockquote></li></ul></li></ol><section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>There&rsquo;s actually a lot more nuance than meets the eye in this animation,
+but all I&rsquo;m trying to illustrate is the feed-forward nature of autoregressive
+models.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
+<p>I personally think it&rsquo;s breathtakingly that machines can do this. Imagine
+your phone keyboard&rsquo;s word suggestions (those are autoregressive!) spitting
+out an entire novel. Or imagine weaving a sweater but you had to choose the
+color of every stitch, in order, in advance.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
+<p>In case you haven&rsquo;t noticed, Google DeepMind seemed to have had an
+infatuation with autoregressive models back in 2016.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content>
+<p>
+<a href=https://www.georgeho.org/blog/deep-learning/>#deep-learning</a>
+</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer></body></html>

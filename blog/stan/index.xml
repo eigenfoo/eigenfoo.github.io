@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>stan on ⁂ George Ho</title><link>https://www.georgeho.org/blog/stan/</link><description>Recent content in stan on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Mon, 11 Nov 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/stan/index.xml" rel="self" type="application/rss+xml"/><item><title>Introducing `stan-vim`</title><link>https://www.georgeho.org/stan-vim/</link><pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stan-vim/</guid><description>&lt;center>
+&lt;img
+src="https://www.georgeho.org/assets/images/stan-logo.png"
+alt="Stan logo">
+&lt;/center>
+&lt;p>I made a Vim plugin for Stan!&lt;/p>
+&lt;p>I&amp;rsquo;ve been reading and writing a lot of Stan lately, but mainly in barebones text
+editors (or even just by &lt;code>cat&lt;/code>ing out the file), so I had to make do with none
+of the creature comforts of my favorite text editor, Vim.&lt;/p>
+&lt;p>But I also wasn&amp;rsquo;t happy with the syntax highlighting provided by
+&lt;a href="https://github.com/maverickg/stan.vim">existing&lt;/a>
+&lt;a href="https://github.com/mdlerch/mc-stan.vim">Vim&lt;/a>
+&lt;a href="https://github.com/ssp3nc3r/stan-syntax-vim">plugins&lt;/a> (and they also looked out
+of date and thinly maintained&amp;hellip;), so I just went ahead and learnt a truckload
+of Vimscript&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>Check out the plugin! You can find installation instructions
+&lt;a href="https://github.com/eigenfoo/stan-vim#installation">here&lt;/a> and documentation
+&lt;a href="https://github.com/eigenfoo/stan-vim#documentation">here&lt;/a>. Screenshots of
+syntax highlighting and projects links are below.&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/eigenfoo/stan-vim">GitHub&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://vimawesome.com/plugin/stan-vim-is-written-on">VimAwesome&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://www.vim.org/scripts/script.php?script_id=5835">Vim Online&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;figure>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot0.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot0.png" alt="Screenshot of a Stan model in stan-vim">&lt;/a>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot1.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot1.png" alt="Screenshot of the stan-vim documentation">&lt;/a>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot2.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot2.png" alt="Screenshot of another Stan model in stan-vim">&lt;/a>
+&lt;figcaption>Screenshots of &lt;code>stan-vim&lt;/code> syntax highlighting.&lt;/figcaption>
+&lt;/figure>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>As it turns out, &lt;a href="https://www.reddit.com/r/vim/comments/54224o/why_is_there_so_much_hate_for_vimscript/">Vimscript is a very not-good
+language&lt;/a>.
+This is probably the last Vim plugin I write.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item></channel></rss>

@@ -1,0 +1,268 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" href=https://www.georgeho.org/assets/images/favicon.ico>
+<title>Understanding Hate Speech on Reddit through Text Clustering | ⁂ George Ho</title><meta name=title content="Understanding Hate Speech on Reddit through Text Clustering">
+<meta name=description content="Note: the following article contains several examples of hate speech (including but not limited to racist, misogynistic and homophobic views).
+ Have you heard of /r/TheRedPill? It’s an online forum (a subreddit, but I’ll explain that later) where people (usually men) espouse an ideology predicated entirely on gender. “Swallowers of the red pill”, as they call themselves, maintain that it is men, not women, who are socially marginalized; that feminism is something between a damaging ideology and a symptom of societal retardation; that the patriarchy should actively assert its dominance over female compatriots.">
+<meta name=keywords content="machine-learning,natural-language-processing,">
+<meta property="og:title" content="Understanding Hate Speech on Reddit through Text Clustering">
+<meta property="og:description" content="Note: the following article contains several examples of hate speech (including but not limited to racist, misogynistic and homophobic views).
+ Have you heard of /r/TheRedPill? It’s an online forum (a subreddit, but I’ll explain that later) where people (usually men) espouse an ideology predicated entirely on gender. “Swallowers of the red pill”, as they call themselves, maintain that it is men, not women, who are socially marginalized; that feminism is something between a damaging ideology and a symptom of societal retardation; that the patriarchy should actively assert its dominance over female compatriots.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.georgeho.org/reddit-clusters/"><meta property="og:image" content="https://www.georgeho.org/images/share.png"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2018-03-18T00:00:00+00:00">
+<meta property="article:modified_time" content="2018-03-18T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.georgeho.org/images/share.png">
+<meta name=twitter:title content="Understanding Hate Speech on Reddit through Text Clustering">
+<meta name=twitter:description content="Note: the following article contains several examples of hate speech (including but not limited to racist, misogynistic and homophobic views).
+ Have you heard of /r/TheRedPill? It’s an online forum (a subreddit, but I’ll explain that later) where people (usually men) espouse an ideology predicated entirely on gender. “Swallowers of the red pill”, as they call themselves, maintain that it is men, not women, who are socially marginalized; that feminism is something between a damaging ideology and a symptom of societal retardation; that the patriarchy should actively assert its dominance over female compatriots.">
+<meta itemprop=name content="Understanding Hate Speech on Reddit through Text Clustering">
+<meta itemprop=description content="Note: the following article contains several examples of hate speech (including but not limited to racist, misogynistic and homophobic views).
+ Have you heard of /r/TheRedPill? It’s an online forum (a subreddit, but I’ll explain that later) where people (usually men) espouse an ideology predicated entirely on gender. “Swallowers of the red pill”, as they call themselves, maintain that it is men, not women, who are socially marginalized; that feminism is something between a damaging ideology and a symptom of societal retardation; that the patriarchy should actively assert its dominance over female compatriots."><meta itemprop=datePublished content="2018-03-18T00:00:00+00:00">
+<meta itemprop=dateModified content="2018-03-18T00:00:00+00:00">
+<meta itemprop=wordCount content="2141"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=keywords content="machine-learning,natural-language-processing,">
+<meta name=referrer content="no-referrer-when-downgrade">
+<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<header><a href=/ class=title>
+<h2>⁂ George Ho</h2></a>
+<nav><a href=/>Home</a>
+<a href=/work/>Work</a>
+<a href=/blog>Blog</a>
+</nav></header><main>
+<h1>Understanding Hate Speech on Reddit through Text Clustering</h1><p>
+<i>
+<time datetime=2018-03-18 pubdate>
+18 Mar, 2018
+</time>
+</i>
+</p><content>
+<blockquote>
+<p>Note: the following article contains several examples of hate speech
+(including but not limited to racist, misogynistic and homophobic views).</p></blockquote><p>Have you heard of <code>/r/TheRedPill</code>? It’s an online forum (a subreddit, but I’ll
+explain that later) where people (usually men) espouse an ideology predicated
+entirely on gender. “Swallowers of the red pill”, as they call themselves,
+maintain that it is <em>men</em>, not women, who are socially marginalized; that feminism
+is something between a damaging ideology and a symptom of societal retardation;
+that the patriarchy should actively assert its dominance over female
+compatriots.</p><p>Despite being shunned by the world (or perhaps, because of it), <code>/r/TheRedPill</code>
+has grown into a sizable community and evolved its own slang, language and
+culture. Let me give you an example.</p><pre tabindex=0><code>Cluster #14:
+Cluster importance: 0.0489376285127
+shit: 2.433590
+test: 1.069885
+frame: 0.396684
+pass: 0.204953
+bitch: 0.163619
+</code></pre><p>This is a snippet from a text clustering of <code>/r/TheRedPill</code> — you don’t really
+need to understand the details right now: all you need to know is that each
+cluster is simply a bunch of words that frequently appear together in Reddit
+posts and comments. Following each word is a number indicating its importance in
+the cluster, and on line 2 is the importance of this cluster to the subreddit
+overall.</p><p>As it turns out, this cluster has picked up on a very specific meme on
+<code>/r/TheRedPill</code>: the concept of the <em>shit test</em>, and how your frame can <em>pass</em> the
+<em>shit tests</em> that life (but predominantly, <em>bitches</em>) can throw at you.</p><p>There’s absolutely no way I could explain this stuff better than the swallowers
+of the red pill themselves, so I’ll just quote from a post on <code>/r/TheRedPill</code> and
+a related blog.</p><p>The concept of the shit test very broad:</p><blockquote>
+<p>… when somebody “gives you shit” and fucks around with your head to see how
+you will react, what you are experiencing is typically a (series of) shit
+test(s).</p></blockquote><p>A shit test is designed to test your temperament, or more colloquially,
+<em>“determine your frame”</em>.</p><blockquote>
+<p>Frame is a concept which essentially means “composure and self-control”.</p><p>… if you can keep composure/seem unfazed and/or assert your boundaries
+despite a shit test, generally speaking you will be considered to have passed
+the shit test. If you get upset, offended, doubt yourself or show weakness in
+any discernible way when shit tested, it will be generally considered that you
+failed the test.</p></blockquote><p>Finally, not only do shit tests test your frame, but they also serve a specific,
+critical social function:</p><blockquote>
+<p>When it comes right down to it shit tests are typically women’s way of
+flirting.</p><p>… Those who “pass” show they can handle the woman’s BS and is “on her
+level”, so to speak. This is where the evolutionary theory comes into play:
+you’re demonstrating her faux negativity doesn’t phase you [sic] and that
+you’re an emotionally developed person who isn’t going to melt down at the
+first sign of trouble. Ergo you’ll be able to protect her when threats to
+her safety emerge.</p></blockquote><p>If you want to learn more, I took all the above quotes from
+<a href=https://www.reddit.com/r/TheRedPill/comments/22qnmk/newbies_read_this_the_definitive_guide_to_shit/>here</a>
+and <a href=https://illimitablemen.com/2014/12/14/the-shit-test-encyclopedia/>here</a>:
+feel free to toss yourself down that rabbit hole (but you may want to open those
+links in Incognito mode).</p><p>Clearly though, the cluster did a good job of identifying one topic of
+discussion on <code>/r/TheRedPill</code>. In fact, not only can clustering pick up on a
+general topic of conversation, but also on specific memes, motifs and vocabulary
+associated with it.</p><p>Interested? Read on! I’ll explain what I did, and describe some of my other
+results.</p><hr>
+<p>Reddit is — well, it’s pretty hard to describe what Reddit <em>is</em>, mainly because
+Reddit comprises several thousand communities, called <em>subreddits</em>, which center
+around topics broad (<code>/r/Sports</code>) and niche (<code>/r/thinkpad</code>), delightful
+(<code>/r/aww</code>) and unsavory (<code>/r/Incels</code>).</p><p>Each subreddit is a unique community with its own rules, culture and standards.
+Some are welcoming and inclusive, and anyone can post and comment; others, not
+so much: you must be invited to even read their front page. Some have pliant
+standards about what is acceptable as a post; others have moderators willing to
+remove posts and ban users upon any infraction of community guidelines.</p><p>Whatever Reddit is though, two things are for certain:</p><ol>
+<li>
+<p>It’s widely used. <em>Very</em> widely used. At the time of writing, it’s the <a href=https://www.alexa.com/topsites/countries/US>fourth
+most popular website in the United
+States</a> and the <a href=https://www.alexa.com/topsites>sixth most popular
+globally</a>.</p></li><li>
+<p>Where there is free speech, there is hate speech. Reddit’s hate speech
+problem is <a href=https://www.wired.com/2015/08/reddit-mods-handle-hate-speech/>well
+documented</a>,
+the <a href=https://www.inverse.com/article/43611-reddit-ceo-steve-huffman-hate-speech>center of recent
+controversy</a>,
+and even <a href=https://fivethirtyeight.com/features/dissecting-trumps-most-rabid-online-following/>the subject of statistical
+analysis</a>.</p></li></ol><p>Now, there are many well-known hateful subreddits. The three that I decided to
+focus on were <code>/r/TheRedPill</code>, <code>/r/The_Donald</code>, and<code>/r/CringeAnarchy</code>.</p><p>The goal here is to understand what these subreddits are like, and expose their
+culture for people to see. To quote <a href=https://www.inverse.com/article/43611-reddit-ceo-steve-huffman-hate-speech>Steve Huffman, Reddit’s
+CEO</a>:</p><blockquote>
+<p>“I believe the best defense against racism and other repugnant views, both
+on Reddit and in the world, is instead of trying to control what people
+can and cannot say through rules, is to repudiate these views in a free
+conversation, and empower our communities to do so on Reddit.”</p></blockquote><p>And there’s no way we can refute and repudiate these deplorable views without
+knowing what those views are. And instead of spending hours of each of these
+subreddits ourselves, let’s have a machine learn what gets talked about on these
+subreddits.</p><hr>
+<p>Now, how do we do this? This can be done using <em>clustering</em>, a machine learning
+technique in which we’re given data points, and tasked with grouping them in
+some way. A picture will explain better than words:</p><figure>
+<a href=/assets/images/clusters.png><img src=/assets/images/clusters.png alt="Illustration of clustering"></a>
+<figcaption>Clustering.</figcaption></figure><p>The clustering algorithm was hard to decide on. After several dead ends were
+explored, I settled on non-negative matrix factorization of the document-term
+matrix, featurized using tf-idfs. I don’t really want to go into the technical
+details now: suffice to say that this technique is <a href=http://scikit-learn.org/stable/auto_examples/applications/plot_topics_extraction_with_nmf_lda.html>known to work well for this
+application</a>
+(perhaps I’ll write another piece on this in the future).</p><p>Finally, we need our data points: <a href=https://bigquery.cloud.google.com/dataset/fh-bigquery:reddit_comments>Google
+BigQuery</a>
+has all posts and comments across all of Reddit, from the the beginning of
+Reddit right up until the end of 2017. We decided to focus on the last two
+months for which there is data: November and December, 2017.</p><p>I could talk at length about the technical details, but right now, I want to
+focus on the results of the clustering. What follows are two hand-picked
+clusters from each of the three subreddits, visualized as word clouds (you can
+think of word clouds as visual representations of the code snippet above), as
+well as an example comment from each of the clusters.</p><h2 id=rtheredpill><code>/r/TheRedPill</code></h2><p>You already know <code>/r/TheRedPill</code>, so let me describe the clusters in more detail:
+a good number of them are about sex, or about how to approach girls. Comments in
+these clusters tend to give advice on how to pick up girls, or describe the
+social/sexual exploits of the commenter.</p><p>What is interesting is that, as sex-obsessed as <code>/r/TheRedPill</code> is, many
+swallowers (of the red pill) profess that sex is <em>not</em> the purpose of the
+subreddit: the point is to becoming an “alpha male”. Even more interesting,
+there is more talk about what an alpha male <em>is</em>, and what kind of people
+<em>aren’t</em> alpha, than there is about how people can <em>become</em> alpha. This is the
+first cluster shown below, and comprises around 3% of all text on
+<code>/r/TheRedPill</code>.</p><p>The second cluster comprises around 6% of all text on <code>/r/TheRedPill</code>, and
+contains comments that expound theories on the role of men, women and feminism
+in today’s society (it isn’t pretty). Personally, the most repugnant views that
+I’ve read are to be found in this cluster.</p><pre tabindex=0><code>I feel like the over dramatization of beta qualities in media/pop culture is due
+to the fact that anyone representing these qualities is already Alpha by
+default.
+
+The actors who play the white knight lead roles, the rock stars that sing about
+pining for some chick… these men/characters are already very Alpha in both looks
+and status, so when beta BS comes from their mouths, it’s seen as attractive
+because it balances out their already alpha state into that &#34;mostly alpha but
+some beta&#34; balance that makes women swoon.
+
+…
+</code></pre><figure>
+<a href=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png><img src=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png alt="/r/TheRedPill cluster #13"></a>
+<a href=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png><img src=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png alt="/r/TheRedPill cluster #6"></a>
+<figcaption>Wordclouds from /r/TheRedPill.</figcaption></figure><pre tabindex=0><code>…
+
+Since the dawn of humanity men were always in control, held all the power and
+women were happy because of it. But now men are forced to lose their masculinity
+and power or else they&#39;ll be killed/punished by other pussy men with big guns
+and laws who believe feminism is the right path for humanity.
+
+…
+
+Feminism is really a blessing in disguise because it&#39;s a wake up call for men
+and a hidden cry for help from women for men to regain their masculinity,
+integrity and control over women.
+
+…
+</code></pre><h2 id=rthe_donald><code>/r/The_Donald</code></h2><p>You may have already heard of <code>/r/The_Donald</code> (a.k.a. the “pro-Trump cesspool”),
+famed for their <a href=https://en.wikipedia.org/wiki//r/The_Donald#Conflict_with_Reddit_management>takeover of the Reddit front
+page</a>,
+and their <a href=https://en.wikipedia.org/wiki//r/The_Donald#Controversies>involvement in several recent
+controversies</a>. It
+may therefore be surprising to learn that there is an iota of lucid discussion
+that goes on, although in a jeering, bullying tone.</p><p><code>/r/The_Donald</code> is the subreddit which has developed the most language and inside
+jokes: from “nimble navigators” to “swamp creatures”, “spezzes” to the
+“Trumpire”… Explaining these memes would take too long: reach out, or Google, if
+you really want to know.</p><p>The first cluster accounts for 5% of all text on <code>/r/The_Donald</code>, and contains
+(relatively) coherent arguments both for and against net neutrality. The second
+cluster accounts for 1% of the all text on <code>/r/The_Donald</code>, and is actually from
+the subreddit’s <code>MAGABrickBot</code>, which is a bot that keeps count of how many times
+the word “brick” has been used in comments, by automatically generating this
+comment.</p><pre tabindex=0><code>So much misinformation perpetuated by the Swamp... Abolishing Net Neutrality
+would benefit swamp creatures with corporate payouts but would be most damaging
+to conservatives long term.
+
+Net Neutrality was NOT created by Obama, it was actually in effect from the very
+beginning...
+</code></pre><figure>
+<a href=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png><img src=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png alt="/r/The_Donald cluster #0"></a>
+<a href=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png><img src=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png alt="/r/The_Donald cluster #2"></a>
+<figcaption>Wordclouds from /r/The_Donald.</figcaption></figure><pre tabindex=0><code>**FOR THE LOVE OF GOD GET THIS PATRIOT A BRICK! THAT&#39;S 92278 BRICKS HANDED
+OUT!**
+
+We are at **14.3173880911%** of our goal to **BUILD THE WALL** starting from Imperial
+Beach, CA to Brownsville, Texas! Lets make sure everyone gets a brick in the
+United States! For every Centipede a brick, for every brick a Centipede!
+
+At this rate, the wall will be **1071.35224786 MILES WIDE** and **353.552300867 FEET
+HIGH** by tomorrow! **DO YOUR PART!**
+</code></pre><h2 id=rcringeanarchy><code>/r/CringeAnarchy</code></h2><p>On the Internet, <em>cringe</em> is the second-hand embarrassment you feel when someone
+acts extremely awkwardly or uncomfortably. And on <code>/r/CringeAnarchy</code> you can find
+memes about the <em>real</em> cringe, which is, um, liberals and anyone else who
+advocates for an inclusionary, equitable ideology. Their morally grey jokes run
+the gamut of delicate topics: gender, race, sexuality, nationality…</p><p>In some respects, the clustering provided very little insight into this
+subreddit: each such delicate topic had one or two clusters, and there’s nothing
+really remarkable about any of them. This speaks to the inherent difficulty of
+training a topic model on memes: I rant at greater length about this topic on
+<a href=https://www.georgeho.org/lda-sucks/>one of my blog posts</a>.</p><p>Both clusters below comprise around 3% of text on <code>/r/CringeAnarchy</code>: one is to do
+with race, and the other is to do with homosexuality.</p><pre tabindex=0><code>Has anyone here, non-black or otherwise, ever wished someone felt sorry for
+being black? Maybe it&#39;s just where I live... the majority is black. It&#39;s
+whatever.
+</code></pre><figure>
+<a href=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png><img src=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png alt="/r/CringeAnarchy cluster #8"></a>
+<a href=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png><img src=https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png alt="/r/CringeAnarchy cluster #8"></a>
+<figcaption>Wordclouds from /r/CringeAnarchy.</figcaption></figure><pre tabindex=0><code>…
+
+Also, the distinction between bisexual and gay is academic. If you do a gay
+thing, you have done a gay thing. That&#39;s what &#34;being gay&#34; means to a LOT of
+people. Redefining it is as useful as all the other things SJWs are redefining.
+</code></pre><hr>
+<p>As much information as that might have been, this was just a glimpse into what
+these subreddits are like: I made 20 clusters for each subreddit, and you could
+argue that (for somewhat technical reasons) 20 clusters isn’t even enough!
+Moreover, there is just no way I could distill everything I learned about these
+communities into one Medium story: I’ve curated just the more remarkable or
+provocative results to put here.</p><p>If you still have the stomach for this stuff, scroll through the complete log
+files
+<a href=https://github.com/eigenfoo/reddit-clusters/tree/master/clustering/nmf/results>here</a>,
+or look through images of the word clouds
+<a href=https://github.com/eigenfoo/reddit-clusters/tree/master/wordclouds/images>here</a>.</p><p>Finally, as has been said before, “Talk is cheap. Show me the code.” For
+everything I’ve written to make these clusters, check out <a href=https://github.com/eigenfoo/reddit-clusters>this GitHub
+repository</a>.</p><hr>
+<p><strong>Update (11-08-2018):</strong> If you&rsquo;re interested in the technical, data science side
+of the project, check out the slide deck and speaker notes from <a href=https://www.georgeho.org/reddit-slides/>my recent
+talk</a> on exactly that!</p><hr>
+<p><em>This post was originally published on Medium on May 18, 2018: I have since
+<a href=https://medium.com/@nikitonsky/medium-is-a-poor-choice-for-blogging-bb0048d19133>migrated away from
+Medium</a>
+and <a href=https://bts.nomadgate.com/medium-evergreen-content>deleted my account</a> and
+<a href=https://www.joshjahans.com/ditching-medium/>all my stories</a>.</em></p><p><em>This post was also reprinted in the inaugural issue of The Cooper Union&rsquo;s
+<a href=https://www.facebook.com/theunionjournal/>UNION Journal</a>.</em></p></content>
+<p>
+<a href=https://www.georgeho.org/blog/machine-learning/>#machine-learning</a>
+<a href=https://www.georgeho.org/blog/natural-language-processing/>#natural-language-processing</a>
+</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer></body></html>

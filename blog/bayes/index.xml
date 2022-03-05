@@ -1,0 +1,1376 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>bayes on ⁂ George Ho</title><link>https://www.georgeho.org/blog/bayes/</link><description>Recent content in bayes on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 06 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/bayes/index.xml" rel="self" type="application/rss+xml"/><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>https://www.georgeho.org/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/littlemcmc/</guid><description>&lt;center>
+&lt;img
+src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
+alt="LittleMCMC logo">
+&lt;/center>
+&lt;p>Recently there has been a modularization (or, if you&amp;rsquo;re hip with tech-lingo, an
+&lt;a href="https://techcrunch.com/2015/04/18/the-unbundling-of-everything/">&lt;em>unbundling&lt;/em>&lt;/a>)
+of Bayesian modelling libraries. Whereas before, probability distributions,
+model specification, inference and diagnostics were more or less rolled into one
+library, it&amp;rsquo;s becoming more and more realistic to specify a model in one
+library, accelerate it using another, perform inference with a third and use a
+fourth to visualize the results. (For example, Junpeng Lao has recently had
+&lt;a href="https://twitter.com/junpenglao/status/1309470970223226882">good success&lt;/a> doing
+exactly this!)&lt;/p>
+&lt;p>It&amp;rsquo;s in this spirit of unbundling that the PyMC developers wanted to &lt;a href="https://discourse.pymc.io/t/isolate-nuts-into-a-new-library/3974">spin out
+the core HMC and NUTS samplers from PyMC3 into a separate
+library&lt;/a>.
+PyMC3 has a very well-tested and performant Python implementation of HMC and
+NUTS, which would be very useful to any users who have their own functions for
+computing log-probability and its gradients, and who want to use a lightweight
+and reliable sampler.&lt;/p>
+&lt;p>So for example, if you&amp;rsquo;re a physical scientist with a Bayesian model who&amp;rsquo;s
+written your own functions to compute the log probability and its gradients
+(perhaps for performance or interoperability reasons), and need a good MCMC
+sampler, then &lt;code>littlemcmc&lt;/code> is for you! As long as you can call your functions
+from Python, you can use the same HMC or NUTS sampler that&amp;rsquo;s used by the rest of
+the PyMC3 community.&lt;/p>
+&lt;p>So without further ado: please check out &lt;code>littlemcmc&lt;/code>!&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link>https://www.georgeho.org/bayesian-bandits-2/</link><pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits-2/</guid><description>&lt;blockquote>
+&lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
+Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;a href="https://www.georgeho.org/bayesian-bandits/">Previously&lt;/a>, I introduced the
+multi-armed bandit problem, and a Bayesian approach to solving/modelling it
+(Thompson sampling). We saw that conjugate models made it possible to run the
+bandit algorithm online: the same is even true for non-conjugate models, so long
+as the rewards are bounded.&lt;/p>
+&lt;p>In this follow-up blog post, we&amp;rsquo;ll take a look at two extensions to the
+multi-armed bandit. The first allows the bandit to model nonstationary rewards
+distributions, whereas the second allows the bandit to model context. Jump in!&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/multi-armed-bandit.jpg">&lt;img src="https://www.georgeho.org/assets/images/multi-armed-bandit.jpg" alt="Cartoon of a multi-armed bandit">&lt;/a>
+&lt;figcaption>An example of a multi-armed bandit situation. Source: &lt;a href="https://www.inverse.com/article/13762-how-the-multi-armed-bandit-determines-what-ads-and-stories-you-see-online">Inverse&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;h2 id="nonstationary-bandits">Nonstationary Bandits&lt;/h2>
+&lt;p>Up until now, we&amp;rsquo;ve concerned ourselves with stationary bandits: in other words,
+we assumed that the rewards distribution for each arm did not change over time.
+In the real world though, rewards distributions need not be stationary: customer
+preferences change, trading algorithms deteriorate, and news articles rise and
+fall in relevance.&lt;/p>
+&lt;p>Nonstationarity could mean one of two things for us:&lt;/p>
+&lt;ol>
+&lt;li>either we are lucky enough to know that rewards are similarly distributed
+throughout all time (e.g. the rewards are always normally distributed, or
+always binomially distributed), and that it is merely the parameters of these
+distributions that are liable to change,&lt;/li>
+&lt;li>or we aren&amp;rsquo;t so unlucky, and the rewards distributions are not only changing,
+but don&amp;rsquo;t even have a nice parametric form.&lt;/li>
+&lt;/ol>
+&lt;p>Good news, though: there is a neat trick to deal with both forms of
+nonstationarity!&lt;/p>
+&lt;h3 id="decaying-evidence-and-posteriors">Decaying evidence and posteriors&lt;/h3>
+&lt;p>But first, some notation. Suppose we have a model with parameters $\theta$. We
+place a prior $\color{purple}{\pi_0(\theta)}$ on it&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, and at the $t$&amp;lsquo;th
+time step, we observe data $D_t$, compute the likelihood $\color{blue}{P(D_t
+| \theta)}$ and update the posterior from $\color{red}{\pi_t(\theta |
+D_{1:t})}$ to $\color{green}{\pi_{t+1}(\theta | D_{1:t+1})}$.&lt;/p>
+&lt;p>This is a quintessential application of Bayes&amp;rsquo; Theorem. Mathematically:&lt;/p>
+&lt;p>$$ \color{green}{\pi_{t+1}(\theta | D_{1:t+1})} \propto \color{blue}{P(D_{t+1} |
+\theta)} \cdot \color{red}{\pi_t (\theta | D_{1:t})} \tag{1} \label{1} $$&lt;/p>
+&lt;p>However, for problems with nonstationary rewards distributions, we would like
+data points observed a long time ago to have less weight than data points
+observed recently. This is only prudent: in the absence of recent data, we would
+like to adopt a more conservative &amp;ldquo;no-data&amp;rdquo; prior, rather than allow our
+posterior to be informed by outdated data. This can be achieved by modifying the
+Bayesian update to:&lt;/p>
+&lt;p>$$ \color{green}{\pi_{t+1}(\theta | D_{1:t+1})} \propto \color{magenta}{[}
+\color{blue}{P(D_{t+1} | \theta)} \cdot \color{red}{\pi_t (\theta | D_{1:t})}
+{\color{magenta}{]^{1-\epsilon}}} \cdot
+\color{purple}{\pi_0(\theta)}^\color{magenta}{\epsilon} \tag{2} \label{2} $$&lt;/p>
+&lt;p>for some $0 &amp;lt; \color{magenta}{\epsilon} \ll 1$. We can think of
+$\color{magenta}{\epsilon}$ as controlling the rate of decay of the
+evidence/posterior (i.e. how quickly we should distrust past data points).
+Notice that if we stop observing data points at time $T$, then
+$\color{red}{\pi_t(\theta | D_{1:T})} \rightarrow
+\color{purple}{\pi_0(\theta)}$ as $t \rightarrow \infty$.&lt;/p>
+&lt;p>Decaying the evidence (and therefore the posterior) can be used to address both
+types of nonstationarity identified above. Simply use $(\ref{2})$ as a drop-in
+replacement for $(\ref{1})$ when updating the hyperparameters. Whether you&amp;rsquo;re
+using a conjugate model or the algorithm by &lt;a href="https://arxiv.org/abs/1111.1797">Agarwal and
+Goyal&lt;/a> (introduced in &lt;a href="https://www.georgeho.org/bayesian-bandits">the previous blog
+post&lt;/a>), using $(\ref{2})$ will decay
+the evidence and posterior, as desired.&lt;/p>
+&lt;p>For more information (and a worked example for the Beta-Binomial model!), check
+out &lt;a href="https://austinrochford.com/resources/talks/boston-bayesians-2017-bayes-bandits.slides.html#/3">Austin Rochford&amp;rsquo;s talk for Boston
+Bayesians&lt;/a>
+about Bayesian bandit algorithms for e-commerce.&lt;/p>
+&lt;h2 id="contextual-bandits">Contextual Bandits&lt;/h2>
+&lt;p>We can think of the multi-armed bandit problem as follows&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>:&lt;/p>
+&lt;ol>
+&lt;li>A policy chooses an arm $a$ from $k$ arms.&lt;/li>
+&lt;li>The world reveals the reward $R_a$ of the chosen arm.&lt;/li>
+&lt;/ol>
+&lt;p>However, this formulation fails to capture an important phenomenon: there is
+almost always extra information that is available when making each decision.
+For instance, online ads occur in the context of the web page in which they
+appear, and online store recommendations are given in the context of the user&amp;rsquo;s
+current cart contents (among other things).&lt;/p>
+&lt;p>To take advantage of this information, we might think of a different formulation
+where, on each round:&lt;/p>
+&lt;ol>
+&lt;li>The world announces some context information $x$.&lt;/li>
+&lt;li>A policy chooses an arm $a$ from $k$ arms.&lt;/li>
+&lt;li>The world reveals the reward $R_a$ of the chosen arm.&lt;/li>
+&lt;/ol>
+&lt;p>In other words, contextual bandits call for some way of taking context as input
+and producing arms/actions as output.&lt;/p>
+&lt;p>Alternatively, if you think of regular multi-armed bandits as taking no input
+whatsoever (but still producing outputs, the arms to pull), you can think of
+contextual bandits as algorithms that both take inputs and produce outputs.&lt;/p>
+&lt;h3 id="bayesian-contextual-bandits">Bayesian contextual bandits&lt;/h3>
+&lt;p>Contextual bandits give us a very general framework for thinking about
+sequential decision making (and reinforcement learning). Clearly, there are many
+ways to make a bandit algorithm take context into account. Linear regression is
+a straightforward and classic example: simply assume that the rewards depend
+linearly on the context.&lt;/p>
+&lt;p>For a refresher on the details of Bayesian linear regression, refer to &lt;a href="https://www.microsoft.com/en-us/research/people/cmbishop/#!prml-book">&lt;em>Pattern
+Recognition and Machine
+Learning&lt;/em>&lt;/a>
+by Christopher Bishop: specifically, section 3.3 on Bayesian linear regression
+and exercises 3.12 and 3.13&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>. Briefly though, if we place a Gaussian prior on
+the regression weights and an inverse gamma prior on the noise parameter (i.e.,
+the noise of the observations), then their joint prior will be conjugate to a
+Gaussian likelihood, and the posterior predictive distribution for the rewards
+will be a Student&amp;rsquo;s $t$.&lt;/p>
+&lt;p>Since we need to maintain posteriors of the rewards for each arm (so that we can
+do Thompson sampling), we need to run a separate Bayesian linear regression for
+each arm. At every iteration we then Thompson sample from each Student&amp;rsquo;s $t$
+posterior, and select the arm with the highest sample.&lt;/p>
+&lt;p>However, Bayesian linear regression is a textbook example of a model that lacks
+expressiveness: in most circumstances, we want something that can model
+nonlinear functions as well. One (perfectly valid) way of doing this would be to
+hand-engineer some nonlinear features and/or basis functions before feeding them
+into a Bayesian linear regression. However, in the 21st century, the trendier
+thing to do is to have a neural network learn those features for you. This is
+exactly what is proposed in a &lt;a href="https://arxiv.org/abs/1802.09127">ICLR 2018 paper from Google
+Brain&lt;/a>. They find that this model — which they
+call &lt;code>NeuralLinear&lt;/code> — performs decently well across a variety of tasks, even
+compared to other bandit algorithms. In the words of the authors:&lt;/p>
+&lt;blockquote>
+&lt;p>We believe [&lt;code>NeuralLinear&lt;/code>&amp;rsquo;s] main strength is that it is able to
+&lt;em>simultaneously&lt;/em> learn a data representation that greatly simplifies the task
+at hand, and to accurately quantify the uncertainty over linear models that
+explain the observed rewards in terms of the proposed representation.&lt;/p>
+&lt;/blockquote>
+&lt;p>For more information, be sure to check out the &lt;a href="https://arxiv.org/abs/1802.09127">Google Brain
+paper&lt;/a> and the accompanying &lt;a href="https://github.com/tensorflow/models/tree/master/research/deep_contextual_bandits">TensorFlow
+code&lt;/a>.&lt;/p>
+&lt;h2 id="further-reading">Further Reading&lt;/h2>
+&lt;p>For non-Bayesian approaches to contextual bandits, &lt;a href="https://github.com/VowpalWabbit/vowpal_wabbit/wiki/Contextual-Bandit-algorithms">Vowpal
+Wabbit&lt;/a>
+is a great resource: &lt;a href="http://hunch.net/~jl/">John Langford&lt;/a> and the team at
+&lt;a href="https://www.microsoft.com/research/">Microsoft Research&lt;/a> has &lt;a href="https://arxiv.org/abs/1402.0555v2">extensively
+researched&lt;/a> contextual bandit algorithms.
+They&amp;rsquo;ve provided blazingly fast implementations of recent algorithms and written
+good documentation for them.&lt;/p>
+&lt;p>For the theory and math behind bandit algorithms, &lt;a href="https://banditalgs.com/">Tor Lattimore and Csaba
+Szepesvári&amp;rsquo;s book&lt;/a> covers a breathtaking amount of
+ground.&lt;/p>
+&lt;blockquote>
+&lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
+Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
+&lt;/blockquote>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Did you know you can make &lt;a href="http://adereth.github.io/blog/2013/11/29/colorful-equations/">colored equations with
+MathJax&lt;/a>?
+Technology frightens me sometimes.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>This explanation is largely drawn from &lt;a href="http://hunch.net/?p=298">from John Langford&amp;rsquo;s
+&lt;code>hunch.net&lt;/code>&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>If you don&amp;rsquo;t want to do Bishop&amp;rsquo;s exercises, there&amp;rsquo;s a partially complete
+solutions manual &lt;a href="https://github.com/GoldenCheese/PRML-Solution-Manual/">on
+GitHub&lt;/a> 😉&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Modern Computational Methods for Bayesian Inference — A Reading List</title><link>https://www.georgeho.org/bayesian-inference-reading/</link><pubDate>Wed, 02 Jan 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-inference-reading/</guid><description>&lt;p>Lately I&amp;rsquo;ve been troubled by how little I actually knew about how Bayesian
+inference &lt;em>really worked&lt;/em>. I could explain to you &lt;a href="https://maria-antoniak.github.io/2018/11/19/data-science-crash-course.html">many other machine learning
+techniques&lt;/a>,
+but with Bayesian modelling&amp;hellip; well, there&amp;rsquo;s a model (which is basically the
+likelihood, I think?), and then there&amp;rsquo;s a prior, and then, um&amp;hellip;&lt;/p>
+&lt;p>What actually happens when you run a sampler? What makes inference
+&amp;ldquo;variational&amp;rdquo;? And what is this automatic differentiation doing in my
+variational inference? &lt;em>Cue long sleepless nights, contemplating my own
+ignorance.&lt;/em>&lt;/p>
+&lt;p>So to celebrate the new year&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, I compiled a list of things to read — blog
+posts, journal papers, books, anything that would help me understand (or at
+least, appreciate) the math and computation that happens when I press the &lt;em>Magic
+Inference Button™&lt;/em>. Again, this reading list isn&amp;rsquo;t focused on how to use
+Bayesian modelling for a &lt;em>specific&lt;/em> use case&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>; it’s focused on how modern
+computational methods for Bayesian inference work &lt;em>in general&lt;/em>.&lt;/p>
+&lt;p>So without further ado&amp;hellip;&lt;/p>
+&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#markov-chain-monte-carlo">Markov-Chain Monte Carlo&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#for-the-uninitiated">For the uninitiated&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#hamiltonian-monte-carlo-and-the-no-u-turn-sampler">Hamiltonian Monte Carlo and the No-U-Turn Sampler&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#sequential-monte-carlo-and-other-sampling-methods">Sequential Monte Carlo and other sampling methods&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#variational-inference">Variational Inference&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#for-the-uninitiated-1">For the uninitiated&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#automatic-differentiation-variational-inference-advi">Automatic differentiation variational inference (ADVI)&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#open-source-software-for-bayesian-inference">Open-Source Software for Bayesian Inference&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#further-topics">Further Topics&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#approximate-bayesian-computation-abc-and-likelihood-free-methods">Approximate Bayesian computation (ABC) and likelihood-free methods&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#expectation-propagation">Expectation propagation&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#operator-variational-inference-opvi">Operator variational inference (OPVI)&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;h2 id="markov-chain-monte-carlo">Markov-Chain Monte Carlo&lt;/h2>
+&lt;h3 id="for-the-uninitiated">For the uninitiated&lt;/h3>
+&lt;ol>
+&lt;li>&lt;a href="https://twiecki.github.io/blog/2015/11/10/mcmc-sampling/">MCMC Sampling for
+Dummies&lt;/a> by Thomas
+Wiecki. A basic introduction to MCMC with accompanying Python snippets. The
+Metropolis sampler is used an introduction to sampling.&lt;/li>
+&lt;li>&lt;a href="http://www.mcmchandbook.net/HandbookChapter1.pdf">Introduction to Markov Chain Monte
+Carlo&lt;/a> by Charles Geyer.
+The first chapter of the aptly-named &lt;a href="http://www.mcmchandbook.net/">&lt;em>Handbook of Markov Chain Monte
+Carlo&lt;/em>&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="https://arxiv.org/abs/2001.06249">Markov Chain Monte Carlo Methods, a survey with some frequent
+misunderstandings&lt;/a> is an instructive
+collection of Cross-Validated questions that clear up common
+misunderstandings of MCMC.&lt;/li>
+&lt;/ol>
+&lt;h3 id="hamiltonian-monte-carlo-and-the-no-u-turn-sampler">Hamiltonian Monte Carlo and the No-U-Turn Sampler&lt;/h3>
+&lt;ol>
+&lt;li>&lt;a href="https://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html">Hamiltonian Monte Carlo
+explained&lt;/a>.
+A visual and intuitive explanation of HMC: great for starters.&lt;/li>
+&lt;li>&lt;a href="https://arxiv.org/abs/1701.02434">A Conceptual Introduction to Hamiltonian Monte
+Carlo&lt;/a> by Michael Betancourt. An excellent
+paper for a solid conceptual understanding and principled intuition for HMC.&lt;/li>
+&lt;li>&lt;a href="https://colindcarroll.com/2019/04/06/exercises-in-automatic-differentiation-using-autograd-and-jax/">Exercises in Automatic Differentiation using &lt;code>autograd&lt;/code> and
+&lt;code>jax&lt;/code>&lt;/a>
+by Colin Carroll. This is the first in a series of blog posts that explain
+HMC from the very beginning. See also &lt;a href="https://colindcarroll.com/2019/04/11/hamiltonian-monte-carlo-from-scratch/">Hamiltonian Monte Carlo from
+Scratch&lt;/a>,
+&lt;a href="https://colindcarroll.com/2019/04/21/step-size-adaptation-in-hamiltonian-monte-carlo/">Step Size Adaptation in Hamiltonian Monte
+Carlo&lt;/a>,
+and &lt;a href="https://colindcarroll.com/2019/04/28/choice-of-symplectic-integrator-in-hamiltonian-monte-carlo/">Choice of Symplectic Integrator in Hamiltonian Monte
+Carlo&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="https://arxiv.org/abs/1111.4246">The No-U-Turn Sampler: Adaptively Setting Path Lengths in Hamiltonian Monte
+Carlo&lt;/a> by Matthew Hoffman and Andrew Gelman.
+The original NUTS paper.&lt;/li>
+&lt;li>&lt;a href="http://www.mcmchandbook.net/HandbookChapter5.pdf">MCMC Using Hamiltonian
+Dynamics&lt;/a> by Radford Neal.&lt;/li>
+&lt;li>&lt;a href="https://colindcarroll.com/talk/hamiltonian-monte-carlo/">Hamiltonian Monte Carlo in
+PyMC3&lt;/a> by Colin
+Carroll.&lt;/li>
+&lt;/ol>
+&lt;h3 id="sequential-monte-carlo-and-other-sampling-methods">Sequential Monte Carlo and other sampling methods&lt;/h3>
+&lt;ol>
+&lt;li>Chapter 11 (Sampling Methods) of &lt;a href="https://www.microsoft.com/en-us/research/people/cmbishop/#!prml-book">Pattern Recognition and Machine
+Learning&lt;/a>
+by Christopher Bishop. Covers rejection, importance, Metropolis-Hastings,
+Gibbs and slice sampling. Perhaps not as rampantly useful as NUTS, but good
+to know nevertheless.&lt;/li>
+&lt;li>&lt;a href="https://chi-feng.github.io/mcmc-demo/">The Markov-chain Monte Carlo Interactive
+Gallery&lt;/a> by Chi Feng. A fantastic
+library of visualizations of various MCMC samplers.&lt;/li>
+&lt;li>For non-Markov chain based Monte Carlo methods, there is &lt;a href="https://www.stats.ox.ac.uk/~doucet/doucet_defreitas_gordon_smcbookintro.pdf">An Introdution to
+Sequential Monte Carlo
+Methods&lt;/a>
+by Arnaud Doucet, Nando de Freitas and Neil Gordon. This chapter from &lt;a href="https://www.springer.com/us/book/9780387951461">the
+authors&amp;rsquo; textbook on SMC&lt;/a>
+provides motivation for using SMC methods, and gives a brief introduction to
+a basic particle filter.&lt;/li>
+&lt;li>&lt;a href="http://www.stats.ox.ac.uk/~doucet/smc_resources.html">Sequential Monte Carlo Methods &amp;amp; Particle Filters
+Resources&lt;/a> by Arnaud
+Doucet. A list of resources on SMC and particle filters: way more than you
+probably ever need to know about them.&lt;/li>
+&lt;/ol>
+&lt;h2 id="variational-inference">Variational Inference&lt;/h2>
+&lt;h3 id="for-the-uninitiated-1">For the uninitiated&lt;/h3>
+&lt;ol>
+&lt;li>&lt;a href="http://willwolf.io/2018/11/11/em-for-lda/">Deriving
+Expectation-Maximization&lt;/a> by Will
+Wolf. The first blog post in a series that builds from EM all the way to VI.
+Also check out &lt;a href="http://willwolf.io/2018/11/23/mean-field-variational-bayes/">Deriving Mean-Field Variational
+Bayes&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="https://arxiv.org/abs/1601.00670">Variational Inference: A Review for
+Statisticians&lt;/a> by David Blei, Alp
+Kucukelbir and Jon McAuliffe. An high-level overview of variational
+inference: the authors go over one example (performing VI on GMMs) in depth.&lt;/li>
+&lt;li>Chapter 10 (Approximate Inference) of &lt;a href="https://www.microsoft.com/en-us/research/people/cmbishop/#!prml-book">Pattern Recognition and Machine
+Learning&lt;/a>
+by Christopher Bishop.&lt;/li>
+&lt;/ol>
+&lt;h3 id="automatic-differentiation-variational-inference-advi">Automatic differentiation variational inference (ADVI)&lt;/h3>
+&lt;ol>
+&lt;li>&lt;a href="https://arxiv.org/abs/1603.00788">Automatic Differentiation Variational
+Inference&lt;/a> by Alp Kucukelbir, Dustin Tran
+et al. The original ADVI paper.&lt;/li>
+&lt;li>&lt;a href="https://papers.nips.cc/paper/5758-automatic-variational-inference-in-stan">Automatic Variational Inference in
+Stan&lt;/a>
+by Alp Kucukelbir, Rajesh Ranganath, Andrew Gelman and David Blei.&lt;/li>
+&lt;/ol>
+&lt;h2 id="open-source-software-for-bayesian-inference">Open-Source Software for Bayesian Inference&lt;/h2>
+&lt;p>There are many open-source software libraries for Bayesian modelling and
+inference, and it is instructive to look into the inference methods that they do
+(or do not!) implement.&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="http://mc-stan.org/">Stan&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://docs.pymc.io/">PyMC3&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://pyro.ai/">Pyro&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://www.tensorflow.org/probability/">Tensorflow Probability&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://edwardlib.org/">Edward&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://greta-stats.org/">Greta&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://dotnet.github.io/infer/">Infer.NET&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://www.mrc-bsu.cam.ac.uk/software/bugs/">BUGS&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://mcmc-jags.sourceforge.net/">JAGS&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;h2 id="further-topics">Further Topics&lt;/h2>
+&lt;p>Bayesian inference doesn&amp;rsquo;t stop at MCMC and VI: there is bleeding-edge research
+being done on other methods of inference. While they aren&amp;rsquo;t ready for real-world
+use, it is interesting to see what they are.&lt;/p>
+&lt;h3 id="approximate-bayesian-computation-abc-and-likelihood-free-methods">Approximate Bayesian computation (ABC) and likelihood-free methods&lt;/h3>
+&lt;ol>
+&lt;li>&lt;a href="https://arxiv.org/abs/1001.2058">Likelihood-free Monte Carlo&lt;/a> by Scott
+Sisson and Yanan Fan.&lt;/li>
+&lt;/ol>
+&lt;h3 id="expectation-propagation">Expectation propagation&lt;/h3>
+&lt;ol>
+&lt;li>&lt;a href="https://arxiv.org/abs/1412.4869">Expectation propagation as a way of life: A framework for Bayesian inference
+on partitioned data&lt;/a> by Aki Vehtari, Andrew
+Gelman, et al.&lt;/li>
+&lt;/ol>
+&lt;h3 id="operator-variational-inference-opvi">Operator variational inference (OPVI)&lt;/h3>
+&lt;ol>
+&lt;li>&lt;a href="https://arxiv.org/abs/1610.09033">Operator Variational Inference&lt;/a> by Rajesh
+Ranganath, Jaan Altosaar, Dustin Tran and David Blei. The original OPVI
+paper.&lt;/li>
+&lt;/ol>
+&lt;p>(I&amp;rsquo;ve tried to include as many relevant and helpful resources as I could find,
+but if you feel like I&amp;rsquo;ve missed something, &lt;a href="https://twitter.com/@_eigenfoo">drop me a
+line&lt;/a>!)&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>&lt;a href="https://twitter.com/year_progress/status/1079889949871300608">Relevant tweet
+here.&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>If that’s what you’re looking for, check out my &lt;a href="https://www.georgeho.org/bayesian-modelling-cookbook">Bayesian modelling
+cookbook&lt;/a> or &lt;a href="https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html">Michael
+Betancourt’s excellent essay on a principles Bayesian
+workflow&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
+late bloomer (as far as machine learning subfields go), and it&amp;rsquo;s not immediately
+obvious how close the field is to viable, large-scale, production-ready
+techniques (in the same way that, say, &lt;a href="https://clarifai.com/models/">computer vision
+is&lt;/a>). For example, &lt;a href="https://ruder.io">Sebastian
+Ruder&lt;/a> predicted that the field is &lt;a href="https://thegradient.pub/nlp-imagenet/">close to a watershed
+moment&lt;/a>, and that soon we&amp;rsquo;ll have
+downloadable language models. However, &lt;a href="https://thegradient.pub/author/ana/">Ana
+Marasović&lt;/a> points out that there is &lt;a href="https://thegradient.pub/frontiers-of-generalization-in-natural-language-processing/">a
+tremendous amount of work demonstrating
+that&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>“despite good performance on benchmark datasets, modern NLP techniques are
+nowhere near the skill of humans at language understanding and reasoning when
+making sense of novel natural language inputs”.&lt;/p>
+&lt;/blockquote>
+&lt;p>I am confident that I am &lt;em>very&lt;/em> bad at making lofty predictions about the
+future. Instead, I&amp;rsquo;ll talk about something I know a bit about: simple solutions
+to concrete problems, with some Bayesianism thrown in for good measure
+:grinning:.&lt;/p>
+&lt;p>This blog post summarizes some literature on probabilistic and Bayesian
+matrix factorization methods, keeping an eye out for applications to one
+specific task in NLP: text clustering. It&amp;rsquo;s exactly what it sounds like, and
+there&amp;rsquo;s been a fair amount of success in applying text clustering to many other
+NLP tasks (e.g. check out these examples in &lt;a href="https://www-users.cs.umn.edu/~hanxx023/dmclass/scatter.pdf">document
+organization&lt;/a>,
+&lt;a href="http://jmlr.csail.mit.edu/papers/volume3/bekkerman03a/bekkerman03a.pdf">corpus&lt;/a>
+&lt;a href="https://www.cs.technion.ac.il/~rani/el-yaniv-papers/BekkermanETW01.pdf">summarization&lt;/a>
+and &lt;a href="http://www.kamalnigam.com/papers/emcat-aaai98.pdf">document
+classification&lt;/a>).&lt;/p>
+&lt;p>What follows is a literature review of three matrix factorization techniques for
+machine learning: one classical, one probabilistic and one Bayesian. I also
+experimented with applying these methods to text clustering: I gave a guest
+lecture on my results to a graduate-level machine learning class at The Cooper
+Union (the slide deck is below). Dive in!&lt;/p>
+&lt;h2 id="non-negative-matrix-factorization-nmf">Non-Negative Matrix Factorization (NMF)&lt;/h2>
+&lt;p>NMF is a &lt;a href="https://en.wikipedia.org/wiki/Non-negative_matrix_factorization">very
+well-known&lt;/a>
+&lt;a href="http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html">matrix
+factorization&lt;/a>
+&lt;a href="https://arxiv.org/abs/1401.5226">technique&lt;/a>, perhaps most famous for its
+applications in &lt;a href="http://blog.echen.me/2011/10/24/winning-the-netflix-prize-a-summary/">collaborative filtering and the Netflix
+Prize&lt;/a>.&lt;/p>
+&lt;p>Factorize your (entrywise non-negative) $m \times n$ matrix $V$ as
+$V = WH$, where $W$ is $m \times p$ and $H$ is $p \times n$. $p$
+is the dimensionality of your latent space, and each latent dimension usually
+comes to quantify something with semantic meaning. There are several algorithms
+to compute this factorization, but Lee and Seung&amp;rsquo;s &lt;a href="https://dl.acm.org/citation.cfm?id=3008829">multiplicative update
+rule&lt;/a> (originally published in NIPS
+2000) is most popular.&lt;/p>
+&lt;p>Fairly simple: enough said, I think.&lt;/p>
+&lt;h2 id="probabilistic-matrix-factorization-pmf">Probabilistic Matrix Factorization (PMF)&lt;/h2>
+&lt;p>Originally introduced as a paper at &lt;a href="https://papers.nips.cc/paper/3208-probabilistic-matrix-factorization">NIPS
+2007&lt;/a>,
+&lt;em>probabilistic matrix factorization&lt;/em> is essentially the exact same model as NMF,
+but with uncorrelated (a.k.a. “spherical”) multivariate Gaussian priors placed
+on the rows and columns of $U$ and $V$. Expressed as a graphical model, PMF
+would look like this:&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/pmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/pmf.png" alt="Graphical model (using plate notation) for probabilistic matrix factorization (PMF)">&lt;/a>
+&lt;/figure>
+&lt;p>Note that the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$ matrices.&lt;/p>
+&lt;p>The authors then (somewhat disappointing) proceed to find the MAP estimate of
+the $U$ and $V$ matrices. They show that maximizing the posterior is
+equivalent to minimizing the sum-of-squared-errors loss function with two
+quadratic regularization terms:&lt;/p>
+&lt;p>$$
+\frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{M} {I_{ij} (R_{ij} - U_i^T V_j)^2} +
+\frac{\lambda_U}{2} \sum_{i=1}^{N} |U|_{Fro}^2 +
+\frac{\lambda_V}{2} \sum_{j=1}^{M} |V|_{Fro}^2
+$$&lt;/p>
+&lt;p>where $|\cdot|_{Fro}$ denotes the Frobenius norm, and $I_{ij}$ is 1 if document
+$i$ contains word $j$, and 0 otherwise.&lt;/p>
+&lt;p>This loss function can be minimized via gradient descent, and implemented in
+your favorite deep learning framework (e.g. Tensorflow or PyTorch).&lt;/p>
+&lt;p>The problem with this approach is that while the MAP estimate is often a
+reasonable point in low dimensions, it becomes very strange in high dimensions,
+and is usually not informative or special in any way. Read &lt;a href="https://www.inference.vc/high-dimensional-gaussian-distributions-are-soap-bubble/">Ferenc Huszár’s blog
+post&lt;/a>
+for more.&lt;/p>
+&lt;h2 id="bayesian-probabilistic-matrix-factorization-bpmf">Bayesian Probabilistic Matrix Factorization (BPMF)&lt;/h2>
+&lt;p>Strictly speaking, PMF is not a Bayesian model. After all, there aren&amp;rsquo;t any
+priors or posteriors, only fixed hyperparameters and a MAP estimate. &lt;em>Bayesian
+probabilistic matrix factorization&lt;/em>, originally published by &lt;a href="https://dl.acm.org/citation.cfm?id=1390267">researchers from
+the University of Toronto&lt;/a> is a
+fully Bayesian treatment of PMF.&lt;/p>
+&lt;p>Instead of saying that the rows/columns of U and V are normally distributed with
+zero mean and some precision matrix, we place hyperpriors on the mean vector and
+precision matrices. The specific priors are Wishart priors on the covariance
+matrices (with scale matrix $W_0$ and $\nu_0$ degrees of freedom), and
+Gaussian priors on the means (with mean $\mu_0$ and covariance equal to the
+covariance given by the Wishart prior). Expressed as a graphical model, BPMF
+would look like this:&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/bpmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bpmf.png" alt="Graphical model (using plate notation) for Bayesian probabilistic matrix factorization (BPMF)">&lt;/a>
+&lt;/figure>
+&lt;p>Note that, as above, the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$
+matrices, and that $n$ is the dimensionality of latent space (i.e. the number
+of latent dimensions in the factorization).&lt;/p>
+&lt;p>The authors then sample from the posterior distribution of $U$ and $V$ using
+a Gibbs sampler. Sampling takes several hours: somewhere between 5 to 180,
+depending on how many samples you want. Nevertheless, the authors demonstrate
+that BPMF can achieve more accurate and more robust results on the Netflix data
+set.&lt;/p>
+&lt;p>I would propose two changes to the original paper:&lt;/p>
+&lt;ol>
+&lt;li>Use an LKJ prior on the covariance matrices instead of a Wishart prior.
+&lt;a href="https://docs.pymc.io/notebooks/LKJ.html">According to Michael Betancourt and the PyMC3 docs, this is more numerically
+stable&lt;/a>, and will lead to better
+inference.&lt;/li>
+&lt;li>Use a more robust sampler such as NUTS (instead of a Gibbs sampler), or even
+resort to variational inference. The paper makes it clear that BPMF is a
+computationally painful endeavor, so any speedup to the method would be a
+great help. It seems to me that for practical real-world applications to
+collaborative filtering, we would want to use variational inference. Netflix
+ain&amp;rsquo;t waiting 5 hours for their recommendations.&lt;/li>
+&lt;/ol>
+&lt;h2 id="application-to-text-clustering">Application to Text Clustering&lt;/h2>
+&lt;p>Most of the work in these matrix factorization techniques focus on
+dimensionality reduction: that is, the problem of finding two factor matrices
+that faithfully reconstruct the original matrix when multiplied together.
+However, I was interested in applying the exact same techniques to a separate
+task: text clustering.&lt;/p>
+&lt;p>A natural question is: why is matrix factorization&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> a good technique to use
+for text clustering? Because it is simultaneously a clustering and a feature
+engineering technique: not only does it offer us a latent representation of the
+original data, but it also gives us a way to easily &lt;em>reconstruct&lt;/em> the original
+data from the latent variables! This is something that &lt;a href="https://www.georgeho.org/lda-sucks">latent Dirichlet
+allocation&lt;/a>, for instance, cannot do.&lt;/p>
+&lt;p>Matrix factorization lives an interesting double life: clustering technique by
+day, feature transformation technique by night. &lt;a href="http://charuaggarwal.net/text-cluster.pdf">Aggarwal and
+Zhai&lt;/a> suggest that chaining matrix
+factorization with some other clustering technique (e.g. agglomerative
+clustering or topic modelling) is common practice and is called &lt;em>concept
+decomposition&lt;/em>, but I haven&amp;rsquo;t seen any other source back this up.&lt;/p>
+&lt;p>I experimented with using these techniques to cluster subreddits (&lt;a href="https://www.georgeho.org/reddit-clusters">sound
+familiar?&lt;/a>). In a nutshell, nothing seemed
+to work out very well, and I opine on why I think that&amp;rsquo;s the case in the slide
+deck below. This talk was delivered to a graduate-level course in frequentist
+machine learning.&lt;/p>
+&lt;blockquote class="embedly-card">&lt;h4>&lt;a href="https://speakerdeck.com/_eigenfoo/probabilistic-and-bayesian-matrix-factorizations-for-text-clustering">Probabilistic and Bayesian Matrix Factorizations for Text Clustering&lt;/a>&lt;/h4>&lt;p> I experimented with using these techniques to cluster subreddits. In a nutshell, nothing seemed to work out very well, and I opine on why I think that’s the case in this slide deck. This talk was delivered to a graduate-level course in frequentist machine learning. &lt;/p>&lt;/blockquote>
+&lt;script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8">&lt;/script>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>which is, by the way, a &lt;a href="http://scikit-learn.org/stable/modules/decomposition.html">severely underappreciated technique in machine
+learning&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
+&lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
+out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
+&lt;/blockquote>
+&lt;p>Let&amp;rsquo;s talk about Bayesianism. It&amp;rsquo;s developed a reputation (not entirely
+justified, but not entirely unjustified either) for being too mathematically
+sophisticated or too computationally intensive to work at scale. For instance,
+inferring from a Gaussian mixture model is fraught with computational problems
+(hierarchical funnels, multimodal posteriors, etc.), and may take a seasoned
+Bayesian anywhere between a day and a month to do well. On the other hand, other
+blunt hammers of estimation are as easy as a maximum likelihood estimate:
+something you could easily get a SQL query to do if you wanted to.&lt;/p>
+&lt;p>In this blog post I hope to show that there is more to Bayesianism than just
+MCMC sampling and suffering, by demonstrating a Bayesian approach to a classic
+reinforcement learning problem: the &lt;em>multi-armed bandit&lt;/em>.&lt;/p>
+&lt;p>The problem is this: imagine a gambler at a row of slot machines (each machine
+being a “one-armed bandit”), who must devise a strategy so as to maximize
+rewards. This strategy includes which machines to play, how many times to play
+each machine, in which order to play them, and whether to continue with the
+current machine or try a different machine.&lt;/p>
+&lt;p>This problem is a central problem in decision theory and reinforcement learning:
+the agent (our gambler) starts out in a state of ignorance, but learns through
+interacting with its environment (playing slots). For more details, Cam
+Davidson-Pilon has a great introduction to multi-armed bandits in Chapter 6 of
+his book &lt;a href="https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter6_Priorities/Ch6_Priors_PyMC3.ipynb">&lt;em>Bayesian Methods for
+Hackers&lt;/em>&lt;/a>,
+and Tor Lattimore and Csaba Szepesvári cover a breathtaking amount of the
+underlying theory in their book &lt;a href="http://banditalgs.com/">&lt;em>Bandit Algorithms&lt;/em>&lt;/a>.&lt;/p>
+&lt;p>So let&amp;rsquo;s get started! I assume that you are familiar with:&lt;/p>
+&lt;ul>
+&lt;li>some basic probability, at least enough to know some distributions: normal,
+Bernoulli, binomial&amp;hellip;&lt;/li>
+&lt;li>some basic Bayesian statistics, at least enough to understand what a
+&lt;a href="https://en.wikipedia.org/wiki/Conjugate_prior">conjugate prior&lt;/a> (and
+conjugate model) is, and why one might like them.&lt;/li>
+&lt;li>&lt;a href="https://jeffknupp.com/blog/2013/04/07/improve-your-python-yield-and-generators-explained/">Python generators and the &lt;code>yield&lt;/code>
+keyword&lt;/a>,
+to understand some of the code I&amp;rsquo;ve written&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>.&lt;/li>
+&lt;/ul>
+&lt;p>Dive in!&lt;/p>
+&lt;h2 id="the-algorithm">The Algorithm&lt;/h2>
+&lt;p>The algorithm is straightforward. The description below is taken from Cam
+Davidson-Pilon over at Data Origami&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>For each round,&lt;/p>
+&lt;ol>
+&lt;li>Sample a random variable $X_b$ from the prior of bandit $b$, for all
+$b$.&lt;/li>
+&lt;li>Select the bandit with largest sample, i.e. select bandit $B =
+\text{argmax}(X_b)$.&lt;/li>
+&lt;li>Observe the result of pulling bandit $B$, and update your prior on bandit
+$B$ using the conjugate model update rule.&lt;/li>
+&lt;li>Repeat!&lt;/li>
+&lt;/ol>
+&lt;p>What I find remarkable about this is how dumbfoundingly simple it is! No MCMC
+sampling, no $\hat{R}$s to diagnose, no pesky divergences&amp;hellip; all it requires is
+a conjugate model, and the rest is literally just counting.&lt;/p>
+&lt;p>&lt;strong>NB:&lt;/strong> This algorithm is technically known as &lt;em>Thompson sampling&lt;/em>, and is only
+one of many algorithms out there. The main difference is that there are other
+ways to go from our current priors to a decision on which bandit to play
+next. E.g. instead of simply sampling from our priors, we could use the
+upper bound of the 90% credible region, or some dynamic quantile of the
+posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
+&lt;h3 id="stochastic-aka-stationary-bandits">Stochastic (a.k.a. stationary) bandits&lt;/h3>
+&lt;p>Let&amp;rsquo;s take this algorithm for a spin! Assume we have rewards which are Bernoulli
+distributed (this would be the situation we face when e.g. modelling
+click-through rates). The conjugate prior for the Bernoulli distribution is the
+Beta distribution (this is a special case of the Beta-Binomial model).&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">make_bandits&lt;/span>(params):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">pull&lt;/span>(arm, size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Bernoulli distributed rewards&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>binomial(n&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, p&lt;span style="color:#f92672">=&lt;/span>params[arm], size&lt;span style="color:#f92672">=&lt;/span>size)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> pull, len(params)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">bayesian_strategy&lt;/span>(pull, num_bandits):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample from the bandits&amp;#39; priors, and choose largest&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>argmax(np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>beta(a&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_rewards,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_trials&lt;span style="color:#f92672">-&lt;/span>num_rewards))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample the chosen bandit&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> next(pull(choice))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Update&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards[choice] &lt;span style="color:#f92672">+=&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials[choice] &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> choice, reward, num_rewards, num_trials
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pull, num_bandits &lt;span style="color:#f92672">=&lt;/span> make_bandits([&lt;span style="color:#ae81ff">0.2&lt;/span>, &lt;span style="color:#ae81ff">0.5&lt;/span>, &lt;span style="color:#ae81ff">0.7&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> play &lt;span style="color:#f92672">=&lt;/span> bayesian_strategy(pull, num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Here, &lt;code>pull&lt;/code> returns the result of pulling on the &lt;code>arm&lt;/code>&amp;lsquo;th bandit, and
+&lt;code>make_bandits&lt;/code> is just a factory function for &lt;code>pull&lt;/code>.&lt;/p>
+&lt;p>The &lt;code>bayesian_strategy&lt;/code> function actually implements the algorithm. We only need
+to keep track of the number of times we win and the number of times we played
+(&lt;code>num_rewards&lt;/code> and &lt;code>num_trials&lt;/code>, respectively). It samples from all current
+&lt;code>np.random.beta&lt;/code> priors (where the original prior was a $\text{Beta}(2,
+2)$, which is symmetrix about 0.5 and explains the odd-looking &lt;code>a=2+&lt;/code> and
+&lt;code>b=2+&lt;/code> there), picks the &lt;code>np.argmax&lt;/code>, &lt;code>pull&lt;/code>s that specific bandit, and updates
+&lt;code>num_rewards&lt;/code> and &lt;code>num_trials&lt;/code>.&lt;/p>
+&lt;p>I&amp;rsquo;ve omitted the data visualization code here, but if you want to see it, check
+out the &lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">Jupyter notebook on my
+GitHub&lt;/a>&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/beta-binomial.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/beta-binomial.png" alt="Posterior distribution after several pulls for the Beta-Binomial model">&lt;/a>
+&lt;/figure>
+&lt;h3 id="generalizing-to-conjugate-models">Generalizing to conjugate models&lt;/h3>
+&lt;p>In fact, this algorithm isn&amp;rsquo;t just limited to Bernoulli-distributed rewards: it
+will work for any &lt;a href="https://en.wikipedia.org/wiki/Conjugate_prior#Table_of_conjugate_distributions">conjugate
+model&lt;/a>!
+Here I implement the Gamma-Poisson model (that is, Poisson distributed rewards,
+with a Gamma conjugate prior) to illustrate how extensible this framework is.
+(Who cares about Poisson distributed rewards, you ask? Anyone who worries about
+returning customers, for one!)&lt;/p>
+&lt;p>Here&amp;rsquo;s what we need to change:&lt;/p>
+&lt;ul>
+&lt;li>The rewards distribution in the &lt;code>pull&lt;/code> function (in practice, you don&amp;rsquo;t get
+to pick this, so &lt;em>technically&lt;/em> there&amp;rsquo;s nothing to change if you&amp;rsquo;re doing this
+in production!)&lt;/li>
+&lt;li>The sampling from the prior in &lt;code>bayesian_strategy&lt;/code>&lt;/li>
+&lt;li>The variables you need to keep track of and the update rule in &lt;code>bayesian_strategy&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>Without further ado:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">make_bandits&lt;/span>(params):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">pull&lt;/span>(arm, size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Poisson distributed rewards&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>poisson(lam&lt;span style="color:#f92672">=&lt;/span>params[arm], size&lt;span style="color:#f92672">=&lt;/span>size)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> pull, len(params)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">bayesian_strategy&lt;/span>(pull, num_bandits):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>ones(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>ones(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample from the bandits&amp;#39; priors, and choose largest&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>argmax(np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>gamma(num_rewards,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scale&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>&lt;span style="color:#f92672">/&lt;/span>num_trials))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample the chosen bandit&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> next(pull(choice))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Update&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards[choice] &lt;span style="color:#f92672">+=&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials[choice] &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> choice, reward, num_rewards, num_trials
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pull, num_bandits &lt;span style="color:#f92672">=&lt;/span> make_bandits([&lt;span style="color:#ae81ff">4.0&lt;/span>, &lt;span style="color:#ae81ff">4.5&lt;/span>, &lt;span style="color:#ae81ff">5.0&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> play &lt;span style="color:#f92672">=&lt;/span> bayesian_strategy(pull, num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/gamma-poisson.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/gamma-poisson.png" alt="Posterior distribution after several pulls for the Gamma-Poisson model">&lt;/a>
+&lt;/figure>
+&lt;p>This really demonstrates how lean and mean conjugate models can be, especially
+considering how much of a pain MCMC or approximate inference methods would be,
+compared to literal &lt;em>counting&lt;/em>. Conjugate models aren&amp;rsquo;t just textbook examples:
+they&amp;rsquo;re &lt;em>(gasp)&lt;/em> actually useful!&lt;/p>
+&lt;h3 id="generalizing-to-arbitrary-rewards-distributions">Generalizing to arbitrary rewards distributions&lt;/h3>
+&lt;p>OK, so if we have a conjugate model, we can use Thompson sampling to solve the
+multi-armed bandit problem. But what if our rewards distribution doesn&amp;rsquo;t have a
+conjugate prior, or what if we don&amp;rsquo;t even &lt;em>know&lt;/em> our rewards distribution?&lt;/p>
+&lt;p>In general this problem is very difficult to solve. Theoretically, we could
+place some fairly uninformative prior on our rewards, and after every pull we
+could run MCMC to get our posterior, but that doesn&amp;rsquo;t scale, especially for the
+online algorithms that we have in mind. Luckily a recent paper by Agrawal and
+Goyal&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup> gives us some help, &lt;em>if we assume rewards are bounded on the interval
+$[0, 1]$&lt;/em> (of course, if we have bounded rewards, then we can just normalize
+them by their maximum value to get rewards between 0 and 1).&lt;/p>
+&lt;p>This solutions bootstraps the first Beta-Bernoulli model to this new situation.
+Here&amp;rsquo;s what happens:&lt;/p>
+&lt;ol>
+&lt;li>Sample a random variable $X_b$ from the (Beta) prior of bandit $b$, for
+all $b$.&lt;/li>
+&lt;li>Select the bandit with largest sample, i.e. select bandit $B =
+\text{argmax}(X_b)$.&lt;/li>
+&lt;li>Observe the reward $R$ from bandit $B$.&lt;/li>
+&lt;li>&lt;strong>Observe the outcome $r$ from a Bernoulli trial with probability of success $R$.&lt;/strong>&lt;/li>
+&lt;li>Update posterior of $B$ with this observation $r$.&lt;/li>
+&lt;li>Repeat!&lt;/li>
+&lt;/ol>
+&lt;p>Here I do this for the logit-normal distribution (i.e. a random variable whose
+logit is normally distributed). Note that &lt;code>np.expit&lt;/code> is the inverse of the logit
+function.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">make_bandits&lt;/span>(params):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">pull&lt;/span>(arm, size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Logit-normal distributed returns (or any distribution with finite&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># support) `expit` is the inverse of `logit`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> expit(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>normal(loc&lt;span style="color:#f92672">=&lt;/span>params[arm], scale&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, size&lt;span style="color:#f92672">=&lt;/span>size)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> pull, len(params)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">bayesian_strategy&lt;/span>(pull, num_bandits):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample from the bandits&amp;#39; priors, and choose largest&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>argmax(np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>beta(&lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_rewards,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_trials&lt;span style="color:#f92672">-&lt;/span>num_rewards))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample the chosen bandit&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> next(pull(choice))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample a Bernoulli with probability of success = reward&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Remember, reward is normalized to be in [0, 1]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> outcome &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>binomial(n&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, p&lt;span style="color:#f92672">=&lt;/span>reward)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Update&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards[choice] &lt;span style="color:#f92672">+=&lt;/span> outcome
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials[choice] &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> choice, reward, num_rewards, num_trials
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pull, num_bandits &lt;span style="color:#f92672">=&lt;/span> make_bandits([&lt;span style="color:#ae81ff">0.2&lt;/span>, &lt;span style="color:#ae81ff">1.8&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> play &lt;span style="color:#f92672">=&lt;/span> bayesian_strategy(pull, num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/bounded.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bounded.png" alt="Posterior distribution after several pulls with an arbitrary reward distribution (e.g. the logit normal)">&lt;/a>
+&lt;/figure>
+&lt;h2 id="final-remarks">Final Remarks&lt;/h2>
+&lt;p>None of this theory is new: I&amp;rsquo;m just advertising it! See Cam Davidson-Pilon&amp;rsquo;s
+great blog post about Bayesian bandits&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
+and of course, read around papers on arXiv if you want to go deeper!&lt;/p>
+&lt;p>Also, if you want to see all the code that went into this blog post, check out
+&lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">the notebook
+here&lt;/a>.&lt;/p>
+&lt;blockquote>
+&lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
+out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
+&lt;/blockquote>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>I&amp;rsquo;ve hopped on board the functional programming bandwagon, and couldn&amp;rsquo;t
+help but think that to demonstrate this idea, I didn&amp;rsquo;t need a framework, a
+library or even a class. Just two functions!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>Davidson-Pilon, Cameron. “Multi-Armed Bandits.” DataOrigami, 6 Apr. 2013,
+&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>&lt;a href="https://arxiv.org/abs/1111.1797">arXiv:1111.1797&lt;/a> [cs.LG]&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
+Bayesian modelling, and it&amp;rsquo;s an amazing piece of software! The API only exposes
+as much of heavy machinery of MCMC as you need — by which I mean, just the
+&lt;code>pm.sample()&lt;/code> method (a.k.a., as &lt;a href="http://twiecki.github.io/blog/2013/08/12/bayesian-glms-1/">Thomas
+Wiecki&lt;/a> puts it, the
+&lt;em>Magic Inference Button™&lt;/em>). This really frees up your mind to think about your
+data and model, which is really the heart and soul of data science!&lt;/p>
+&lt;p>That being said however, I quickly realized that the water gets very deep very
+fast: I explored my data set, specified a hierarchical model that made sense to
+me, hit the &lt;em>Magic Inference Button™&lt;/em>, and… uh, what now? I blinked at the
+angry red warnings the sampler spat out.&lt;/p>
+&lt;p>So began by long, rewarding and ongoing exploration of Bayesian modelling. This
+is a compilation of notes, tips, tricks and recipes that I&amp;rsquo;ve collected from
+everywhere: papers, documentation, peppering my &lt;a href="https://twitter.com/twiecki">more
+experienced&lt;/a>
+&lt;a href="https://twitter.com/aseyboldt">colleagues&lt;/a> with questions. It&amp;rsquo;s still very much
+a work in progress, but hopefully somebody else finds it useful!&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/pymc-logo.png" alt="PyMC logo">&lt;/p>
+&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#for-the-uninitiated">For the Uninitiated&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#bayesian-modelling">Bayesian modelling&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#markov-chain-monte-carlo">Markov-chain Monte Carlo&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#variational-inference">Variational inference&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#model-formulation">Model Formulation&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#hierarchical-models">Hierarchical models&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#model-implementation">Model Implementation&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#mcmc-initialization-and-sampling">MCMC Initialization and Sampling&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#mcmc-trace-diagnostics">MCMC Trace Diagnostics&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#fixing-divergences">Fixing divergences&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#other-common-warnings">Other common warnings&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#model-reparameterization">Model reparameterization&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#model-diagnostics">Model Diagnostics&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;h2 id="for-the-uninitiated">For the Uninitiated&lt;/h2>
+&lt;ul>
+&lt;li>First of all, &lt;em>welcome!&lt;/em> It&amp;rsquo;s a brave new world out there — where statistics
+is cool, Bayesian and (if you&amp;rsquo;re lucky) even easy. Dive in!&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>EDIT (1/24/2020):&lt;/strong> I published a &lt;a href="https://www.georgeho.org/bayesian-inference-reading/">subsequent blog
+post&lt;/a> with a reading list
+for Bayesian inference and modelling. Check it out for reading material in
+addition to the ones I list below!&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="bayesian-modelling">Bayesian modelling&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>If you don&amp;rsquo;t know any probability, I&amp;rsquo;d recommend &lt;a href="https://betanalpha.github.io/assets/case_studies/probability_theory.html">Michael
+Betancourt&amp;rsquo;s&lt;/a>
+crash-course in practical probability theory.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>For an introduction to general Bayesian methods and modelling, I really liked
+&lt;a href="http://camdavidsonpilon.github.io/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/">Cam Davidson Pilon&amp;rsquo;s &lt;em>Bayesian Methods for
+Hackers&lt;/em>&lt;/a>:
+it really made the whole “thinking like a Bayesian” thing click for me.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>If you&amp;rsquo;re willing to spend some money, I&amp;rsquo;ve heard that &lt;a href="https://sites.google.com/site/doingbayesiandataanalysis/">&lt;em>Doing Bayesian Data
+Analysis&lt;/em> by
+Kruschke&lt;/a> (a.k.a.
+&lt;em>“the puppy book”&lt;/em>) is for the bucket list.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Here we come to a fork in the road. The central problem in Bayesian modelling
+is this: given data and a probabilistic model that we think models this data,
+how do we find the posterior distribution of the model&amp;rsquo;s parameters? There are
+currently two good solutions to this problem. One is Markov-chain Monte Carlo
+sampling (a.k.a. MCMC sampling), and the other is variational inference
+(a.k.a. VI). Both methods are mathematical Death Stars: extremely powerful but
+incredibly complicated. Nevertheless, I think it&amp;rsquo;s important to get at least a
+hand-wavy understanding of what these methods are. If you&amp;rsquo;re new to all this,
+my personal recommendation is to invest your time in learning MCMC: it&amp;rsquo;s been
+around longer, we know that there are sufficiently robust tools to help you,
+and there&amp;rsquo;s a lot more support/documentation out there.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="markov-chain-monte-carlo">Markov-chain Monte Carlo&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>For a good high-level introduction to MCMC, I liked &lt;a href="https://www.youtube.com/watch?v=DJ0c7Bm5Djk&amp;amp;feature=youtu.be&amp;amp;t=4h40m9s">Michael Betancourt&amp;rsquo;s
+StanCon 2017
+talk&lt;/a>:
+especially the first few minutes where he provides a motivation for MCMC, that
+really put all this math into context for me.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>For a more in-depth (and mathematical) treatment of MCMC, I&amp;rsquo;d check out his
+&lt;a href="https://arxiv.org/abs/1701.02434">paper on Hamiltonian Monte Carlo&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="variational-inference">Variational inference&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>VI has been around for a while, but it was only in 2017 (2 years ago, at the
+time of writing) that &lt;em>automatic differentiation variational inference&lt;/em> was
+invented. As such, variational inference is undergoing a renaissance and is
+currently an active area of statistical research. Since it&amp;rsquo;s such a nascent
+field, most resources on it are very theoretical and academic in nature.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Chapter 10 (on approximate inference) in Bishop&amp;rsquo;s &lt;em>Pattern Recognition and
+Machine Learning&lt;/em> and &lt;a href="https://www.cs.princeton.edu/courses/archive/fall11/cos597C/lectures/variational-inference-i.pdf">this
+tutorial&lt;/a>
+by David Blei are excellent, if a bit mathematically-intensive, resources.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The most hands-on explanation of variational inference I&amp;rsquo;ve seen is the docs
+for &lt;a href="http://pyro.ai/examples/svi_part_i.html">Pyro&lt;/a>, a probabilistic
+programming language developed by Uber that specializes in variational
+inference.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="model-formulation">Model Formulation&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>Try thinking about &lt;em>how&lt;/em> your data would be generated: what kind of machine
+has your data as outputs? This will help you both explore your data, as well
+as help you arrive at a reasonable model formulation.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Try to avoid correlated variables. Some of the more robust samplers can cope
+with &lt;em>a posteriori&lt;/em> correlated random variables, but sampling is much easier
+for everyone involved if the variables are uncorrelated. By the way, the bar
+is pretty low here: if the jointplot/scattergram of the two variables looks
+like an ellipse, thats usually okay. It&amp;rsquo;s when the ellipse starts looking like
+a line that you should be alarmed.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Try to avoid discrete latent variables, and discrete parameters in general.
+There is no good method to sample them in a smart way (since discrete
+parameters have no gradients); and with “naïve” samplers (i.e. those that do
+not take advantage of the gradient), the number of samples one needs to make
+good inferences generally scales exponentially in the number of parameters.
+For an instance of this, see &lt;a href="https://docs.pymc.io/notebooks/marginalized_gaussian_mixture_model.html">this example on marginal Gaussian
+mixtures&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The &lt;a href="https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations">Stan GitHub
+wiki&lt;/a> has
+some excellent recommendations on how to choose good priors. Once you get a
+good handle on the basics of using PyMC3, I &lt;em>100% recommend&lt;/em> reading this wiki
+from start to end: the Stan community has fantastic resources on Bayesian
+statistics, and even though their APIs are quite different, the mathematical
+theory all translates over.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="hierarchical-models">Hierarchical models&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>First of all, hierarchical models can be amazing! &lt;a href="https://docs.pymc.io/notebooks/GLM-hierarchical.html">The PyMC3
+docs&lt;/a> opine on this at
+length, so let&amp;rsquo;s not waste any digital ink.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The poster child of a Bayesian hierarchical model looks something like this
+(equations taken from
+&lt;a href="https://en.wikipedia.org/wiki/Bayesian_hierarchical_modeling">Wikipedia&lt;/a>):&lt;/p>
+&lt;p>&lt;img style="float: center"
+src="https://wikimedia.org/api/rest_v1/media/math/render/svg/765f37f86fa26bef873048952dccc6e8067b78f4"
+alt="Example Bayesian hierarchical model equation #1">&lt;/p>
+&lt;p>&lt;img style="float: center"
+src="https://wikimedia.org/api/rest_v1/media/math/render/svg/ca8c0e1233fd69fa4325c6eacf8462252ed6b00a"
+alt="Example Bayesian hierarchical model equation #2">&lt;/p>
+&lt;p>&lt;img style="float: center"
+src="https://wikimedia.org/api/rest_v1/media/math/render/svg/1e56b3077b1b3ec867d6a0f2539ba9a3e79b45c1"
+alt="Example Bayesian hierarchical model equation #3">&lt;/p>
+&lt;p>This hierarchy has 3 levels (some would say it has 2 levels, since there are
+only 2 levels of parameters to infer, but honestly whatever: by my count there
+are 3). 3 levels is fine, but add any more levels, and it becomes harder for
+to sample. Try out a taller hierarchy to see if it works, but err on the side
+of 3-level hierarchies.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>If your hierarchy is too tall, you can truncate it by introducing a
+deterministic function of your parameters somewhere (this usually turns out to
+just be a sum). For example, instead of modelling your observations are drawn
+from a 4-level hierarchy, maybe your observations can be modeled as the sum of
+three parameters, where these parameters are drawn from a 3-level hierarchy.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>More in-depth treatment here in &lt;a href="https://arxiv.org/abs/1312.0906">(Betancourt and Girolami,
+2013)&lt;/a>. &lt;strong>tl;dr:&lt;/strong> hierarchical models all
+but &lt;em>require&lt;/em> you use to use Hamiltonian Monte Carlo; also included are some
+practical tips and goodies on how to do that stuff in the real world.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="model-implementation">Model Implementation&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>At the risk of overgeneralizing, there are only two things that can go wrong
+in Bayesian modelling: either your data is wrong, or your model is wrong. And
+it is a hell of a lot easier to debug your data than it is to debug your
+model. So before you even try implementing your model, plot histograms of your
+data, count the number of data points, drop any NaNs, etc. etc.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>PyMC3 has one quirky piece of syntax, which I tripped up on for a while. It&amp;rsquo;s
+described quite well in &lt;a href="http://twiecki.github.io/blog/2014/03/17/bayesian-glms-3/#comment-2213376737">this comment on Thomas Wiecki&amp;rsquo;s
+blog&lt;/a>.
+Basically, suppose you have several groups, and want to initialize several
+variables per group, but you want to initialize different numbers of variables
+for each group. Then you need to use the quirky &lt;code>variables[index]&lt;/code>
+notation. I suggest using &lt;code>scikit-learn&lt;/code>&amp;rsquo;s &lt;code>LabelEncoder&lt;/code> to easily create the
+index. For example, to make normally distributed heights for the iris dataset:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Different numbers of examples for each species&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>species &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#ae81ff">48&lt;/span> &lt;span style="color:#f92672">*&lt;/span> [&lt;span style="color:#e6db74">&amp;#39;setosa&amp;#39;&lt;/span>] &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">52&lt;/span> &lt;span style="color:#f92672">*&lt;/span> [&lt;span style="color:#e6db74">&amp;#39;virginica&amp;#39;&lt;/span>] &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">63&lt;/span> &lt;span style="color:#f92672">*&lt;/span> [&lt;span style="color:#e6db74">&amp;#39;versicolor&amp;#39;&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>num_species &lt;span style="color:#f92672">=&lt;/span> len(list(set(species))) &lt;span style="color:#75715e"># 3&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># One variable per group&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>heights_per_species &lt;span style="color:#f92672">=&lt;/span> pm&lt;span style="color:#f92672">.&lt;/span>Normal(&lt;span style="color:#e6db74">&amp;#39;heights_per_species&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mu&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>, sd&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, shape&lt;span style="color:#f92672">=&lt;/span>num_species)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>idx &lt;span style="color:#f92672">=&lt;/span> sklearn&lt;span style="color:#f92672">.&lt;/span>preprocessing&lt;span style="color:#f92672">.&lt;/span>LabelEncoder()&lt;span style="color:#f92672">.&lt;/span>fit_transform(species)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>heights &lt;span style="color:#f92672">=&lt;/span> heights_per_species[idx]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>You might find yourself in a situation in which you want to use a centered
+parameterization for a portion of your data set, but a noncentered
+parameterization for the rest of your data set (see below for what these
+parameterizations are). There&amp;rsquo;s a useful idiom for you here:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>num_xs &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>use_centered &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>array([&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>]) &lt;span style="color:#75715e"># len(use_centered) = num_xs&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>x_sd &lt;span style="color:#f92672">=&lt;/span> pm&lt;span style="color:#f92672">.&lt;/span>HalfCauchy(&lt;span style="color:#e6db74">&amp;#39;x_sd&amp;#39;&lt;/span>, sd&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>x_raw &lt;span style="color:#f92672">=&lt;/span> pm&lt;span style="color:#f92672">.&lt;/span>Normal(&lt;span style="color:#e6db74">&amp;#39;x_raw&amp;#39;&lt;/span>, mu&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>, sd&lt;span style="color:#f92672">=&lt;/span>x_sd&lt;span style="color:#f92672">**&lt;/span>use_centered, shape&lt;span style="color:#f92672">=&lt;/span>num_xs)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>x &lt;span style="color:#f92672">=&lt;/span> pm&lt;span style="color:#f92672">.&lt;/span>Deterministic(&lt;span style="color:#e6db74">&amp;#39;x&amp;#39;&lt;/span>, x_sd&lt;span style="color:#f92672">**&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#f92672">-&lt;/span> use_centered) &lt;span style="color:#f92672">*&lt;/span> x_raw)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>You could even experiment with allowing &lt;code>use_centered&lt;/code> to be &lt;em>between&lt;/em> 0 and
+1, instead of being &lt;em>either&lt;/em> 0 or 1!&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>I prefer to use the &lt;code>pm.Deterministic&lt;/code> function instead of simply using normal
+arithmetic operations (e.g. I&amp;rsquo;d prefer to write &lt;code>x = pm.Deterministic('x', y + z)&lt;/code> instead of &lt;code>x = y + z&lt;/code>). This means that you can index the &lt;code>trace&lt;/code> object
+later on with just &lt;code>trace['x']&lt;/code>, instead of having to compute it yourself with
+&lt;code>trace['y'] + trace['z']&lt;/code>.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="mcmc-initialization-and-sampling">MCMC Initialization and Sampling&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>Have faith in PyMC3&amp;rsquo;s default initialization and sampling settings: someone
+much more experienced than us took the time to choose them! NUTS is the most
+efficient MCMC sampler known to man, and &lt;code>jitter+adapt_diag&lt;/code>… well, you get
+the point.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>However, if you&amp;rsquo;re truly grasping at straws, a more powerful initialization
+setting would be &lt;code>advi&lt;/code> or &lt;code>advi+adapt_diag&lt;/code>, which uses variational inference
+to initialize the sampler. An even better option would be to use
+&lt;code>advi+adapt_diag_grad&lt;/code> &lt;del>which is (at the time of writing) an experimental
+feature in beta&lt;/del>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Never initialize the sampler with the MAP estimate! In low dimensional
+problems the MAP estimate (a.k.a. the mode of the posterior) is often quite a
+reasonable point. But in high dimensions, the MAP becomes very strange. Check
+out &lt;a href="http://www.inference.vc/high-dimensional-gaussian-distributions-are-soap-bubble/">Ferenc Huszár&amp;rsquo;s blog
+post&lt;/a>
+on high-dimensional Gaussians to see why. Besides, at the MAP all the derivatives
+of the posterior are zero, and that isn&amp;rsquo;t great for derivative-based samplers.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="mcmc-trace-diagnostics">MCMC Trace Diagnostics&lt;/h2>
+&lt;ul>
+&lt;li>You&amp;rsquo;ve hit the &lt;em>Magic Inference Button™&lt;/em>, and you have a &lt;code>trace&lt;/code> object. Now
+what? First of all, make sure that your sampler didn&amp;rsquo;t barf itself, and that
+your chains are safe for consumption (i.e., analysis).&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>
+&lt;p>Theoretically, run the chain for as long as you have the patience or
+resources for. In practice, just use the PyMC3 defaults: 500 tuning
+iterations, 1000 sampling iterations.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Check for divergences. PyMC3&amp;rsquo;s sampler will spit out a warning if there are
+diverging chains, but the following code snippet may make things easier:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Display the total number and percentage of divergent chains&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>diverging &lt;span style="color:#f92672">=&lt;/span> trace[&lt;span style="color:#e6db74">&amp;#39;diverging&amp;#39;&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(&lt;span style="color:#e6db74">&amp;#39;Number of Divergent Chains: &lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&lt;/span>&lt;span style="color:#f92672">.&lt;/span>format(diverging&lt;span style="color:#f92672">.&lt;/span>nonzero()[&lt;span style="color:#ae81ff">0&lt;/span>]&lt;span style="color:#f92672">.&lt;/span>size))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>diverging_pct &lt;span style="color:#f92672">=&lt;/span> diverging&lt;span style="color:#f92672">.&lt;/span>nonzero()[&lt;span style="color:#ae81ff">0&lt;/span>]&lt;span style="color:#f92672">.&lt;/span>size &lt;span style="color:#f92672">/&lt;/span> len(trace) &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(&lt;span style="color:#e6db74">&amp;#39;Percentage of Divergent Chains: &lt;/span>&lt;span style="color:#e6db74">{:.1f}&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&lt;/span>&lt;span style="color:#f92672">.&lt;/span>format(diverging_pct))
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>Check the traceplot (&lt;code>pm.traceplot(trace)&lt;/code>). You&amp;rsquo;re looking for traceplots
+that look like “fuzzy caterpillars”. If the trace moves into some region and
+stays there for a long time (a.k.a. there are some “sticky regions”), that&amp;rsquo;s
+cause for concern! That indicates that once the sampler moves into some
+region of parameter space, it gets stuck there (probably due to high
+curvature or other bad topological properties).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>In addition to the traceplot, there are &lt;a href="https://docs.pymc.io/api/plots.html">a ton of other
+plots&lt;/a> you can make with your trace:&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>pm.plot_posterior(trace)&lt;/code>: check if your posteriors look reasonable.&lt;/li>
+&lt;li>&lt;code>pm.forestplot(trace)&lt;/code>: check if your variables have reasonable credible
+intervals, and Gelman–Rubin scores close to 1.&lt;/li>
+&lt;li>&lt;code>pm.autocorrplot(trace)&lt;/code>: check if your chains are impaired by high
+autocorrelation. Also remember that thinning your chains is a waste of
+time at best, and deluding yourself at worst. See Chris Fonnesbeck&amp;rsquo;s
+comment on &lt;a href="https://github.com/pymc-devs/pymc/issues/23">this GitHub
+issue&lt;/a> and &lt;a href="https://twitter.com/junpenglao/status/1009748562136256512">Junpeng Lao&amp;rsquo;s
+reply to Michael Betancourt&amp;rsquo;s
+tweet&lt;/a>&lt;/li>
+&lt;li>&lt;code>pm.energyplot(trace)&lt;/code>: ideally the energy and marginal energy
+distributions should look very similar. Long tails in the distribution of
+energy levels indicates deteriorated sampler efficiency.&lt;/li>
+&lt;li>&lt;code>pm.densityplot(trace)&lt;/code>: a souped-up version of &lt;code>pm.plot_posterior&lt;/code>. It
+doesn&amp;rsquo;t seem to be wildly useful unless you&amp;rsquo;re plotting posteriors from
+multiple models.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>PyMC3 has a nice helper function to pretty-print a summary table of the
+trace: &lt;code>pm.summary(trace)&lt;/code> (I usually tack on a &lt;code>.round(2)&lt;/code> for my sanity).
+Look out for:&lt;/p>
+&lt;ul>
+&lt;li>the $\hat{R}$ values (a.k.a. the Gelman–Rubin statistic, a.k.a. the
+potential scale reduction factor, a.k.a. the PSRF): are they all close to
+1? If not, something is &lt;em>horribly&lt;/em> wrong. Consider respecifying or
+reparameterizing your model. You can also inspect these in the forest plot.&lt;/li>
+&lt;li>the sign and magnitude of the inferred values: do they make sense, or are
+they unexpected and unreasonable? This could indicate a poorly specified
+model. (E.g. parameters of the unexpected sign that have low uncertainties
+might indicate that your model needs interaction terms.)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>As a drastic debugging measure, try to &lt;code>pm.sample&lt;/code> with &lt;code>draws=1&lt;/code>,
+&lt;code>tune=500&lt;/code>, and &lt;code>discard_tuned_samples=False&lt;/code>, and inspect the traceplot.
+During the tuning phase, we don&amp;rsquo;t expect to see friendly fuzzy caterpillars,
+but we &lt;em>do&lt;/em> expect to see good (if noisy) exploration of parameter space. So
+if the sampler is getting stuck during the tuning phase, that might explain
+why the trace looks horrible.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>If you get scary errors that describe mathematical problems (e.g. &lt;code>ValueError: Mass matrix contains zeros on the diagonal. Some derivatives might always be zero.&lt;/code>), then you&amp;rsquo;re &lt;del>shit out of luck&lt;/del> exceptionally unlucky: those kinds of
+errors are notoriously hard to debug. I can only point to the &lt;a href="http://andrewgelman.com/2008/05/13/the_folk_theore/">Folk Theorem of
+Statistical Computing&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>If you&amp;rsquo;re having computational problems, probably your model is wrong.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="fixing-divergences">Fixing divergences&lt;/h3>
+&lt;blockquote>
+&lt;p>&lt;code>There were N divergences after tuning. Increase 'target_accept' or reparameterize.&lt;/code>&lt;/p>
+&lt;p>— The &lt;em>Magic Inference Button™&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>Divergences in HMC occur when the sampler finds itself in regions of extremely
+high curvature (such as the opening of the a hierarchical funnel). Broadly
+speaking, the sampler is prone to malfunction in such regions, causing the
+sampler to fly off towards to infinity. The ruins the chains by heavily
+biasing the samples.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Remember: if you have even &lt;em>one&lt;/em> diverging chain, you should be worried.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Increase &lt;code>target_accept&lt;/code>: usually 0.9 is a good number (currently the default
+in PyMC3 is 0.8). This will help get rid of false positives from the test for
+divergences. However, divergences that &lt;em>don&amp;rsquo;t&lt;/em> go away are cause for alarm.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Increasing &lt;code>tune&lt;/code> can sometimes help as well: this gives the sampler more time
+to 1) find the typical set and 2) find good values for the step size, mass
+matrix elements, etc. If you&amp;rsquo;re running into divergences, it&amp;rsquo;s always possible
+that the sampler just hasn&amp;rsquo;t started the mixing phase and is still trying to
+find the typical set.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Consider a &lt;em>noncentered&lt;/em> parameterization. This is an amazing trick: it all
+boils down to the familiar equation $X = \sigma Z + \mu$ from STAT 101, but
+it honestly works wonders. See &lt;a href="http://twiecki.github.io/blog/2017/02/08/bayesian-hierchical-non-centered/">Thomas Wiecki&amp;rsquo;s blog
+post&lt;/a>
+on it, and &lt;a href="https://docs.pymc.io/notebooks/Diagnosing_biased_Inference_with_Divergences.html">this page from the PyMC3
+documentation&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>If that doesn&amp;rsquo;t work, there may be something wrong with the way you&amp;rsquo;re
+thinking about your data: consider reparameterizing your model, or
+respecifying it entirely.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="other-common-warnings">Other common warnings&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>It&amp;rsquo;s worth noting that far and away the worst warning to get is the one about
+divergences. While a divergent chain indicates that your inference may be
+flat-out &lt;em>invalid&lt;/em>, the rest of these warnings indicate that your inference is
+merely (lol, “merely”) &lt;em>inefficient&lt;/em>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>It&amp;rsquo;s also worth noting that the &lt;a href="https://mc-stan.org/misc/warnings.html">Brief Guide to Stan&amp;rsquo;s
+Warnings&lt;/a> is a tremendous resource for
+exactly what kinds of errors you might get when running HMC or NUTS, and how
+you should think about them.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>The number of effective samples is smaller than XYZ for some parameters.&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>Quoting &lt;a href="https://discourse.pymc.io/t/the-number-of-effective-samples-is-smaller-than-25-for-some-parameters/1050/3">Junpeng Lao on
+&lt;code>discourse.pymc3.io&lt;/code>&lt;/a>:
+“A low number of effective samples is usually an indication of strong
+autocorrelation in the chain.”&lt;/li>
+&lt;li>Make sure you&amp;rsquo;re using an efficient sampler like NUTS. (And not, for
+instance, Gibbs or Metropolis–Hastings.)&lt;/li>
+&lt;li>Tweak the acceptance probability (&lt;code>target_accept&lt;/code>) — it should be large
+enough to ensure good exploration, but small enough to not reject all
+proposals and get stuck.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>The gelman-rubin statistic is larger than XYZ for some parameters. This indicates slight problems during sampling.&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>When PyMC3 samples, it runs several chains in parallel. Loosely speaking,
+the Gelman–Rubin statistic measures how similar these chains are. Ideally it
+should be close to 1.&lt;/li>
+&lt;li>Increasing the &lt;code>tune&lt;/code> parameter may help, for the same reasons as described
+in the &lt;em>Fixing Divergences&lt;/em> section.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>The chain reached the maximum tree depth. Increase max_treedepth, increase target_accept or reparameterize.&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>NUTS puts a cap on the depth of the trees that it evaluates during each
+iteration, which is controlled through the &lt;code>max_treedepth&lt;/code>. Reaching the
+maximum allowable tree depth indicates that NUTS is prematurely pulling the
+plug to avoid excessive compute time.&lt;/li>
+&lt;li>Yeah, what the &lt;em>Magic Inference Button™&lt;/em> says: try increasing
+&lt;code>max_treedepth&lt;/code> or &lt;code>target_accept&lt;/code>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="model-reparameterization">Model reparameterization&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>Countless warnings have told you to engage in this strange activity of
+“reparameterization”. What even is that? Luckily, the &lt;a href="https://github.com/stan-dev/stan/releases">Stan User
+Manual&lt;/a> (specifically the
+&lt;em>Reparameterization and Change of Variables&lt;/em> section) has an excellent
+explanation of reparameterization, and even some practical tips to help you do
+it (although your mileage may vary on how useful those tips will be to you).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Asides from meekly pointing to other resources, there&amp;rsquo;s not much I can do to
+help: this stuff really comes from a combination of intuition, statistical
+knowledge and good ol&amp;rsquo; experience. I can, however, cite some examples to give
+you a better idea.&lt;/p>
+&lt;ul>
+&lt;li>The noncentered parameterization is a classic example. If you have a
+parameter whose mean and variance you are also modelling, the noncentered
+parameterization decouples the sampling of mean and variance from the
+sampling of the parameter, so that they are now independent. In this way, we
+avoid “funnels”.&lt;/li>
+&lt;li>The &lt;a href="http://proceedings.mlr.press/v5/carvalho09a.html">&lt;em>horseshoe
+distribution&lt;/em>&lt;/a> is known to
+be a good shrinkage prior, as it is &lt;em>very&lt;/em> spikey near zero, and has &lt;em>very&lt;/em>
+long tails. However, modelling it using one parameter can give multimodal
+posteriors — an exceptionally bad result. The trick is to reparameterize and
+model it as the product of two parameters: one to create spikiness at zero,
+and one to create long tails (which makes sense: to sample from the
+horseshoe, take the product of samples from a normal and a half-Cauchy).&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="model-diagnostics">Model Diagnostics&lt;/h2>
+&lt;ul>
+&lt;li>Admittedly the distinction between the previous section and this one is
+somewhat artificial (since problems with your chains indicate problems with
+your model), but I still think it&amp;rsquo;s useful to make this distinction because
+these checks indicate that you&amp;rsquo;re thinking about your data in the wrong way,
+(i.e. you made a poor modelling decision), and &lt;em>not&lt;/em> that the sampler is
+having a hard time doing its job.&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>
+&lt;p>Run the following snippet of code to inspect the pairplot of your variables
+one at a time (if you have a plate of variables, it&amp;rsquo;s fine to pick a couple
+at random). It&amp;rsquo;ll tell you if the two random variables are correlated, and
+help identify any troublesome neighborhoods in the parameter space (divergent
+samples will be colored differently, and will cluster near such
+neighborhoods).&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>pm&lt;span style="color:#f92672">.&lt;/span>pairplot(trace,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sub_varnames&lt;span style="color:#f92672">=&lt;/span>[variable_1, variable_2],
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> divergences&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">True&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> color&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;C3&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> kwargs_divergence&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#39;color&amp;#39;&lt;/span>: &lt;span style="color:#e6db74">&amp;#39;C2&amp;#39;&lt;/span>})
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>Look at your posteriors (either from the traceplot, density plots or
+posterior plots). Do they even make sense? E.g. are there outliers or long
+tails that you weren&amp;rsquo;t expecting? Do their uncertainties look reasonable to
+you? If you had &lt;a href="https://en.wikipedia.org/wiki/Plate_notation">a plate&lt;/a> of
+variables, are their posteriors different? Did you expect them to be that
+way? If not, what about the data made the posteriors different? You&amp;rsquo;re the
+only one who knows your problem/use case, so the posteriors better look good
+to you!&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Broadly speaking, there are four kinds of bad geometries that your posterior
+can suffer from:&lt;/p>
+&lt;ul>
+&lt;li>highly correlated posteriors: this will probably cause divergences or
+traces that don&amp;rsquo;t look like “fuzzy caterpillars”. Either look at the
+jointplots of each pair of variables, or look at the correlation matrix of
+all variables. Try using a centered parameterization, or reparameterize in
+some other way, to remove these correlations.&lt;/li>
+&lt;li>posteriors that form “funnels”: this will probably cause divergences. Try
+using a noncentered parameterization.&lt;/li>
+&lt;li>heavy tailed posteriors: this will probably raise warnings about
+&lt;code>max_treedepth&lt;/code> being exceeded. If your data has long tails, you should
+model that with a long-tailed distribution. If your data doesn&amp;rsquo;t have long
+tails, then your model is ill-specified: perhaps a more informative prior
+would help.&lt;/li>
+&lt;li>multimodal posteriors: right now this is pretty much a death blow. At the
+time of writing, all samplers have a hard time with multimodality, and
+there&amp;rsquo;s not much you can do about that. Try reparameterizing to get a
+unimodal posterior. If that&amp;rsquo;s not possible (perhaps you&amp;rsquo;re &lt;em>modelling&lt;/em>
+multimodality using a mixture model), you&amp;rsquo;re out of luck: just let NUTS
+sample for a day or so, and hopefully you&amp;rsquo;ll get a good trace.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Pick a small subset of your raw data, and see what exactly your model does
+with that data (i.e. run the model on a specific subset of your data). I find
+that a lot of problems with your model can be found this way.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Run &lt;a href="https://docs.pymc.io/notebooks/posterior_predictive.html">&lt;em>posterior predictive
+checks&lt;/em>&lt;/a> (a.k.a.
+PPCs): sample from your posterior, plug it back in to your model, and
+“generate new data sets”. PyMC3 even has a nice function to do all this for
+you: &lt;code>pm.sample_ppc&lt;/code>. But what do you do with these new data sets? That&amp;rsquo;s a
+question only you can answer! The point of a PPC is to see if the generated
+data sets reproduce patterns you care about in the observed real data set,
+and only you know what patterns you care about. E.g. how close are the PPC
+means to the observed sample mean? What about the variance?&lt;/p>
+&lt;ul>
+&lt;li>For example, suppose you were modelling the levels of radon gas in
+different counties in a country (through a hierarchical model). Then you
+could sample radon gas levels from the posterior for each county, and take
+the maximum within each county. You&amp;rsquo;d then have a distribution of maximum
+radon gas levels across counties. You could then check if the &lt;em>actual&lt;/em>
+maximum radon gas level (in your observed data set) is acceptably within
+that distribution. If it&amp;rsquo;s much larger than the maxima, then you would know
+that the actual likelihood has longer tails than you assumed (e.g. perhaps
+you should use a Student&amp;rsquo;s T instead of a normal?)&lt;/li>
+&lt;li>Remember that how well the posterior predictive distribution fits the data
+is of little consequence (e.g. the expectation that 90% of the data should
+fall within the 90% credible interval of the posterior). The posterior
+predictive distribution tells you what values for data you would expect if
+we were to remeasure, given that you&amp;rsquo;ve already observed the data you did.
+As such, it&amp;rsquo;s informed by your prior as well as your data, and it&amp;rsquo;s not its
+job to adequately fit your data!&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol></description></item></channel></rss>

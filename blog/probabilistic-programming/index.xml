@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>probabilistic-programming on ⁂ George Ho</title><link>https://www.georgeho.org/blog/probabilistic-programming/</link><description>Recent content in probabilistic-programming on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 06 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/probabilistic-programming/index.xml" rel="self" type="application/rss+xml"/><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>https://www.georgeho.org/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/littlemcmc/</guid><description>&lt;center>
+&lt;img
+src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
+alt="LittleMCMC logo">
+&lt;/center>
+&lt;p>Recently there has been a modularization (or, if you&amp;rsquo;re hip with tech-lingo, an
+&lt;a href="https://techcrunch.com/2015/04/18/the-unbundling-of-everything/">&lt;em>unbundling&lt;/em>&lt;/a>)
+of Bayesian modelling libraries. Whereas before, probability distributions,
+model specification, inference and diagnostics were more or less rolled into one
+library, it&amp;rsquo;s becoming more and more realistic to specify a model in one
+library, accelerate it using another, perform inference with a third and use a
+fourth to visualize the results. (For example, Junpeng Lao has recently had
+&lt;a href="https://twitter.com/junpenglao/status/1309470970223226882">good success&lt;/a> doing
+exactly this!)&lt;/p>
+&lt;p>It&amp;rsquo;s in this spirit of unbundling that the PyMC developers wanted to &lt;a href="https://discourse.pymc.io/t/isolate-nuts-into-a-new-library/3974">spin out
+the core HMC and NUTS samplers from PyMC3 into a separate
+library&lt;/a>.
+PyMC3 has a very well-tested and performant Python implementation of HMC and
+NUTS, which would be very useful to any users who have their own functions for
+computing log-probability and its gradients, and who want to use a lightweight
+and reliable sampler.&lt;/p>
+&lt;p>So for example, if you&amp;rsquo;re a physical scientist with a Bayesian model who&amp;rsquo;s
+written your own functions to compute the log probability and its gradients
+(perhaps for performance or interoperability reasons), and need a good MCMC
+sampler, then &lt;code>littlemcmc&lt;/code> is for you! As long as you can call your functions
+from Python, you can use the same HMC or NUTS sampler that&amp;rsquo;s used by the rest of
+the PyMC3 community.&lt;/p>
+&lt;p>So without further ado: please check out &lt;code>littlemcmc&lt;/code>!&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>https://www.georgeho.org/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
+abstract&lt;/a> to the &lt;a href="https://program-transformations.github.io/">&lt;em>Program Transformations
+for Machine Learning&lt;/em> NeurIPS workshop&lt;/a>. I
+realized that despite knowing a thing or two about Bayesian modelling, I don&amp;rsquo;t
+understand how probabilistic programming frameworks are structured, and therefore
+couldn&amp;rsquo;t appreciate the sophisticated design work going into PyMC4. So I trawled through
+papers, documentation and source code&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> of various open-source probabilistic
+programming frameworks, and this is what I&amp;rsquo;ve managed to take away from it.&lt;/p>
+&lt;p>I assume you know a fair bit about probabilistic programming and Bayesian modelling, and
+are familiar with the big players in the probabilistic programming world. If you&amp;rsquo;re
+unsure, you can &lt;a href="https://www.georgeho.org/bayesian-inference-reading/">read up here&lt;/a>.&lt;/p>
+&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#dissecting-probabilistic-programming-frameworks">Dissecting Probabilistic Programming Frameworks&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#specifying-the-model-languageapi">Specifying the model: language/API&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#building-the-model-density-distributions-and-transformations">Building the model density: distributions and transformations&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#computing-the-posterior-inference-algorithm">Computing the posterior: inference algorithm&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#computing-the-mode-optimizer">Computing the mode: optimizer&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#computing-gradients-autodifferentiation">Computing gradients: autodifferentiation&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#monitoring-inference-diagnostics">Monitoring inference: diagnostics&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#a-zoo-of-probabilistic-programming-frameworks">A Zoo of Probabilistic Programming Frameworks&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#stan">Stan&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#tensorflow-probability-aka-tfp">TensorFlow Probability (a.k.a. TFP)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#pymc3">PyMC3&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#pymc4">PyMC4&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#pyro">Pyro&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;h2 id="dissecting-probabilistic-programming-frameworks">Dissecting Probabilistic Programming Frameworks&lt;/h2>
+&lt;p>A probabilistic programming framework needs to provide six things:&lt;/p>
+&lt;ol>
+&lt;li>A language or API for users to specify a model&lt;/li>
+&lt;li>A library of probability distributions and transformations to build the posterior
+density&lt;/li>
+&lt;li>At least one inference algorithm, which either draws samples from the posterior (in
+the case of Markov Chain Monte Carlo, MCMC) or computes some approximation of it (in
+the case of variational inference, VI)&lt;/li>
+&lt;li>At least one optimizer, which can compute the mode of the posterior density&lt;/li>
+&lt;li>An autodifferentiation library to compute gradients required by the inference
+algorithm and optimizer&lt;/li>
+&lt;li>A suite of diagnostics to monitor and analyze the quality of inference&lt;/li>
+&lt;/ol>
+&lt;p>These six pieces come together like so:&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/prob-prog-flowchart.png" alt="Flowchart illustrating the structure of a probabilistic programmingframeworks">&lt;/p>
+&lt;p>Let&amp;rsquo;s break this down one by one.&lt;/p>
+&lt;h3 id="specifying-the-model-languageapi">Specifying the model: language/API&lt;/h3>
+&lt;p>This is what users will use to specify their models. Most frameworks will let users
+write in some existing programming language and call the framework&amp;rsquo;s functions and
+classes, but &lt;del>some others&lt;/del> — why don&amp;rsquo;t I just say it — Stan rolls their own
+domain-specific language.&lt;/p>
+&lt;p>The main question here is what language you think is best for users to specify models
+in: any sufficiently popular host language (such as Python) will reduce the learning
+curve for users and make the framework easier to develop and maintain, but a creating
+your own language allows you to introduce helpful abstractions for your framework&amp;rsquo;s
+particular use case (as &lt;a href="https://mc-stan.org/docs/2_20/reference-manual/blocks-chapter.html">Stan
+does&lt;/a>, for example).&lt;/p>
+&lt;p>At this point I should point out the non-universal, Python bias in this post: there are
+plenty of interesting non-Python probabilistic programming frameworks out there (e.g.
+&lt;a href="https://greta-stats.org/">Greta&lt;/a> in R, &lt;a href="https://turing.ml/dev/">Turing&lt;/a> and
+&lt;a href="https://www.gen.dev/">Gen&lt;/a> in Julia, &lt;a href="https://github.com/p2t2/figaro">Figaro&lt;/a> and
+&lt;a href="https://github.com/stripe/rainier">Rainier&lt;/a> in Scala), as well as universal
+probabilistic programming systems&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> (e.g.
+&lt;a href="http://probcomp.csail.mit.edu/software/venture/">Venture&lt;/a> from MIT,
+&lt;a href="https://probprog.github.io/anglican/index.html">Angelican&lt;/a> from Oxford)&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>. I just
+don&amp;rsquo;t know anything about any of them.&lt;/p>
+&lt;h3 id="building-the-model-density-distributions-and-transformations">Building the model density: distributions and transformations&lt;/h3>
+&lt;p>These are what the user&amp;rsquo;s model calls, in order to compile/build the model itself
+(whether that means a posterior log probability, in the case of MCMC, or some loss
+function to minimize, in the case of VI). By &lt;em>distributions&lt;/em>, I mean the probability
+distributions that the random variables in your model can assume (e.g. Normal or
+Poisson), and by &lt;em>transformations&lt;/em> I mean deterministic mathematical operations you can
+perform on these random variables, while still keeping track of the derivative of these
+transformations&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup> (e.g. exponentials, logarithms, sines or cosines).&lt;/p>
+&lt;p>This is a good time to point out that the interactions between the language/API and the
+distributions and transformations libraries is a major design problem. Here&amp;rsquo;s a (by no
+means exhaustive) list of necessary considerations:&lt;/p>
+&lt;ol>
+&lt;li>In order to build the model density, the framework must keep track of every
+distribution and transformation, while also computing the derivatives of any such
+transformations. This results in a Jekyll-and-Hyde problem where every transformation
+requires a forward and backwards definition. Should this tracking happen eagerly, or
+should it be deferred until the user specifies what the model will be used for?&lt;/li>
+&lt;li>Theoretically, a model&amp;rsquo;s specification should be the same whether it is to be used
+for evaluation, inference or debugging. However, in practice, the program execution
+(and computational graph) are different for these three purposes. How should the
+framework manage this?&lt;/li>
+&lt;li>The framework must also keep track of the shapes of random variables, which is
+frighteningly non-trivial! Check out &lt;a href="https://ericmjl.github.io/blog/2019/5/29/reasoning-about-shapes-and-probability-distributions/">this blog
+post&lt;/a>
+or &lt;a href="https://arxiv.org/abs/1711.10604">the original Tensorflow Distributions paper&lt;/a>
+(specifically section 3.3 on shape semantics) for more details.&lt;/li>
+&lt;/ol>
+&lt;p>For a more comprehensive treatment, I can&amp;rsquo;t recommend &lt;a href="https://docs.google.com/presentation/d/1xgNRJDwkWjTHOYMj5aGefwWiV8x-Tz55GfkBksZsN3g/edit?usp=sharing">Junpeng Lao&amp;rsquo;s PyData Córdoba 2019
+talk&lt;/a>
+highly enough — he explains in depth the main challenges in implementing a probabilistic
+programming API and highlights how various frameworks manage these difficulties.&lt;/p>
+&lt;h3 id="computing-the-posterior-inference-algorithm">Computing the posterior: inference algorithm&lt;/h3>
+&lt;p>Having specified and built the model, the framework must now actually perform inference:
+given a model and some data, obtain the posterior (either by sampling from it, in the
+case of MCMC, or by approximating it, in the case of VI).&lt;/p>
+&lt;p>Most probabilistic programming frameworks out there implement both MCMC and VI
+algorithms, although strength of support and quality of documentation can lean heavily
+one way or another. For example, Stan invests heavily into its MCMC, whereas Pyro has
+the most extensive support for its stochastic VI.&lt;/p>
+&lt;h3 id="computing-the-mode-optimizer">Computing the mode: optimizer&lt;/h3>
+&lt;p>Sometimes, instead of performing full-blown inference, it&amp;rsquo;s useful to find the mode of
+the model density. These modes can be used as point estimates of parameters, or as the
+basis of approximations to a Bayesian posterior. Or perhaps you&amp;rsquo;re doing VI, and you
+need some way to perform SGD on a loss function. In either case, a probabilistic
+programming framework calls for an optimizer.&lt;/p>
+&lt;p>If you don&amp;rsquo;t need to do VI, then a simple and sensible thing to do is to use some
+&lt;a href="https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm">BFGS-based optimization
+algorithm&lt;/a>
+(e.g. some quasi-Newton method like
+&lt;a href="https://en.wikipedia.org/wiki/Limited-memory_BFGS">L-BFGS&lt;/a>) and call it a day.
+However, frameworks that focus on VI need to implement &lt;a href="http://docs.pyro.ai/en/stable/optimization.html#module-pyro.optim.optim">optimizers commonly seen in deep
+learning&lt;/a>, such
+as Adam or RMSProp.&lt;/p>
+&lt;h3 id="computing-gradients-autodifferentiation">Computing gradients: autodifferentiation&lt;/h3>
+&lt;p>Both the inference algorithm and the optimizer require gradients (at least, if you&amp;rsquo;re
+not using ancient inference algorithms and optimizers!), and so you&amp;rsquo;ll need some way to
+compute these gradients.&lt;/p>
+&lt;p>The easiest thing to do would be to rely on a deep learning framework like TensorFlow or
+PyTorch. I&amp;rsquo;ve learned not to get too excited about this though: while deep learning
+frameworks&amp;rsquo; heavy optimization of parallelized routines lets you e.g. obtain &lt;a href="https://colindcarroll.com/2019/08/18/very-parallel-mcmc-sampling/">thousands
+of MCMC chains in a reasonable amount of
+time&lt;/a>, it&amp;rsquo;s not
+obvious that this is useful at all (although there&amp;rsquo;s definitely some work going on in
+this area).&lt;/p>
+&lt;h3 id="monitoring-inference-diagnostics">Monitoring inference: diagnostics&lt;/h3>
+&lt;p>Finally, once the inference algorithm has worked its magic, you&amp;rsquo;ll want a way to verify
+the validity and efficiency of that inference. This involves some &lt;a href="https://arviz-devs.github.io/arviz/api.html#stats">off-the-shelf
+statistical diagnostics&lt;/a> (e.g. BFMI,
+information criteria, effective sample size, etc.), but mainly &lt;a href="https://arviz-devs.github.io/arviz/api.html#plots">lots and lots of
+visualization&lt;/a>.&lt;/p>
+&lt;h2 id="a-zoo-of-probabilistic-programming-frameworks">A Zoo of Probabilistic Programming Frameworks&lt;/h2>
+&lt;p>Having outlined the basic internals of probabilistic programming frameworks, I think
+it&amp;rsquo;s helpful to go through several of the popular frameworks as examples. I&amp;rsquo;ve tried to
+link to the relevant source code in the frameworks where possible.&lt;/p>
+&lt;h3 id="stan">Stan&lt;/h3>
+&lt;p>It&amp;rsquo;s very easy to describe how Stan is structured: literally everything is
+implemented from scratch in C++.&lt;/p>
+&lt;ol>
+&lt;li>Stan has a compiler for &lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/lang">a small domain-specific language for specifying Bayesian
+models&lt;/a>&lt;/li>
+&lt;li>Stan has libraries of &lt;a href="https://github.com/stan-dev/math/tree/develop/stan/math/prim">probability
+distributions&lt;/a> and
+&lt;a href="https://github.com/stan-dev/math/tree/develop/stan/math/prim/fun">transforms&lt;/a>&lt;/li>
+&lt;li>Stan implements &lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/mcmc/hmc">dynamic
+HMC&lt;/a> and
+&lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/variational">variational
+inference&lt;/a>&lt;/li>
+&lt;li>Stan also rolls their own &lt;a href="https://github.com/stan-dev/math/tree/develop/stan/math">autodifferentiation
+library&lt;/a>&lt;sup id="fnref:5">&lt;a href="#fn:5" class="footnote-ref" role="doc-noteref">5&lt;/a>&lt;/sup>&lt;/li>
+&lt;li>Stan implements an &lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/optimization">L-BFGS based
+optimizer&lt;/a> (but
+also implements &lt;a href="https://mc-stan.org/docs/2_20/reference-manual/optimization-algorithms-chapter.html">a less efficient Newton
+optimizer&lt;/a>)&lt;/li>
+&lt;li>Finally, Stan has a &lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/analyze/mcmc">suite of
+diagnostics&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;p>Note that contrary to popular belief, Stan &lt;em>does not&lt;/em> implement NUTS:&lt;/p>
+&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">Stan implements a dynamic Hamiltonian Monte Carlo method with multinomial sampling of dynamic length trajectories, generalized termination criterion, and improved adaptation of the Euclidean metric.&lt;/p>&amp;mdash; Dan Simpson (&lt;a href="https://twitter.com/dan_p_simpson">@dan_p_simpson&lt;/a>) &lt;a href="https://twitter.com/dan_p_simpson/status/1037332473175265280">September 5, 2018&lt;/a>&lt;/blockquote>
+&lt;p>And in case you&amp;rsquo;re looking for a snazzy buzzword to drop:&lt;/p>
+&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">Adaptive HMC. &lt;a href="https://twitter.com/betanalpha">@betanalpha&lt;/a> is reluctant to give it a more specific name because, to paraphrase, that’s just marketing bullshit that leads to us celebrating tiny implementation details rather than actual meaningful contributions to comp stats. This is a wide-ranging subtweet.&lt;/p>&amp;mdash; Dan Simpson (&lt;a href="https://twitter.com/dan_p_simpson">@dan_p_simpson&lt;/a>) &lt;a href="https://twitter.com/dan_p_simpson/status/1034098649406554113">August 27, 2018&lt;/a>&lt;/blockquote>
+&lt;h3 id="tensorflow-probability-aka-tfp">TensorFlow Probability (a.k.a. TFP)&lt;/h3>
+&lt;ol>
+&lt;li>TFP users write Python (albeit through an &lt;a href="https://colcarroll.github.io/ppl-api/">extremely verbose
+API&lt;/a>)&lt;/li>
+&lt;li>TFP implements their own
+&lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/distributions">distributions&lt;/a>
+and
+&lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/bijectors">transforms&lt;/a>
+(which TensorFlow, for some reason, calls &amp;ldquo;bijectors&amp;rdquo;). You can find more details in
+&lt;a href="https://arxiv.org/abs/1711.10604">their arXiv paper&lt;/a>&lt;/li>
+&lt;li>TFP implements &lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/mcmc">a ton of
+MCMC&lt;/a>
+algorithms and a handful of &lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/vi">VI
+algorithms&lt;/a>
+in TensorFlow&lt;/li>
+&lt;li>TFP implements &lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/optimizer">several
+optimizers&lt;/a>,
+including Nelder-Mead, BFGS and L-BFGS (again, in TensorFlow)&lt;/li>
+&lt;li>TFP relies on TensorFlow to compute gradients (er, duh)&lt;/li>
+&lt;li>TFP implements &lt;a href="https://github.com/tensorflow/probability/blob/master/tensorflow_probability/python/mcmc/diagnostic.py">a handful of
+metrics&lt;/a>
+(e.g. effective sample size and potential scale reduction), but seems to lack a
+comprehensive suite of diagnostics and visualizations: even
+&lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/experimental/edward2">Edward2&lt;/a>
+(an experimental interface to TFP for flexible modelling, inference and criticism)
+suggests that you &lt;a href="https://github.com/tensorflow/probability/blob/master/tensorflow_probability/python/experimental/edward2/Upgrading_From_Edward_To_Edward2.md#model--inference-criticism">build your metrics manually or use boilerplate in
+&lt;code>tf.metrics&lt;/code>&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;h3 id="pymc3">PyMC3&lt;/h3>
+&lt;ol>
+&lt;li>PyMC3 users write Python code, using a context manager pattern (i.e. &lt;code>with pm.Model as model&lt;/code>)&lt;/li>
+&lt;li>PyMC3 implements its own
+&lt;a href="https://github.com/pymc-devs/pymc3/tree/master/pymc3/distributions">distributions&lt;/a>
+and
+&lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/distributions/transforms.py">transforms&lt;/a>&lt;/li>
+&lt;li>PyMC3 implements
+&lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/step_methods/hmc/nuts.py">NUTS&lt;/a>,
+(as well as &lt;a href="https://github.com/pymc-devs/pymc3/tree/master/pymc3/step_methods">a range of other MCMC step
+methods&lt;/a>) and
+&lt;a href="https://github.com/pymc-devs/pymc3/tree/master/pymc3/variational">several variational inference
+algorithms&lt;/a>,
+although NUTS is the default and recommended inference algorithm&lt;/li>
+&lt;li>PyMC3 (specifically, the &lt;code>find_MAP&lt;/code> function) &lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/tuning/starting.py">relies on
+&lt;code>scipy.optimize&lt;/code>&lt;/a>,
+which in turn implements a BFGS-based optimizer&lt;/li>
+&lt;li>PyMC3 &lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/theanof.py">relies on
+Theano&lt;/a> to compute
+gradients&lt;/li>
+&lt;li>PyMC3 &lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/plots/__init__.py">delegates posterior visualization and
+diagnostics&lt;/a>
+to its cousin project &lt;a href="https://arviz-devs.github.io/arviz/">ArviZ&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;p>Some remarks:&lt;/p>
+&lt;ul>
+&lt;li>PyMC3&amp;rsquo;s context manager pattern is an interceptor for sampling statements: essentially
+&lt;a href="https://arxiv.org/abs/1811.06150">an accidental implementation of effect handlers&lt;/a>.&lt;/li>
+&lt;li>PyMC3&amp;rsquo;s distributions are simpler than those of TFP or PyTorch: they simply need to
+have a &lt;code>random&lt;/code> and a &lt;code>logp&lt;/code> method, whereas TFP/PyTorch implement a whole bunch of
+other methods to handle shapes, parameterizations, etc. In retrospect, we realize
+that this is &lt;a href="https://docs.pymc.io/developer_guide.html#what-we-got-wrong">one of PyMC3&amp;rsquo;s design
+flaws&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;h3 id="pymc4">PyMC4&lt;/h3>
+&lt;p>PyMC4 is still under active development (at least, at the time of writing), but it&amp;rsquo;s
+safe to call out the overall architecture.&lt;/p>
+&lt;ol>
+&lt;li>PyMC4 users will write Python, although now with a generator pattern (e.g. &lt;code>x = yield Normal(0, 1, &amp;quot;x&amp;quot;)&lt;/code>), instead of a context manager&lt;/li>
+&lt;li>PyMC4 will &lt;a href="https://github.com/pymc-devs/pymc4/tree/master/pymc4/distributions/">rely on TensorFlow distributions (a.k.a.
+&lt;code>tfd&lt;/code>)&lt;/a> for both
+distributions and transforms&lt;/li>
+&lt;li>PyMC4 will also &lt;a href="https://github.com/pymc-devs/pymc4/tree/master/pymc4/inference/">rely on TensorFlow for
+MCMC&lt;/a> (although the
+specifics of the exact MCMC algorithm are still fairly fluid at the time of writing)&lt;/li>
+&lt;li>As far as I can tell, the optimizer is still TBD&lt;/li>
+&lt;li>Because PyMC4 relies on TFP, which relies on TensorFlow, TensorFlow manages all
+gradient computations automatically&lt;/li>
+&lt;li>Like its predecessor, PyMC4 will delegate diagnostics and visualization to ArviZ&lt;/li>
+&lt;/ol>
+&lt;p>Some remarks:&lt;/p>
+&lt;ul>
+&lt;li>With the generator pattern for model specification, PyMC4 embraces the notion of a
+probabilistic program as one that defers its computation. For more color on this, see
+&lt;a href="https://twitter.com/avibryant/status/1150827954319982592">this Twitter thread&lt;/a> I had
+with &lt;a href="https://about.me/avibryant">Avi Bryant&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;h3 id="pyro">Pyro&lt;/h3>
+&lt;ol>
+&lt;li>Pyro users write Python&lt;/li>
+&lt;li>Pyro &lt;a href="https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/__init__.py">relies on PyTorch
+distributions&lt;/a>
+(&lt;a href="https://github.com/pyro-ppl/pyro/tree/dev/pyro/distributions">implementing its own where
+necessary&lt;/a>), and also
+relies on PyTorch distributions &lt;a href="https://github.com/pyro-ppl/pyro/tree/dev/pyro/distributions/transforms">for its
+transforms&lt;/a>&lt;/li>
+&lt;li>Pyro implements &lt;a href="http://docs.pyro.ai/en/stable/inference.html">many inference
+algorithms&lt;/a> in PyTorch (including &lt;a href="https://github.com/pyro-ppl/pyro/tree/dev/pyro/infer/mcmc">HMC
+and NUTS&lt;/a>), but support
+for &lt;a href="https://github.com/pyro-ppl/pyro/blob/dev/pyro/infer/svi.py">stochastic VI&lt;/a> is
+the most extensive&lt;/li>
+&lt;li>Pyro implements &lt;a href="https://github.com/pyro-ppl/pyro/blob/master/pyro/optim/optim.py">its own
+optimizer&lt;/a> in
+PyTorch&lt;/li>
+&lt;li>Pyro relies on PyTorch to compute gradients (again, duh)&lt;/li>
+&lt;li>As far as I can tell, Pyro doesn&amp;rsquo;t provide any diagnostic or visualization
+functionality&lt;/li>
+&lt;/ol>
+&lt;p>Some remarks:&lt;/p>
+&lt;ul>
+&lt;li>Pyro includes the Poutine submodule, which is a library of composable &lt;a href="https://arxiv.org/abs/1811.06150">effect
+handlers&lt;/a>. While this might sound like recondite
+abstractions, they allow you to implement your own custom inference algorithms and
+otherwise manipulate Pyro probabilistic programs. In fact, all of Pyro&amp;rsquo;s inference
+algorithms use these effect handlers.&lt;/li>
+&lt;/ul>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>In case you&amp;rsquo;re testifying under oath and need more reliable sources than
+a blog post, I&amp;rsquo;ve kept a &lt;a href="https://www.zotero.org/eigenfoo/items/collectionKey/AE8882GQ">Zotero
+collection&lt;/a> for
+this project.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>Universal probabilistic programming is an interesting field of inquiry,
+but has mainly remained in the realm of academic research. For a (much) more
+comprehensive treatment, check out &lt;a href="http://www.robots.ox.ac.uk/~twgr/assets/pdf/rainforth2017thesis.pdf">Tom Rainforth&amp;rsquo;s PhD
+thesis&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>Since publishing this blog post, I have been informed that I am more
+ignorant than I know: I have forgotten
+&lt;a href="https://github.com/cscherrer/Soss.jl">Soss.jl&lt;/a> in Julia and
+&lt;a href="https://github.com/thu-ml/zhusuan">ZhuSuan&lt;/a> in Python.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>It turns out that such transformations must be &lt;a href="https://en.wikipedia.org/wiki/Local_diffeomorphism">local
+diffeomorphisms&lt;/a>, and the
+derivative information requires computing the log determinant of the Jacobian
+of the transformation, commonly abbreviated to &lt;code>log_det_jac&lt;/code> or something
+similar.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:5" role="doc-endnote">
+&lt;p>As an aside, I&amp;rsquo;ll say that it&amp;rsquo;s mind boggling how Stan does this. To
+quote a (nameless) PyMC core developer:&lt;/p>
+&lt;blockquote>
+&lt;p>I think that maintaining your own autodifferentiation library is the
+path of a crazy person.&lt;/p>
+&lt;/blockquote>
+&amp;#160;&lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;/section></description></item></channel></rss>

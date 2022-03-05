@@ -1,0 +1,2018 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>machine-learning on ⁂ George Ho</title><link>https://www.georgeho.org/blog/machine-learning/</link><description>Recent content in machine-learning on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 15 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/machine-learning/index.xml" rel="self" type="application/rss+xml"/><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>https://www.georgeho.org/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tensor-computation-libraries/</guid><description>&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#dissecting-tensor-computation-libraries">Dissecting Tensor Computation Libraries&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#tensor-computation-library---maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; - Maybe Not The Best Name&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#some-differences-between-tensor-computation-libraries">(Some) Differences Between Tensor Computation Libraries&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#a-zoo-of-tensor-computation-libraries">A Zoo of Tensor Computation Libraries&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#pytorchhttpspytorchorg">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#jaxhttpsjaxreadthedocsioenlatest">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#theanohttpstheano-pymcreadthedocsioenlatest">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#an-observation-on-static-graphs-and-theano">An Observation on Static Graphs and Theano&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
+algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
+&lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
+prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
+less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways.
+This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although
+I couldn&amp;rsquo;t articulate what exactly they were). Then came &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">the announcement by the PyMC developers
+that Theano would have a new JAX
+backend&lt;/a>.&lt;/p>
+&lt;p>Anyways, this confusion prompted a lot of research and eventually, this blog post.&lt;/p>
+&lt;p>Similar to &lt;a href="https://www.georgeho.org/prob-prog-frameworks/">my previous post on the anatomy of probabilistic programming
+frameworks&lt;/a>, I’ll first discuss tensor computation
+libraries in general - what they are and how they can differ from one another. Then I&amp;rsquo;ll discuss
+some libraries in detail, and finally offer an observation on the future of Theano in the context of
+contemporary tensor computation libraries.&lt;/p>
+&lt;h2 id="dissecting-tensor-computation-libraries">Dissecting Tensor Computation Libraries&lt;/h2>
+&lt;p>First, a characterization: what do tensor computation libraries even do?&lt;/p>
+&lt;ol>
+&lt;li>They provide ways of specifying and building computational graphs,&lt;/li>
+&lt;li>They run the computation itself (duh), but also run &amp;ldquo;related&amp;rdquo; computations that either (a) &lt;em>use
+the computational graph&lt;/em>, or (b) operate &lt;em>directly on the computational graph itself&lt;/em>,
+&lt;ul>
+&lt;li>The most salient example of the former is computing gradients via
+&lt;a href="https://arxiv.org/abs/1502.05767">autodifferentiation&lt;/a>,&lt;/li>
+&lt;li>A good example of the latter is optimizing the computation itself: think symbolic
+simplifications (e.g. &lt;code>xy/x = y&lt;/code>) or modifications for numerical stability (e.g. &lt;a href="https://cs.stackexchange.com/q/68411">&lt;code>log(1 + x)&lt;/code>
+for small values of &lt;code>x&lt;/code>&lt;/a>).&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>And they provide &amp;ldquo;best execution&amp;rdquo; for the computation: whether it&amp;rsquo;s changing the execution by JIT
+(just-in-time) compiling it, by utilizing special hardware (GPUs/TPUs), by vectorizing the
+computation, or in any other way.&lt;/li>
+&lt;/ol>
+&lt;h3 id="tensor-computation-library---maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; - Maybe Not The Best Name&lt;/h3>
+&lt;p>As an aside: I realize that the name &amp;ldquo;tensor computation library&amp;rdquo; is too broad, and that the
+characterization above precludes some libraries that might also justifiably be called &amp;ldquo;tensor
+computation libraries&amp;rdquo;. Better names might be &amp;ldquo;graph computation library&amp;rdquo; (although that might get
+mixed up with libraries like &lt;a href="https://networkx.org/">&lt;code>networkx&lt;/code>&lt;/a>) or &amp;ldquo;computational graph management
+library&amp;rdquo; or even &amp;ldquo;symbolic tensor algebra libraries&amp;rdquo;.&lt;/p>
+&lt;p>So for the avoidance of doubt, here is a list of libraries that this blog post is &lt;em>not&lt;/em> about:&lt;/p>
+&lt;ul>
+&lt;li>NumPy and SciPy
+&lt;ul>
+&lt;li>These libraries don&amp;rsquo;t have a concept of a computational graph - they’re more like a toolbox of
+functions, called from Python and executed in C or Fortran.&lt;/li>
+&lt;li>However, this might be a controversial distinction - as we’ll see later, JAX also doesn&amp;rsquo;t build
+an explicit computational graph either, and I definitely want to include JAX as a &amp;ldquo;tensor
+computation library&amp;rdquo;&amp;hellip; ¯\_(ツ)_/¯&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Numba and Cython
+&lt;ul>
+&lt;li>These libraries provide best execution for code (and in fact some tensor computation libraries,
+such as Theano, make good use them), but like NumPy and SciPy, they do not actually manage the
+computational graph itself.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Keras, Trax, Flax and PyTorch-Lightning
+&lt;ul>
+&lt;li>These libraries are high-level wrappers around tensor computation libraries - they basically
+provide abstractions and a user-facing API to utilize tensor computation libraries in a
+friendlier way.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="some-differences-between-tensor-computation-libraries">(Some) Differences Between Tensor Computation Libraries&lt;/h3>
+&lt;p>Anyways, back to tensor computation libraries.&lt;/p>
+&lt;p>All three aforementioned goals are ambitious undertakings with sophisticated solutions, so it
+shouldn&amp;rsquo;t be surprising to learn that decisions in pursuit on goal can have implications for (or
+even incur a trade-off with!) other goals. Here&amp;rsquo;s a list of common differences along all three axes:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Tensor computation libraries can differ in how they represent the computational graph, and how it
+is built.&lt;/p>
+&lt;ul>
+&lt;li>Static or dynamic graphs: do we first define the graph completely and then inject data to run
+(a.k.a. define-and-run), or is the graph defined on-the-fly via the actual forward computation
+(a.k.a. define-by-run)?
+&lt;ul>
+&lt;li>TensorFlow 1.x was (in)famous for its static graphs, which made users feel like they were
+&amp;ldquo;working with their computational graph through a keyhole&amp;rdquo;, especially when &lt;a href="https://news.ycombinator.com/item?id=13429355">compared to
+PyTorch&amp;rsquo;s dynamic graphs&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Lazy or eager execution: do we evaluate variables as soon as they are defined, or only when a
+dependent variable is evaluated? Usually, tensor computation libraries either choose to support
+dynamic graphs with eager execution, or static graphs with lazy execution - for example,
+&lt;a href="https://www.tensorflow.org/guide/eager">TensorFlow 2.0 supports both modes&lt;/a>.&lt;/li>
+&lt;li>Interestingly, some tensor computation libraries (e.g. &lt;a href="https://thinc.ai/">Thinc&lt;/a>) don&amp;rsquo;t even
+construct an explicit computational graph: they represent it as &lt;a href="https://thinc.ai/docs/concept">chained higher-order
+functions&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Tensor computation libraries can also differ in what they want to use the computational graph
+&lt;em>for&lt;/em> - for example, are we aiming to do things that basically amount to running the
+computational graph in a &amp;ldquo;different mode&amp;rdquo;, or are we aiming to modify the computational graph
+itself?&lt;/p>
+&lt;ul>
+&lt;li>Almost all tensor computation libraries support autodifferentiation in some capacity (either
+forward-mode, backward-mode, or both).&lt;/li>
+&lt;li>Obviously, how you represent the computational graph and what you want to use it for are very
+related questions! For example, if you want to be able to represent aribtrary computation as a
+graph, you&amp;rsquo;ll have to handle control flow like if-else statements or for-loops - this leads to
+common gotchas with &lt;a href="https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#%F0%9F%94%AA-Control-Flow">using Python for-loops in
+JAX&lt;/a>
+or needing to use &lt;a href="https://discuss.pytorch.org/t/can-you-have-for-loops-in-the-forward-prop/68295">&lt;code>torch.nn.ModuleList&lt;/code> in for-loops with
+PyTorch&lt;/a>.&lt;/li>
+&lt;li>Some tensor computation libraries (e.g. &lt;a href="https://github.com/Theano/Theano">Theano&lt;/a> and it&amp;rsquo;s
+fork, &lt;a href="https://theano-pymc.readthedocs.io/en/latest/index.html">Theano-PyMC&lt;/a>) aim to &lt;a href="https://theano-pymc.readthedocs.io/en/latest/extending/optimization.html">optimize
+the computational graph
+itself&lt;/a>, for which an
+&lt;a href="#an-observation-on-static-graphs-and-theano">explicit graph is necessary&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Finally, tensor computation libraries can also differ in how they execute code.&lt;/p>
+&lt;ul>
+&lt;li>All tensor computation libraries run on CPU, but the strength of GPU and TPU support is a major
+differentiator among tensor computation libraries.&lt;/li>
+&lt;li>Another differentiator is how tensor computation libraries compile code to be executed on
+hardware. For example, do they use JIT compilation or not? Do they use &amp;ldquo;vanilla&amp;rdquo; C or CUDA
+compilers, or &lt;a href="https://tensorflow.google.cn/xla">the XLA compiler for machine-learning specific
+code&lt;/a>?&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="a-zoo-of-tensor-computation-libraries">A Zoo of Tensor Computation Libraries&lt;/h2>
+&lt;p>Having outlined the basic similarities and differences of tensor computation libraries, I think
+it&amp;rsquo;ll be helpful to go through several of the popular libraries as examples. I&amp;rsquo;ve tried to link to
+the relevant documentation where possible.&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/p>
+&lt;h3 id="pytorchhttpspytorchorg">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/h3>
+&lt;ol>
+&lt;li>How is the computational graph represented and built?
+&lt;ul>
+&lt;li>PyTorch dynamically builds (and eagerly evaluates) an explicit computational graph. For more
+detail on how this is done, check out &lt;a href="https://pytorch.org/docs/stable/notes/autograd.html">the PyTorch docs on autograd
+mechanics&lt;/a>.&lt;/li>
+&lt;li>For more on how PyTorch computational graphs, see &lt;a href="https://jdhao.github.io/2017/11/12/pytorch-computation-graph/">&lt;code>jdhao&lt;/code>&amp;rsquo;s introductory blog post on
+computational graphs in
+PyTorch&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>What is the computational graph used for?
+&lt;ul>
+&lt;li>To quote the &lt;a href="https://pytorch.org/docs/stable/index.html">PyTorch docs&lt;/a>, &amp;ldquo;PyTorch is an
+optimized tensor library for deep learning using GPUs and CPUs&amp;rdquo; - as such, the main focus is on
+&lt;a href="https://pytorch.org/docs/stable/notes/autograd.html">autodifferentiation&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>How does the library ensure &amp;ldquo;best execution&amp;rdquo; for computation?
+&lt;ul>
+&lt;li>PyTorch has &lt;a href="https://pytorch.org/docs/stable/notes/cuda.html">native GPU support&lt;/a> via CUDA.&lt;/li>
+&lt;li>PyTorch also has support for TPU through projects like
+&lt;a href="https://github.com/pytorch/xla">PyTorch/XLA&lt;/a> and
+&lt;a href="https://www.pytorchlightning.ai/">PyTorch-Lightning&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="jaxhttpsjaxreadthedocsioenlatest">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/h3>
+&lt;ol>
+&lt;li>
+&lt;p>How is the computational graph represented and built?&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Instead of building an explicit computational graph to compute gradients, JAX simply supplies a
+&lt;code>grad()&lt;/code> that returns the gradient function of any supplied function. As such, there is
+technically no concept of a computational graph - only pure (i.e. stateless and
+side-effect-free) functions and their gradients.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a href="https://sjmielke.com/jax-purify.htm">Sabrina Mielke summarizes the situation very well&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>PyTorch builds up a graph as you compute the forward pass, and one call to &lt;code>backward()&lt;/code> on
+some &amp;ldquo;result&amp;rdquo; node then augments each intermediate node in the graph with the gradient of the
+result node with respect to that intermediate node. JAX on the other hand makes you express
+your computation as a Python function, and by transforming it with &lt;code>grad()&lt;/code> gives you a
+gradient function that you can evaluate like your computation function — but instead of the
+output it gives you the gradient of the output with respect to (by default) the first
+parameter that your function took as input.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>What is the computational graph used for?&lt;/p>
+&lt;ul>
+&lt;li>According to the &lt;a href="https://jax.readthedocs.io/en/latest/notebooks/quickstart.html">JAX quickstart&lt;/a>,
+JAX bills itself as &amp;ldquo;NumPy on the CPU, GPU, and TPU, with great automatic differentiation for
+high-performance machine learning research&amp;rdquo;. Hence, its focus is heavily on
+autodifferentiation.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>How does the library ensure &amp;ldquo;best execution&amp;rdquo; for computation?&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>This is best explained by quoting the &lt;a href="https://jax.readthedocs.io/en/latest/notebooks/quickstart.html">JAX quickstart&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>JAX uses XLA to compile and run your NumPy code on [&amp;hellip;] GPUs and TPUs. Compilation happens
+under the hood by default, with library calls getting just-in-time compiled and executed. But
+JAX even lets you just-in-time compile your own Python functions into XLA-optimized kernels
+[&amp;hellip;] Compilation and automatic differentiation can be composed arbitrarily [&amp;hellip;]&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>For more detail on JAX’s four-function API (&lt;code>grad&lt;/code>, &lt;code>jit&lt;/code>, &lt;code>vmap&lt;/code> and &lt;code>pmap&lt;/code>), see
+&lt;a href="http://alexminnaar.com/2020/08/15/jax-overview.html">Alex Minaar&amp;rsquo;s overview of how JAX works&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="theanohttpstheano-pymcreadthedocsioenlatest">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/h3>
+&lt;blockquote>
+&lt;p>&lt;strong>Note:&lt;/strong> the &lt;a href="https://github.com/Theano/Theano">original Theano&lt;/a> (maintained by
+&lt;a href="https://mila.quebec/en/">MILA&lt;/a>) has been discontinued, and the PyMC developers have forked the
+project: &lt;a href="https://github.com/pymc-devs/Theano-PyMC">Theano-PyMC&lt;/a> (soon to be renamed Aesara). I&amp;rsquo;ll
+discuss both the original and forked projects below.&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>How is the computational graph represented and built?
+&lt;ul>
+&lt;li>Theano statically builds (and lazily evaluates) an explicit computational graph.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>What is the computational graph used for?
+&lt;ul>
+&lt;li>Theano is unique among tensor computation libraries in that it places more emphasis on
+reasoning about the computational graph itself. In other words, while Theano has &lt;a href="https://theano-pymc.readthedocs.io/en/latest/library/gradient.html">strong
+support for
+autodifferentiation&lt;/a>,
+running the computation and computing gradients isn&amp;rsquo;t the be-all and end-all: Theano has an
+entire module for &lt;a href="https://theano-pymc.readthedocs.io/en/latest/optimizations.html">optimizing the computational graph
+itself&lt;/a>, and makes it fairly
+straightforward to compile the Theano graph to different computational backends (by default,
+Theano compiles to C or CUDA, but it’s straightforward to compile to JAX).&lt;/li>
+&lt;li>Theano is often remembered as a library for deep learning research, but it’s so much more than
+that!&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>How does the library ensure &amp;ldquo;best execution&amp;rdquo; for computation?
+&lt;ul>
+&lt;li>The original Theano used the GCC C compiler for CPU computation, and the NVCC CUDA compiler for
+GPU computation.&lt;/li>
+&lt;li>The Theano-PyMC fork project &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">will use JAX as a
+backend&lt;/a>,
+which can utilize CPUs, GPUs and TPUs as available.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="an-observation-on-static-graphs-and-theano">An Observation on Static Graphs and Theano&lt;/h2>
+&lt;p>Finally, a quick observation on static graphs and the niche that Theano fills that other tensor
+computation libraries do not. I had huge help from &lt;a href="https://twiecki.io/">Thomas Wiecki&lt;/a> and
+&lt;a href="https://brandonwillard.github.io/">Brandon Willard&lt;/a> with this section.&lt;/p>
+&lt;p>There&amp;rsquo;s been a consistent movement in most tensor computation libraries away from static graphs (or
+more precisely, statically &lt;em>built&lt;/em> graphs): PyTorch and TensorFlow 2 both support dynamically
+generated graphs by default, and JAX forgoes an explicit computational graph entirely.&lt;/p>
+&lt;p>This movement is understandable - building the computational graph dynamically matches people&amp;rsquo;s
+programming intuition much better. When I write &lt;code>z = x + y&lt;/code>, I don&amp;rsquo;t mean &lt;em>&amp;ldquo;I want to register a sum
+operation with two inputs, which is waiting for data to be injected&amp;rdquo;&lt;/em> - I mean &lt;em>&amp;ldquo;I want to compute
+the sum of &lt;code>x&lt;/code> and &lt;code>y&lt;/code>&amp;rdquo;.&lt;/em> The extra layer of indirection is not helpful to most users, who just want
+to run their tensor computation at some reasonable speed.&lt;/p>
+&lt;p>So let me speak in defence of statically built graphs.&lt;/p>
+&lt;p>Having an explicit representation of the computational graph is immensely useful for certain things,
+even if it makes the graph harder to work with. You can modify the graph (e.g. graph optimizations,
+simplifications and rewriting), and you can reason about and analyze the graph. Having the
+computation as an actual &lt;em>object&lt;/em> helps immeasurably for tasks where you need to think about the
+computation itself, instead of just blindly running it.&lt;/p>
+&lt;p>On the other hand, with dynamically generated graphs, the computational graph is never actually
+defined anywhere: the computation is traced out on the fly and behind the scene. You can no longer
+do anything interesting with the computational graph: for example, if the computation is slow, you
+can&amp;rsquo;t reason about &lt;em>what&lt;/em> parts of the graph are slow. The end result is that you basically have to
+hope that the framework internals are doing the right things, which they might not!&lt;/p>
+&lt;p>This is the niche that Theano (or rather, Theano-PyMC/Aesara) fills that other contemporary tensor
+computation libraries do not: the promise is that if you take the time to specify your computation
+up front and all at once, Theano can optimize the living daylight out of your computation - whether
+by graph manipulation, efficient compilation or something else entirely - and that this is something
+you would only need to do once.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>https://www.georgeho.org/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/floating-point-deep-learning/</guid><description>&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#floating-point-in-_my_-deep-learning">Floating-Point? In &lt;em>My&lt;/em> Deep Learning?&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#floating-point-formats">Floating-Point Formats&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#ieee-floating-point-formats">IEEE floating-point formats&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#google-bfloat16">Google BFloat16&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#nvidia-tensorfloat">NVIDIA TensorFloat&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#advice-for-practitioners">Advice for Practitioners&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#automatic-mixed-precision-amp-training--a-good-default">Automatic mixed precision (AMP) training — a good default&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#alternative-floating-point-formats--make-sure-itll-be-worth-it">Alternative floating-point formats — make sure it&amp;rsquo;ll be worth it&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
+consideration when working with deep learning models: if your model isn&amp;rsquo;t working well,
+then your floating-point format certainly isn&amp;rsquo;t going to save you! However, past a
+certain point of model complexity/model size/training time, your choice of
+floating-point format can have a significant impact on your model training times and
+even performance.&lt;/p>
+&lt;p>Here&amp;rsquo;s how the rest of this post is structured:&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="#floating-point-in-my-deep-learning">Why should you, a deep learning practitioner,
+care&lt;/a> about what floating-point format your
+model uses?&lt;/li>
+&lt;li>&lt;a href="#floating-point-formats">What even &lt;em>is&lt;/em> floating-point&lt;/a>, especially these new
+floating-point formats made specifically for deep learning?&lt;/li>
+&lt;li>&lt;a href="#advice-for-practitioners">What practical advice is there&lt;/a> on using floating-point
+formats for deep learning?&lt;/li>
+&lt;/ol>
+&lt;h2 id="floating-point-in-_my_-deep-learning">Floating-Point? In &lt;em>My&lt;/em> Deep Learning?&lt;/h2>
+&lt;p>&lt;a href="https://knowyourmeme.com/photos/6052-its-more-likely-than-you-think">It&amp;rsquo;s more likely than you
+think!&lt;/a>&lt;/p>
+&lt;p>It&amp;rsquo;s been known for quite some time that &lt;a href="https://arxiv.org/abs/1502.02551">deep neural networks can
+tolerate&lt;/a> &lt;a href="https://arxiv.org/abs/1412.7024">lower numerical
+precision&lt;/a>. High-precision calculations turn out not
+to be that useful in training or inferencing neural networks: the additional precision
+confers no benefit while being slower and less memory-efficient.&lt;/p>
+&lt;p>Surprisingly, some models can even reach a higher accuracy with lower precision, which
+recent research attributes to the &lt;a href="https://arxiv.org/abs/1809.00095">regularization effects from the lower
+precision&lt;/a>.&lt;/p>
+&lt;p>Finally (and this is speculation on my part — I haven&amp;rsquo;t seen any experiments or papers
+corroborating this), it&amp;rsquo;s possible that certain complicated models &lt;em>cannot converge&lt;/em>
+unless you use an appropriately precise format. There&amp;rsquo;s a drift between the analytical
+gradient update and what the actual backward propagation looks like: the lower the
+precision, the bigger the drift. I&amp;rsquo;d expect that deep learning is particularly
+susceptible to an issue here because there&amp;rsquo;s a lot of multiplications, divisions and
+reduction operations.&lt;/p>
+&lt;h2 id="floating-point-formats">Floating-Point Formats&lt;/h2>
+&lt;p>Let&amp;rsquo;s take a quick look at three floating-point formats for deep learning. There are a
+lot more floating-point formats, but only a few have gained traction: floating-point
+formats require the appropriate hardware and firmware support, which restricts the
+introduction and adoption of new formats.&lt;/p>
+&lt;p>For a quick overview, Grigory Sapunov wrote a great &lt;a href="https://medium.com/@moocaholic/fp64-fp32-fp16-bfloat16-tf32-and-other-members-of-the-zoo-a1ca7897d407">run-down of various floating-point
+formats for deep
+learning&lt;/a>.&lt;/p>
+&lt;h3 id="ieee-floating-point-formats">IEEE floating-point formats&lt;/h3>
+&lt;p>These floating-point formats are probably what most people think of when someone says
+&amp;ldquo;floating-point&amp;rdquo;. The IEEE standard 754 sets out several formats, but for the purposes
+of deep learning we are only interested three:
+&lt;a href="https://en.wikipedia.org/wiki/Half-precision_floating-point_format">FP16&lt;/a>,
+&lt;a href="https://en.wikipedia.org/wiki/Single-precision_floating-point_format">FP32&lt;/a> and
+&lt;a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">FP64&lt;/a> (a.k.a.
+half-, single- and double-precision floating-point formats)&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>Let&amp;rsquo;s take FP32 as an example. Each FP32 number is a sequence of 32 bits,
+$b_{31} b_{30} &amp;hellip; b_{0}$. Altogether, this sequence represents the real number&lt;/p>
+&lt;p>$$ (-1)^{b_{31}} \cdot 2^{(b_{30} b_{29} &amp;hellip; b_{23}) - 127} \cdot (1.b_{22} b_{21} &amp;hellip; b_{0})_2 $$&lt;/p>
+&lt;p>Here, $b_{31}$ (the &lt;em>sign bit&lt;/em>) determines the sign of the represented value.&lt;/p>
+&lt;p>$b_{30}$ through $b_{23}$ determine the magnitude or scale of the represented value
+(notice that a change in any of these bits drastically changes the size of the
+represented value). These bits are called the &lt;em>exponent&lt;/em> or &lt;em>scale bits&lt;/em>.&lt;/p>
+&lt;p>Finally, $b_{22}$ through $b_{0}$ determine the precise value of the represented
+value. These bits are called the &lt;em>mantissa&lt;/em> or &lt;em>precision bits&lt;/em>.&lt;/p>
+&lt;p>Obviously, the more bits you have, the more you can do. Here&amp;rsquo;s how the three formats
+break down:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">&lt;/th>
+&lt;th style="text-align:right">Sign Bits&lt;/th>
+&lt;th style="text-align:right">Exponent (Scale) Bits&lt;/th>
+&lt;th style="text-align:right">Mantissa (Precision) Bits&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">FP16&lt;/td>
+&lt;td style="text-align:right">1&lt;/td>
+&lt;td style="text-align:right">5&lt;/td>
+&lt;td style="text-align:right">10&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">FP32&lt;/td>
+&lt;td style="text-align:right">1&lt;/td>
+&lt;td style="text-align:right">8&lt;/td>
+&lt;td style="text-align:right">23&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">FP64&lt;/td>
+&lt;td style="text-align:right">1&lt;/td>
+&lt;td style="text-align:right">11&lt;/td>
+&lt;td style="text-align:right">53&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>There are some details that I&amp;rsquo;m leaving out here (e.g. how to represent NaNs, positive
+and negative infinities), but this is largely how floating point numbers work. A lot
+more detail can be found on the &lt;a href="https://en.wikipedia.org/wiki/Floating-point_arithmetic#IEEE_754:_floating_point_in_modern_computers">Wikipedia
+page&lt;/a>
+and of course the &lt;a href="https://ieeexplore.ieee.org/document/8766229">latest revision of the IEEE standard
+754&lt;/a> itself.&lt;/p>
+&lt;p>FP32 and FP64 are widely supported by both software (C/C++, PyTorch, TensorFlow) and
+hardware (x86 CPUs and most NVIDIA/AMD GPUs).&lt;/p>
+&lt;p>FP16, on the other hand, is not as widely supported in software (you need to use &lt;a href="http://half.sourceforge.net/">a
+special library&lt;/a> to use them in C/C++). However, since
+deep learning is trending towards favoring FP16 over FP32, it has found support in the
+main deep learning frameworks (e.g. &lt;code>tf.float16&lt;/code> and &lt;code>torch.float16&lt;/code>). In terms of
+hardware, FP16 is not supported in x86 CPUs as a distinct type, but is well-supported on
+modern GPUs.&lt;/p>
+&lt;h3 id="google-bfloat16">Google BFloat16&lt;/h3>
+&lt;p>BFloat16 (a.k.a. the Brain Floating-Point Format, after Google Brain) is basically the
+same as FP16, but 3 mantissa bits become exponent bits (i.e. bfloat16 trades 3 bits'
+worth of precision for scale).&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bfloat16.png" alt="Diagram illustrating the number and type of bits in bfloat16.">
+&lt;figcaption>The number and type of bits in bfloat16. Source: &lt;a href="https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus">Google Cloud blog&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;p>When it comes to deep learning, there are generally three &amp;ldquo;flavors&amp;rdquo; of values: weights,
+activations and gradients. Google suggests storing weights and gradients in FP32, and
+storing activations in bfloat16. However, in particularly gracious circumstances,
+weights can be stored in bfloat16 without a significant performance degradation.&lt;/p>
+&lt;p>You can read a lot more on the &lt;a href="https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus">Google Cloud
+blog&lt;/a>,
+and &lt;a href="https://arxiv.org/abs/1905.12322">this paper by Intel and Facebook studying the bfloat16
+format&lt;/a>.&lt;/p>
+&lt;p>In terms of software support, bfloat16 is not supported in C/C++, but is supported in
+TensorFlow (&lt;a href="https://www.tensorflow.org/api_docs/python/tf#bfloat16">&lt;code>tf.bfloat16&lt;/code>&lt;/a>) and
+PyTorch (&lt;a href="https://www.tensorflow.org/api_docs/python/tf#bfloat16">&lt;code>torch.bfloat16&lt;/code>&lt;/a>).&lt;/p>
+&lt;p>In terms of hardware support, it is supported by &lt;a href="https://en.wikipedia.org/wiki/Cooper_Lake_(microarchitecture)">some modern
+CPUS&lt;/a>, but the real
+support comes out in GPUs and ASICs. At the time of writing, bfloat16 is supported by
+the NVIDIA A100 (the first GPU to support it!), and &lt;a href="https://www.techpowerup.com/260344/future-amd-gpu-architecture-to-implement-bfloat16-hardware">will be supported in future AMD
+GPUs&lt;/a>.
+And of course, it is supported by Google TPU v2/v3.&lt;/p>
+&lt;h3 id="nvidia-tensorfloat">NVIDIA TensorFloat&lt;/h3>
+&lt;p>Strictly speaking, this isn&amp;rsquo;t really its own floating-point format, just an overzealous
+branding of the technique that NVIDIA developed to train in mixed precision on their
+Tensor Core hardware&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>An NVIDIA TensorFloat (a.k.a. TF32) is just a 32-bit float that drops 13 precision bits
+in order to execute on Tensor Cores. Thus, it has the precision of FP16 (10 bits), with
+the range of FP32 (8 bits). However, if you&amp;rsquo;re not using Tensor Cores, it&amp;rsquo;s just a
+32-bit float; if you&amp;rsquo;re only thinking about storage, it&amp;rsquo;s just a 32-bit float.&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/tensorfloat32.png" alt="Diagram illustrating the number and type of bits in an NVIDIA TensorFloat">
+&lt;figcaption>The number and type of bits in an NVIDIA TensorFloat. Source: &lt;a href="https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/">NVIDIA blog&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;p>One distinct advantage of TF32 is that they&amp;rsquo;re kind of like FP32. To quote from the
+NVIDIA developer blog,&lt;/p>
+&lt;blockquote>
+&lt;p>Applications using NVIDIA libraries enable users to harness the benefits of TF32 with no
+code change required. TF32 Tensor Cores operate on FP32 inputs and produce results in
+FP32. Non-matrix operations continue to use FP32.&lt;/p>
+&lt;/blockquote>
+&lt;p>You can read more about TF32 &lt;a href="https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/">on the NVIDIA
+blog&lt;/a>, and
+about its hardware support in the Ampere architecture on &lt;a href="https://developer.nvidia.com/blog/nvidia-ampere-architecture-in-depth/">the NVIDIA developer
+blog&lt;/a>.&lt;/p>
+&lt;p>TF32 is not in the C/C++ standard at all, but is supported in &lt;a href="https://developer.nvidia.com/blog/cuda-11-features-revealed/">CUDA
+11&lt;/a>.&lt;/p>
+&lt;p>Hardware-wise, the NVIDIA A100 is the first GPU (and, at the time of writing, the only
+device) supporting TF32.&lt;/p>
+&lt;h2 id="advice-for-practitioners">Advice for Practitioners&lt;/h2>
+&lt;p>The first thing to say is that floating-point formats are &lt;em>by no means&lt;/em> the most
+important consideration for your deep learning model — not even close. Floating-point
+formats will most likely only make a difference for very large or complex models, for
+which fitting the model on GPU memory is a challenge, or for which training times are
+excruciatingly long.&lt;/p>
+&lt;p>The second thing to say is that any practical advice has to be heavily dependent on what
+hardware you have available to you.&lt;/p>
+&lt;h3 id="automatic-mixed-precision-amp-training--a-good-default">Automatic mixed precision (AMP) training — a good default&lt;/h3>
+&lt;p>Most deep learning stacks support mixed-precision training, which is a pretty good
+default option to reap some of the benefits of low-precision training, while still
+reasonably avoiding underflow and overflow problems.&lt;/p>
+&lt;p>TensorFlow supports &lt;a href="https://www.tensorflow.org/guide/mixed_precision">mixed-precision training
+natively&lt;/a>, whereas the &lt;a href="https://github.com/NVIDIA/apex">NVIDIA Apex
+library&lt;/a> makes automatic mixed precision training
+available in PyTorch. To get started, take a look at NVIDIA&amp;rsquo;s &lt;a href="https://developer.nvidia.com/automatic-mixed-precision">developer guide for
+AMP&lt;/a>, and &lt;a href="https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html">documentation for
+training in mixed
+precision&lt;/a>.&lt;/p>
+&lt;p>It&amp;rsquo;s worth going over the gist of mixed precision training. There are basically two main
+tricks:&lt;/p>
+&lt;ol>
+&lt;li>&lt;em>Loss scaling:&lt;/em> multiply the loss by some large number, and divide the gradient
+updates by this same large number. This avoids the loss underflowing (i.e. clamping
+to zero because of the finite precision) in FP16, while still maintaining faithful
+backward propagation.&lt;/li>
+&lt;li>&lt;em>FP32 master copy of weights&lt;/em>: store the weights themselves in FP32, but cast them to
+FP16 before doing the forward and backward propagation (to reap the performance
+benefits). During the weight update, the FP16 gradients are cast to FP32 to update
+the master copy.&lt;/li>
+&lt;/ol>
+&lt;p>You can read more about these techniques in &lt;a href="https://arxiv.org/abs/1710.03740">this paper by NVIDIA and Baidu
+Research&lt;/a>, or on the accompanying &lt;a href="https://developer.nvidia.com/blog/mixed-precision-training-deep-neural-networks/">blog post by
+NVIDIA&lt;/a>.&lt;/p>
+&lt;h3 id="alternative-floating-point-formats--make-sure-itll-be-worth-it">Alternative floating-point formats — make sure it&amp;rsquo;ll be worth it&lt;/h3>
+&lt;p>If you&amp;rsquo;ve already trained your model in mixed precision, it might not be worth the time
+or effort to port your code to take advantage of an alternative floating-point format
+and bleeding edge hardware.&lt;/p>
+&lt;p>However, if you choose to go that route, make sure your use case really demands it.
+Perhaps you can&amp;rsquo;t scale up your model without using bfloat16, or you really need to cut
+down on training times.&lt;/p>
+&lt;p>Unfortunately, I don&amp;rsquo;t have a well-informed opinion on how bfloat16 stacks up against
+TF32, so &amp;ldquo;do your homework&amp;rdquo; is all I can advise. However, since the NVIDIA A100s only
+just (at the time of writing) dropped into the market, it&amp;rsquo;ll be interesting to see what
+the machine learning community thinks of the various low precision options available.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Technically speaking, there are &lt;a href="https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format">quadruple-&lt;/a> and &lt;a href="https://en.wikipedia.org/wiki/Octuple-precision_floating-point_format">octuple-precision&lt;/a> floating-point formats, but those are pretty rarely used, and certainly unheard of in deep learning.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>A Tensor Core is essentially a mixed-precision FP16/FP32 core, which NVIDIA has optimized for deep learning applications.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+Transformer-based NLP models.&lt;/p>
+&lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
+models&lt;/a>, this blog post is a write-up
+of my reading and research: I assume basic familiarity with deep learning, and aim to
+highlight general trends in deep NLP, instead of commenting on individual architectures
+or systems.&lt;/p>
+&lt;p>As a disclaimer, this post is by no means exhaustive and is biased towards
+Transformer-based models, which seem to be the dominant breed of NLP systems (at least,
+at the time of writing).&lt;/p>
+&lt;h2 id="some-architectures-and-developments">Some Architectures and Developments&lt;/h2>
+&lt;p>Here&amp;rsquo;s an (obviously) abbreviated history of Transformer-based models in NLP&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> in
+(roughly) chronological order. I also cover some other non-Transformer-based models,
+because I think they illuminate the history of NLP.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>word2vec and GloVe&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>These were the first instances of word embeddings pre-trained on large amounts of
+unlabeled text. These word embeddings generalized well to most other tasks (even
+with limited amounts of labeled data), and usually led to appreciable improvements
+in performance.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>These ideas were immensely influential and have served NLP extraordinarily well.
+However, they suffer from a major limitation. They are &lt;em>shallow&lt;/em> representations
+that can only be used in the first layer of any network: the remainder of the
+network must still be trained from scratch.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The main appeal is well illustrated below: each word has its own vector
+representation, and there are linear vector relationships can encode common-sense
+semantic meanings of words.&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/linear-relationships.png" alt="Linear vector relationships in word embeddings">
+&lt;figcaption>Linear vector relationships in word embeddings. Source: &lt;a href="https://www.tensorflow.org/images/linear-relationships.png">TensorFlow documentation&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="http://arxiv.org/abs/1301.3781">word2vec: Mikolov et al., Google. January 2013&lt;/a>
+and &lt;a href="http://arxiv.org/abs/1310.4546">October 2013&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="https://nlp.stanford.edu/projects/glove/">GloVe: Pennington et al., Stanford CS. EMNLP
+2014.&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Broadly speaking, after word2vec/GloVe and before Transformers, a lot of ink was
+spilled on other different approaches to NLP, including (but certainly not limited
+to)&lt;/p>
+&lt;ol>
+&lt;li>Convolutional neural networks&lt;/li>
+&lt;li>Recurrent neural networks&lt;/li>
+&lt;li>Reinforcement learning approaches&lt;/li>
+&lt;li>Memory-augmented deep learning&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>Perhaps the most famous of such models is &lt;a href="https://allennlp.org/elmo">ELMo (Embeddings from Language
+Models)&lt;/a> by AI2, which learned bidirectional word
+embeddings using LSTMs, and began NLP&amp;rsquo;s fondness of Sesame Street.&lt;/li>
+&lt;li>I won&amp;rsquo;t go into much more detail here: partly because not all of these approaches
+have held up as well as current Transformer-based models, and partly because I have
+plans for my computer that don&amp;rsquo;t involve blogging about recent advances in NLP.&lt;/li>
+&lt;li>Here is &lt;a href="https://arxiv.org/abs/1708.02709">a survey paper&lt;/a> (and an &lt;a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">associated blog
+post&lt;/a>)
+published shortly after the Transformer was invented, which summarizes a lot of the
+work that was being done during this period.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Transformer&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The authors introduce a feed-forward network architecture, using only attention
+mechanisms and dispensing with convolutions and recurrence entirely (which were not
+uncommon techniques in NLP at the time).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>It achieved state-of-the-art performance on several tasks, and (perhaps more
+importantly) was found to generalize very well to other NLP tasks, even with
+limited data.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Since this architecture was the progenitor of so many other NLP models, it&amp;rsquo;s
+worthwhile to dig into the details a bit. The architecture is illustrated below:
+note that its feed-forward nature and multi-head self attention are critical
+aspects of this architecture!&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/asset/images/transformer-block.png" alt="Graphical representation of BERT">
+&lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1706.03762.pdf">Vaswani et al., Google Brain. December 2017.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://jalammar.github.io/illustrated-transformer/">&lt;em>The Illustrated Transformer&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://nlp.seas.harvard.edu/2018/04/03/attention.html">&lt;em>The Annotated Transformer&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>ULMFiT (Universal Language Model Fine-tuning for Text Classification)&lt;/p>
+&lt;ul>
+&lt;li>The authors introduce an effective transfer learning method that can be applied to
+any task in NLP: this paper introduced the idea of general-domain, unsupervised
+pre-training, followed by task-specific fine-tuning. They also introduce other
+techniques that are fairly common in NLP now, such as slanted triangular learning
+rate schedules. (what some researchers now call warm-up).&lt;/li>
+&lt;li>Further reading
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1801.06146.pdf">Howard and Ruder. January 2018.&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>GPT-1 and GPT-2 (Generative Pre-trained Transformers)&lt;/p>
+&lt;ul>
+&lt;li>At the risk of peeking ahead, GPT is largely BERT but with Transformer decoder
+blocks, instead of encoder blocks. Note that in doing this, we lose the
+autoregressive/unidirectional nature of the model.&lt;/li>
+&lt;li>Arguably the main contribution of GPT-2 is that it demonstrated the value of
+training larger Transformer models (a trend that I personally refer to as the
+&lt;em>Embiggening&lt;/em>).&lt;/li>
+&lt;li>GPT-2 generated some controversy, as OpenAI &lt;a href="https://www.theverge.com/2019/2/14/18224704/ai-machine-learning-language-models-read-write-openai-gpt2">initially refused to open-source the
+model&lt;/a>,
+citing potential malicious uses, but &lt;a href="https://www.theverge.com/2019/11/7/20953040/openai-text-generation-ai-gpt-2-full-model-release-1-5b-parameters">ended up releasing the model
+later&lt;/a>.&lt;/li>
+&lt;li>Further reading
+&lt;ul>
+&lt;li>&lt;a href="https://openai.com/blog/language-unsupervised/">Radford et al., OpenAI. June
+2018&lt;/a> and &lt;a href="https://openai.com/blog/better-language-models/">February
+2019&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="http://jalammar.github.io/illustrated-gpt2/">&lt;em>The Illustrated GPT-2&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>BERT (Bidirectional Encoder Representations from Transformers)&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The authors use the Transformer encoder (and only the encoder) to pre-train deep
+bidirectional representations from unlabeled text. This pre-trained BERT model can
+then be fine-tuned with just one additional output layer to achieve
+state-of-the-art performance for many NLP tasks, without substantial task-specific
+architecture changes, as illustrated below.&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bert.png" alt="Graphical representation of BERT">
+&lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>BERT was a drastic development in the NLP landscape: it became almost a cliche to
+conclude that BERT performs &amp;ldquo;surprisingly well&amp;rdquo; on whatever task or dataset you
+throw at it.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1810.04805.pdf">Devlin et al., Google AI Language, May 2019.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html">Accompanying blog post&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://jalammar.github.io/illustrated-bert/">&lt;em>The Illustrated BERT&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>RoBERTa (Robustly Optimized BERT Approach)&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The scientific contributions of this paper are best quoted from its abstract:&lt;/p>
+&lt;blockquote>
+&lt;p>We find that BERT was significantly under-trained, and can match or exceed the
+performance of every model published after it. [&amp;hellip;] These results highlight the
+importance of previously overlooked design choices, and raise questions about the
+source of recently reported improvements.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>The authors use an identical architecture to BERT, but propose several improvements
+to the training routine, such as changing the dataset and removing the
+next-sentence-prediction (NSP) pre-training task. Funnily enough, far and away the
+best thing the authors did to improve BERT was just the most obvious thing: train
+BERT for longer!&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/abs/1907.11692">Liu et al., Facebook AI. June 2019.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://ai.facebook.com/blog/roberta-an-optimized-method-for-pretraining-self-supervised-nlp-systems/">Accompanying blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>T5 (Text-to-Text Transfer Transformer)&lt;/p>
+&lt;ul>
+&lt;li>There are two main contributions of this paper:
+&lt;ol>
+&lt;li>The authors recast all NLP tasks into a text-to-text format: for example,
+instead of performing a two-way softmax for binary classification, one could
+simply teach an NLP model to output the tokens &amp;ldquo;spam&amp;rdquo; or &amp;ldquo;ham&amp;rdquo;. This provides a
+unified text-to-text format for all NLP tasks.&lt;/li>
+&lt;li>The authors systematically study and compare the effects of pre-training
+objectives, architectures, unlabeled datasets, transfer approaches, and other
+factors on dozens of canonical NLP tasks.&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>This paper (and especially the tables in the appendices!) probably cost the Google
+team an incredible amount of money, and the authors were very thorough in ablating
+what does and doesn&amp;rsquo;t help for a good NLP system.&lt;/li>
+&lt;li>Further reading
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1910.10683.pdf">Raffel et al., Google. October 2019.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://ai.googleblog.com/2020/02/exploring-transfer-learning-with-t5.html">Accompanying blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="some-thoughts-and-observations">Some Thoughts and Observations&lt;/h2>
+&lt;p>Here I comment on some general trends that I see in Transformer-based models in NLP.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Ever since Google developed the Transformer in 2017, most NLP contributions are not
+architectural: instead most recent advances have used the Transformer model as-is, or
+using some subset of the Transformer (e.g. BERT and GPT use exclusively Transformer
+encoder and decoder blocks, respectively). Instead, recent research has focused on
+the way NLP models are pre-trained or fine-tuned, or creating a new dataset, or
+formulating a new NLP task to measure &amp;ldquo;language understanding&amp;rdquo;, etc.&lt;/p>
+&lt;ul>
+&lt;li>I&amp;rsquo;m personally not sure what to make of this development: why did we collectively
+agree that architectural research wasn&amp;rsquo;t worth pursuing anymore?&lt;/li>
+&lt;li>But spinning this the other way, we see that Transformers are a &lt;em>fascinating&lt;/em>
+architecture: the model has proven so surprisingly versatile and easy to teach that
+we are still making meaningful advances with the same architecture. In fact, it is
+still an open question how and why Transformers perform as well as they do: there
+is an open field of research focusing on answering this question for BERT (since
+BERT has been uniquely successful model) called
+&lt;a href="https://huggingface.co/transformers/bertology.html">BERTology&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>It was never a question of &lt;em>whether&lt;/em> NLP systems would follow computer vision&amp;rsquo;s model
+of fine-tuning pre-trained models (i.e. training a model on ImageNet and then doing
+task-specific fine-tuning for downstream applications), but rather &lt;em>how&lt;/em>.&lt;/p>
+&lt;ol>
+&lt;li>What specific task and/or dataset should NLP models be pre-trained on?
+&lt;ul>
+&lt;li>Language modelling has really won out here: BERT was originally published with a
+&lt;em>next-sentence prediction&lt;/em> (NSP) pre-training task, which RoBERTa completely did
+away with.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Exactly &lt;em>what&lt;/em> is being learnt during pre-training?
+&lt;ul>
+&lt;li>Initially it was a separate vector for each token (i.e. pre-training a shallow
+representation of text), and these days it is an entire network is pre-trained.&lt;/li>
+&lt;li>Sebastian Ruder &lt;a href="https://thegradient.pub/nlp-imagenet/">wrote a great article&lt;/a>
+that delves more into this topic.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>There are (generally speaking) three flavors of Transformer models.&lt;/p>
+&lt;ol>
+&lt;li>Autoregressive models&lt;/li>
+&lt;li>Autoencoding models&lt;/li>
+&lt;li>Sequence-to-sequence models&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>Hugging Face does an excellent job of summarizing the differences between these
+three flavors of models in &lt;a href="https://huggingface.co/transformers/summary.html">their &lt;em>Summary of the
+Models&lt;/em>&lt;/a>, which I&amp;rsquo;ve reproduced
+here:&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Autoregressive models are pretrained on the classic language modeling task: guess
+the next token having read all the previous ones. They correspond to the decoder of
+the original transformer model, and a mask is used on top of the full sentence so
+that the attention heads can only see what was before in the next, and not what’s
+after. Although those models can be fine-tuned and achieve great results on many
+tasks, the most natural application is text generation. A typical example of such
+models is GPT.&lt;/p>
+&lt;p>Autoencoding models are pretrained by corrupting the input tokens in some way and
+trying to reconstruct the original sentence. They correspond to the encoder of the
+original transformer model in the sense that they get access to the full inputs
+without any mask. Those models usually build a bidirectional representation of the
+whole sentence. They can be fine-tuned and achieve great results on many tasks such
+as text generation, but their most natural application is sentence classification
+or token classification. A typical example of such models is BERT.&lt;/p>
+&lt;p>[&amp;hellip;]&lt;/p>
+&lt;p>Sequence-to-sequence models use both the encoder and the decoder of the original
+transformer, either for translation tasks or by transforming other tasks to
+sequence-to-sequence problems. They can be fine-tuned to many tasks but their most
+natural applications are translation, summarization and question answering. The
+original transformer model is an example of such a model (only for translation), T5
+is an example that can be fine-tuned on other tasks.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>Different NLP models learn different kinds of embeddings, and it&amp;rsquo;s worth
+understanding the differences between these various learnt representations.&lt;/p>
+&lt;ol>
+&lt;li>Contextual vs non-contextual embeddings
+&lt;ul>
+&lt;li>The first word embeddings (that is, word2vec and GloVe) were &lt;em>non-contextual&lt;/em>:
+each word had its own embedding, independent of the words that came before or
+after it.&lt;/li>
+&lt;li>Almost all other embeddings are &lt;em>contextual&lt;/em> now: when embedding a token, they
+also consider the tokens before &amp;amp;/ after it.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Unidirectional vs bidirectional embeddings
+&lt;ul>
+&lt;li>When considering the context of a token, the question is whether you should
+consider the tokens both before and after it (i.e. bidirectional embeddings), or
+just the tokens that came before (i.e. unidirectional embeddings).&lt;/li>
+&lt;li>Unidirectional embeddings make the sense when generating text (i.e. text
+generation must be done in the way humans write text: in one direction). On the
+other hand, bidirectional embeddings make sense when performing sentence-level
+tasks such as summarization or rewriting.&lt;/li>
+&lt;li>The Transformer was notable in that it had bidirectional encoder blocks and
+unidirectional decoder blocks. That&amp;rsquo;s why BERT [GPT-2] produces bidirectional
+[unidirectional] embeddings, since it&amp;rsquo;s a stack of Transformer encoders
+[decoders].&lt;/li>
+&lt;li>Note that the unidirectional/bidirectional distinction is related to whether or
+not the model is autoregressive: autoregressive models learn unidirectional
+embeddings.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>Transformer-based models have had an interesting history with scaling.&lt;/p>
+&lt;ul>
+&lt;li>This trend probably started when GPT-2 was published: &amp;ldquo;it sounds very dumb and too
+easy, but magical things happen if you make your Transformer model bigger&amp;rdquo;.&lt;/li>
+&lt;li>An open question is, how do Transformer models scale (along any dimension of
+interest)? For example, how much does dataset size or the number of layers or the
+number of training iterations matter in the ultimate performance of a Transformer
+model? At what point does making your Transformer model &amp;ldquo;bigger&amp;rdquo; (along any
+dimension of interest) provide diminishing returns?&lt;/li>
+&lt;li>There is some &lt;a href="https://github.com/huggingface/awesome-papers#march-24-2020">solid
+work&lt;/a> being done to
+answer this question, and there seems to be good evidence for some fairly
+surprising conclusions!&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link>https://www.georgeho.org/bayesian-bandits-2/</link><pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits-2/</guid><description>&lt;blockquote>
+&lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
+Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
+&lt;/blockquote>
+&lt;p>&lt;a href="https://www.georgeho.org/bayesian-bandits/">Previously&lt;/a>, I introduced the
+multi-armed bandit problem, and a Bayesian approach to solving/modelling it
+(Thompson sampling). We saw that conjugate models made it possible to run the
+bandit algorithm online: the same is even true for non-conjugate models, so long
+as the rewards are bounded.&lt;/p>
+&lt;p>In this follow-up blog post, we&amp;rsquo;ll take a look at two extensions to the
+multi-armed bandit. The first allows the bandit to model nonstationary rewards
+distributions, whereas the second allows the bandit to model context. Jump in!&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/multi-armed-bandit.jpg">&lt;img src="https://www.georgeho.org/assets/images/multi-armed-bandit.jpg" alt="Cartoon of a multi-armed bandit">&lt;/a>
+&lt;figcaption>An example of a multi-armed bandit situation. Source: &lt;a href="https://www.inverse.com/article/13762-how-the-multi-armed-bandit-determines-what-ads-and-stories-you-see-online">Inverse&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;h2 id="nonstationary-bandits">Nonstationary Bandits&lt;/h2>
+&lt;p>Up until now, we&amp;rsquo;ve concerned ourselves with stationary bandits: in other words,
+we assumed that the rewards distribution for each arm did not change over time.
+In the real world though, rewards distributions need not be stationary: customer
+preferences change, trading algorithms deteriorate, and news articles rise and
+fall in relevance.&lt;/p>
+&lt;p>Nonstationarity could mean one of two things for us:&lt;/p>
+&lt;ol>
+&lt;li>either we are lucky enough to know that rewards are similarly distributed
+throughout all time (e.g. the rewards are always normally distributed, or
+always binomially distributed), and that it is merely the parameters of these
+distributions that are liable to change,&lt;/li>
+&lt;li>or we aren&amp;rsquo;t so unlucky, and the rewards distributions are not only changing,
+but don&amp;rsquo;t even have a nice parametric form.&lt;/li>
+&lt;/ol>
+&lt;p>Good news, though: there is a neat trick to deal with both forms of
+nonstationarity!&lt;/p>
+&lt;h3 id="decaying-evidence-and-posteriors">Decaying evidence and posteriors&lt;/h3>
+&lt;p>But first, some notation. Suppose we have a model with parameters $\theta$. We
+place a prior $\color{purple}{\pi_0(\theta)}$ on it&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, and at the $t$&amp;lsquo;th
+time step, we observe data $D_t$, compute the likelihood $\color{blue}{P(D_t
+| \theta)}$ and update the posterior from $\color{red}{\pi_t(\theta |
+D_{1:t})}$ to $\color{green}{\pi_{t+1}(\theta | D_{1:t+1})}$.&lt;/p>
+&lt;p>This is a quintessential application of Bayes&amp;rsquo; Theorem. Mathematically:&lt;/p>
+&lt;p>$$ \color{green}{\pi_{t+1}(\theta | D_{1:t+1})} \propto \color{blue}{P(D_{t+1} |
+\theta)} \cdot \color{red}{\pi_t (\theta | D_{1:t})} \tag{1} \label{1} $$&lt;/p>
+&lt;p>However, for problems with nonstationary rewards distributions, we would like
+data points observed a long time ago to have less weight than data points
+observed recently. This is only prudent: in the absence of recent data, we would
+like to adopt a more conservative &amp;ldquo;no-data&amp;rdquo; prior, rather than allow our
+posterior to be informed by outdated data. This can be achieved by modifying the
+Bayesian update to:&lt;/p>
+&lt;p>$$ \color{green}{\pi_{t+1}(\theta | D_{1:t+1})} \propto \color{magenta}{[}
+\color{blue}{P(D_{t+1} | \theta)} \cdot \color{red}{\pi_t (\theta | D_{1:t})}
+{\color{magenta}{]^{1-\epsilon}}} \cdot
+\color{purple}{\pi_0(\theta)}^\color{magenta}{\epsilon} \tag{2} \label{2} $$&lt;/p>
+&lt;p>for some $0 &amp;lt; \color{magenta}{\epsilon} \ll 1$. We can think of
+$\color{magenta}{\epsilon}$ as controlling the rate of decay of the
+evidence/posterior (i.e. how quickly we should distrust past data points).
+Notice that if we stop observing data points at time $T$, then
+$\color{red}{\pi_t(\theta | D_{1:T})} \rightarrow
+\color{purple}{\pi_0(\theta)}$ as $t \rightarrow \infty$.&lt;/p>
+&lt;p>Decaying the evidence (and therefore the posterior) can be used to address both
+types of nonstationarity identified above. Simply use $(\ref{2})$ as a drop-in
+replacement for $(\ref{1})$ when updating the hyperparameters. Whether you&amp;rsquo;re
+using a conjugate model or the algorithm by &lt;a href="https://arxiv.org/abs/1111.1797">Agarwal and
+Goyal&lt;/a> (introduced in &lt;a href="https://www.georgeho.org/bayesian-bandits">the previous blog
+post&lt;/a>), using $(\ref{2})$ will decay
+the evidence and posterior, as desired.&lt;/p>
+&lt;p>For more information (and a worked example for the Beta-Binomial model!), check
+out &lt;a href="https://austinrochford.com/resources/talks/boston-bayesians-2017-bayes-bandits.slides.html#/3">Austin Rochford&amp;rsquo;s talk for Boston
+Bayesians&lt;/a>
+about Bayesian bandit algorithms for e-commerce.&lt;/p>
+&lt;h2 id="contextual-bandits">Contextual Bandits&lt;/h2>
+&lt;p>We can think of the multi-armed bandit problem as follows&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>:&lt;/p>
+&lt;ol>
+&lt;li>A policy chooses an arm $a$ from $k$ arms.&lt;/li>
+&lt;li>The world reveals the reward $R_a$ of the chosen arm.&lt;/li>
+&lt;/ol>
+&lt;p>However, this formulation fails to capture an important phenomenon: there is
+almost always extra information that is available when making each decision.
+For instance, online ads occur in the context of the web page in which they
+appear, and online store recommendations are given in the context of the user&amp;rsquo;s
+current cart contents (among other things).&lt;/p>
+&lt;p>To take advantage of this information, we might think of a different formulation
+where, on each round:&lt;/p>
+&lt;ol>
+&lt;li>The world announces some context information $x$.&lt;/li>
+&lt;li>A policy chooses an arm $a$ from $k$ arms.&lt;/li>
+&lt;li>The world reveals the reward $R_a$ of the chosen arm.&lt;/li>
+&lt;/ol>
+&lt;p>In other words, contextual bandits call for some way of taking context as input
+and producing arms/actions as output.&lt;/p>
+&lt;p>Alternatively, if you think of regular multi-armed bandits as taking no input
+whatsoever (but still producing outputs, the arms to pull), you can think of
+contextual bandits as algorithms that both take inputs and produce outputs.&lt;/p>
+&lt;h3 id="bayesian-contextual-bandits">Bayesian contextual bandits&lt;/h3>
+&lt;p>Contextual bandits give us a very general framework for thinking about
+sequential decision making (and reinforcement learning). Clearly, there are many
+ways to make a bandit algorithm take context into account. Linear regression is
+a straightforward and classic example: simply assume that the rewards depend
+linearly on the context.&lt;/p>
+&lt;p>For a refresher on the details of Bayesian linear regression, refer to &lt;a href="https://www.microsoft.com/en-us/research/people/cmbishop/#!prml-book">&lt;em>Pattern
+Recognition and Machine
+Learning&lt;/em>&lt;/a>
+by Christopher Bishop: specifically, section 3.3 on Bayesian linear regression
+and exercises 3.12 and 3.13&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>. Briefly though, if we place a Gaussian prior on
+the regression weights and an inverse gamma prior on the noise parameter (i.e.,
+the noise of the observations), then their joint prior will be conjugate to a
+Gaussian likelihood, and the posterior predictive distribution for the rewards
+will be a Student&amp;rsquo;s $t$.&lt;/p>
+&lt;p>Since we need to maintain posteriors of the rewards for each arm (so that we can
+do Thompson sampling), we need to run a separate Bayesian linear regression for
+each arm. At every iteration we then Thompson sample from each Student&amp;rsquo;s $t$
+posterior, and select the arm with the highest sample.&lt;/p>
+&lt;p>However, Bayesian linear regression is a textbook example of a model that lacks
+expressiveness: in most circumstances, we want something that can model
+nonlinear functions as well. One (perfectly valid) way of doing this would be to
+hand-engineer some nonlinear features and/or basis functions before feeding them
+into a Bayesian linear regression. However, in the 21st century, the trendier
+thing to do is to have a neural network learn those features for you. This is
+exactly what is proposed in a &lt;a href="https://arxiv.org/abs/1802.09127">ICLR 2018 paper from Google
+Brain&lt;/a>. They find that this model — which they
+call &lt;code>NeuralLinear&lt;/code> — performs decently well across a variety of tasks, even
+compared to other bandit algorithms. In the words of the authors:&lt;/p>
+&lt;blockquote>
+&lt;p>We believe [&lt;code>NeuralLinear&lt;/code>&amp;rsquo;s] main strength is that it is able to
+&lt;em>simultaneously&lt;/em> learn a data representation that greatly simplifies the task
+at hand, and to accurately quantify the uncertainty over linear models that
+explain the observed rewards in terms of the proposed representation.&lt;/p>
+&lt;/blockquote>
+&lt;p>For more information, be sure to check out the &lt;a href="https://arxiv.org/abs/1802.09127">Google Brain
+paper&lt;/a> and the accompanying &lt;a href="https://github.com/tensorflow/models/tree/master/research/deep_contextual_bandits">TensorFlow
+code&lt;/a>.&lt;/p>
+&lt;h2 id="further-reading">Further Reading&lt;/h2>
+&lt;p>For non-Bayesian approaches to contextual bandits, &lt;a href="https://github.com/VowpalWabbit/vowpal_wabbit/wiki/Contextual-Bandit-algorithms">Vowpal
+Wabbit&lt;/a>
+is a great resource: &lt;a href="http://hunch.net/~jl/">John Langford&lt;/a> and the team at
+&lt;a href="https://www.microsoft.com/research/">Microsoft Research&lt;/a> has &lt;a href="https://arxiv.org/abs/1402.0555v2">extensively
+researched&lt;/a> contextual bandit algorithms.
+They&amp;rsquo;ve provided blazingly fast implementations of recent algorithms and written
+good documentation for them.&lt;/p>
+&lt;p>For the theory and math behind bandit algorithms, &lt;a href="https://banditalgs.com/">Tor Lattimore and Csaba
+Szepesvári&amp;rsquo;s book&lt;/a> covers a breathtaking amount of
+ground.&lt;/p>
+&lt;blockquote>
+&lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
+Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
+&lt;/blockquote>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Did you know you can make &lt;a href="http://adereth.github.io/blog/2013/11/29/colorful-equations/">colored equations with
+MathJax&lt;/a>?
+Technology frightens me sometimes.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>This explanation is largely drawn from &lt;a href="http://hunch.net/?p=298">from John Langford&amp;rsquo;s
+&lt;code>hunch.net&lt;/code>&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>If you don&amp;rsquo;t want to do Bishop&amp;rsquo;s exercises, there&amp;rsquo;s a partially complete
+solutions manual &lt;a href="https://github.com/GoldenCheese/PRML-Solution-Manual/">on
+GitHub&lt;/a> 😉&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
+&lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
+out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
+&lt;/blockquote>
+&lt;p>Let&amp;rsquo;s talk about Bayesianism. It&amp;rsquo;s developed a reputation (not entirely
+justified, but not entirely unjustified either) for being too mathematically
+sophisticated or too computationally intensive to work at scale. For instance,
+inferring from a Gaussian mixture model is fraught with computational problems
+(hierarchical funnels, multimodal posteriors, etc.), and may take a seasoned
+Bayesian anywhere between a day and a month to do well. On the other hand, other
+blunt hammers of estimation are as easy as a maximum likelihood estimate:
+something you could easily get a SQL query to do if you wanted to.&lt;/p>
+&lt;p>In this blog post I hope to show that there is more to Bayesianism than just
+MCMC sampling and suffering, by demonstrating a Bayesian approach to a classic
+reinforcement learning problem: the &lt;em>multi-armed bandit&lt;/em>.&lt;/p>
+&lt;p>The problem is this: imagine a gambler at a row of slot machines (each machine
+being a “one-armed bandit”), who must devise a strategy so as to maximize
+rewards. This strategy includes which machines to play, how many times to play
+each machine, in which order to play them, and whether to continue with the
+current machine or try a different machine.&lt;/p>
+&lt;p>This problem is a central problem in decision theory and reinforcement learning:
+the agent (our gambler) starts out in a state of ignorance, but learns through
+interacting with its environment (playing slots). For more details, Cam
+Davidson-Pilon has a great introduction to multi-armed bandits in Chapter 6 of
+his book &lt;a href="https://nbviewer.jupyter.org/github/CamDavidsonPilon/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/blob/master/Chapter6_Priorities/Ch6_Priors_PyMC3.ipynb">&lt;em>Bayesian Methods for
+Hackers&lt;/em>&lt;/a>,
+and Tor Lattimore and Csaba Szepesvári cover a breathtaking amount of the
+underlying theory in their book &lt;a href="http://banditalgs.com/">&lt;em>Bandit Algorithms&lt;/em>&lt;/a>.&lt;/p>
+&lt;p>So let&amp;rsquo;s get started! I assume that you are familiar with:&lt;/p>
+&lt;ul>
+&lt;li>some basic probability, at least enough to know some distributions: normal,
+Bernoulli, binomial&amp;hellip;&lt;/li>
+&lt;li>some basic Bayesian statistics, at least enough to understand what a
+&lt;a href="https://en.wikipedia.org/wiki/Conjugate_prior">conjugate prior&lt;/a> (and
+conjugate model) is, and why one might like them.&lt;/li>
+&lt;li>&lt;a href="https://jeffknupp.com/blog/2013/04/07/improve-your-python-yield-and-generators-explained/">Python generators and the &lt;code>yield&lt;/code>
+keyword&lt;/a>,
+to understand some of the code I&amp;rsquo;ve written&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>.&lt;/li>
+&lt;/ul>
+&lt;p>Dive in!&lt;/p>
+&lt;h2 id="the-algorithm">The Algorithm&lt;/h2>
+&lt;p>The algorithm is straightforward. The description below is taken from Cam
+Davidson-Pilon over at Data Origami&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>For each round,&lt;/p>
+&lt;ol>
+&lt;li>Sample a random variable $X_b$ from the prior of bandit $b$, for all
+$b$.&lt;/li>
+&lt;li>Select the bandit with largest sample, i.e. select bandit $B =
+\text{argmax}(X_b)$.&lt;/li>
+&lt;li>Observe the result of pulling bandit $B$, and update your prior on bandit
+$B$ using the conjugate model update rule.&lt;/li>
+&lt;li>Repeat!&lt;/li>
+&lt;/ol>
+&lt;p>What I find remarkable about this is how dumbfoundingly simple it is! No MCMC
+sampling, no $\hat{R}$s to diagnose, no pesky divergences&amp;hellip; all it requires is
+a conjugate model, and the rest is literally just counting.&lt;/p>
+&lt;p>&lt;strong>NB:&lt;/strong> This algorithm is technically known as &lt;em>Thompson sampling&lt;/em>, and is only
+one of many algorithms out there. The main difference is that there are other
+ways to go from our current priors to a decision on which bandit to play
+next. E.g. instead of simply sampling from our priors, we could use the
+upper bound of the 90% credible region, or some dynamic quantile of the
+posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
+&lt;h3 id="stochastic-aka-stationary-bandits">Stochastic (a.k.a. stationary) bandits&lt;/h3>
+&lt;p>Let&amp;rsquo;s take this algorithm for a spin! Assume we have rewards which are Bernoulli
+distributed (this would be the situation we face when e.g. modelling
+click-through rates). The conjugate prior for the Bernoulli distribution is the
+Beta distribution (this is a special case of the Beta-Binomial model).&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">make_bandits&lt;/span>(params):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">pull&lt;/span>(arm, size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Bernoulli distributed rewards&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>binomial(n&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, p&lt;span style="color:#f92672">=&lt;/span>params[arm], size&lt;span style="color:#f92672">=&lt;/span>size)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> pull, len(params)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">bayesian_strategy&lt;/span>(pull, num_bandits):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample from the bandits&amp;#39; priors, and choose largest&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>argmax(np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>beta(a&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_rewards,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_trials&lt;span style="color:#f92672">-&lt;/span>num_rewards))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample the chosen bandit&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> next(pull(choice))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Update&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards[choice] &lt;span style="color:#f92672">+=&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials[choice] &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> choice, reward, num_rewards, num_trials
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pull, num_bandits &lt;span style="color:#f92672">=&lt;/span> make_bandits([&lt;span style="color:#ae81ff">0.2&lt;/span>, &lt;span style="color:#ae81ff">0.5&lt;/span>, &lt;span style="color:#ae81ff">0.7&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> play &lt;span style="color:#f92672">=&lt;/span> bayesian_strategy(pull, num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Here, &lt;code>pull&lt;/code> returns the result of pulling on the &lt;code>arm&lt;/code>&amp;lsquo;th bandit, and
+&lt;code>make_bandits&lt;/code> is just a factory function for &lt;code>pull&lt;/code>.&lt;/p>
+&lt;p>The &lt;code>bayesian_strategy&lt;/code> function actually implements the algorithm. We only need
+to keep track of the number of times we win and the number of times we played
+(&lt;code>num_rewards&lt;/code> and &lt;code>num_trials&lt;/code>, respectively). It samples from all current
+&lt;code>np.random.beta&lt;/code> priors (where the original prior was a $\text{Beta}(2,
+2)$, which is symmetrix about 0.5 and explains the odd-looking &lt;code>a=2+&lt;/code> and
+&lt;code>b=2+&lt;/code> there), picks the &lt;code>np.argmax&lt;/code>, &lt;code>pull&lt;/code>s that specific bandit, and updates
+&lt;code>num_rewards&lt;/code> and &lt;code>num_trials&lt;/code>.&lt;/p>
+&lt;p>I&amp;rsquo;ve omitted the data visualization code here, but if you want to see it, check
+out the &lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">Jupyter notebook on my
+GitHub&lt;/a>&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/beta-binomial.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/beta-binomial.png" alt="Posterior distribution after several pulls for the Beta-Binomial model">&lt;/a>
+&lt;/figure>
+&lt;h3 id="generalizing-to-conjugate-models">Generalizing to conjugate models&lt;/h3>
+&lt;p>In fact, this algorithm isn&amp;rsquo;t just limited to Bernoulli-distributed rewards: it
+will work for any &lt;a href="https://en.wikipedia.org/wiki/Conjugate_prior#Table_of_conjugate_distributions">conjugate
+model&lt;/a>!
+Here I implement the Gamma-Poisson model (that is, Poisson distributed rewards,
+with a Gamma conjugate prior) to illustrate how extensible this framework is.
+(Who cares about Poisson distributed rewards, you ask? Anyone who worries about
+returning customers, for one!)&lt;/p>
+&lt;p>Here&amp;rsquo;s what we need to change:&lt;/p>
+&lt;ul>
+&lt;li>The rewards distribution in the &lt;code>pull&lt;/code> function (in practice, you don&amp;rsquo;t get
+to pick this, so &lt;em>technically&lt;/em> there&amp;rsquo;s nothing to change if you&amp;rsquo;re doing this
+in production!)&lt;/li>
+&lt;li>The sampling from the prior in &lt;code>bayesian_strategy&lt;/code>&lt;/li>
+&lt;li>The variables you need to keep track of and the update rule in &lt;code>bayesian_strategy&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;p>Without further ado:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">make_bandits&lt;/span>(params):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">pull&lt;/span>(arm, size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Poisson distributed rewards&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>poisson(lam&lt;span style="color:#f92672">=&lt;/span>params[arm], size&lt;span style="color:#f92672">=&lt;/span>size)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> pull, len(params)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">bayesian_strategy&lt;/span>(pull, num_bandits):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>ones(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>ones(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample from the bandits&amp;#39; priors, and choose largest&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>argmax(np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>gamma(num_rewards,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scale&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>&lt;span style="color:#f92672">/&lt;/span>num_trials))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample the chosen bandit&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> next(pull(choice))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Update&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards[choice] &lt;span style="color:#f92672">+=&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials[choice] &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> choice, reward, num_rewards, num_trials
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pull, num_bandits &lt;span style="color:#f92672">=&lt;/span> make_bandits([&lt;span style="color:#ae81ff">4.0&lt;/span>, &lt;span style="color:#ae81ff">4.5&lt;/span>, &lt;span style="color:#ae81ff">5.0&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> play &lt;span style="color:#f92672">=&lt;/span> bayesian_strategy(pull, num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/gamma-poisson.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/gamma-poisson.png" alt="Posterior distribution after several pulls for the Gamma-Poisson model">&lt;/a>
+&lt;/figure>
+&lt;p>This really demonstrates how lean and mean conjugate models can be, especially
+considering how much of a pain MCMC or approximate inference methods would be,
+compared to literal &lt;em>counting&lt;/em>. Conjugate models aren&amp;rsquo;t just textbook examples:
+they&amp;rsquo;re &lt;em>(gasp)&lt;/em> actually useful!&lt;/p>
+&lt;h3 id="generalizing-to-arbitrary-rewards-distributions">Generalizing to arbitrary rewards distributions&lt;/h3>
+&lt;p>OK, so if we have a conjugate model, we can use Thompson sampling to solve the
+multi-armed bandit problem. But what if our rewards distribution doesn&amp;rsquo;t have a
+conjugate prior, or what if we don&amp;rsquo;t even &lt;em>know&lt;/em> our rewards distribution?&lt;/p>
+&lt;p>In general this problem is very difficult to solve. Theoretically, we could
+place some fairly uninformative prior on our rewards, and after every pull we
+could run MCMC to get our posterior, but that doesn&amp;rsquo;t scale, especially for the
+online algorithms that we have in mind. Luckily a recent paper by Agrawal and
+Goyal&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup> gives us some help, &lt;em>if we assume rewards are bounded on the interval
+$[0, 1]$&lt;/em> (of course, if we have bounded rewards, then we can just normalize
+them by their maximum value to get rewards between 0 and 1).&lt;/p>
+&lt;p>This solutions bootstraps the first Beta-Bernoulli model to this new situation.
+Here&amp;rsquo;s what happens:&lt;/p>
+&lt;ol>
+&lt;li>Sample a random variable $X_b$ from the (Beta) prior of bandit $b$, for
+all $b$.&lt;/li>
+&lt;li>Select the bandit with largest sample, i.e. select bandit $B =
+\text{argmax}(X_b)$.&lt;/li>
+&lt;li>Observe the reward $R$ from bandit $B$.&lt;/li>
+&lt;li>&lt;strong>Observe the outcome $r$ from a Bernoulli trial with probability of success $R$.&lt;/strong>&lt;/li>
+&lt;li>Update posterior of $B$ with this observation $r$.&lt;/li>
+&lt;li>Repeat!&lt;/li>
+&lt;/ol>
+&lt;p>Here I do this for the logit-normal distribution (i.e. a random variable whose
+logit is normally distributed). Note that &lt;code>np.expit&lt;/code> is the inverse of the logit
+function.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">make_bandits&lt;/span>(params):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">pull&lt;/span>(arm, size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Logit-normal distributed returns (or any distribution with finite&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># support) `expit` is the inverse of `logit`&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> expit(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>normal(loc&lt;span style="color:#f92672">=&lt;/span>params[arm], scale&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, size&lt;span style="color:#f92672">=&lt;/span>size)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> reward
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> pull, len(params)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">bayesian_strategy&lt;/span>(pull, num_bandits):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample from the bandits&amp;#39; priors, and choose largest&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>argmax(np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>beta(&lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_rewards,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_trials&lt;span style="color:#f92672">-&lt;/span>num_rewards))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample the chosen bandit&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> next(pull(choice))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample a Bernoulli with probability of success = reward&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Remember, reward is normalized to be in [0, 1]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> outcome &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>binomial(n&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, p&lt;span style="color:#f92672">=&lt;/span>reward)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Update&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards[choice] &lt;span style="color:#f92672">+=&lt;/span> outcome
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials[choice] &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> choice, reward, num_rewards, num_trials
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pull, num_bandits &lt;span style="color:#f92672">=&lt;/span> make_bandits([&lt;span style="color:#ae81ff">0.2&lt;/span>, &lt;span style="color:#ae81ff">1.8&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> play &lt;span style="color:#f92672">=&lt;/span> bayesian_strategy(pull, num_bandits)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/bounded.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bounded.png" alt="Posterior distribution after several pulls with an arbitrary reward distribution (e.g. the logit normal)">&lt;/a>
+&lt;/figure>
+&lt;h2 id="final-remarks">Final Remarks&lt;/h2>
+&lt;p>None of this theory is new: I&amp;rsquo;m just advertising it! See Cam Davidson-Pilon&amp;rsquo;s
+great blog post about Bayesian bandits&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
+and of course, read around papers on arXiv if you want to go deeper!&lt;/p>
+&lt;p>Also, if you want to see all the code that went into this blog post, check out
+&lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">the notebook
+here&lt;/a>.&lt;/p>
+&lt;blockquote>
+&lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
+out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
+&lt;/blockquote>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>I&amp;rsquo;ve hopped on board the functional programming bandwagon, and couldn&amp;rsquo;t
+help but think that to demonstrate this idea, I didn&amp;rsquo;t need a framework, a
+library or even a class. Just two functions!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>Davidson-Pilon, Cameron. “Multi-Armed Bandits.” DataOrigami, 6 Apr. 2013,
+&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>&lt;a href="https://arxiv.org/abs/1111.1797">arXiv:1111.1797&lt;/a> [cs.LG]&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Understanding Hate Speech on Reddit through Text Clustering</title><link>https://www.georgeho.org/reddit-clusters/</link><pubDate>Sun, 18 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-clusters/</guid><description>&lt;blockquote>
+&lt;p>Note: the following article contains several examples of hate speech
+(including but not limited to racist, misogynistic and homophobic views).&lt;/p>
+&lt;/blockquote>
+&lt;p>Have you heard of &lt;code>/r/TheRedPill&lt;/code>? It’s an online forum (a subreddit, but I’ll
+explain that later) where people (usually men) espouse an ideology predicated
+entirely on gender. “Swallowers of the red pill”, as they call themselves,
+maintain that it is &lt;em>men&lt;/em>, not women, who are socially marginalized; that feminism
+is something between a damaging ideology and a symptom of societal retardation;
+that the patriarchy should actively assert its dominance over female
+compatriots.&lt;/p>
+&lt;p>Despite being shunned by the world (or perhaps, because of it), &lt;code>/r/TheRedPill&lt;/code>
+has grown into a sizable community and evolved its own slang, language and
+culture. Let me give you an example.&lt;/p>
+&lt;pre tabindex="0">&lt;code>Cluster #14:
+Cluster importance: 0.0489376285127
+shit: 2.433590
+test: 1.069885
+frame: 0.396684
+pass: 0.204953
+bitch: 0.163619
+&lt;/code>&lt;/pre>&lt;p>This is a snippet from a text clustering of &lt;code>/r/TheRedPill&lt;/code> — you don’t really
+need to understand the details right now: all you need to know is that each
+cluster is simply a bunch of words that frequently appear together in Reddit
+posts and comments. Following each word is a number indicating its importance in
+the cluster, and on line 2 is the importance of this cluster to the subreddit
+overall.&lt;/p>
+&lt;p>As it turns out, this cluster has picked up on a very specific meme on
+&lt;code>/r/TheRedPill&lt;/code>: the concept of the &lt;em>shit test&lt;/em>, and how your frame can &lt;em>pass&lt;/em> the
+&lt;em>shit tests&lt;/em> that life (but predominantly, &lt;em>bitches&lt;/em>) can throw at you.&lt;/p>
+&lt;p>There’s absolutely no way I could explain this stuff better than the swallowers
+of the red pill themselves, so I’ll just quote from a post on &lt;code>/r/TheRedPill&lt;/code> and
+a related blog.&lt;/p>
+&lt;p>The concept of the shit test very broad:&lt;/p>
+&lt;blockquote>
+&lt;p>… when somebody “gives you shit” and fucks around with your head to see how
+you will react, what you are experiencing is typically a (series of) shit
+test(s).&lt;/p>
+&lt;/blockquote>
+&lt;p>A shit test is designed to test your temperament, or more colloquially,
+&lt;em>“determine your frame”&lt;/em>.&lt;/p>
+&lt;blockquote>
+&lt;p>Frame is a concept which essentially means “composure and self-control”.&lt;/p>
+&lt;p>… if you can keep composure/seem unfazed and/or assert your boundaries
+despite a shit test, generally speaking you will be considered to have passed
+the shit test. If you get upset, offended, doubt yourself or show weakness in
+any discernible way when shit tested, it will be generally considered that you
+failed the test.&lt;/p>
+&lt;/blockquote>
+&lt;p>Finally, not only do shit tests test your frame, but they also serve a specific,
+critical social function:&lt;/p>
+&lt;blockquote>
+&lt;p>When it comes right down to it shit tests are typically women’s way of
+flirting.&lt;/p>
+&lt;p>… Those who “pass” show they can handle the woman’s BS and is “on her
+level”, so to speak. This is where the evolutionary theory comes into play:
+you’re demonstrating her faux negativity doesn’t phase you [sic] and that
+you’re an emotionally developed person who isn’t going to melt down at the
+first sign of trouble. Ergo you’ll be able to protect her when threats to
+her safety emerge.&lt;/p>
+&lt;/blockquote>
+&lt;p>If you want to learn more, I took all the above quotes from
+&lt;a href="https://www.reddit.com/r/TheRedPill/comments/22qnmk/newbies_read_this_the_definitive_guide_to_shit/">here&lt;/a>
+and &lt;a href="https://illimitablemen.com/2014/12/14/the-shit-test-encyclopedia/">here&lt;/a>:
+feel free to toss yourself down that rabbit hole (but you may want to open those
+links in Incognito mode).&lt;/p>
+&lt;p>Clearly though, the cluster did a good job of identifying one topic of
+discussion on &lt;code>/r/TheRedPill&lt;/code>. In fact, not only can clustering pick up on a
+general topic of conversation, but also on specific memes, motifs and vocabulary
+associated with it.&lt;/p>
+&lt;p>Interested? Read on! I’ll explain what I did, and describe some of my other
+results.&lt;/p>
+&lt;hr>
+&lt;p>Reddit is — well, it’s pretty hard to describe what Reddit &lt;em>is&lt;/em>, mainly because
+Reddit comprises several thousand communities, called &lt;em>subreddits&lt;/em>, which center
+around topics broad (&lt;code>/r/Sports&lt;/code>) and niche (&lt;code>/r/thinkpad&lt;/code>), delightful
+(&lt;code>/r/aww&lt;/code>) and unsavory (&lt;code>/r/Incels&lt;/code>).&lt;/p>
+&lt;p>Each subreddit is a unique community with its own rules, culture and standards.
+Some are welcoming and inclusive, and anyone can post and comment; others, not
+so much: you must be invited to even read their front page. Some have pliant
+standards about what is acceptable as a post; others have moderators willing to
+remove posts and ban users upon any infraction of community guidelines.&lt;/p>
+&lt;p>Whatever Reddit is though, two things are for certain:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>It’s widely used. &lt;em>Very&lt;/em> widely used. At the time of writing, it’s the &lt;a href="https://www.alexa.com/topsites/countries/US">fourth
+most popular website in the United
+States&lt;/a> and the &lt;a href="https://www.alexa.com/topsites">sixth most popular
+globally&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Where there is free speech, there is hate speech. Reddit’s hate speech
+problem is &lt;a href="https://www.wired.com/2015/08/reddit-mods-handle-hate-speech/">well
+documented&lt;/a>,
+the &lt;a href="https://www.inverse.com/article/43611-reddit-ceo-steve-huffman-hate-speech">center of recent
+controversy&lt;/a>,
+and even &lt;a href="https://fivethirtyeight.com/features/dissecting-trumps-most-rabid-online-following/">the subject of statistical
+analysis&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>Now, there are many well-known hateful subreddits. The three that I decided to
+focus on were &lt;code>/r/TheRedPill&lt;/code>, &lt;code>/r/The_Donald&lt;/code>, and&lt;code>/r/CringeAnarchy&lt;/code>.&lt;/p>
+&lt;p>The goal here is to understand what these subreddits are like, and expose their
+culture for people to see. To quote &lt;a href="https://www.inverse.com/article/43611-reddit-ceo-steve-huffman-hate-speech">Steve Huffman, Reddit’s
+CEO&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>“I believe the best defense against racism and other repugnant views, both
+on Reddit and in the world, is instead of trying to control what people
+can and cannot say through rules, is to repudiate these views in a free
+conversation, and empower our communities to do so on Reddit.”&lt;/p>
+&lt;/blockquote>
+&lt;p>And there’s no way we can refute and repudiate these deplorable views without
+knowing what those views are. And instead of spending hours of each of these
+subreddits ourselves, let’s have a machine learn what gets talked about on these
+subreddits.&lt;/p>
+&lt;hr>
+&lt;p>Now, how do we do this? This can be done using &lt;em>clustering&lt;/em>, a machine learning
+technique in which we’re given data points, and tasked with grouping them in
+some way. A picture will explain better than words:&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/clusters.png">&lt;img src="https://www.georgeho.org/assets/images/clusters.png" alt="Illustration of clustering">&lt;/a>
+&lt;figcaption>Clustering.&lt;/figcaption>
+&lt;/figure>
+&lt;p>The clustering algorithm was hard to decide on. After several dead ends were
+explored, I settled on non-negative matrix factorization of the document-term
+matrix, featurized using tf-idfs. I don’t really want to go into the technical
+details now: suffice to say that this technique is &lt;a href="http://scikit-learn.org/stable/auto_examples/applications/plot_topics_extraction_with_nmf_lda.html">known to work well for this
+application&lt;/a>
+(perhaps I’ll write another piece on this in the future).&lt;/p>
+&lt;p>Finally, we need our data points: &lt;a href="https://bigquery.cloud.google.com/dataset/fh-bigquery:reddit_comments">Google
+BigQuery&lt;/a>
+has all posts and comments across all of Reddit, from the the beginning of
+Reddit right up until the end of 2017. We decided to focus on the last two
+months for which there is data: November and December, 2017.&lt;/p>
+&lt;p>I could talk at length about the technical details, but right now, I want to
+focus on the results of the clustering. What follows are two hand-picked
+clusters from each of the three subreddits, visualized as word clouds (you can
+think of word clouds as visual representations of the code snippet above), as
+well as an example comment from each of the clusters.&lt;/p>
+&lt;h2 id="rtheredpill">&lt;code>/r/TheRedPill&lt;/code>&lt;/h2>
+&lt;p>You already know &lt;code>/r/TheRedPill&lt;/code>, so let me describe the clusters in more detail:
+a good number of them are about sex, or about how to approach girls. Comments in
+these clusters tend to give advice on how to pick up girls, or describe the
+social/sexual exploits of the commenter.&lt;/p>
+&lt;p>What is interesting is that, as sex-obsessed as &lt;code>/r/TheRedPill&lt;/code> is, many
+swallowers (of the red pill) profess that sex is &lt;em>not&lt;/em> the purpose of the
+subreddit: the point is to becoming an “alpha male”. Even more interesting,
+there is more talk about what an alpha male &lt;em>is&lt;/em>, and what kind of people
+&lt;em>aren’t&lt;/em> alpha, than there is about how people can &lt;em>become&lt;/em> alpha. This is the
+first cluster shown below, and comprises around 3% of all text on
+&lt;code>/r/TheRedPill&lt;/code>.&lt;/p>
+&lt;p>The second cluster comprises around 6% of all text on &lt;code>/r/TheRedPill&lt;/code>, and
+contains comments that expound theories on the role of men, women and feminism
+in today’s society (it isn’t pretty). Personally, the most repugnant views that
+I’ve read are to be found in this cluster.&lt;/p>
+&lt;pre tabindex="0">&lt;code>I feel like the over dramatization of beta qualities in media/pop culture is due
+to the fact that anyone representing these qualities is already Alpha by
+default.
+The actors who play the white knight lead roles, the rock stars that sing about
+pining for some chick… these men/characters are already very Alpha in both looks
+and status, so when beta BS comes from their mouths, it’s seen as attractive
+because it balances out their already alpha state into that &amp;#34;mostly alpha but
+some beta&amp;#34; balance that makes women swoon.
+…
+&lt;/code>&lt;/pre>&lt;figure>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png" alt="/r/TheRedPill cluster #13">&lt;/a>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png" alt="/r/TheRedPill cluster #6">&lt;/a>
+&lt;figcaption>Wordclouds from /r/TheRedPill.&lt;/figcaption>
+&lt;/figure>
+&lt;pre tabindex="0">&lt;code>…
+Since the dawn of humanity men were always in control, held all the power and
+women were happy because of it. But now men are forced to lose their masculinity
+and power or else they&amp;#39;ll be killed/punished by other pussy men with big guns
+and laws who believe feminism is the right path for humanity.
+…
+Feminism is really a blessing in disguise because it&amp;#39;s a wake up call for men
+and a hidden cry for help from women for men to regain their masculinity,
+integrity and control over women.
+…
+&lt;/code>&lt;/pre>&lt;h2 id="rthe_donald">&lt;code>/r/The_Donald&lt;/code>&lt;/h2>
+&lt;p>You may have already heard of &lt;code>/r/The_Donald&lt;/code> (a.k.a. the “pro-Trump cesspool”),
+famed for their &lt;a href="https://en.wikipedia.org/wiki//r/The_Donald#Conflict_with_Reddit_management">takeover of the Reddit front
+page&lt;/a>,
+and their &lt;a href="https://en.wikipedia.org/wiki//r/The_Donald#Controversies">involvement in several recent
+controversies&lt;/a>. It
+may therefore be surprising to learn that there is an iota of lucid discussion
+that goes on, although in a jeering, bullying tone.&lt;/p>
+&lt;p>&lt;code>/r/The_Donald&lt;/code> is the subreddit which has developed the most language and inside
+jokes: from “nimble navigators” to “swamp creatures”, “spezzes” to the
+“Trumpire”… Explaining these memes would take too long: reach out, or Google, if
+you really want to know.&lt;/p>
+&lt;p>The first cluster accounts for 5% of all text on &lt;code>/r/The_Donald&lt;/code>, and contains
+(relatively) coherent arguments both for and against net neutrality. The second
+cluster accounts for 1% of the all text on &lt;code>/r/The_Donald&lt;/code>, and is actually from
+the subreddit’s &lt;code>MAGABrickBot&lt;/code>, which is a bot that keeps count of how many times
+the word “brick” has been used in comments, by automatically generating this
+comment.&lt;/p>
+&lt;pre tabindex="0">&lt;code>So much misinformation perpetuated by the Swamp... Abolishing Net Neutrality
+would benefit swamp creatures with corporate payouts but would be most damaging
+to conservatives long term.
+Net Neutrality was NOT created by Obama, it was actually in effect from the very
+beginning...
+&lt;/code>&lt;/pre>&lt;figure>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png" alt="/r/The_Donald cluster #0">&lt;/a>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png" alt="/r/The_Donald cluster #2">&lt;/a>
+&lt;figcaption>Wordclouds from /r/The_Donald.&lt;/figcaption>
+&lt;/figure>
+&lt;pre tabindex="0">&lt;code>**FOR THE LOVE OF GOD GET THIS PATRIOT A BRICK! THAT&amp;#39;S 92278 BRICKS HANDED
+OUT!**
+We are at **14.3173880911%** of our goal to **BUILD THE WALL** starting from Imperial
+Beach, CA to Brownsville, Texas! Lets make sure everyone gets a brick in the
+United States! For every Centipede a brick, for every brick a Centipede!
+At this rate, the wall will be **1071.35224786 MILES WIDE** and **353.552300867 FEET
+HIGH** by tomorrow! **DO YOUR PART!**
+&lt;/code>&lt;/pre>&lt;h2 id="rcringeanarchy">&lt;code>/r/CringeAnarchy&lt;/code>&lt;/h2>
+&lt;p>On the Internet, &lt;em>cringe&lt;/em> is the second-hand embarrassment you feel when someone
+acts extremely awkwardly or uncomfortably. And on &lt;code>/r/CringeAnarchy&lt;/code> you can find
+memes about the &lt;em>real&lt;/em> cringe, which is, um, liberals and anyone else who
+advocates for an inclusionary, equitable ideology. Their morally grey jokes run
+the gamut of delicate topics: gender, race, sexuality, nationality…&lt;/p>
+&lt;p>In some respects, the clustering provided very little insight into this
+subreddit: each such delicate topic had one or two clusters, and there’s nothing
+really remarkable about any of them. This speaks to the inherent difficulty of
+training a topic model on memes: I rant at greater length about this topic on
+&lt;a href="https://www.georgeho.org/lda-sucks/">one of my blog posts&lt;/a>.&lt;/p>
+&lt;p>Both clusters below comprise around 3% of text on &lt;code>/r/CringeAnarchy&lt;/code>: one is to do
+with race, and the other is to do with homosexuality.&lt;/p>
+&lt;pre tabindex="0">&lt;code>Has anyone here, non-black or otherwise, ever wished someone felt sorry for
+being black? Maybe it&amp;#39;s just where I live... the majority is black. It&amp;#39;s
+whatever.
+&lt;/code>&lt;/pre>&lt;figure>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png" alt="/r/CringeAnarchy cluster #8">&lt;/a>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png" alt="/r/CringeAnarchy cluster #8">&lt;/a>
+&lt;figcaption>Wordclouds from /r/CringeAnarchy.&lt;/figcaption>
+&lt;/figure>
+&lt;pre tabindex="0">&lt;code>…
+Also, the distinction between bisexual and gay is academic. If you do a gay
+thing, you have done a gay thing. That&amp;#39;s what &amp;#34;being gay&amp;#34; means to a LOT of
+people. Redefining it is as useful as all the other things SJWs are redefining.
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;p>As much information as that might have been, this was just a glimpse into what
+these subreddits are like: I made 20 clusters for each subreddit, and you could
+argue that (for somewhat technical reasons) 20 clusters isn’t even enough!
+Moreover, there is just no way I could distill everything I learned about these
+communities into one Medium story: I’ve curated just the more remarkable or
+provocative results to put here.&lt;/p>
+&lt;p>If you still have the stomach for this stuff, scroll through the complete log
+files
+&lt;a href="https://github.com/eigenfoo/reddit-clusters/tree/master/clustering/nmf/results">here&lt;/a>,
+or look through images of the word clouds
+&lt;a href="https://github.com/eigenfoo/reddit-clusters/tree/master/wordclouds/images">here&lt;/a>.&lt;/p>
+&lt;p>Finally, as has been said before, “Talk is cheap. Show me the code.” For
+everything I’ve written to make these clusters, check out &lt;a href="https://github.com/eigenfoo/reddit-clusters">this GitHub
+repository&lt;/a>.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>Update (11-08-2018):&lt;/strong> If you&amp;rsquo;re interested in the technical, data science side
+of the project, check out the slide deck and speaker notes from &lt;a href="https://www.georgeho.org/reddit-slides/">my recent
+talk&lt;/a> on exactly that!&lt;/p>
+&lt;hr>
+&lt;p>&lt;em>This post was originally published on Medium on May 18, 2018: I have since
+&lt;a href="https://medium.com/@nikitonsky/medium-is-a-poor-choice-for-blogging-bb0048d19133">migrated away from
+Medium&lt;/a>
+and &lt;a href="https://bts.nomadgate.com/medium-evergreen-content">deleted my account&lt;/a> and
+&lt;a href="https://www.joshjahans.com/ditching-medium/">all my stories&lt;/a>.&lt;/em>&lt;/p>
+&lt;p>&lt;em>This post was also reprinted in the inaugural issue of The Cooper Union&amp;rsquo;s
+&lt;a href="https://www.facebook.com/theunionjournal/">UNION Journal&lt;/a>.&lt;/em>&lt;/p></description></item><item><title>Why Latent Dirichlet Allocation Sucks</title><link>https://www.georgeho.org/lda-sucks/</link><pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda-sucks/</guid><description>&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
+that a lot of resources out there go something like this:&lt;/p>
+&lt;blockquote>
+&lt;p>Check out this thing! It&amp;rsquo;s great at this task! The important task! The one
+that was impossible/hard to do before! Look how well it does! So good! So
+fast!&lt;/p>
+&lt;p>Take this! It&amp;rsquo;s our algorithm/code/paper! We used it to do the thing! And now
+you can do the thing too!&lt;/p>
+&lt;/blockquote>
+&lt;p>Jokes aside, I do think it’s true that a lot of research and resources focus on
+what things &lt;em>can&lt;/em> do, or what things are &lt;em>good&lt;/em> at doing. Whenever I actually
+implement the hyped-up “thing”, I’m invariably frustrated when it doesn’t
+perform so well as originally described.&lt;/p>
+&lt;p>Maybe I&amp;rsquo;m not smart enough to see this, but after I learn about a new technique
+or tool or model, it&amp;rsquo;s not immediately obvious to me when &lt;em>not&lt;/em> to use it. I
+think it would be very helpful to learn what things &lt;em>aren&amp;rsquo;t&lt;/em> good at doing, or
+why things just plain &lt;em>suck&lt;/em> at times. Doing so not only helps you understand
+the technique/tool/model better, but also sharpens your understanding of your
+use case and the task at hand: what is it about your application that makes it
+unsuitable for such a technique?&lt;/p>
+&lt;p>Which is why I&amp;rsquo;m writing the first of what will (hopefully) be a series of posts
+on &lt;em>“Why [Thing] Sucks”&lt;/em>. The title is provocative but reductive: a better name
+might be &lt;em>When and Why [Thing] Might Suck&lt;/em>… but that doesn&amp;rsquo;t have quite the
+same ring to it! In these articles I&amp;rsquo;ll be outlining what I tried and why it
+didn&amp;rsquo;t work: documenting my failures and doing a quick post-mortem, if you will.
+My hope is that this will be useful to anyone else trying to do the same thing
+I&amp;rsquo;m doing.&lt;/p>
+&lt;hr>
+&lt;p>So first up: topic modelling. Specifically, &lt;a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">latent Dirichlet
+allocation&lt;/a>, or LDA
+for short (not to be confused with &lt;a href="https://www.georgeho.org/lda/">the other
+LDA&lt;/a>, which I wrote a blog post about before).&lt;/p>
+&lt;p>If you&amp;rsquo;ve already encountered LDA and have seen &lt;a href="https://en.wikipedia.org/wiki/Plate_notation">plate
+notation&lt;/a> before, this picture
+will probably refresh your memory:&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/latent-dirichlet-allocation.png" alt="Latent Dirichlet allocation">&lt;/p>
+&lt;p>If you don&amp;rsquo;t know what LDA is, fret not, for there is
+&lt;a href="http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf">no&lt;/a>
+&lt;a href="http://obphio.us/pdfs/lda_tutorial.pdf">shortage&lt;/a>
+&lt;a href="http://blog.echen.me/2011/08/22/introduction-to-latent-dirichlet-allocation/">of&lt;/a>
+&lt;a href="https://rstudio-pubs-static.s3.amazonaws.com/79360_850b2a69980c4488b1db95987a24867a.html">resources&lt;/a>
+&lt;a href="http://scikit-learn.org/stable/modules/decomposition.html#latentdirichletallocation">about&lt;/a>
+&lt;a href="https://radimrehurek.com/gensim/models/ldamodel.html">this&lt;/a>
+&lt;a href="https://www.quora.com/What-is-a-good-explanation-of-Latent-Dirichlet-Allocation">stuff&lt;/a>.
+I&amp;rsquo;m going to move on to when and why LDA isn&amp;rsquo;t the best idea.&lt;/p>
+&lt;p>&lt;strong>tl;dr:&lt;/strong> &lt;em>LDA and topic modelling doesn&amp;rsquo;t work well with a) short documents,
+in which there isn&amp;rsquo;t much text to model, or b) documents that don&amp;rsquo;t coherently
+discuss a single topic.&lt;/em>&lt;/p>
+&lt;p>Wait, what? Did George just say that topic modelling sucks when there&amp;rsquo;s not much
+topic, and not much text to model? Isn&amp;rsquo;t that obvious?&lt;/p>
+&lt;p>&lt;em>Yes! Exactly!&lt;/em> Of course it&amp;rsquo;s &lt;a href="https://en.wikipedia.org/wiki/Egg_of_Columbus">obvious in
+retrospect&lt;/a>! Which is why I was
+so upset when I realized I spent two whole weeks faffing around with LDA when
+topic models were the opposite of what I needed, and so frustrated that more
+people aren&amp;rsquo;t talking about when &lt;em>not&lt;/em> to use/do certain things.&lt;/p>
+&lt;p>But anyways, &lt;code>&amp;lt;\rant&amp;gt;&lt;/code> and let&amp;rsquo;s move on to why I say what I&amp;rsquo;m saying.&lt;/p>
+&lt;p>Recently, I&amp;rsquo;ve taken up a project in modelling the textual data on Reddit using
+NLP techniques. There are, of course, many ways one count take this, but
+something I was interested in was finding similarities between subreddits,
+clustering comments, and visualizing these clusters somehow: what does Reddit
+talk about on average? Of course, I turned to topic modelling and dimensionality
+reduction.&lt;/p>
+&lt;p>The techniques that I came across first were LDA (&lt;a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">latent Dirichlet
+allocation&lt;/a>) and
+t-SNE (&lt;a href="https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding">t-distributed stochastic neighbor
+embedding&lt;/a>).
+Both techniques are well known and well documented, but I can&amp;rsquo;t say that using
+them together is a popular choice of two techniques. However, there have been
+some successes. For instance, &lt;code>ShuaiW&lt;/code> had some success with this method &lt;a href="https://web.archive.org/web/20171219104016/https://shuaiw.github.io/2016/12/22/topic-modeling-and-tsne-visualzation.html">when
+using it the 20 newsgroups
+dataset&lt;/a>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>;
+some work done by Kagglers have &lt;a href="https://www.kaggle.com/ykhorramz/lda-and-t-sne-interactive-visualization">yielded reasonable
+results&lt;/a>,
+and &lt;a href="https://stats.stackexchange.com/questions/305356/plot-latent-dirichlet-allocation-output-using-t-sne">the StackExchange community doesn&amp;rsquo;t think its a ridiculous
+idea&lt;/a>.&lt;/p>
+&lt;p>The dataset that I applied this technique to was the &lt;a href="https://bigquery.cloud.google.com/dataset/fh-bigquery:reddit">Reddit dataset on Google
+BigQuery&lt;/a>, which contains
+data on all subreddits, posts and comments for as long as Reddit has been around.
+I limited myself to the top 10 most active subreddits in December 2017 (the most
+recent month for which we have data, at the time of writing), and chose 20 to be
+the number of topics to model (any choice is as arbitrary as any other).&lt;/p>
+&lt;p>I ran LDA and t-SNE exactly as Shuai described on &lt;a href="https://web.archive.org/web/20171219104016/https://shuaiw.github.io/2016/12/22/topic-modeling-and-tsne-visualzation.html">this blog
+post&lt;/a>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>,
+except using the great &lt;a href="https://radimrehurek.com/gensim/">&lt;code>gensim&lt;/code>&lt;/a> library to
+perform LDA, which was built with large corpora and efficient online algorithms
+in mind. (Specifically, &lt;code>gensim&lt;/code> implements online variational inference with
+the EM algorthm, instead of using MCMC-based algorithms, which &lt;code>lda&lt;/code> does. It
+seems that variational Bayes scales better to very large corpora than collapsed
+Gibbs sampling.)&lt;/p>
+&lt;p>Here are the results:&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/lda-sucks.png" alt="LDA followed by t-SNE on the Reddit dataset">&lt;/p>
+&lt;p>Horrible, right? Nowhere near the well-separated clusters that Shuai got with
+the 20 newsgroups. In fact, the tiny little huddles of around 5 to 10 comments
+are probably artifacts of the dimensionality reduction done by t-SNE, so those
+might even just be noise! You might say that there are at least 3 very large
+clusters, but even that&amp;rsquo;s bad news! If they&amp;rsquo;re clustered together, you would
+hope that they have the same topics, and that&amp;rsquo;s definitely not the case here!
+These large clusters tells us that a lot of comments have roughly the same topic
+distribution (i.e. they&amp;rsquo;re close to each other in the high-dimensional
+topic-space), but their dominant topics (i.e. the topic with greatest
+probability) don&amp;rsquo;t end up being the same.&lt;/p>
+&lt;p>By the way, t-SNE turns out to be &lt;a href="https://distill.pub/2016/misread-tsne/">a really devious dimensionality reduction
+technique&lt;/a>, and you really need to
+experiment with the perplexity values in order to use it properly. I used the
+default &lt;code>perplexity=30&lt;/code> from sklearn for the previous plot, but I repeated the
+visualizations for multiple other values and the results aren&amp;rsquo;t so hot either.
+Note that I did these on a random subsample of 1000 comments, so as to reduce
+compute time.&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/perplexity50.png">&lt;img src="https://www.georgeho.org/assets/images/perplexity50.png" alt="t-SNE with perplexity value of 50">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/perplexity100.png">&lt;img src="https://www.georgeho.org/assets/images/perplexity100.png" alt="t-SNE with perplexity value of 100">&lt;/a>
+&lt;figcaption>t-SNE with perplexity values of 50 and 100, respectively.&lt;/figcaption>
+&lt;/figure>
+&lt;p>So, what went wrong? There&amp;rsquo;s a &lt;a href="https://stackoverflow.com/questions/29786985/whats-the-disadvantage-of-lda-for-short-texts">nice StackOverflow
+post&lt;/a>
+that describes the problem well.&lt;/p>
+&lt;p>Firstly, latent Dirichlet allocation and other probabilistic topic models are
+very complex and flexible. While this means that they have very high variance
+and low bias, it also means that they need a lot of data (or data with a decent
+signal-to-noise ratio) for them to learn anything meaningful. Particularly for
+LDA, which infers topics on a document-by-document basis, if there aren&amp;rsquo;t enough
+words in a document, there simply isn&amp;rsquo;t enough data to infer a reliable topic
+distribution for that document.&lt;/p>
+&lt;p>Secondly, Reddit comments are by their nature very short and very-context
+dependent, since they respond to a post, or another comment. So not only are
+Reddit comments just short: it&amp;rsquo;s actually worse than that! They don&amp;rsquo;t even
+discuss a certain topic coherently (by which I mean, they don&amp;rsquo;t necessarily use
+words that pertain to what they&amp;rsquo;re talking about). I&amp;rsquo;ll give an example:&lt;/p>
+&lt;pre tabindex="0">&lt;code>&amp;#34;I&amp;#39;m basing my knowledge on the fact that I watched the fucking rock fall.&amp;#34;
+&lt;/code>&lt;/pre>&lt;p>Now, stopwords compose a little less than half of this comment, and they would
+be stripped before LDA even looks at it. But that aside, what is this comment
+about? What does the rock falling mean? What knowledge is this user claiming?
+It&amp;rsquo;s a very confusing comment, but probably made complete sense in the context
+of the post it responded to and the comments that came before it. As it is,
+however, its impossible for &lt;em>me&lt;/em> to figure out what topic this comment is about,
+let alone an algorithm!&lt;/p>
+&lt;p>Also, just to drive the point home, here are the top 10 words in each of the 20
+topics that LDA came up with, on the same dataset as before:&lt;/p>
+&lt;pre tabindex="0">&lt;code>Topic #0:
+got just time day like went friend told didn kids
+Topic #1:
+just gt people say right doesn know law like government
+Topic #2:
+removed com https www https www tax money http watch news
+Topic #3:
+people don just like think really good know want things
+Topic #4:
+years time did great ago ve just work life damn
+Topic #5:
+movie like love just really school star movies film story
+Topic #6:
+like just fucking shit head car looks new makes going
+Topic #7:
+game team season year good win play teams playing best
+Topic #8:
+right thing yeah don think use internet ok water case
+Topic #9:
+going like work just need way want money free fuck
+Topic #10:
+better just play games make ve ll seen lol fun
+Topic #11:
+like don know did feel shit big man didn guys
+Topic #12:
+deleted fuck guy year old man amp year old state lmao
+Topic #13:
+sure believe trump wrong saying comment post mueller evidence gt
+Topic #14:
+gt yes https com good oh wikipedia org en wiki
+Topic #15:
+think like good 10 look point lebron just pretty net
+Topic #16:
+gt said fucking american agree trump thanks obama states did
+Topic #17:
+trump vote party republicans election moore president republican democrats won
+Topic #18:
+war world country israel countries china military like happy does
+Topic #19:
+reddit message askreddit post questions com reddit com subreddit compose message compose
+&lt;/code>&lt;/pre>&lt;p>Now, it&amp;rsquo;s not entirely bad: topic 2 seems like its collecting the tokens from links
+(I didn&amp;rsquo;t stopword those out, oops), topic 7 looks like its about football or
+some other sport, 13 is probably about American politics, and 18 looks like
+its about world news, etc.&lt;/p>
+&lt;p>But almost all other topics are just collections of words: it&amp;rsquo;s not immediately
+obvious to me what each topic represents.&lt;/p>
+&lt;p>So yeah, there you have it, LDA really sucks sometimes.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>Update (8/12/2018):&lt;/strong> In retrospect, I think that this whole blog post is
+summarized well in the following tweet thread. Clustering algorithms will give
+you clusters because that&amp;rsquo;s what they do, not because there actually &lt;em>are&lt;/em>
+clusters. In this case, extremely short and context-dependent documents make it
+hard to justify that there are topic clusters in the first place.&lt;/p>
+&lt;blockquote class="twitter-tweet" data-lang="en">&lt;p lang="en" dir="ltr">Algorithms that have to report something will always report something, even if it&amp;#39;s a bad idea. Please do not use these algorithms unless you have principled reasons why there should be something. &lt;a href="https://t.co/kzxZiuBfmm">https://t.co/kzxZiuBfmm&lt;/a>&lt;/p>&amp;mdash; \mathfrak{Michael Betancourt} (@betanalpha) &lt;a href="https://twitter.com/betanalpha/status/1026619046626828288?ref_src=twsrc%5Etfw">August 7, 2018&lt;/a>&lt;/blockquote>
+&lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8">&lt;/script>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>&lt;a href="https://github.com/ShuaiW">&lt;code>ShuaiW&lt;/code>&lt;/a> has since taken down his blog, so I
+am linking to the Internet Archive of his blog post instead.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>https://www.georgeho.org/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
+&lt;em>Machine Learning Algorithm&lt;/em>. It&amp;rsquo;s got two modes: training mode and testing
+mode. You set it to training mode, and throw in a lot (sometimes &lt;em>a lot&lt;/em> a lot)
+of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called
+the &lt;em>examples&lt;/em> and the $y_i$ are called the &lt;em>targets&lt;/em>. Then, you set it to
+testing mode and throw in some more examples, for which you don&amp;rsquo;t have the
+corresponding targets. You hope the $y_i$s that come out are in some sense
+the “right” ones.&lt;/p>
+&lt;p>Generally speaking, this is a parable of &lt;em>supervised learning&lt;/em>. However, Vapnik
+(the inventor of the
+&lt;a href="https://en.wikipedia.org/wiki/Support_vector_machine">SVM&lt;/a>) recently described
+a new way to think about machine learning (e.g.
+&lt;a href="http://jmlr.csail.mit.edu/papers/volume16/vapnik15b/vapnik15b.pdf">here&lt;/a>):
+&lt;em>learning using privileged information&lt;/em>, or &lt;em>LUPI&lt;/em> for short.&lt;/p>
+&lt;p>This post is meant to introduce the LUPI paradigm of machine learning to
+people who are generally familiar with supervised learning and SVMs, and are
+interested in seeing the math and intuition behind both things extended to the
+LUPI paradigm.&lt;/p>
+&lt;h2 id="what-is-lupi">What is LUPI?&lt;/h2>
+&lt;p>The main idea is that instead of two-tuples $(x_i, y_i)$, the black box is fed
+three-tuples $(x_i, x_i^{&lt;em>}, y_i) $, where the $x^{&lt;/em>}$s are the so-called
+&lt;em>privileged information&lt;/em> that is only available during training, and not during
+testing. The hope is that this information will train the model to better
+generalize during the testing phase.&lt;/p>
+&lt;p>Vapnik offers many examples in which LUPI can be applied in real life: in
+bioinformatics and proteomics (where advanced biological models, which the
+machine might not necessarily “understand”, serve as the privileged
+information), in financial time series analysis (where future movements of the
+time series are the unknown at prediction time, but are available
+retrospectively), and in the classic MNIST dataset, where the images were
+converted to a lower resolution, but each annotated with a “poetic description”
+(which was available for the training data but not for the testing data).&lt;/p>
+&lt;p>Vapnik&amp;rsquo;s team ran tests on well-known datasets in all three application areas
+and found that his newly-developed LUPI methods performed noticeably better than
+classical SVMs in both convergence time (i.e. the number of examples necessary
+to achieve a certain degree of accuracy) and estimation of a good predictor
+function. In fact, Vapnik&amp;rsquo;s proof-of-concept experiments are so whacky that
+they actually &lt;a href="https://nautil.us/issue/6/secret-codes/teaching-me-softly">make for an entertaining read
+&lt;/a>!&lt;/p>
+&lt;h2 id="classical-svms-separable-and-non-separable-case">Classical SVMs (separable and non-separable case)&lt;/h2>
+&lt;p>There are many ways of thinking about SVMs, but I think that the one that is
+most instructive here is to think of them as solving the following optimization
+problem:&lt;/p>
+&lt;blockquote>
+&lt;p>Minimize $ \frac{1}{2} |w|^2 $&lt;/p>
+&lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1, 1 \leq i \leq l$.&lt;/p>
+&lt;/blockquote>
+&lt;p>Basically all this is saying is that we want to find the hyperplane that
+separates our data by the maximum margin. More technically speaking, this finds
+the parameters ($w$ and $b$) of the maximum margin hyperplane, with $l_2$
+regularization.&lt;/p>
+&lt;p>In the non-separable case, we concede that our hyperplane may not classify all
+examples perfectly (or that it may not be desireable to do so: think of
+overfitting), and so we introduce a so-called &lt;em>slack variable&lt;/em> $\xi_i \geq 0$
+for each example $i$, which measures the severity of misclassification of that
+example. With that, the optimization becomes:&lt;/p>
+&lt;blockquote>
+&lt;p>Minimize $\frac{1}{2} |w|^2 + C\sum_{i=1}^{l}{\xi_i}$&lt;/p>
+&lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - \xi_i, \xi_i \geq 0, 1
+\leq i \leq l$.&lt;/p>
+&lt;/blockquote>
+&lt;p>where $C$ is some regularization parameter.&lt;/p>
+&lt;p>This says the same thing as the previous optimization problem, but now allows
+points to be (a) classified properly ($\xi_i = 0$), (b) within the margin but
+still classified properly ($0 &amp;lt; \xi_i &amp;lt; 1$), or (c) misclassified
+($1 \leq \xi_i$).&lt;/p>
+&lt;p>In both the separable and non-separable cases, the decision rule is simply
+$\hat{y} = \text{sign}(w \cdot x + b)$.&lt;/p>
+&lt;p>An important thing to note is that, in the separable case, the SVM uses $l$
+examples to estimate the $n$ components of $w$, whereas in the nonseparable
+case, the SVM uses $l$ examples to estimate $n+l$ parameters: the $n$
+components of $w$ and $l$ values of slacks $\xi_i$. Thus, in the
+non-separable case, the number of parameters to be estimated is always larger
+than the number of examples: it does not matter here that most of slacks may be
+equal to zero: the SVM still has to estimate all of them.&lt;/p>
+&lt;p>The way both optimization problems are actually &lt;em>solved&lt;/em> is fairly involved (they
+require &lt;a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange
+multipliers&lt;/a>), but in terms
+of getting an intuitive feel for how SVMs work, I think that examining the
+optimization problems suffice!&lt;/p>
+&lt;h2 id="what-is-svm">What is SVM+?&lt;/h2>
+&lt;p>In his paper introducing the LUPI paradigm, Vapnik outlines &lt;em>SVM+&lt;/em>, a
+modified form of the SVM that fits well into the LUPI paradigm, using privileged
+information to improve performance. It should be emphasized that LUPI is a
+paradigm - a way of thinking about machine learning - and not just a collection
+of algorithms. SVM+ is just one technique that interoperates with the LUPI
+paradigm.&lt;/p>
+&lt;p>The innovation of the SVM+ algorithm is that is uses the privileged information
+to estimate the slack variables. Given the training three-tuple $(x, x^{*},
+y)$, we map $x$ to the feature space $Z$, and $x^{*}$ to a separate feature
+space $Z^{*}$. Then, the decision rule is $\hat{y} = \text{sign}(w \cdot x +
+b)$ and the slack variables are estimated by $\xi = w^{*} \cdot x^{*} +
+b^{*}$.&lt;/p>
+&lt;p>In order to find $w$, $b$, $w^{*}$ and $b^{*}$, we solve the following
+optimization problem:&lt;/p>
+&lt;blockquote>
+&lt;p>Minimize $\frac{1}{2} (|w|^2 + \gamma |w^{*}|^2) +
+C \sum_{i=1}^{l}{(w^{*} \cdot x_i^{*} + b^{*})}$&lt;/p>
+&lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - (w^{*} \cdot x^{*} + b^{*}),
+(w^{*} \cdot x^{*} + b^{*}) \geq 0, 1 \leq i \leq l$.&lt;/p>
+&lt;/blockquote>
+&lt;p>where $\gamma$ indicates the extent to which the slack estimation should be
+regularized in comparison to the SVM. Notice how this optimization problem is
+essentially identical to the non-separable classical SVM, except the slacks
+$\xi_i$ are now estimated with $w^{*} \cdot x^{*} + b^{*}$.&lt;/p>
+&lt;p>Again, the method of actually solving this optimization problem involves
+Lagrange multipliers and quadratic programming, but I think the intuition is
+captured in the optimization problem statement.&lt;/p>
+&lt;h2 id="interpretation-of-svm">Interpretation of SVM+&lt;/h2>
+&lt;p>The SVM+ has a very ready interpretation. Instead of a single feature space, it
+has two: one in which the non-privileged information lives (where decisions are
+made), and one in which the privileged information lives (where slack variables
+are estimated).&lt;/p>
+&lt;p>But what&amp;rsquo;s the point of this second feature space? How does it help us? Vapnik
+terms this problem &lt;em>knowledge transfer&lt;/em>: it&amp;rsquo;s all well and good for us to learn
+from the privileged information, but it&amp;rsquo;s all for naught if we can&amp;rsquo;t use this
+newfound knowledge in the test phase.&lt;/p>
+&lt;p>The way knowledge transfer is resolved here is by assuming that &lt;em>examples in the
+training set that are hard to separate in the privileged space, are also hard to
+separate in the regular space&lt;/em>. Therefore, we can use the privileged information
+to obtain an estimate for the slack variables.&lt;/p>
+&lt;p>Of course, SVMs are a technique with many possible interpretations, of which my
+presentation (in terms of the optimization of $w$ and $b$) is just one. For
+example, it&amp;rsquo;s possible to think of SVMs in terms of kernels functions, or as
+linear classifiers minimizing hinge loss. In all cases, it&amp;rsquo;s possible and
+worthwhile to understand that interpretation of SVMs, and how the LUPI paradigm
+contributes to or extends that interpretation. I&amp;rsquo;m hoping to write a piece later
+to explain these exact topics.&lt;/p>
+&lt;p>Vapnik also puts a great emphasis on analyzing SVM+ based on its statistical
+learning theoretic properties (in particular, analyzing its rate of convergence
+via the &lt;a href="https://en.wikipedia.org/wiki/VC_dimension">VC dimension&lt;/a>). Vapnik was
+one of the main pioneers behind statistical learning theory, and has written an
+&lt;a href="https://www.amazon.com/Statistical-Learning-Theory-Vladimir-Vapnik/dp/0471030031">entire
+book&lt;/a>
+on this stuff &lt;del>which I have not read&lt;/del>, so I&amp;rsquo;ll leave that part aside for now. I
+hope to understand this stuff one day.&lt;/p>
+&lt;h2 id="implementation-of-svm">Implementation of SVM+&lt;/h2>
+&lt;p>There&amp;rsquo;s just one catch: SVM+ is actually an fairly inefficient algorithm, and
+definitely will not scale to large data sets. What&amp;rsquo;s so bad about it? &lt;em>It has
+$n$ training examples but $2n$ variables to estimate.&lt;/em> This is twice as many
+variables to estimate as the standard formulation of the &lt;a href="https://en.wikipedia.org/wiki/Support_vector_machine#Computing_the_SVM_classifier">vanilla
+SVM&lt;/a>.
+This isn&amp;rsquo;t something that we can patch: the problem is inherent to the
+Lagrangian dual formulation that Vapnik and Vashist proposed in 1995.&lt;/p>
+&lt;p>Even worse, the optimization problem has constraints that are very different
+from those of the standard SVM. In essence, this means that efficient libraries
+out-of-the-box solvers for the standard SVM (e.g.
+&lt;a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/">LIBSVM&lt;/a> and
+&lt;a href="https://www.csie.ntu.edu.tw/~cjlin/liblinear/">LIBLINEAR&lt;/a>) can&amp;rsquo;t be used to
+train an SVM+ model.&lt;/p>
+&lt;p>Luckily, &lt;a href="https://www.researchgate.net/publication/301880839_Simple_and_Efficient_Learning_using_Privileged_Information">a recent paper by Xu et
+al.&lt;/a>
+describes a neat mathematical trick to implement SVM+ in a simple and efficient
+way. With this amendment, the authors rechristen the algorithm as SVM2+.
+Essentially, instead of using the hinge loss when training SVM+, we will instead
+use the &lt;em>squared&lt;/em> hinge loss. It turns out that changing the loss function in
+this way leads to a tiny miracle.&lt;/p>
+&lt;p>This (re)formulation of SVM+ becomes &lt;em>identical&lt;/em> to that of the standard SVM,
+except we replace the Gram matrix (a.k.a. kernel matrix) $\bf K$ by $\bf K +
+\bf Q_\lambda \odot (\bf y y^t)$, where&lt;/p>
+&lt;ul>
+&lt;li>$\bf y$ is the target vector&lt;/li>
+&lt;li>$\odot$ denotes the Hadamard product&lt;/li>
+&lt;li>$\bf{Q_\lambda}$ is given by $Q_\lambda = \frac{1}{\lambda} (\tilde{K}
+(\frac{\lambda}{C} I_n + \tilde{K})^{-1} \tilde{K})$, and&lt;/li>
+&lt;li>$\bf \tilde{K}$ is the Gram matrix formed by the privileged information&lt;/li>
+&lt;/ul>
+&lt;p>So by replacing the hinge loss with the squared hinge loss, the SVM+ formulation
+can now be solved with existing libraries!&lt;/p>
+&lt;h2 id="extensions-to-svm">Extensions to SVM+&lt;/h2>
+&lt;p>In his paper, Vapnik makes it clear that LUPI is a very general and abstract
+paradigm, and as such there is plenty of room for creativity and innovation -
+not just in researching and developing new LUPI methods and algorithms, but also
+in implementing and applying them. It is unknown how to best go about supplying
+privileged information so as to get good performance. How should the data be
+feature engineered? How much signal should be in the privileged information?
+These are all open questions.&lt;/p>
+&lt;p>Vapnik himself opens up three avenues to extend the SVM+ algorithm:&lt;/p>
+&lt;ol>
+&lt;li>&lt;em>a mixture model of slacks:&lt;/em> when slacks are estimated by a mixture of a
+smooth function and some prior&lt;/li>
+&lt;li>&lt;em>a model where privileged information is available only for a part of the
+training data:&lt;/em> where we can only supply privileged information on a small
+subset of the training examples&lt;/li>
+&lt;li>&lt;em>multiple-space privileged information:&lt;/em> where the privileged information we
+can supply do not all share the same features&lt;/li>
+&lt;/ol>
+&lt;p>Clearly, there&amp;rsquo;s a lot of potential in the LUPI paradigm, as well as a lot of
+reasons to be skeptical. It&amp;rsquo;s very much a nascent perspective of machine
+learning, so I&amp;rsquo;m interested in keeping an eye on it going forward. I&amp;rsquo;m hoping
+to write more posts on LUPI in the future!&lt;/p></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>https://www.georgeho.org/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
+speech on Reddit&lt;/a>. If you haven&amp;rsquo;t
+taken a look at my first post, please do!&lt;/p>
+&lt;p>I recently gave a talk on the technical, data science side of the project,
+describing not just the final result, but also the trajectory of the whole
+project: stumbling blocks, dead ends and all. Below is the slide deck: enjoy!&lt;/p>
+&lt;h2 id="abstract">Abstract&lt;/h2>
+&lt;p>Reddit is the one of the most popular discussion websites today, and is
+famously broad-minded in what it allows to be said on its forums: however,
+where there is free speech, there are invariably pockets of hate speech.&lt;/p>
+&lt;p>In this talk, I present a recent project to model hate speech on Reddit. In
+three acts, I chronicle the thought processes and stumbling blocks of the
+project, with each act applying a different form of machine learning:
+supervised learning, topic modelling and text clustering. I conclude with the
+current state of the project: a system that allows the modelling and
+summarization of entire subreddits, and possible future directions. Rest
+assured that both the talk and the slides have been scrubbed to be safe for
+work!&lt;/p>
+&lt;h2 id="slides">Slides&lt;/h2>
+&lt;blockquote class="embedly-card">&lt;h4>&lt;a href="https://speakerdeck.com/_eigenfoo/modelling-hate-speech-on-reddit-a-three-act-play">Modelling Hate Speech on Reddit - A Three-Act Play&lt;/a>&lt;/h4>&lt;p>Reddit is the one of the most popular discussion websites today, and is famously broad-minded in what it allows to be said on its forums: however, where there is free speech, there are invariably pockets of hate speech. In this talk, I present a recent project to model hate speech on Reddit.&lt;/p>&lt;/blockquote>
+&lt;script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8">&lt;/script></description></item></channel></rss>

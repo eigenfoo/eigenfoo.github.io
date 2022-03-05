@@ -1,0 +1,242 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" href=https://www.georgeho.org/assets/images/favicon.ico>
+<title>Why Latent Dirichlet Allocation Sucks | ⁂ George Ho</title><meta name=title content="Why Latent Dirichlet Allocation Sucks">
+<meta name=description content="As I learn more and more about data science and machine learning, I&rsquo;ve noticed that a lot of resources out there go something like this:
+ Check out this thing! It&rsquo;s great at this task! The important task! The one that was impossible/hard to do before! Look how well it does! So good! So fast!
+Take this! It&rsquo;s our algorithm/code/paper! We used it to do the thing! And now you can do the thing too!">
+<meta name=keywords content="machine-learning,natural-language-processing,">
+<meta property="og:title" content="Why Latent Dirichlet Allocation Sucks">
+<meta property="og:description" content="As I learn more and more about data science and machine learning, I&rsquo;ve noticed that a lot of resources out there go something like this:
+ Check out this thing! It&rsquo;s great at this task! The important task! The one that was impossible/hard to do before! Look how well it does! So good! So fast!
+Take this! It&rsquo;s our algorithm/code/paper! We used it to do the thing! And now you can do the thing too!">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.georgeho.org/lda-sucks/"><meta property="og:image" content="https://www.georgeho.org/images/share.png"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2018-03-06T00:00:00+00:00">
+<meta property="article:modified_time" content="2018-03-06T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.georgeho.org/images/share.png">
+<meta name=twitter:title content="Why Latent Dirichlet Allocation Sucks">
+<meta name=twitter:description content="As I learn more and more about data science and machine learning, I&rsquo;ve noticed that a lot of resources out there go something like this:
+ Check out this thing! It&rsquo;s great at this task! The important task! The one that was impossible/hard to do before! Look how well it does! So good! So fast!
+Take this! It&rsquo;s our algorithm/code/paper! We used it to do the thing! And now you can do the thing too!">
+<meta itemprop=name content="Why Latent Dirichlet Allocation Sucks">
+<meta itemprop=description content="As I learn more and more about data science and machine learning, I&rsquo;ve noticed that a lot of resources out there go something like this:
+ Check out this thing! It&rsquo;s great at this task! The important task! The one that was impossible/hard to do before! Look how well it does! So good! So fast!
+Take this! It&rsquo;s our algorithm/code/paper! We used it to do the thing! And now you can do the thing too!"><meta itemprop=datePublished content="2018-03-06T00:00:00+00:00">
+<meta itemprop=dateModified content="2018-03-06T00:00:00+00:00">
+<meta itemprop=wordCount content="1730"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=keywords content="machine-learning,natural-language-processing,">
+<meta name=referrer content="no-referrer-when-downgrade">
+<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<header><a href=/ class=title>
+<h2>⁂ George Ho</h2></a>
+<nav><a href=/>Home</a>
+<a href=/work/>Work</a>
+<a href=/blog>Blog</a>
+</nav></header><main>
+<h1>Why Latent Dirichlet Allocation Sucks</h1><p>
+<i>
+<time datetime=2018-03-06 pubdate>
+06 Mar, 2018
+</time>
+</i>
+</p><content>
+<p>As I learn more and more about data science and machine learning, I&rsquo;ve noticed
+that a lot of resources out there go something like this:</p><blockquote>
+<p>Check out this thing! It&rsquo;s great at this task! The important task! The one
+that was impossible/hard to do before! Look how well it does! So good! So
+fast!</p><p>Take this! It&rsquo;s our algorithm/code/paper! We used it to do the thing! And now
+you can do the thing too!</p></blockquote><p>Jokes aside, I do think it’s true that a lot of research and resources focus on
+what things <em>can</em> do, or what things are <em>good</em> at doing. Whenever I actually
+implement the hyped-up “thing”, I’m invariably frustrated when it doesn’t
+perform so well as originally described.</p><p>Maybe I&rsquo;m not smart enough to see this, but after I learn about a new technique
+or tool or model, it&rsquo;s not immediately obvious to me when <em>not</em> to use it. I
+think it would be very helpful to learn what things <em>aren&rsquo;t</em> good at doing, or
+why things just plain <em>suck</em> at times. Doing so not only helps you understand
+the technique/tool/model better, but also sharpens your understanding of your
+use case and the task at hand: what is it about your application that makes it
+unsuitable for such a technique?</p><p>Which is why I&rsquo;m writing the first of what will (hopefully) be a series of posts
+on <em>“Why [Thing] Sucks”</em>. The title is provocative but reductive: a better name
+might be <em>When and Why [Thing] Might Suck</em>… but that doesn&rsquo;t have quite the
+same ring to it! In these articles I&rsquo;ll be outlining what I tried and why it
+didn&rsquo;t work: documenting my failures and doing a quick post-mortem, if you will.
+My hope is that this will be useful to anyone else trying to do the same thing
+I&rsquo;m doing.</p><hr>
+<p>So first up: topic modelling. Specifically, <a href=https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation>latent Dirichlet
+allocation</a>, or LDA
+for short (not to be confused with <a href=https://www.georgeho.org/lda/>the other
+LDA</a>, which I wrote a blog post about before).</p><p>If you&rsquo;ve already encountered LDA and have seen <a href=https://en.wikipedia.org/wiki/Plate_notation>plate
+notation</a> before, this picture
+will probably refresh your memory:</p><p><img src=/assets/images/latent-dirichlet-allocation.png alt="Latent Dirichlet allocation"></p><p>If you don&rsquo;t know what LDA is, fret not, for there is
+<a href=http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf>no</a>
+<a href=http://obphio.us/pdfs/lda_tutorial.pdf>shortage</a>
+<a href=http://blog.echen.me/2011/08/22/introduction-to-latent-dirichlet-allocation/>of</a>
+<a href=https://rstudio-pubs-static.s3.amazonaws.com/79360_850b2a69980c4488b1db95987a24867a.html>resources</a>
+<a href=http://scikit-learn.org/stable/modules/decomposition.html#latentdirichletallocation>about</a>
+<a href=https://radimrehurek.com/gensim/models/ldamodel.html>this</a>
+<a href=https://www.quora.com/What-is-a-good-explanation-of-Latent-Dirichlet-Allocation>stuff</a>.
+I&rsquo;m going to move on to when and why LDA isn&rsquo;t the best idea.</p><p><strong>tl;dr:</strong> <em>LDA and topic modelling doesn&rsquo;t work well with a) short documents,
+in which there isn&rsquo;t much text to model, or b) documents that don&rsquo;t coherently
+discuss a single topic.</em></p><p>Wait, what? Did George just say that topic modelling sucks when there&rsquo;s not much
+topic, and not much text to model? Isn&rsquo;t that obvious?</p><p><em>Yes! Exactly!</em> Of course it&rsquo;s <a href=https://en.wikipedia.org/wiki/Egg_of_Columbus>obvious in
+retrospect</a>! Which is why I was
+so upset when I realized I spent two whole weeks faffing around with LDA when
+topic models were the opposite of what I needed, and so frustrated that more
+people aren&rsquo;t talking about when <em>not</em> to use/do certain things.</p><p>But anyways, <code>&lt;\rant></code> and let&rsquo;s move on to why I say what I&rsquo;m saying.</p><p>Recently, I&rsquo;ve taken up a project in modelling the textual data on Reddit using
+NLP techniques. There are, of course, many ways one count take this, but
+something I was interested in was finding similarities between subreddits,
+clustering comments, and visualizing these clusters somehow: what does Reddit
+talk about on average? Of course, I turned to topic modelling and dimensionality
+reduction.</p><p>The techniques that I came across first were LDA (<a href=https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation>latent Dirichlet
+allocation</a>) and
+t-SNE (<a href=https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding>t-distributed stochastic neighbor
+embedding</a>).
+Both techniques are well known and well documented, but I can&rsquo;t say that using
+them together is a popular choice of two techniques. However, there have been
+some successes. For instance, <code>ShuaiW</code> had some success with this method <a href=https://web.archive.org/web/20171219104016/https://shuaiw.github.io/2016/12/22/topic-modeling-and-tsne-visualzation.html>when
+using it the 20 newsgroups
+dataset</a><sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>;
+some work done by Kagglers have <a href=https://www.kaggle.com/ykhorramz/lda-and-t-sne-interactive-visualization>yielded reasonable
+results</a>,
+and <a href=https://stats.stackexchange.com/questions/305356/plot-latent-dirichlet-allocation-output-using-t-sne>the StackExchange community doesn&rsquo;t think its a ridiculous
+idea</a>.</p><p>The dataset that I applied this technique to was the <a href=https://bigquery.cloud.google.com/dataset/fh-bigquery:reddit>Reddit dataset on Google
+BigQuery</a>, which contains
+data on all subreddits, posts and comments for as long as Reddit has been around.
+I limited myself to the top 10 most active subreddits in December 2017 (the most
+recent month for which we have data, at the time of writing), and chose 20 to be
+the number of topics to model (any choice is as arbitrary as any other).</p><p>I ran LDA and t-SNE exactly as Shuai described on <a href=https://web.archive.org/web/20171219104016/https://shuaiw.github.io/2016/12/22/topic-modeling-and-tsne-visualzation.html>this blog
+post</a><sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>,
+except using the great <a href=https://radimrehurek.com/gensim/><code>gensim</code></a> library to
+perform LDA, which was built with large corpora and efficient online algorithms
+in mind. (Specifically, <code>gensim</code> implements online variational inference with
+the EM algorthm, instead of using MCMC-based algorithms, which <code>lda</code> does. It
+seems that variational Bayes scales better to very large corpora than collapsed
+Gibbs sampling.)</p><p>Here are the results:</p><p><img src=/assets/images/lda-sucks.png alt="LDA followed by t-SNE on the Reddit dataset"></p><p>Horrible, right? Nowhere near the well-separated clusters that Shuai got with
+the 20 newsgroups. In fact, the tiny little huddles of around 5 to 10 comments
+are probably artifacts of the dimensionality reduction done by t-SNE, so those
+might even just be noise! You might say that there are at least 3 very large
+clusters, but even that&rsquo;s bad news! If they&rsquo;re clustered together, you would
+hope that they have the same topics, and that&rsquo;s definitely not the case here!
+These large clusters tells us that a lot of comments have roughly the same topic
+distribution (i.e. they&rsquo;re close to each other in the high-dimensional
+topic-space), but their dominant topics (i.e. the topic with greatest
+probability) don&rsquo;t end up being the same.</p><p>By the way, t-SNE turns out to be <a href=https://distill.pub/2016/misread-tsne/>a really devious dimensionality reduction
+technique</a>, and you really need to
+experiment with the perplexity values in order to use it properly. I used the
+default <code>perplexity=30</code> from sklearn for the previous plot, but I repeated the
+visualizations for multiple other values and the results aren&rsquo;t so hot either.
+Note that I did these on a random subsample of 1000 comments, so as to reduce
+compute time.</p><figure>
+<a href=/assets/images/perplexity50.png><img src=/assets/images/perplexity50.png alt="t-SNE with perplexity value of 50"></a>
+<a href=/assets/images/perplexity100.png><img src=/assets/images/perplexity100.png alt="t-SNE with perplexity value of 100"></a>
+<figcaption>t-SNE with perplexity values of 50 and 100, respectively.</figcaption></figure><p>So, what went wrong? There&rsquo;s a <a href=https://stackoverflow.com/questions/29786985/whats-the-disadvantage-of-lda-for-short-texts>nice StackOverflow
+post</a>
+that describes the problem well.</p><p>Firstly, latent Dirichlet allocation and other probabilistic topic models are
+very complex and flexible. While this means that they have very high variance
+and low bias, it also means that they need a lot of data (or data with a decent
+signal-to-noise ratio) for them to learn anything meaningful. Particularly for
+LDA, which infers topics on a document-by-document basis, if there aren&rsquo;t enough
+words in a document, there simply isn&rsquo;t enough data to infer a reliable topic
+distribution for that document.</p><p>Secondly, Reddit comments are by their nature very short and very-context
+dependent, since they respond to a post, or another comment. So not only are
+Reddit comments just short: it&rsquo;s actually worse than that! They don&rsquo;t even
+discuss a certain topic coherently (by which I mean, they don&rsquo;t necessarily use
+words that pertain to what they&rsquo;re talking about). I&rsquo;ll give an example:</p><pre tabindex=0><code>&#34;I&#39;m basing my knowledge on the fact that I watched the fucking rock fall.&#34;
+</code></pre><p>Now, stopwords compose a little less than half of this comment, and they would
+be stripped before LDA even looks at it. But that aside, what is this comment
+about? What does the rock falling mean? What knowledge is this user claiming?
+It&rsquo;s a very confusing comment, but probably made complete sense in the context
+of the post it responded to and the comments that came before it. As it is,
+however, its impossible for <em>me</em> to figure out what topic this comment is about,
+let alone an algorithm!</p><p>Also, just to drive the point home, here are the top 10 words in each of the 20
+topics that LDA came up with, on the same dataset as before:</p><pre tabindex=0><code>Topic #0:
+  got just time day like went friend told didn kids
+
+Topic #1:
+  just gt people say right doesn know law like government
+
+Topic #2:
+  removed com https www https www tax money http watch news
+
+Topic #3:
+  people don just like think really good know want things
+
+Topic #4:
+  years time did great ago ve just work life damn
+
+Topic #5:
+  movie like love just really school star movies film story
+
+Topic #6:
+  like just fucking shit head car looks new makes going
+
+Topic #7:
+  game team season year good win play teams playing best
+
+Topic #8:
+  right thing yeah don think use internet ok water case
+
+Topic #9:
+  going like work just need way want money free fuck
+
+Topic #10:
+  better just play games make ve ll seen lol fun
+
+Topic #11:
+  like don know did feel shit big man didn guys
+
+Topic #12:
+  deleted fuck guy year old man amp year old state lmao
+
+Topic #13:
+  sure believe trump wrong saying comment post mueller evidence gt
+
+Topic #14:
+  gt yes https com good oh wikipedia org en wiki
+
+Topic #15:
+  think like good 10 look point lebron just pretty net
+
+Topic #16:
+  gt said fucking american agree trump thanks obama states did
+
+Topic #17:
+  trump vote party republicans election moore president republican democrats won
+
+Topic #18:
+  war world country israel countries china military like happy does
+
+Topic #19:
+  reddit message askreddit post questions com reddit com subreddit compose message compose
+</code></pre><p>Now, it&rsquo;s not entirely bad: topic 2 seems like its collecting the tokens from links
+(I didn&rsquo;t stopword those out, oops), topic 7 looks like its about football or
+some other sport, 13 is probably about American politics, and 18 looks like
+its about world news, etc.</p><p>But almost all other topics are just collections of words: it&rsquo;s not immediately
+obvious to me what each topic represents.</p><p>So yeah, there you have it, LDA really sucks sometimes.</p><hr>
+<p><strong>Update (8/12/2018):</strong> In retrospect, I think that this whole blog post is
+summarized well in the following tweet thread. Clustering algorithms will give
+you clusters because that&rsquo;s what they do, not because there actually <em>are</em>
+clusters. In this case, extremely short and context-dependent documents make it
+hard to justify that there are topic clusters in the first place.</p><blockquote class=twitter-tweet data-lang=en><p lang=en dir=ltr>Algorithms that have to report something will always report something, even if it's a bad idea. Please do not use these algorithms unless you have principled reasons why there should be something. <a href=https://t.co/kzxZiuBfmm>https://t.co/kzxZiuBfmm</a></p>&mdash; \mathfrak{Michael Betancourt} (@betanalpha) <a href="https://twitter.com/betanalpha/status/1026619046626828288?ref_src=twsrc%5Etfw">August 7, 2018</a></blockquote><script async src=https://platform.twitter.com/widgets.js></script>
+<section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p><a href=https://github.com/ShuaiW><code>ShuaiW</code></a> has since taken down his blog, so I
+am linking to the Internet Archive of his blog post instead.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content>
+<p>
+<a href=https://www.georgeho.org/blog/machine-learning/>#machine-learning</a>
+<a href=https://www.georgeho.org/blog/natural-language-processing/>#natural-language-processing</a>
+</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer></body></html>

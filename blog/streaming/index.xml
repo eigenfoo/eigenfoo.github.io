@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>streaming on ⁂ George Ho</title><link>https://www.georgeho.org/blog/streaming/</link><description>Recent content in streaming on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 05 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/streaming/index.xml" rel="self" type="application/rss+xml"/><item><title>Streaming Data with Tornado and WebSockets</title><link>https://www.georgeho.org/tornado-websockets/</link><pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tornado-websockets/</guid><description>&lt;p>A lot of data science and machine learning practice assumes a static dataset,
+maybe with some MLOps tooling for rerunning a model pipeline with the freshest
+version of the dataset.&lt;/p>
+&lt;p>Working with streaming data is an entirely different ball game, and it wasn&amp;rsquo;t
+clear to me what tools a data scientist might reach for when dealing with
+streaming data&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>I recently came across a pretty straightforward and robust solution:
+&lt;a href="https://datatracker.ietf.org/doc/html/rfc6455">WebSockets&lt;/a> and
+&lt;a href="https://www.tornadoweb.org/en/stable/">Tornado&lt;/a>. Tornado is a Python web
+framework with strong support for asynchronous networking. WebSockets are a
+way for two processes (or apps) to communicate with each other (similar to HTTP
+requests with REST endpoints). Of course, Tornado has pretty good support for
+WebSockets as well.&lt;/p>
+&lt;p>In this blog post I&amp;rsquo;ll give a minimal example of using Tornado and WebSockets
+to handle streaming data. The toy example I have is one app (&lt;code>server.py&lt;/code>)
+writing samples of a Bernoulli to a WebSocket, and another app (&lt;code>client.py&lt;/code>)
+listening to the WebSocket and keeping track of the posterior distribution for
+a &lt;a href="https://www.georgeho.org/bayesian-bandits/">Beta-Binomial conjugate model&lt;/a>.
+After walking through the code, I&amp;rsquo;ll discuss these tools, and why they&amp;rsquo;re good
+choices for working with streaming data.&lt;/p>
+&lt;p>For another tutorial on this same topic, you can check out &lt;a href="https://en.proft.me/2014/05/16/realtime-web-application-tornado-and-websocket/">&lt;code>proft&lt;/code>&amp;rsquo;s blog
+post&lt;/a>.&lt;/p>
+&lt;h2 id="server">Server&lt;/h2>
+&lt;ul>
+&lt;li>When &lt;code>WebSocketServer&lt;/code> is registered to a REST endpoint (in &lt;code>main&lt;/code>), it keeps
+track of any processes who are listening to that endpoint, and pushes
+messages to them when &lt;code>send_message&lt;/code> is called.
+&lt;ul>
+&lt;li>Note that &lt;code>clients&lt;/code> is a class variable, so &lt;code>send_message&lt;/code> is a class
+method.&lt;/li>
+&lt;li>This class could be extended to also listen to the endpoint, instead of
+just blindly pushing messages out - after all, WebSockets allow for
+bidirectional data flow.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>The &lt;code>RandomBernoulli&lt;/code> and &lt;code>PeriodicCallback&lt;/code> make a pretty crude example, but
+you could write a class that transmits data in real-time to suit your use
+case. For example, you could watch a file for any modifications using
+&lt;a href="https://pythonhosted.org/watchdog/">&lt;code>watchdog&lt;/code>&lt;/a>, and dump the changes into
+the WebSocket.&lt;/li>
+&lt;li>The &lt;a href="https://www.tornadoweb.org/en/stable/web.html?highlight=websocket_ping#tornado.web.Application.settings">&lt;code>websocket_ping_interval&lt;/code> and &lt;code>websocket_ping_timeout&lt;/code> arguments to
+&lt;code>tornado.Application&lt;/code>&lt;/a>
+configure periodic pings of WebSocket connections, keeping connections alive
+and allowing dropped connections to be detected and closed.&lt;/li>
+&lt;li>It&amp;rsquo;s also worth noting that there&amp;rsquo;s a
+&lt;a href="https://www.tornadoweb.org/en/stable/websocket.html?highlight=websocket_max_message_size#tornado.websocket.WebSocketHandler">&lt;code>tornado.websocket.WebSocketHandler.websocket_max_message_size&lt;/code>&lt;/a>
+attribute. While this is set to a generous 10 MiB, it&amp;rsquo;s important that the
+WebSocket messages don&amp;rsquo;t exceed this limit!&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34; Every 100ms, sample from a Bernoulli and write the value to a WebSocket. &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> random
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.ioloop
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.web
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.websocket
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">WebSocketServer&lt;/span>(tornado&lt;span style="color:#f92672">.&lt;/span>websocket&lt;span style="color:#f92672">.&lt;/span>WebSocketHandler):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;Simple WebSocket handler to serve clients.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Note that `clients` is a class variable and `send_message` is a&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># classmethod.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clients &lt;span style="color:#f92672">=&lt;/span> set()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">open&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> WebSocketServer&lt;span style="color:#f92672">.&lt;/span>clients&lt;span style="color:#f92672">.&lt;/span>add(self)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">on_close&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> WebSocketServer&lt;span style="color:#f92672">.&lt;/span>clients&lt;span style="color:#f92672">.&lt;/span>remove(self)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@classmethod&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">send_message&lt;/span>(cls, message: str):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Sending message &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>message&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> to &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>len(cls&lt;span style="color:#f92672">.&lt;/span>clients)&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> client(s).&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> client &lt;span style="color:#f92672">in&lt;/span> cls&lt;span style="color:#f92672">.&lt;/span>clients:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client&lt;span style="color:#f92672">.&lt;/span>write_message(message)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RandomBernoulli&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>p &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0.72&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;True p = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>self&lt;span style="color:#f92672">.&lt;/span>p&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">sample&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> int(random&lt;span style="color:#f92672">.&lt;/span>uniform(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>) &lt;span style="color:#f92672">&amp;lt;=&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>p)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Create a web app whose only endpoint is a WebSocket, and start the web&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># app on port 8888.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> app &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>web&lt;span style="color:#f92672">.&lt;/span>Application(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [(&lt;span style="color:#e6db74">r&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/websocket/&amp;#34;&lt;/span>, WebSocketServer)],
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> websocket_ping_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> websocket_ping_timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">30&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> app&lt;span style="color:#f92672">.&lt;/span>listen(&lt;span style="color:#ae81ff">8888&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Create an event loop (what Tornado calls an IOLoop).&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>ioloop&lt;span style="color:#f92672">.&lt;/span>IOLoop&lt;span style="color:#f92672">.&lt;/span>current()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Before starting the event loop, instantiate a RandomBernoulli and&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># register a periodic callback to write a sampled value to the WebSocket&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># every 100ms.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> random_bernoulli &lt;span style="color:#f92672">=&lt;/span> RandomBernoulli()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> periodic_callback &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>ioloop&lt;span style="color:#f92672">.&lt;/span>PeriodicCallback(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">lambda&lt;/span>: WebSocketServer&lt;span style="color:#f92672">.&lt;/span>send_message(str(random_bernoulli&lt;span style="color:#f92672">.&lt;/span>sample())), &lt;span style="color:#ae81ff">100&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> periodic_callback&lt;span style="color:#f92672">.&lt;/span>start()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Start the event loop.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop&lt;span style="color:#f92672">.&lt;/span>start()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;__main__&amp;#34;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> main()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="client">Client&lt;/h2>
+&lt;ul>
+&lt;li>&lt;code>WebSocketClient&lt;/code> is a class that:
+&lt;ol>
+&lt;li>Can be &lt;code>start&lt;/code>ed and &lt;code>stop&lt;/code>ped to connect/disconnect to the WebSocket and
+start/stop listening to it in a separate thread&lt;/li>
+&lt;li>Can process every message (&lt;code>on_message&lt;/code>) it hears from the WebSocket: in
+this case it simply maintains &lt;a href="https://www.georgeho.org/bayesian-bandits/#stochastic-aka-stationary-bandits">a count of the number of trials and
+successes&lt;/a>,
+but this processing could theoretically be anything. For example, you
+could do some further processing of the message and then dump that into a
+separate WebSocket for other apps (or even users!) to subscribe to.&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>To connect to the WebSocket, we need to use a WebSocket library: thankfully
+Tornado has a built-in WebSocket functionality (&lt;code>tornado.websocket&lt;/code>), but
+we&amp;rsquo;re also free to use other libraries such as the creatively named
+&lt;a href="https://github.com/aaugustin/websockets">&lt;code>websockets&lt;/code>&lt;/a> or
+&lt;a href="https://github.com/websocket-client/websocket-client">&lt;code>websocket-client&lt;/code>&lt;/a>.&lt;/li>
+&lt;li>Note that we run &lt;code>on_message&lt;/code> on the same thread as we run
+&lt;code>connect_and_read&lt;/code>. This isn&amp;rsquo;t a problem so long as &lt;code>on_message&lt;/code> is fast
+enough, but a potentially wiser choice would be to offload &lt;code>connect_and_read&lt;/code>
+to a separate thread by instantiating a
+&lt;a href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor">&lt;code>concurrent.futures.ThreadPoolExecutor&lt;/code>&lt;/a>
+and calling
+&lt;a href="https://www.tornadoweb.org/en/stable/ioloop.html#tornado.ioloop.IOLoop.run_in_executor">&lt;code>tornado.ioloop.IOLoop.run_in_executor&lt;/code>&lt;/a>,
+so as not to block the thread where the &lt;code>on_message&lt;/code> processing happens.&lt;/li>
+&lt;li>The &lt;code>io_loop&lt;/code> instantiated in &lt;code>main&lt;/code> (as well as in &lt;code>server.py&lt;/code>) is
+important: it&amp;rsquo;s how Tornado schedules tasks (a.k.a. &lt;em>callbacks&lt;/em>) for delayed
+(a.k.a. &lt;em>asynchronous&lt;/em>) execution. To add a callback, we simply call
+&lt;code>io_loop.add_callback()&lt;/code>.&lt;/li>
+&lt;li>The &lt;a href="https://www.tornadoweb.org/en/stable/websocket.html?highlight=ping_#tornado.websocket.websocket_connect">&lt;code>ping_interval&lt;/code> and &lt;code>ping_timeout&lt;/code> arguments to
+&lt;code>websocket_connect&lt;/code>&lt;/a>
+configure periodic pings of the WebSocket connection, keeping connections
+alive and allowing dropped connections to be detected and closed.&lt;/li>
+&lt;li>The &lt;code>callback=self.maybe_retry_connection&lt;/code> is &lt;a href="https://github.com/tornadoweb/tornado/blob/1db5b45918da8303d2c6958ee03dbbd5dc2709e9/tornado/websocket.py#L1654-L1655">run on a future
+&lt;code>WebSocketClientConnection&lt;/code>&lt;/a>.
+&lt;code>websocket_connect&lt;/code> doesn&amp;rsquo;t actually establish the connection directly, but
+rather returns a future. Hence, we try to get the &lt;code>future.result()&lt;/code> itself
+(i.e. the WebSocket client connection) — I don&amp;rsquo;t actually do anything with
+the &lt;code>self.connection&lt;/code>, but you could if you wanted. In the event of an
+exception while doing that, we assume there&amp;rsquo;s a problem with the WebSocket
+connection and retry &lt;code>connect_and_read&lt;/code> after 3 seconds. This all has the
+effect of recovering gracefully if the WebSocket is dropped or &lt;code>server.py&lt;/code>
+experiences a brief outage for whatever reason (both of which are probably
+inevitable for long-running apps using WebSockets).&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34; Read from the WebSocket and update the Beta posterior parameters online. &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.ioloop
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.websocket
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">WebSocketClient&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self, io_loop):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connection &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>io_loop &lt;span style="color:#f92672">=&lt;/span> io_loop
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_successes &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_trials &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">start&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connect_and_read()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">stop&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>io_loop&lt;span style="color:#f92672">.&lt;/span>stop()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">connect_and_read&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Reading...&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tornado&lt;span style="color:#f92672">.&lt;/span>websocket&lt;span style="color:#f92672">.&lt;/span>websocket_connect(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> url&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;ws://localhost:8888/websocket/&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> callback&lt;span style="color:#f92672">=&lt;/span>self&lt;span style="color:#f92672">.&lt;/span>maybe_retry_connection,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> on_message_callback&lt;span style="color:#f92672">=&lt;/span>self&lt;span style="color:#f92672">.&lt;/span>on_message,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ping_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ping_timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">30&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">maybe_retry_connection&lt;/span>(self, future) &lt;span style="color:#f92672">-&amp;gt;&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connection &lt;span style="color:#f92672">=&lt;/span> future&lt;span style="color:#f92672">.&lt;/span>result()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Could not reconnect, retrying in 3 seconds...&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>io_loop&lt;span style="color:#f92672">.&lt;/span>call_later(&lt;span style="color:#ae81ff">3&lt;/span>, self&lt;span style="color:#f92672">.&lt;/span>connect_and_read)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">on_message&lt;/span>(self, message):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> message &lt;span style="color:#f92672">is&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Disconnected, reconnecting...&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connect_and_read()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> message &lt;span style="color:#f92672">=&lt;/span> int(message)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_successes &lt;span style="color:#f92672">+=&lt;/span> message
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_trials &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> alpha &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span> &lt;span style="color:#f92672">+&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_successes
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> beta &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span> &lt;span style="color:#f92672">+&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_trials &lt;span style="color:#f92672">-&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_successes
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mean &lt;span style="color:#f92672">=&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_successes &lt;span style="color:#f92672">/&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_trials
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;α = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>alpha&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">; β = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>beta&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">; mean = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>mean&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Create an event loop (what Tornado calls an IOLoop).&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>ioloop&lt;span style="color:#f92672">.&lt;/span>IOLoop&lt;span style="color:#f92672">.&lt;/span>current()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Before starting the event loop, instantiate a WebSocketClient and add a&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># callback to the event loop to start it. This way the first thing the&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># event loop does is to start the client.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client &lt;span style="color:#f92672">=&lt;/span> WebSocketClient(io_loop)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop&lt;span style="color:#f92672">.&lt;/span>add_callback(client&lt;span style="color:#f92672">.&lt;/span>start)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Start the event loop.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop&lt;span style="color:#f92672">.&lt;/span>start()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;__main__&amp;#34;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> main()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="why-tornado">Why Tornado?&lt;/h2>
+&lt;p>Tornado is a Python web framework, but unlike the more popular Python web
+frameworks like &lt;a href="https://flask.palletsprojects.com/">Flask&lt;/a> or
+&lt;a href="https://www.djangoproject.com/">Django&lt;/a>, it has strong support for
+&lt;a href="https://www.tornadoweb.org/en/stable/guide/async.html#blocking">asynchronous networking and non-blocking
+calls&lt;/a> -
+essentially, Tornado apps have one (single-threaded) event loop
+(&lt;code>tornado.ioloop.IOLoop&lt;/code>), which handles all requests asynchronously,
+dispatching incoming requests to the relevant non-blocking function as the
+request comes in. As far as I know, Tornado is the only Python web framework
+that does this.&lt;/p>
+&lt;p>As an aside, Tornado seems to be &lt;a href="https://thehftguy.com/2020/10/27/my-experience-in-production-with-flask-bottle-tornado-and-twisted/">more popular in
+finance&lt;/a>,
+where streaming real-time data (e.g. market data) is very common.&lt;/p>
+&lt;h2 id="why-websockets">Why WebSockets?&lt;/h2>
+&lt;p>A sharper question might be, why WebSockets over HTTP requests to a REST
+endpoint? After all, both theoretically allow a client to stream data in
+real-time from a server.&lt;/p>
+&lt;p>&lt;a href="https://stackoverflow.com/a/45464306">A lot can be said&lt;/a> when comparing
+WebSockets and RESTful services, but I think the main points are accurately
+summarized by &lt;a href="https://www.baeldung.com/rest-vs-websockets#usage">Kumar Chandrakant on
+Baeldung&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>[A] WebSocket is more suitable for cases where a push-based and real-time
+communication defines the requirement more appropriately. Additionally,
+WebSocket works well for scenarios where a message needs to be pushed to
+multiple clients simultaneously. These are the cases where client and server
+communication over RESTful services will find it difficult if not prohibitive.&lt;/p>
+&lt;/blockquote>
+&lt;p>Tangentially, there&amp;rsquo;s one alternative that seems to be better than WebSockets
+from a protocol standpoint, but unfortunately doesn&amp;rsquo;t seem to have support from
+many Python web frameworks, and that is &lt;a href="https://www.smashingmagazine.com/2018/02/sse-websockets-data-flow-http2/">Server-Sent Events (a.k.a.
+SSE)&lt;/a>:
+it seems to be a cleaner protocol for unidirectional data flow, which is really
+all that we need.&lt;/p>
+&lt;p>Additionally, &lt;a href="https://lucumr.pocoo.org/2012/9/24/websockets-101/">Armin
+Ronacher&lt;/a> has a much
+starker view of WebSockets, seeing no value in using WebSockets over TCP/IP
+sockets for this application:&lt;/p>
+&lt;blockquote>
+&lt;p>Websockets make you sad. [&amp;hellip;] Websockets are complex, way more complex than I
+anticipated. I can understand that they work that way but I definitely don&amp;rsquo;t
+see a value in using websockets instead of regular TCP connections if all you
+want is to exchange data between different endpoints and neither is a browser.&lt;/p>
+&lt;/blockquote>
+&lt;p>My thought after reading these criticisms is that perhaps WebSockets aren&amp;rsquo;t the
+ideal technology for handling streaming data (from a maintainability or
+architectural point of view), but that doesn&amp;rsquo;t mean that they aren&amp;rsquo;t good
+scalable technologies when they do work.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>There is &lt;a href="https://sqlstream.com/real-time-vs-streaming-a-short-explanation/">technically a difference&lt;/a> between &amp;ldquo;real-time&amp;rdquo; and &amp;ldquo;streaming&amp;rdquo;: &amp;ldquo;real-time&amp;rdquo; refers to data that comes in as it is created, whereas &amp;ldquo;streaming&amp;rdquo; refers to a system that processes data continuously. You stream your TV show from Netflix, but since the show was created long before you watched it, you aren&amp;rsquo;t viewing it in real-time.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item></channel></rss>

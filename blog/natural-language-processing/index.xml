@@ -1,0 +1,1002 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>natural-language-processing on ⁂ George Ho</title><link>https://www.georgeho.org/blog/natural-language-processing/</link><description>Recent content in natural-language-processing on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 23 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/natural-language-processing/index.xml" rel="self" type="application/rss+xml"/><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+Transformer-based NLP models.&lt;/p>
+&lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
+models&lt;/a>, this blog post is a write-up
+of my reading and research: I assume basic familiarity with deep learning, and aim to
+highlight general trends in deep NLP, instead of commenting on individual architectures
+or systems.&lt;/p>
+&lt;p>As a disclaimer, this post is by no means exhaustive and is biased towards
+Transformer-based models, which seem to be the dominant breed of NLP systems (at least,
+at the time of writing).&lt;/p>
+&lt;h2 id="some-architectures-and-developments">Some Architectures and Developments&lt;/h2>
+&lt;p>Here&amp;rsquo;s an (obviously) abbreviated history of Transformer-based models in NLP&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> in
+(roughly) chronological order. I also cover some other non-Transformer-based models,
+because I think they illuminate the history of NLP.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>word2vec and GloVe&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>These were the first instances of word embeddings pre-trained on large amounts of
+unlabeled text. These word embeddings generalized well to most other tasks (even
+with limited amounts of labeled data), and usually led to appreciable improvements
+in performance.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>These ideas were immensely influential and have served NLP extraordinarily well.
+However, they suffer from a major limitation. They are &lt;em>shallow&lt;/em> representations
+that can only be used in the first layer of any network: the remainder of the
+network must still be trained from scratch.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The main appeal is well illustrated below: each word has its own vector
+representation, and there are linear vector relationships can encode common-sense
+semantic meanings of words.&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/linear-relationships.png" alt="Linear vector relationships in word embeddings">
+&lt;figcaption>Linear vector relationships in word embeddings. Source: &lt;a href="https://www.tensorflow.org/images/linear-relationships.png">TensorFlow documentation&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="http://arxiv.org/abs/1301.3781">word2vec: Mikolov et al., Google. January 2013&lt;/a>
+and &lt;a href="http://arxiv.org/abs/1310.4546">October 2013&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="https://nlp.stanford.edu/projects/glove/">GloVe: Pennington et al., Stanford CS. EMNLP
+2014.&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Broadly speaking, after word2vec/GloVe and before Transformers, a lot of ink was
+spilled on other different approaches to NLP, including (but certainly not limited
+to)&lt;/p>
+&lt;ol>
+&lt;li>Convolutional neural networks&lt;/li>
+&lt;li>Recurrent neural networks&lt;/li>
+&lt;li>Reinforcement learning approaches&lt;/li>
+&lt;li>Memory-augmented deep learning&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>Perhaps the most famous of such models is &lt;a href="https://allennlp.org/elmo">ELMo (Embeddings from Language
+Models)&lt;/a> by AI2, which learned bidirectional word
+embeddings using LSTMs, and began NLP&amp;rsquo;s fondness of Sesame Street.&lt;/li>
+&lt;li>I won&amp;rsquo;t go into much more detail here: partly because not all of these approaches
+have held up as well as current Transformer-based models, and partly because I have
+plans for my computer that don&amp;rsquo;t involve blogging about recent advances in NLP.&lt;/li>
+&lt;li>Here is &lt;a href="https://arxiv.org/abs/1708.02709">a survey paper&lt;/a> (and an &lt;a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">associated blog
+post&lt;/a>)
+published shortly after the Transformer was invented, which summarizes a lot of the
+work that was being done during this period.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Transformer&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The authors introduce a feed-forward network architecture, using only attention
+mechanisms and dispensing with convolutions and recurrence entirely (which were not
+uncommon techniques in NLP at the time).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>It achieved state-of-the-art performance on several tasks, and (perhaps more
+importantly) was found to generalize very well to other NLP tasks, even with
+limited data.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Since this architecture was the progenitor of so many other NLP models, it&amp;rsquo;s
+worthwhile to dig into the details a bit. The architecture is illustrated below:
+note that its feed-forward nature and multi-head self attention are critical
+aspects of this architecture!&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/asset/images/transformer-block.png" alt="Graphical representation of BERT">
+&lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1706.03762.pdf">Vaswani et al., Google Brain. December 2017.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://jalammar.github.io/illustrated-transformer/">&lt;em>The Illustrated Transformer&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://nlp.seas.harvard.edu/2018/04/03/attention.html">&lt;em>The Annotated Transformer&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>ULMFiT (Universal Language Model Fine-tuning for Text Classification)&lt;/p>
+&lt;ul>
+&lt;li>The authors introduce an effective transfer learning method that can be applied to
+any task in NLP: this paper introduced the idea of general-domain, unsupervised
+pre-training, followed by task-specific fine-tuning. They also introduce other
+techniques that are fairly common in NLP now, such as slanted triangular learning
+rate schedules. (what some researchers now call warm-up).&lt;/li>
+&lt;li>Further reading
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1801.06146.pdf">Howard and Ruder. January 2018.&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>GPT-1 and GPT-2 (Generative Pre-trained Transformers)&lt;/p>
+&lt;ul>
+&lt;li>At the risk of peeking ahead, GPT is largely BERT but with Transformer decoder
+blocks, instead of encoder blocks. Note that in doing this, we lose the
+autoregressive/unidirectional nature of the model.&lt;/li>
+&lt;li>Arguably the main contribution of GPT-2 is that it demonstrated the value of
+training larger Transformer models (a trend that I personally refer to as the
+&lt;em>Embiggening&lt;/em>).&lt;/li>
+&lt;li>GPT-2 generated some controversy, as OpenAI &lt;a href="https://www.theverge.com/2019/2/14/18224704/ai-machine-learning-language-models-read-write-openai-gpt2">initially refused to open-source the
+model&lt;/a>,
+citing potential malicious uses, but &lt;a href="https://www.theverge.com/2019/11/7/20953040/openai-text-generation-ai-gpt-2-full-model-release-1-5b-parameters">ended up releasing the model
+later&lt;/a>.&lt;/li>
+&lt;li>Further reading
+&lt;ul>
+&lt;li>&lt;a href="https://openai.com/blog/language-unsupervised/">Radford et al., OpenAI. June
+2018&lt;/a> and &lt;a href="https://openai.com/blog/better-language-models/">February
+2019&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="http://jalammar.github.io/illustrated-gpt2/">&lt;em>The Illustrated GPT-2&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>BERT (Bidirectional Encoder Representations from Transformers)&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The authors use the Transformer encoder (and only the encoder) to pre-train deep
+bidirectional representations from unlabeled text. This pre-trained BERT model can
+then be fine-tuned with just one additional output layer to achieve
+state-of-the-art performance for many NLP tasks, without substantial task-specific
+architecture changes, as illustrated below.&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bert.png" alt="Graphical representation of BERT">
+&lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>BERT was a drastic development in the NLP landscape: it became almost a cliche to
+conclude that BERT performs &amp;ldquo;surprisingly well&amp;rdquo; on whatever task or dataset you
+throw at it.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1810.04805.pdf">Devlin et al., Google AI Language, May 2019.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html">Accompanying blog post&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://jalammar.github.io/illustrated-bert/">&lt;em>The Illustrated BERT&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>RoBERTa (Robustly Optimized BERT Approach)&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The scientific contributions of this paper are best quoted from its abstract:&lt;/p>
+&lt;blockquote>
+&lt;p>We find that BERT was significantly under-trained, and can match or exceed the
+performance of every model published after it. [&amp;hellip;] These results highlight the
+importance of previously overlooked design choices, and raise questions about the
+source of recently reported improvements.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>The authors use an identical architecture to BERT, but propose several improvements
+to the training routine, such as changing the dataset and removing the
+next-sentence-prediction (NSP) pre-training task. Funnily enough, far and away the
+best thing the authors did to improve BERT was just the most obvious thing: train
+BERT for longer!&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/abs/1907.11692">Liu et al., Facebook AI. June 2019.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://ai.facebook.com/blog/roberta-an-optimized-method-for-pretraining-self-supervised-nlp-systems/">Accompanying blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>T5 (Text-to-Text Transfer Transformer)&lt;/p>
+&lt;ul>
+&lt;li>There are two main contributions of this paper:
+&lt;ol>
+&lt;li>The authors recast all NLP tasks into a text-to-text format: for example,
+instead of performing a two-way softmax for binary classification, one could
+simply teach an NLP model to output the tokens &amp;ldquo;spam&amp;rdquo; or &amp;ldquo;ham&amp;rdquo;. This provides a
+unified text-to-text format for all NLP tasks.&lt;/li>
+&lt;li>The authors systematically study and compare the effects of pre-training
+objectives, architectures, unlabeled datasets, transfer approaches, and other
+factors on dozens of canonical NLP tasks.&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>This paper (and especially the tables in the appendices!) probably cost the Google
+team an incredible amount of money, and the authors were very thorough in ablating
+what does and doesn&amp;rsquo;t help for a good NLP system.&lt;/li>
+&lt;li>Further reading
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1910.10683.pdf">Raffel et al., Google. October 2019.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://ai.googleblog.com/2020/02/exploring-transfer-learning-with-t5.html">Accompanying blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="some-thoughts-and-observations">Some Thoughts and Observations&lt;/h2>
+&lt;p>Here I comment on some general trends that I see in Transformer-based models in NLP.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Ever since Google developed the Transformer in 2017, most NLP contributions are not
+architectural: instead most recent advances have used the Transformer model as-is, or
+using some subset of the Transformer (e.g. BERT and GPT use exclusively Transformer
+encoder and decoder blocks, respectively). Instead, recent research has focused on
+the way NLP models are pre-trained or fine-tuned, or creating a new dataset, or
+formulating a new NLP task to measure &amp;ldquo;language understanding&amp;rdquo;, etc.&lt;/p>
+&lt;ul>
+&lt;li>I&amp;rsquo;m personally not sure what to make of this development: why did we collectively
+agree that architectural research wasn&amp;rsquo;t worth pursuing anymore?&lt;/li>
+&lt;li>But spinning this the other way, we see that Transformers are a &lt;em>fascinating&lt;/em>
+architecture: the model has proven so surprisingly versatile and easy to teach that
+we are still making meaningful advances with the same architecture. In fact, it is
+still an open question how and why Transformers perform as well as they do: there
+is an open field of research focusing on answering this question for BERT (since
+BERT has been uniquely successful model) called
+&lt;a href="https://huggingface.co/transformers/bertology.html">BERTology&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>It was never a question of &lt;em>whether&lt;/em> NLP systems would follow computer vision&amp;rsquo;s model
+of fine-tuning pre-trained models (i.e. training a model on ImageNet and then doing
+task-specific fine-tuning for downstream applications), but rather &lt;em>how&lt;/em>.&lt;/p>
+&lt;ol>
+&lt;li>What specific task and/or dataset should NLP models be pre-trained on?
+&lt;ul>
+&lt;li>Language modelling has really won out here: BERT was originally published with a
+&lt;em>next-sentence prediction&lt;/em> (NSP) pre-training task, which RoBERTa completely did
+away with.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Exactly &lt;em>what&lt;/em> is being learnt during pre-training?
+&lt;ul>
+&lt;li>Initially it was a separate vector for each token (i.e. pre-training a shallow
+representation of text), and these days it is an entire network is pre-trained.&lt;/li>
+&lt;li>Sebastian Ruder &lt;a href="https://thegradient.pub/nlp-imagenet/">wrote a great article&lt;/a>
+that delves more into this topic.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>There are (generally speaking) three flavors of Transformer models.&lt;/p>
+&lt;ol>
+&lt;li>Autoregressive models&lt;/li>
+&lt;li>Autoencoding models&lt;/li>
+&lt;li>Sequence-to-sequence models&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>Hugging Face does an excellent job of summarizing the differences between these
+three flavors of models in &lt;a href="https://huggingface.co/transformers/summary.html">their &lt;em>Summary of the
+Models&lt;/em>&lt;/a>, which I&amp;rsquo;ve reproduced
+here:&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Autoregressive models are pretrained on the classic language modeling task: guess
+the next token having read all the previous ones. They correspond to the decoder of
+the original transformer model, and a mask is used on top of the full sentence so
+that the attention heads can only see what was before in the next, and not what’s
+after. Although those models can be fine-tuned and achieve great results on many
+tasks, the most natural application is text generation. A typical example of such
+models is GPT.&lt;/p>
+&lt;p>Autoencoding models are pretrained by corrupting the input tokens in some way and
+trying to reconstruct the original sentence. They correspond to the encoder of the
+original transformer model in the sense that they get access to the full inputs
+without any mask. Those models usually build a bidirectional representation of the
+whole sentence. They can be fine-tuned and achieve great results on many tasks such
+as text generation, but their most natural application is sentence classification
+or token classification. A typical example of such models is BERT.&lt;/p>
+&lt;p>[&amp;hellip;]&lt;/p>
+&lt;p>Sequence-to-sequence models use both the encoder and the decoder of the original
+transformer, either for translation tasks or by transforming other tasks to
+sequence-to-sequence problems. They can be fine-tuned to many tasks but their most
+natural applications are translation, summarization and question answering. The
+original transformer model is an example of such a model (only for translation), T5
+is an example that can be fine-tuned on other tasks.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>Different NLP models learn different kinds of embeddings, and it&amp;rsquo;s worth
+understanding the differences between these various learnt representations.&lt;/p>
+&lt;ol>
+&lt;li>Contextual vs non-contextual embeddings
+&lt;ul>
+&lt;li>The first word embeddings (that is, word2vec and GloVe) were &lt;em>non-contextual&lt;/em>:
+each word had its own embedding, independent of the words that came before or
+after it.&lt;/li>
+&lt;li>Almost all other embeddings are &lt;em>contextual&lt;/em> now: when embedding a token, they
+also consider the tokens before &amp;amp;/ after it.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Unidirectional vs bidirectional embeddings
+&lt;ul>
+&lt;li>When considering the context of a token, the question is whether you should
+consider the tokens both before and after it (i.e. bidirectional embeddings), or
+just the tokens that came before (i.e. unidirectional embeddings).&lt;/li>
+&lt;li>Unidirectional embeddings make the sense when generating text (i.e. text
+generation must be done in the way humans write text: in one direction). On the
+other hand, bidirectional embeddings make sense when performing sentence-level
+tasks such as summarization or rewriting.&lt;/li>
+&lt;li>The Transformer was notable in that it had bidirectional encoder blocks and
+unidirectional decoder blocks. That&amp;rsquo;s why BERT [GPT-2] produces bidirectional
+[unidirectional] embeddings, since it&amp;rsquo;s a stack of Transformer encoders
+[decoders].&lt;/li>
+&lt;li>Note that the unidirectional/bidirectional distinction is related to whether or
+not the model is autoregressive: autoregressive models learn unidirectional
+embeddings.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>Transformer-based models have had an interesting history with scaling.&lt;/p>
+&lt;ul>
+&lt;li>This trend probably started when GPT-2 was published: &amp;ldquo;it sounds very dumb and too
+easy, but magical things happen if you make your Transformer model bigger&amp;rdquo;.&lt;/li>
+&lt;li>An open question is, how do Transformer models scale (along any dimension of
+interest)? For example, how much does dataset size or the number of layers or the
+number of training iterations matter in the ultimate performance of a Transformer
+model? At what point does making your Transformer model &amp;ldquo;bigger&amp;rdquo; (along any
+dimension of interest) provide diminishing returns?&lt;/li>
+&lt;li>There is some &lt;a href="https://github.com/huggingface/awesome-papers#march-24-2020">solid
+work&lt;/a> being done to
+answer this question, and there seems to be good evidence for some fairly
+surprising conclusions!&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
+late bloomer (as far as machine learning subfields go), and it&amp;rsquo;s not immediately
+obvious how close the field is to viable, large-scale, production-ready
+techniques (in the same way that, say, &lt;a href="https://clarifai.com/models/">computer vision
+is&lt;/a>). For example, &lt;a href="https://ruder.io">Sebastian
+Ruder&lt;/a> predicted that the field is &lt;a href="https://thegradient.pub/nlp-imagenet/">close to a watershed
+moment&lt;/a>, and that soon we&amp;rsquo;ll have
+downloadable language models. However, &lt;a href="https://thegradient.pub/author/ana/">Ana
+Marasović&lt;/a> points out that there is &lt;a href="https://thegradient.pub/frontiers-of-generalization-in-natural-language-processing/">a
+tremendous amount of work demonstrating
+that&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>“despite good performance on benchmark datasets, modern NLP techniques are
+nowhere near the skill of humans at language understanding and reasoning when
+making sense of novel natural language inputs”.&lt;/p>
+&lt;/blockquote>
+&lt;p>I am confident that I am &lt;em>very&lt;/em> bad at making lofty predictions about the
+future. Instead, I&amp;rsquo;ll talk about something I know a bit about: simple solutions
+to concrete problems, with some Bayesianism thrown in for good measure
+:grinning:.&lt;/p>
+&lt;p>This blog post summarizes some literature on probabilistic and Bayesian
+matrix factorization methods, keeping an eye out for applications to one
+specific task in NLP: text clustering. It&amp;rsquo;s exactly what it sounds like, and
+there&amp;rsquo;s been a fair amount of success in applying text clustering to many other
+NLP tasks (e.g. check out these examples in &lt;a href="https://www-users.cs.umn.edu/~hanxx023/dmclass/scatter.pdf">document
+organization&lt;/a>,
+&lt;a href="http://jmlr.csail.mit.edu/papers/volume3/bekkerman03a/bekkerman03a.pdf">corpus&lt;/a>
+&lt;a href="https://www.cs.technion.ac.il/~rani/el-yaniv-papers/BekkermanETW01.pdf">summarization&lt;/a>
+and &lt;a href="http://www.kamalnigam.com/papers/emcat-aaai98.pdf">document
+classification&lt;/a>).&lt;/p>
+&lt;p>What follows is a literature review of three matrix factorization techniques for
+machine learning: one classical, one probabilistic and one Bayesian. I also
+experimented with applying these methods to text clustering: I gave a guest
+lecture on my results to a graduate-level machine learning class at The Cooper
+Union (the slide deck is below). Dive in!&lt;/p>
+&lt;h2 id="non-negative-matrix-factorization-nmf">Non-Negative Matrix Factorization (NMF)&lt;/h2>
+&lt;p>NMF is a &lt;a href="https://en.wikipedia.org/wiki/Non-negative_matrix_factorization">very
+well-known&lt;/a>
+&lt;a href="http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.NMF.html">matrix
+factorization&lt;/a>
+&lt;a href="https://arxiv.org/abs/1401.5226">technique&lt;/a>, perhaps most famous for its
+applications in &lt;a href="http://blog.echen.me/2011/10/24/winning-the-netflix-prize-a-summary/">collaborative filtering and the Netflix
+Prize&lt;/a>.&lt;/p>
+&lt;p>Factorize your (entrywise non-negative) $m \times n$ matrix $V$ as
+$V = WH$, where $W$ is $m \times p$ and $H$ is $p \times n$. $p$
+is the dimensionality of your latent space, and each latent dimension usually
+comes to quantify something with semantic meaning. There are several algorithms
+to compute this factorization, but Lee and Seung&amp;rsquo;s &lt;a href="https://dl.acm.org/citation.cfm?id=3008829">multiplicative update
+rule&lt;/a> (originally published in NIPS
+2000) is most popular.&lt;/p>
+&lt;p>Fairly simple: enough said, I think.&lt;/p>
+&lt;h2 id="probabilistic-matrix-factorization-pmf">Probabilistic Matrix Factorization (PMF)&lt;/h2>
+&lt;p>Originally introduced as a paper at &lt;a href="https://papers.nips.cc/paper/3208-probabilistic-matrix-factorization">NIPS
+2007&lt;/a>,
+&lt;em>probabilistic matrix factorization&lt;/em> is essentially the exact same model as NMF,
+but with uncorrelated (a.k.a. “spherical”) multivariate Gaussian priors placed
+on the rows and columns of $U$ and $V$. Expressed as a graphical model, PMF
+would look like this:&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/pmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/pmf.png" alt="Graphical model (using plate notation) for probabilistic matrix factorization (PMF)">&lt;/a>
+&lt;/figure>
+&lt;p>Note that the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$ matrices.&lt;/p>
+&lt;p>The authors then (somewhat disappointing) proceed to find the MAP estimate of
+the $U$ and $V$ matrices. They show that maximizing the posterior is
+equivalent to minimizing the sum-of-squared-errors loss function with two
+quadratic regularization terms:&lt;/p>
+&lt;p>$$
+\frac{1}{2} \sum_{i=1}^{N} \sum_{j=1}^{M} {I_{ij} (R_{ij} - U_i^T V_j)^2} +
+\frac{\lambda_U}{2} \sum_{i=1}^{N} |U|_{Fro}^2 +
+\frac{\lambda_V}{2} \sum_{j=1}^{M} |V|_{Fro}^2
+$$&lt;/p>
+&lt;p>where $|\cdot|_{Fro}$ denotes the Frobenius norm, and $I_{ij}$ is 1 if document
+$i$ contains word $j$, and 0 otherwise.&lt;/p>
+&lt;p>This loss function can be minimized via gradient descent, and implemented in
+your favorite deep learning framework (e.g. Tensorflow or PyTorch).&lt;/p>
+&lt;p>The problem with this approach is that while the MAP estimate is often a
+reasonable point in low dimensions, it becomes very strange in high dimensions,
+and is usually not informative or special in any way. Read &lt;a href="https://www.inference.vc/high-dimensional-gaussian-distributions-are-soap-bubble/">Ferenc Huszár’s blog
+post&lt;/a>
+for more.&lt;/p>
+&lt;h2 id="bayesian-probabilistic-matrix-factorization-bpmf">Bayesian Probabilistic Matrix Factorization (BPMF)&lt;/h2>
+&lt;p>Strictly speaking, PMF is not a Bayesian model. After all, there aren&amp;rsquo;t any
+priors or posteriors, only fixed hyperparameters and a MAP estimate. &lt;em>Bayesian
+probabilistic matrix factorization&lt;/em>, originally published by &lt;a href="https://dl.acm.org/citation.cfm?id=1390267">researchers from
+the University of Toronto&lt;/a> is a
+fully Bayesian treatment of PMF.&lt;/p>
+&lt;p>Instead of saying that the rows/columns of U and V are normally distributed with
+zero mean and some precision matrix, we place hyperpriors on the mean vector and
+precision matrices. The specific priors are Wishart priors on the covariance
+matrices (with scale matrix $W_0$ and $\nu_0$ degrees of freedom), and
+Gaussian priors on the means (with mean $\mu_0$ and covariance equal to the
+covariance given by the Wishart prior). Expressed as a graphical model, BPMF
+would look like this:&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/bpmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bpmf.png" alt="Graphical model (using plate notation) for Bayesian probabilistic matrix factorization (BPMF)">&lt;/a>
+&lt;/figure>
+&lt;p>Note that, as above, the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$
+matrices, and that $n$ is the dimensionality of latent space (i.e. the number
+of latent dimensions in the factorization).&lt;/p>
+&lt;p>The authors then sample from the posterior distribution of $U$ and $V$ using
+a Gibbs sampler. Sampling takes several hours: somewhere between 5 to 180,
+depending on how many samples you want. Nevertheless, the authors demonstrate
+that BPMF can achieve more accurate and more robust results on the Netflix data
+set.&lt;/p>
+&lt;p>I would propose two changes to the original paper:&lt;/p>
+&lt;ol>
+&lt;li>Use an LKJ prior on the covariance matrices instead of a Wishart prior.
+&lt;a href="https://docs.pymc.io/notebooks/LKJ.html">According to Michael Betancourt and the PyMC3 docs, this is more numerically
+stable&lt;/a>, and will lead to better
+inference.&lt;/li>
+&lt;li>Use a more robust sampler such as NUTS (instead of a Gibbs sampler), or even
+resort to variational inference. The paper makes it clear that BPMF is a
+computationally painful endeavor, so any speedup to the method would be a
+great help. It seems to me that for practical real-world applications to
+collaborative filtering, we would want to use variational inference. Netflix
+ain&amp;rsquo;t waiting 5 hours for their recommendations.&lt;/li>
+&lt;/ol>
+&lt;h2 id="application-to-text-clustering">Application to Text Clustering&lt;/h2>
+&lt;p>Most of the work in these matrix factorization techniques focus on
+dimensionality reduction: that is, the problem of finding two factor matrices
+that faithfully reconstruct the original matrix when multiplied together.
+However, I was interested in applying the exact same techniques to a separate
+task: text clustering.&lt;/p>
+&lt;p>A natural question is: why is matrix factorization&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> a good technique to use
+for text clustering? Because it is simultaneously a clustering and a feature
+engineering technique: not only does it offer us a latent representation of the
+original data, but it also gives us a way to easily &lt;em>reconstruct&lt;/em> the original
+data from the latent variables! This is something that &lt;a href="https://www.georgeho.org/lda-sucks">latent Dirichlet
+allocation&lt;/a>, for instance, cannot do.&lt;/p>
+&lt;p>Matrix factorization lives an interesting double life: clustering technique by
+day, feature transformation technique by night. &lt;a href="http://charuaggarwal.net/text-cluster.pdf">Aggarwal and
+Zhai&lt;/a> suggest that chaining matrix
+factorization with some other clustering technique (e.g. agglomerative
+clustering or topic modelling) is common practice and is called &lt;em>concept
+decomposition&lt;/em>, but I haven&amp;rsquo;t seen any other source back this up.&lt;/p>
+&lt;p>I experimented with using these techniques to cluster subreddits (&lt;a href="https://www.georgeho.org/reddit-clusters">sound
+familiar?&lt;/a>). In a nutshell, nothing seemed
+to work out very well, and I opine on why I think that&amp;rsquo;s the case in the slide
+deck below. This talk was delivered to a graduate-level course in frequentist
+machine learning.&lt;/p>
+&lt;blockquote class="embedly-card">&lt;h4>&lt;a href="https://speakerdeck.com/_eigenfoo/probabilistic-and-bayesian-matrix-factorizations-for-text-clustering">Probabilistic and Bayesian Matrix Factorizations for Text Clustering&lt;/a>&lt;/h4>&lt;p> I experimented with using these techniques to cluster subreddits. In a nutshell, nothing seemed to work out very well, and I opine on why I think that’s the case in this slide deck. This talk was delivered to a graduate-level course in frequentist machine learning. &lt;/p>&lt;/blockquote>
+&lt;script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8">&lt;/script>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>which is, by the way, a &lt;a href="http://scikit-learn.org/stable/modules/decomposition.html">severely underappreciated technique in machine
+learning&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Understanding Hate Speech on Reddit through Text Clustering</title><link>https://www.georgeho.org/reddit-clusters/</link><pubDate>Sun, 18 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-clusters/</guid><description>&lt;blockquote>
+&lt;p>Note: the following article contains several examples of hate speech
+(including but not limited to racist, misogynistic and homophobic views).&lt;/p>
+&lt;/blockquote>
+&lt;p>Have you heard of &lt;code>/r/TheRedPill&lt;/code>? It’s an online forum (a subreddit, but I’ll
+explain that later) where people (usually men) espouse an ideology predicated
+entirely on gender. “Swallowers of the red pill”, as they call themselves,
+maintain that it is &lt;em>men&lt;/em>, not women, who are socially marginalized; that feminism
+is something between a damaging ideology and a symptom of societal retardation;
+that the patriarchy should actively assert its dominance over female
+compatriots.&lt;/p>
+&lt;p>Despite being shunned by the world (or perhaps, because of it), &lt;code>/r/TheRedPill&lt;/code>
+has grown into a sizable community and evolved its own slang, language and
+culture. Let me give you an example.&lt;/p>
+&lt;pre tabindex="0">&lt;code>Cluster #14:
+Cluster importance: 0.0489376285127
+shit: 2.433590
+test: 1.069885
+frame: 0.396684
+pass: 0.204953
+bitch: 0.163619
+&lt;/code>&lt;/pre>&lt;p>This is a snippet from a text clustering of &lt;code>/r/TheRedPill&lt;/code> — you don’t really
+need to understand the details right now: all you need to know is that each
+cluster is simply a bunch of words that frequently appear together in Reddit
+posts and comments. Following each word is a number indicating its importance in
+the cluster, and on line 2 is the importance of this cluster to the subreddit
+overall.&lt;/p>
+&lt;p>As it turns out, this cluster has picked up on a very specific meme on
+&lt;code>/r/TheRedPill&lt;/code>: the concept of the &lt;em>shit test&lt;/em>, and how your frame can &lt;em>pass&lt;/em> the
+&lt;em>shit tests&lt;/em> that life (but predominantly, &lt;em>bitches&lt;/em>) can throw at you.&lt;/p>
+&lt;p>There’s absolutely no way I could explain this stuff better than the swallowers
+of the red pill themselves, so I’ll just quote from a post on &lt;code>/r/TheRedPill&lt;/code> and
+a related blog.&lt;/p>
+&lt;p>The concept of the shit test very broad:&lt;/p>
+&lt;blockquote>
+&lt;p>… when somebody “gives you shit” and fucks around with your head to see how
+you will react, what you are experiencing is typically a (series of) shit
+test(s).&lt;/p>
+&lt;/blockquote>
+&lt;p>A shit test is designed to test your temperament, or more colloquially,
+&lt;em>“determine your frame”&lt;/em>.&lt;/p>
+&lt;blockquote>
+&lt;p>Frame is a concept which essentially means “composure and self-control”.&lt;/p>
+&lt;p>… if you can keep composure/seem unfazed and/or assert your boundaries
+despite a shit test, generally speaking you will be considered to have passed
+the shit test. If you get upset, offended, doubt yourself or show weakness in
+any discernible way when shit tested, it will be generally considered that you
+failed the test.&lt;/p>
+&lt;/blockquote>
+&lt;p>Finally, not only do shit tests test your frame, but they also serve a specific,
+critical social function:&lt;/p>
+&lt;blockquote>
+&lt;p>When it comes right down to it shit tests are typically women’s way of
+flirting.&lt;/p>
+&lt;p>… Those who “pass” show they can handle the woman’s BS and is “on her
+level”, so to speak. This is where the evolutionary theory comes into play:
+you’re demonstrating her faux negativity doesn’t phase you [sic] and that
+you’re an emotionally developed person who isn’t going to melt down at the
+first sign of trouble. Ergo you’ll be able to protect her when threats to
+her safety emerge.&lt;/p>
+&lt;/blockquote>
+&lt;p>If you want to learn more, I took all the above quotes from
+&lt;a href="https://www.reddit.com/r/TheRedPill/comments/22qnmk/newbies_read_this_the_definitive_guide_to_shit/">here&lt;/a>
+and &lt;a href="https://illimitablemen.com/2014/12/14/the-shit-test-encyclopedia/">here&lt;/a>:
+feel free to toss yourself down that rabbit hole (but you may want to open those
+links in Incognito mode).&lt;/p>
+&lt;p>Clearly though, the cluster did a good job of identifying one topic of
+discussion on &lt;code>/r/TheRedPill&lt;/code>. In fact, not only can clustering pick up on a
+general topic of conversation, but also on specific memes, motifs and vocabulary
+associated with it.&lt;/p>
+&lt;p>Interested? Read on! I’ll explain what I did, and describe some of my other
+results.&lt;/p>
+&lt;hr>
+&lt;p>Reddit is — well, it’s pretty hard to describe what Reddit &lt;em>is&lt;/em>, mainly because
+Reddit comprises several thousand communities, called &lt;em>subreddits&lt;/em>, which center
+around topics broad (&lt;code>/r/Sports&lt;/code>) and niche (&lt;code>/r/thinkpad&lt;/code>), delightful
+(&lt;code>/r/aww&lt;/code>) and unsavory (&lt;code>/r/Incels&lt;/code>).&lt;/p>
+&lt;p>Each subreddit is a unique community with its own rules, culture and standards.
+Some are welcoming and inclusive, and anyone can post and comment; others, not
+so much: you must be invited to even read their front page. Some have pliant
+standards about what is acceptable as a post; others have moderators willing to
+remove posts and ban users upon any infraction of community guidelines.&lt;/p>
+&lt;p>Whatever Reddit is though, two things are for certain:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>It’s widely used. &lt;em>Very&lt;/em> widely used. At the time of writing, it’s the &lt;a href="https://www.alexa.com/topsites/countries/US">fourth
+most popular website in the United
+States&lt;/a> and the &lt;a href="https://www.alexa.com/topsites">sixth most popular
+globally&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Where there is free speech, there is hate speech. Reddit’s hate speech
+problem is &lt;a href="https://www.wired.com/2015/08/reddit-mods-handle-hate-speech/">well
+documented&lt;/a>,
+the &lt;a href="https://www.inverse.com/article/43611-reddit-ceo-steve-huffman-hate-speech">center of recent
+controversy&lt;/a>,
+and even &lt;a href="https://fivethirtyeight.com/features/dissecting-trumps-most-rabid-online-following/">the subject of statistical
+analysis&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>Now, there are many well-known hateful subreddits. The three that I decided to
+focus on were &lt;code>/r/TheRedPill&lt;/code>, &lt;code>/r/The_Donald&lt;/code>, and&lt;code>/r/CringeAnarchy&lt;/code>.&lt;/p>
+&lt;p>The goal here is to understand what these subreddits are like, and expose their
+culture for people to see. To quote &lt;a href="https://www.inverse.com/article/43611-reddit-ceo-steve-huffman-hate-speech">Steve Huffman, Reddit’s
+CEO&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>“I believe the best defense against racism and other repugnant views, both
+on Reddit and in the world, is instead of trying to control what people
+can and cannot say through rules, is to repudiate these views in a free
+conversation, and empower our communities to do so on Reddit.”&lt;/p>
+&lt;/blockquote>
+&lt;p>And there’s no way we can refute and repudiate these deplorable views without
+knowing what those views are. And instead of spending hours of each of these
+subreddits ourselves, let’s have a machine learn what gets talked about on these
+subreddits.&lt;/p>
+&lt;hr>
+&lt;p>Now, how do we do this? This can be done using &lt;em>clustering&lt;/em>, a machine learning
+technique in which we’re given data points, and tasked with grouping them in
+some way. A picture will explain better than words:&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/clusters.png">&lt;img src="https://www.georgeho.org/assets/images/clusters.png" alt="Illustration of clustering">&lt;/a>
+&lt;figcaption>Clustering.&lt;/figcaption>
+&lt;/figure>
+&lt;p>The clustering algorithm was hard to decide on. After several dead ends were
+explored, I settled on non-negative matrix factorization of the document-term
+matrix, featurized using tf-idfs. I don’t really want to go into the technical
+details now: suffice to say that this technique is &lt;a href="http://scikit-learn.org/stable/auto_examples/applications/plot_topics_extraction_with_nmf_lda.html">known to work well for this
+application&lt;/a>
+(perhaps I’ll write another piece on this in the future).&lt;/p>
+&lt;p>Finally, we need our data points: &lt;a href="https://bigquery.cloud.google.com/dataset/fh-bigquery:reddit_comments">Google
+BigQuery&lt;/a>
+has all posts and comments across all of Reddit, from the the beginning of
+Reddit right up until the end of 2017. We decided to focus on the last two
+months for which there is data: November and December, 2017.&lt;/p>
+&lt;p>I could talk at length about the technical details, but right now, I want to
+focus on the results of the clustering. What follows are two hand-picked
+clusters from each of the three subreddits, visualized as word clouds (you can
+think of word clouds as visual representations of the code snippet above), as
+well as an example comment from each of the clusters.&lt;/p>
+&lt;h2 id="rtheredpill">&lt;code>/r/TheRedPill&lt;/code>&lt;/h2>
+&lt;p>You already know &lt;code>/r/TheRedPill&lt;/code>, so let me describe the clusters in more detail:
+a good number of them are about sex, or about how to approach girls. Comments in
+these clusters tend to give advice on how to pick up girls, or describe the
+social/sexual exploits of the commenter.&lt;/p>
+&lt;p>What is interesting is that, as sex-obsessed as &lt;code>/r/TheRedPill&lt;/code> is, many
+swallowers (of the red pill) profess that sex is &lt;em>not&lt;/em> the purpose of the
+subreddit: the point is to becoming an “alpha male”. Even more interesting,
+there is more talk about what an alpha male &lt;em>is&lt;/em>, and what kind of people
+&lt;em>aren’t&lt;/em> alpha, than there is about how people can &lt;em>become&lt;/em> alpha. This is the
+first cluster shown below, and comprises around 3% of all text on
+&lt;code>/r/TheRedPill&lt;/code>.&lt;/p>
+&lt;p>The second cluster comprises around 6% of all text on &lt;code>/r/TheRedPill&lt;/code>, and
+contains comments that expound theories on the role of men, women and feminism
+in today’s society (it isn’t pretty). Personally, the most repugnant views that
+I’ve read are to be found in this cluster.&lt;/p>
+&lt;pre tabindex="0">&lt;code>I feel like the over dramatization of beta qualities in media/pop culture is due
+to the fact that anyone representing these qualities is already Alpha by
+default.
+The actors who play the white knight lead roles, the rock stars that sing about
+pining for some chick… these men/characters are already very Alpha in both looks
+and status, so when beta BS comes from their mouths, it’s seen as attractive
+because it balances out their already alpha state into that &amp;#34;mostly alpha but
+some beta&amp;#34; balance that makes women swoon.
+…
+&lt;/code>&lt;/pre>&lt;figure>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png" alt="/r/TheRedPill cluster #13">&lt;/a>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png" alt="/r/TheRedPill cluster #6">&lt;/a>
+&lt;figcaption>Wordclouds from /r/TheRedPill.&lt;/figcaption>
+&lt;/figure>
+&lt;pre tabindex="0">&lt;code>…
+Since the dawn of humanity men were always in control, held all the power and
+women were happy because of it. But now men are forced to lose their masculinity
+and power or else they&amp;#39;ll be killed/punished by other pussy men with big guns
+and laws who believe feminism is the right path for humanity.
+…
+Feminism is really a blessing in disguise because it&amp;#39;s a wake up call for men
+and a hidden cry for help from women for men to regain their masculinity,
+integrity and control over women.
+…
+&lt;/code>&lt;/pre>&lt;h2 id="rthe_donald">&lt;code>/r/The_Donald&lt;/code>&lt;/h2>
+&lt;p>You may have already heard of &lt;code>/r/The_Donald&lt;/code> (a.k.a. the “pro-Trump cesspool”),
+famed for their &lt;a href="https://en.wikipedia.org/wiki//r/The_Donald#Conflict_with_Reddit_management">takeover of the Reddit front
+page&lt;/a>,
+and their &lt;a href="https://en.wikipedia.org/wiki//r/The_Donald#Controversies">involvement in several recent
+controversies&lt;/a>. It
+may therefore be surprising to learn that there is an iota of lucid discussion
+that goes on, although in a jeering, bullying tone.&lt;/p>
+&lt;p>&lt;code>/r/The_Donald&lt;/code> is the subreddit which has developed the most language and inside
+jokes: from “nimble navigators” to “swamp creatures”, “spezzes” to the
+“Trumpire”… Explaining these memes would take too long: reach out, or Google, if
+you really want to know.&lt;/p>
+&lt;p>The first cluster accounts for 5% of all text on &lt;code>/r/The_Donald&lt;/code>, and contains
+(relatively) coherent arguments both for and against net neutrality. The second
+cluster accounts for 1% of the all text on &lt;code>/r/The_Donald&lt;/code>, and is actually from
+the subreddit’s &lt;code>MAGABrickBot&lt;/code>, which is a bot that keeps count of how many times
+the word “brick” has been used in comments, by automatically generating this
+comment.&lt;/p>
+&lt;pre tabindex="0">&lt;code>So much misinformation perpetuated by the Swamp... Abolishing Net Neutrality
+would benefit swamp creatures with corporate payouts but would be most damaging
+to conservatives long term.
+Net Neutrality was NOT created by Obama, it was actually in effect from the very
+beginning...
+&lt;/code>&lt;/pre>&lt;figure>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png" alt="/r/The_Donald cluster #0">&lt;/a>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png" alt="/r/The_Donald cluster #2">&lt;/a>
+&lt;figcaption>Wordclouds from /r/The_Donald.&lt;/figcaption>
+&lt;/figure>
+&lt;pre tabindex="0">&lt;code>**FOR THE LOVE OF GOD GET THIS PATRIOT A BRICK! THAT&amp;#39;S 92278 BRICKS HANDED
+OUT!**
+We are at **14.3173880911%** of our goal to **BUILD THE WALL** starting from Imperial
+Beach, CA to Brownsville, Texas! Lets make sure everyone gets a brick in the
+United States! For every Centipede a brick, for every brick a Centipede!
+At this rate, the wall will be **1071.35224786 MILES WIDE** and **353.552300867 FEET
+HIGH** by tomorrow! **DO YOUR PART!**
+&lt;/code>&lt;/pre>&lt;h2 id="rcringeanarchy">&lt;code>/r/CringeAnarchy&lt;/code>&lt;/h2>
+&lt;p>On the Internet, &lt;em>cringe&lt;/em> is the second-hand embarrassment you feel when someone
+acts extremely awkwardly or uncomfortably. And on &lt;code>/r/CringeAnarchy&lt;/code> you can find
+memes about the &lt;em>real&lt;/em> cringe, which is, um, liberals and anyone else who
+advocates for an inclusionary, equitable ideology. Their morally grey jokes run
+the gamut of delicate topics: gender, race, sexuality, nationality…&lt;/p>
+&lt;p>In some respects, the clustering provided very little insight into this
+subreddit: each such delicate topic had one or two clusters, and there’s nothing
+really remarkable about any of them. This speaks to the inherent difficulty of
+training a topic model on memes: I rant at greater length about this topic on
+&lt;a href="https://www.georgeho.org/lda-sucks/">one of my blog posts&lt;/a>.&lt;/p>
+&lt;p>Both clusters below comprise around 3% of text on &lt;code>/r/CringeAnarchy&lt;/code>: one is to do
+with race, and the other is to do with homosexuality.&lt;/p>
+&lt;pre tabindex="0">&lt;code>Has anyone here, non-black or otherwise, ever wished someone felt sorry for
+being black? Maybe it&amp;#39;s just where I live... the majority is black. It&amp;#39;s
+whatever.
+&lt;/code>&lt;/pre>&lt;figure>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png" alt="/r/CringeAnarchy cluster #8">&lt;/a>
+&lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png" alt="/r/CringeAnarchy cluster #8">&lt;/a>
+&lt;figcaption>Wordclouds from /r/CringeAnarchy.&lt;/figcaption>
+&lt;/figure>
+&lt;pre tabindex="0">&lt;code>…
+Also, the distinction between bisexual and gay is academic. If you do a gay
+thing, you have done a gay thing. That&amp;#39;s what &amp;#34;being gay&amp;#34; means to a LOT of
+people. Redefining it is as useful as all the other things SJWs are redefining.
+&lt;/code>&lt;/pre>&lt;hr>
+&lt;p>As much information as that might have been, this was just a glimpse into what
+these subreddits are like: I made 20 clusters for each subreddit, and you could
+argue that (for somewhat technical reasons) 20 clusters isn’t even enough!
+Moreover, there is just no way I could distill everything I learned about these
+communities into one Medium story: I’ve curated just the more remarkable or
+provocative results to put here.&lt;/p>
+&lt;p>If you still have the stomach for this stuff, scroll through the complete log
+files
+&lt;a href="https://github.com/eigenfoo/reddit-clusters/tree/master/clustering/nmf/results">here&lt;/a>,
+or look through images of the word clouds
+&lt;a href="https://github.com/eigenfoo/reddit-clusters/tree/master/wordclouds/images">here&lt;/a>.&lt;/p>
+&lt;p>Finally, as has been said before, “Talk is cheap. Show me the code.” For
+everything I’ve written to make these clusters, check out &lt;a href="https://github.com/eigenfoo/reddit-clusters">this GitHub
+repository&lt;/a>.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>Update (11-08-2018):&lt;/strong> If you&amp;rsquo;re interested in the technical, data science side
+of the project, check out the slide deck and speaker notes from &lt;a href="https://www.georgeho.org/reddit-slides/">my recent
+talk&lt;/a> on exactly that!&lt;/p>
+&lt;hr>
+&lt;p>&lt;em>This post was originally published on Medium on May 18, 2018: I have since
+&lt;a href="https://medium.com/@nikitonsky/medium-is-a-poor-choice-for-blogging-bb0048d19133">migrated away from
+Medium&lt;/a>
+and &lt;a href="https://bts.nomadgate.com/medium-evergreen-content">deleted my account&lt;/a> and
+&lt;a href="https://www.joshjahans.com/ditching-medium/">all my stories&lt;/a>.&lt;/em>&lt;/p>
+&lt;p>&lt;em>This post was also reprinted in the inaugural issue of The Cooper Union&amp;rsquo;s
+&lt;a href="https://www.facebook.com/theunionjournal/">UNION Journal&lt;/a>.&lt;/em>&lt;/p></description></item><item><title>Why Latent Dirichlet Allocation Sucks</title><link>https://www.georgeho.org/lda-sucks/</link><pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda-sucks/</guid><description>&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
+that a lot of resources out there go something like this:&lt;/p>
+&lt;blockquote>
+&lt;p>Check out this thing! It&amp;rsquo;s great at this task! The important task! The one
+that was impossible/hard to do before! Look how well it does! So good! So
+fast!&lt;/p>
+&lt;p>Take this! It&amp;rsquo;s our algorithm/code/paper! We used it to do the thing! And now
+you can do the thing too!&lt;/p>
+&lt;/blockquote>
+&lt;p>Jokes aside, I do think it’s true that a lot of research and resources focus on
+what things &lt;em>can&lt;/em> do, or what things are &lt;em>good&lt;/em> at doing. Whenever I actually
+implement the hyped-up “thing”, I’m invariably frustrated when it doesn’t
+perform so well as originally described.&lt;/p>
+&lt;p>Maybe I&amp;rsquo;m not smart enough to see this, but after I learn about a new technique
+or tool or model, it&amp;rsquo;s not immediately obvious to me when &lt;em>not&lt;/em> to use it. I
+think it would be very helpful to learn what things &lt;em>aren&amp;rsquo;t&lt;/em> good at doing, or
+why things just plain &lt;em>suck&lt;/em> at times. Doing so not only helps you understand
+the technique/tool/model better, but also sharpens your understanding of your
+use case and the task at hand: what is it about your application that makes it
+unsuitable for such a technique?&lt;/p>
+&lt;p>Which is why I&amp;rsquo;m writing the first of what will (hopefully) be a series of posts
+on &lt;em>“Why [Thing] Sucks”&lt;/em>. The title is provocative but reductive: a better name
+might be &lt;em>When and Why [Thing] Might Suck&lt;/em>… but that doesn&amp;rsquo;t have quite the
+same ring to it! In these articles I&amp;rsquo;ll be outlining what I tried and why it
+didn&amp;rsquo;t work: documenting my failures and doing a quick post-mortem, if you will.
+My hope is that this will be useful to anyone else trying to do the same thing
+I&amp;rsquo;m doing.&lt;/p>
+&lt;hr>
+&lt;p>So first up: topic modelling. Specifically, &lt;a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">latent Dirichlet
+allocation&lt;/a>, or LDA
+for short (not to be confused with &lt;a href="https://www.georgeho.org/lda/">the other
+LDA&lt;/a>, which I wrote a blog post about before).&lt;/p>
+&lt;p>If you&amp;rsquo;ve already encountered LDA and have seen &lt;a href="https://en.wikipedia.org/wiki/Plate_notation">plate
+notation&lt;/a> before, this picture
+will probably refresh your memory:&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/latent-dirichlet-allocation.png" alt="Latent Dirichlet allocation">&lt;/p>
+&lt;p>If you don&amp;rsquo;t know what LDA is, fret not, for there is
+&lt;a href="http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf">no&lt;/a>
+&lt;a href="http://obphio.us/pdfs/lda_tutorial.pdf">shortage&lt;/a>
+&lt;a href="http://blog.echen.me/2011/08/22/introduction-to-latent-dirichlet-allocation/">of&lt;/a>
+&lt;a href="https://rstudio-pubs-static.s3.amazonaws.com/79360_850b2a69980c4488b1db95987a24867a.html">resources&lt;/a>
+&lt;a href="http://scikit-learn.org/stable/modules/decomposition.html#latentdirichletallocation">about&lt;/a>
+&lt;a href="https://radimrehurek.com/gensim/models/ldamodel.html">this&lt;/a>
+&lt;a href="https://www.quora.com/What-is-a-good-explanation-of-Latent-Dirichlet-Allocation">stuff&lt;/a>.
+I&amp;rsquo;m going to move on to when and why LDA isn&amp;rsquo;t the best idea.&lt;/p>
+&lt;p>&lt;strong>tl;dr:&lt;/strong> &lt;em>LDA and topic modelling doesn&amp;rsquo;t work well with a) short documents,
+in which there isn&amp;rsquo;t much text to model, or b) documents that don&amp;rsquo;t coherently
+discuss a single topic.&lt;/em>&lt;/p>
+&lt;p>Wait, what? Did George just say that topic modelling sucks when there&amp;rsquo;s not much
+topic, and not much text to model? Isn&amp;rsquo;t that obvious?&lt;/p>
+&lt;p>&lt;em>Yes! Exactly!&lt;/em> Of course it&amp;rsquo;s &lt;a href="https://en.wikipedia.org/wiki/Egg_of_Columbus">obvious in
+retrospect&lt;/a>! Which is why I was
+so upset when I realized I spent two whole weeks faffing around with LDA when
+topic models were the opposite of what I needed, and so frustrated that more
+people aren&amp;rsquo;t talking about when &lt;em>not&lt;/em> to use/do certain things.&lt;/p>
+&lt;p>But anyways, &lt;code>&amp;lt;\rant&amp;gt;&lt;/code> and let&amp;rsquo;s move on to why I say what I&amp;rsquo;m saying.&lt;/p>
+&lt;p>Recently, I&amp;rsquo;ve taken up a project in modelling the textual data on Reddit using
+NLP techniques. There are, of course, many ways one count take this, but
+something I was interested in was finding similarities between subreddits,
+clustering comments, and visualizing these clusters somehow: what does Reddit
+talk about on average? Of course, I turned to topic modelling and dimensionality
+reduction.&lt;/p>
+&lt;p>The techniques that I came across first were LDA (&lt;a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">latent Dirichlet
+allocation&lt;/a>) and
+t-SNE (&lt;a href="https://en.wikipedia.org/wiki/T-distributed_stochastic_neighbor_embedding">t-distributed stochastic neighbor
+embedding&lt;/a>).
+Both techniques are well known and well documented, but I can&amp;rsquo;t say that using
+them together is a popular choice of two techniques. However, there have been
+some successes. For instance, &lt;code>ShuaiW&lt;/code> had some success with this method &lt;a href="https://web.archive.org/web/20171219104016/https://shuaiw.github.io/2016/12/22/topic-modeling-and-tsne-visualzation.html">when
+using it the 20 newsgroups
+dataset&lt;/a>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>;
+some work done by Kagglers have &lt;a href="https://www.kaggle.com/ykhorramz/lda-and-t-sne-interactive-visualization">yielded reasonable
+results&lt;/a>,
+and &lt;a href="https://stats.stackexchange.com/questions/305356/plot-latent-dirichlet-allocation-output-using-t-sne">the StackExchange community doesn&amp;rsquo;t think its a ridiculous
+idea&lt;/a>.&lt;/p>
+&lt;p>The dataset that I applied this technique to was the &lt;a href="https://bigquery.cloud.google.com/dataset/fh-bigquery:reddit">Reddit dataset on Google
+BigQuery&lt;/a>, which contains
+data on all subreddits, posts and comments for as long as Reddit has been around.
+I limited myself to the top 10 most active subreddits in December 2017 (the most
+recent month for which we have data, at the time of writing), and chose 20 to be
+the number of topics to model (any choice is as arbitrary as any other).&lt;/p>
+&lt;p>I ran LDA and t-SNE exactly as Shuai described on &lt;a href="https://web.archive.org/web/20171219104016/https://shuaiw.github.io/2016/12/22/topic-modeling-and-tsne-visualzation.html">this blog
+post&lt;/a>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>,
+except using the great &lt;a href="https://radimrehurek.com/gensim/">&lt;code>gensim&lt;/code>&lt;/a> library to
+perform LDA, which was built with large corpora and efficient online algorithms
+in mind. (Specifically, &lt;code>gensim&lt;/code> implements online variational inference with
+the EM algorthm, instead of using MCMC-based algorithms, which &lt;code>lda&lt;/code> does. It
+seems that variational Bayes scales better to very large corpora than collapsed
+Gibbs sampling.)&lt;/p>
+&lt;p>Here are the results:&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/lda-sucks.png" alt="LDA followed by t-SNE on the Reddit dataset">&lt;/p>
+&lt;p>Horrible, right? Nowhere near the well-separated clusters that Shuai got with
+the 20 newsgroups. In fact, the tiny little huddles of around 5 to 10 comments
+are probably artifacts of the dimensionality reduction done by t-SNE, so those
+might even just be noise! You might say that there are at least 3 very large
+clusters, but even that&amp;rsquo;s bad news! If they&amp;rsquo;re clustered together, you would
+hope that they have the same topics, and that&amp;rsquo;s definitely not the case here!
+These large clusters tells us that a lot of comments have roughly the same topic
+distribution (i.e. they&amp;rsquo;re close to each other in the high-dimensional
+topic-space), but their dominant topics (i.e. the topic with greatest
+probability) don&amp;rsquo;t end up being the same.&lt;/p>
+&lt;p>By the way, t-SNE turns out to be &lt;a href="https://distill.pub/2016/misread-tsne/">a really devious dimensionality reduction
+technique&lt;/a>, and you really need to
+experiment with the perplexity values in order to use it properly. I used the
+default &lt;code>perplexity=30&lt;/code> from sklearn for the previous plot, but I repeated the
+visualizations for multiple other values and the results aren&amp;rsquo;t so hot either.
+Note that I did these on a random subsample of 1000 comments, so as to reduce
+compute time.&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/perplexity50.png">&lt;img src="https://www.georgeho.org/assets/images/perplexity50.png" alt="t-SNE with perplexity value of 50">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/perplexity100.png">&lt;img src="https://www.georgeho.org/assets/images/perplexity100.png" alt="t-SNE with perplexity value of 100">&lt;/a>
+&lt;figcaption>t-SNE with perplexity values of 50 and 100, respectively.&lt;/figcaption>
+&lt;/figure>
+&lt;p>So, what went wrong? There&amp;rsquo;s a &lt;a href="https://stackoverflow.com/questions/29786985/whats-the-disadvantage-of-lda-for-short-texts">nice StackOverflow
+post&lt;/a>
+that describes the problem well.&lt;/p>
+&lt;p>Firstly, latent Dirichlet allocation and other probabilistic topic models are
+very complex and flexible. While this means that they have very high variance
+and low bias, it also means that they need a lot of data (or data with a decent
+signal-to-noise ratio) for them to learn anything meaningful. Particularly for
+LDA, which infers topics on a document-by-document basis, if there aren&amp;rsquo;t enough
+words in a document, there simply isn&amp;rsquo;t enough data to infer a reliable topic
+distribution for that document.&lt;/p>
+&lt;p>Secondly, Reddit comments are by their nature very short and very-context
+dependent, since they respond to a post, or another comment. So not only are
+Reddit comments just short: it&amp;rsquo;s actually worse than that! They don&amp;rsquo;t even
+discuss a certain topic coherently (by which I mean, they don&amp;rsquo;t necessarily use
+words that pertain to what they&amp;rsquo;re talking about). I&amp;rsquo;ll give an example:&lt;/p>
+&lt;pre tabindex="0">&lt;code>&amp;#34;I&amp;#39;m basing my knowledge on the fact that I watched the fucking rock fall.&amp;#34;
+&lt;/code>&lt;/pre>&lt;p>Now, stopwords compose a little less than half of this comment, and they would
+be stripped before LDA even looks at it. But that aside, what is this comment
+about? What does the rock falling mean? What knowledge is this user claiming?
+It&amp;rsquo;s a very confusing comment, but probably made complete sense in the context
+of the post it responded to and the comments that came before it. As it is,
+however, its impossible for &lt;em>me&lt;/em> to figure out what topic this comment is about,
+let alone an algorithm!&lt;/p>
+&lt;p>Also, just to drive the point home, here are the top 10 words in each of the 20
+topics that LDA came up with, on the same dataset as before:&lt;/p>
+&lt;pre tabindex="0">&lt;code>Topic #0:
+got just time day like went friend told didn kids
+Topic #1:
+just gt people say right doesn know law like government
+Topic #2:
+removed com https www https www tax money http watch news
+Topic #3:
+people don just like think really good know want things
+Topic #4:
+years time did great ago ve just work life damn
+Topic #5:
+movie like love just really school star movies film story
+Topic #6:
+like just fucking shit head car looks new makes going
+Topic #7:
+game team season year good win play teams playing best
+Topic #8:
+right thing yeah don think use internet ok water case
+Topic #9:
+going like work just need way want money free fuck
+Topic #10:
+better just play games make ve ll seen lol fun
+Topic #11:
+like don know did feel shit big man didn guys
+Topic #12:
+deleted fuck guy year old man amp year old state lmao
+Topic #13:
+sure believe trump wrong saying comment post mueller evidence gt
+Topic #14:
+gt yes https com good oh wikipedia org en wiki
+Topic #15:
+think like good 10 look point lebron just pretty net
+Topic #16:
+gt said fucking american agree trump thanks obama states did
+Topic #17:
+trump vote party republicans election moore president republican democrats won
+Topic #18:
+war world country israel countries china military like happy does
+Topic #19:
+reddit message askreddit post questions com reddit com subreddit compose message compose
+&lt;/code>&lt;/pre>&lt;p>Now, it&amp;rsquo;s not entirely bad: topic 2 seems like its collecting the tokens from links
+(I didn&amp;rsquo;t stopword those out, oops), topic 7 looks like its about football or
+some other sport, 13 is probably about American politics, and 18 looks like
+its about world news, etc.&lt;/p>
+&lt;p>But almost all other topics are just collections of words: it&amp;rsquo;s not immediately
+obvious to me what each topic represents.&lt;/p>
+&lt;p>So yeah, there you have it, LDA really sucks sometimes.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>Update (8/12/2018):&lt;/strong> In retrospect, I think that this whole blog post is
+summarized well in the following tweet thread. Clustering algorithms will give
+you clusters because that&amp;rsquo;s what they do, not because there actually &lt;em>are&lt;/em>
+clusters. In this case, extremely short and context-dependent documents make it
+hard to justify that there are topic clusters in the first place.&lt;/p>
+&lt;blockquote class="twitter-tweet" data-lang="en">&lt;p lang="en" dir="ltr">Algorithms that have to report something will always report something, even if it&amp;#39;s a bad idea. Please do not use these algorithms unless you have principled reasons why there should be something. &lt;a href="https://t.co/kzxZiuBfmm">https://t.co/kzxZiuBfmm&lt;/a>&lt;/p>&amp;mdash; \mathfrak{Michael Betancourt} (@betanalpha) &lt;a href="https://twitter.com/betanalpha/status/1026619046626828288?ref_src=twsrc%5Etfw">August 7, 2018&lt;/a>&lt;/blockquote>
+&lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8">&lt;/script>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>&lt;a href="https://github.com/ShuaiW">&lt;code>ShuaiW&lt;/code>&lt;/a> has since taken down his blog, so I
+am linking to the Internet Archive of his blog post instead.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>https://www.georgeho.org/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
+speech on Reddit&lt;/a>. If you haven&amp;rsquo;t
+taken a look at my first post, please do!&lt;/p>
+&lt;p>I recently gave a talk on the technical, data science side of the project,
+describing not just the final result, but also the trajectory of the whole
+project: stumbling blocks, dead ends and all. Below is the slide deck: enjoy!&lt;/p>
+&lt;h2 id="abstract">Abstract&lt;/h2>
+&lt;p>Reddit is the one of the most popular discussion websites today, and is
+famously broad-minded in what it allows to be said on its forums: however,
+where there is free speech, there are invariably pockets of hate speech.&lt;/p>
+&lt;p>In this talk, I present a recent project to model hate speech on Reddit. In
+three acts, I chronicle the thought processes and stumbling blocks of the
+project, with each act applying a different form of machine learning:
+supervised learning, topic modelling and text clustering. I conclude with the
+current state of the project: a system that allows the modelling and
+summarization of entire subreddits, and possible future directions. Rest
+assured that both the talk and the slides have been scrubbed to be safe for
+work!&lt;/p>
+&lt;h2 id="slides">Slides&lt;/h2>
+&lt;blockquote class="embedly-card">&lt;h4>&lt;a href="https://speakerdeck.com/_eigenfoo/modelling-hate-speech-on-reddit-a-three-act-play">Modelling Hate Speech on Reddit - A Three-Act Play&lt;/a>&lt;/h4>&lt;p>Reddit is the one of the most popular discussion websites today, and is famously broad-minded in what it allows to be said on its forums: however, where there is free speech, there are invariably pockets of hate speech. In this talk, I present a recent project to model hate speech on Reddit.&lt;/p>&lt;/blockquote>
+&lt;script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8">&lt;/script></description></item></channel></rss>

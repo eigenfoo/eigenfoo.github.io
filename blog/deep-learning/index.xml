@@ -1,0 +1,1197 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>deep-learning on ⁂ George Ho</title><link>https://www.georgeho.org/blog/deep-learning/</link><description>Recent content in deep-learning on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 15 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/deep-learning/index.xml" rel="self" type="application/rss+xml"/><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>https://www.georgeho.org/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tensor-computation-libraries/</guid><description>&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#dissecting-tensor-computation-libraries">Dissecting Tensor Computation Libraries&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#tensor-computation-library---maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; - Maybe Not The Best Name&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#some-differences-between-tensor-computation-libraries">(Some) Differences Between Tensor Computation Libraries&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#a-zoo-of-tensor-computation-libraries">A Zoo of Tensor Computation Libraries&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#pytorchhttpspytorchorg">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#jaxhttpsjaxreadthedocsioenlatest">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#theanohttpstheano-pymcreadthedocsioenlatest">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#an-observation-on-static-graphs-and-theano">An Observation on Static Graphs and Theano&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
+algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
+&lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
+prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
+less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways.
+This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although
+I couldn&amp;rsquo;t articulate what exactly they were). Then came &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">the announcement by the PyMC developers
+that Theano would have a new JAX
+backend&lt;/a>.&lt;/p>
+&lt;p>Anyways, this confusion prompted a lot of research and eventually, this blog post.&lt;/p>
+&lt;p>Similar to &lt;a href="https://www.georgeho.org/prob-prog-frameworks/">my previous post on the anatomy of probabilistic programming
+frameworks&lt;/a>, I’ll first discuss tensor computation
+libraries in general - what they are and how they can differ from one another. Then I&amp;rsquo;ll discuss
+some libraries in detail, and finally offer an observation on the future of Theano in the context of
+contemporary tensor computation libraries.&lt;/p>
+&lt;h2 id="dissecting-tensor-computation-libraries">Dissecting Tensor Computation Libraries&lt;/h2>
+&lt;p>First, a characterization: what do tensor computation libraries even do?&lt;/p>
+&lt;ol>
+&lt;li>They provide ways of specifying and building computational graphs,&lt;/li>
+&lt;li>They run the computation itself (duh), but also run &amp;ldquo;related&amp;rdquo; computations that either (a) &lt;em>use
+the computational graph&lt;/em>, or (b) operate &lt;em>directly on the computational graph itself&lt;/em>,
+&lt;ul>
+&lt;li>The most salient example of the former is computing gradients via
+&lt;a href="https://arxiv.org/abs/1502.05767">autodifferentiation&lt;/a>,&lt;/li>
+&lt;li>A good example of the latter is optimizing the computation itself: think symbolic
+simplifications (e.g. &lt;code>xy/x = y&lt;/code>) or modifications for numerical stability (e.g. &lt;a href="https://cs.stackexchange.com/q/68411">&lt;code>log(1 + x)&lt;/code>
+for small values of &lt;code>x&lt;/code>&lt;/a>).&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>And they provide &amp;ldquo;best execution&amp;rdquo; for the computation: whether it&amp;rsquo;s changing the execution by JIT
+(just-in-time) compiling it, by utilizing special hardware (GPUs/TPUs), by vectorizing the
+computation, or in any other way.&lt;/li>
+&lt;/ol>
+&lt;h3 id="tensor-computation-library---maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; - Maybe Not The Best Name&lt;/h3>
+&lt;p>As an aside: I realize that the name &amp;ldquo;tensor computation library&amp;rdquo; is too broad, and that the
+characterization above precludes some libraries that might also justifiably be called &amp;ldquo;tensor
+computation libraries&amp;rdquo;. Better names might be &amp;ldquo;graph computation library&amp;rdquo; (although that might get
+mixed up with libraries like &lt;a href="https://networkx.org/">&lt;code>networkx&lt;/code>&lt;/a>) or &amp;ldquo;computational graph management
+library&amp;rdquo; or even &amp;ldquo;symbolic tensor algebra libraries&amp;rdquo;.&lt;/p>
+&lt;p>So for the avoidance of doubt, here is a list of libraries that this blog post is &lt;em>not&lt;/em> about:&lt;/p>
+&lt;ul>
+&lt;li>NumPy and SciPy
+&lt;ul>
+&lt;li>These libraries don&amp;rsquo;t have a concept of a computational graph - they’re more like a toolbox of
+functions, called from Python and executed in C or Fortran.&lt;/li>
+&lt;li>However, this might be a controversial distinction - as we’ll see later, JAX also doesn&amp;rsquo;t build
+an explicit computational graph either, and I definitely want to include JAX as a &amp;ldquo;tensor
+computation library&amp;rdquo;&amp;hellip; ¯\_(ツ)_/¯&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Numba and Cython
+&lt;ul>
+&lt;li>These libraries provide best execution for code (and in fact some tensor computation libraries,
+such as Theano, make good use them), but like NumPy and SciPy, they do not actually manage the
+computational graph itself.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Keras, Trax, Flax and PyTorch-Lightning
+&lt;ul>
+&lt;li>These libraries are high-level wrappers around tensor computation libraries - they basically
+provide abstractions and a user-facing API to utilize tensor computation libraries in a
+friendlier way.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="some-differences-between-tensor-computation-libraries">(Some) Differences Between Tensor Computation Libraries&lt;/h3>
+&lt;p>Anyways, back to tensor computation libraries.&lt;/p>
+&lt;p>All three aforementioned goals are ambitious undertakings with sophisticated solutions, so it
+shouldn&amp;rsquo;t be surprising to learn that decisions in pursuit on goal can have implications for (or
+even incur a trade-off with!) other goals. Here&amp;rsquo;s a list of common differences along all three axes:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Tensor computation libraries can differ in how they represent the computational graph, and how it
+is built.&lt;/p>
+&lt;ul>
+&lt;li>Static or dynamic graphs: do we first define the graph completely and then inject data to run
+(a.k.a. define-and-run), or is the graph defined on-the-fly via the actual forward computation
+(a.k.a. define-by-run)?
+&lt;ul>
+&lt;li>TensorFlow 1.x was (in)famous for its static graphs, which made users feel like they were
+&amp;ldquo;working with their computational graph through a keyhole&amp;rdquo;, especially when &lt;a href="https://news.ycombinator.com/item?id=13429355">compared to
+PyTorch&amp;rsquo;s dynamic graphs&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Lazy or eager execution: do we evaluate variables as soon as they are defined, or only when a
+dependent variable is evaluated? Usually, tensor computation libraries either choose to support
+dynamic graphs with eager execution, or static graphs with lazy execution - for example,
+&lt;a href="https://www.tensorflow.org/guide/eager">TensorFlow 2.0 supports both modes&lt;/a>.&lt;/li>
+&lt;li>Interestingly, some tensor computation libraries (e.g. &lt;a href="https://thinc.ai/">Thinc&lt;/a>) don&amp;rsquo;t even
+construct an explicit computational graph: they represent it as &lt;a href="https://thinc.ai/docs/concept">chained higher-order
+functions&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Tensor computation libraries can also differ in what they want to use the computational graph
+&lt;em>for&lt;/em> - for example, are we aiming to do things that basically amount to running the
+computational graph in a &amp;ldquo;different mode&amp;rdquo;, or are we aiming to modify the computational graph
+itself?&lt;/p>
+&lt;ul>
+&lt;li>Almost all tensor computation libraries support autodifferentiation in some capacity (either
+forward-mode, backward-mode, or both).&lt;/li>
+&lt;li>Obviously, how you represent the computational graph and what you want to use it for are very
+related questions! For example, if you want to be able to represent aribtrary computation as a
+graph, you&amp;rsquo;ll have to handle control flow like if-else statements or for-loops - this leads to
+common gotchas with &lt;a href="https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#%F0%9F%94%AA-Control-Flow">using Python for-loops in
+JAX&lt;/a>
+or needing to use &lt;a href="https://discuss.pytorch.org/t/can-you-have-for-loops-in-the-forward-prop/68295">&lt;code>torch.nn.ModuleList&lt;/code> in for-loops with
+PyTorch&lt;/a>.&lt;/li>
+&lt;li>Some tensor computation libraries (e.g. &lt;a href="https://github.com/Theano/Theano">Theano&lt;/a> and it&amp;rsquo;s
+fork, &lt;a href="https://theano-pymc.readthedocs.io/en/latest/index.html">Theano-PyMC&lt;/a>) aim to &lt;a href="https://theano-pymc.readthedocs.io/en/latest/extending/optimization.html">optimize
+the computational graph
+itself&lt;/a>, for which an
+&lt;a href="#an-observation-on-static-graphs-and-theano">explicit graph is necessary&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Finally, tensor computation libraries can also differ in how they execute code.&lt;/p>
+&lt;ul>
+&lt;li>All tensor computation libraries run on CPU, but the strength of GPU and TPU support is a major
+differentiator among tensor computation libraries.&lt;/li>
+&lt;li>Another differentiator is how tensor computation libraries compile code to be executed on
+hardware. For example, do they use JIT compilation or not? Do they use &amp;ldquo;vanilla&amp;rdquo; C or CUDA
+compilers, or &lt;a href="https://tensorflow.google.cn/xla">the XLA compiler for machine-learning specific
+code&lt;/a>?&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="a-zoo-of-tensor-computation-libraries">A Zoo of Tensor Computation Libraries&lt;/h2>
+&lt;p>Having outlined the basic similarities and differences of tensor computation libraries, I think
+it&amp;rsquo;ll be helpful to go through several of the popular libraries as examples. I&amp;rsquo;ve tried to link to
+the relevant documentation where possible.&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/p>
+&lt;h3 id="pytorchhttpspytorchorg">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/h3>
+&lt;ol>
+&lt;li>How is the computational graph represented and built?
+&lt;ul>
+&lt;li>PyTorch dynamically builds (and eagerly evaluates) an explicit computational graph. For more
+detail on how this is done, check out &lt;a href="https://pytorch.org/docs/stable/notes/autograd.html">the PyTorch docs on autograd
+mechanics&lt;/a>.&lt;/li>
+&lt;li>For more on how PyTorch computational graphs, see &lt;a href="https://jdhao.github.io/2017/11/12/pytorch-computation-graph/">&lt;code>jdhao&lt;/code>&amp;rsquo;s introductory blog post on
+computational graphs in
+PyTorch&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>What is the computational graph used for?
+&lt;ul>
+&lt;li>To quote the &lt;a href="https://pytorch.org/docs/stable/index.html">PyTorch docs&lt;/a>, &amp;ldquo;PyTorch is an
+optimized tensor library for deep learning using GPUs and CPUs&amp;rdquo; - as such, the main focus is on
+&lt;a href="https://pytorch.org/docs/stable/notes/autograd.html">autodifferentiation&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>How does the library ensure &amp;ldquo;best execution&amp;rdquo; for computation?
+&lt;ul>
+&lt;li>PyTorch has &lt;a href="https://pytorch.org/docs/stable/notes/cuda.html">native GPU support&lt;/a> via CUDA.&lt;/li>
+&lt;li>PyTorch also has support for TPU through projects like
+&lt;a href="https://github.com/pytorch/xla">PyTorch/XLA&lt;/a> and
+&lt;a href="https://www.pytorchlightning.ai/">PyTorch-Lightning&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="jaxhttpsjaxreadthedocsioenlatest">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/h3>
+&lt;ol>
+&lt;li>
+&lt;p>How is the computational graph represented and built?&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Instead of building an explicit computational graph to compute gradients, JAX simply supplies a
+&lt;code>grad()&lt;/code> that returns the gradient function of any supplied function. As such, there is
+technically no concept of a computational graph - only pure (i.e. stateless and
+side-effect-free) functions and their gradients.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;a href="https://sjmielke.com/jax-purify.htm">Sabrina Mielke summarizes the situation very well&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>PyTorch builds up a graph as you compute the forward pass, and one call to &lt;code>backward()&lt;/code> on
+some &amp;ldquo;result&amp;rdquo; node then augments each intermediate node in the graph with the gradient of the
+result node with respect to that intermediate node. JAX on the other hand makes you express
+your computation as a Python function, and by transforming it with &lt;code>grad()&lt;/code> gives you a
+gradient function that you can evaluate like your computation function — but instead of the
+output it gives you the gradient of the output with respect to (by default) the first
+parameter that your function took as input.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>What is the computational graph used for?&lt;/p>
+&lt;ul>
+&lt;li>According to the &lt;a href="https://jax.readthedocs.io/en/latest/notebooks/quickstart.html">JAX quickstart&lt;/a>,
+JAX bills itself as &amp;ldquo;NumPy on the CPU, GPU, and TPU, with great automatic differentiation for
+high-performance machine learning research&amp;rdquo;. Hence, its focus is heavily on
+autodifferentiation.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>How does the library ensure &amp;ldquo;best execution&amp;rdquo; for computation?&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>This is best explained by quoting the &lt;a href="https://jax.readthedocs.io/en/latest/notebooks/quickstart.html">JAX quickstart&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>JAX uses XLA to compile and run your NumPy code on [&amp;hellip;] GPUs and TPUs. Compilation happens
+under the hood by default, with library calls getting just-in-time compiled and executed. But
+JAX even lets you just-in-time compile your own Python functions into XLA-optimized kernels
+[&amp;hellip;] Compilation and automatic differentiation can be composed arbitrarily [&amp;hellip;]&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>For more detail on JAX’s four-function API (&lt;code>grad&lt;/code>, &lt;code>jit&lt;/code>, &lt;code>vmap&lt;/code> and &lt;code>pmap&lt;/code>), see
+&lt;a href="http://alexminnaar.com/2020/08/15/jax-overview.html">Alex Minaar&amp;rsquo;s overview of how JAX works&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="theanohttpstheano-pymcreadthedocsioenlatest">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/h3>
+&lt;blockquote>
+&lt;p>&lt;strong>Note:&lt;/strong> the &lt;a href="https://github.com/Theano/Theano">original Theano&lt;/a> (maintained by
+&lt;a href="https://mila.quebec/en/">MILA&lt;/a>) has been discontinued, and the PyMC developers have forked the
+project: &lt;a href="https://github.com/pymc-devs/Theano-PyMC">Theano-PyMC&lt;/a> (soon to be renamed Aesara). I&amp;rsquo;ll
+discuss both the original and forked projects below.&lt;/p>
+&lt;/blockquote>
+&lt;ol>
+&lt;li>How is the computational graph represented and built?
+&lt;ul>
+&lt;li>Theano statically builds (and lazily evaluates) an explicit computational graph.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>What is the computational graph used for?
+&lt;ul>
+&lt;li>Theano is unique among tensor computation libraries in that it places more emphasis on
+reasoning about the computational graph itself. In other words, while Theano has &lt;a href="https://theano-pymc.readthedocs.io/en/latest/library/gradient.html">strong
+support for
+autodifferentiation&lt;/a>,
+running the computation and computing gradients isn&amp;rsquo;t the be-all and end-all: Theano has an
+entire module for &lt;a href="https://theano-pymc.readthedocs.io/en/latest/optimizations.html">optimizing the computational graph
+itself&lt;/a>, and makes it fairly
+straightforward to compile the Theano graph to different computational backends (by default,
+Theano compiles to C or CUDA, but it’s straightforward to compile to JAX).&lt;/li>
+&lt;li>Theano is often remembered as a library for deep learning research, but it’s so much more than
+that!&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>How does the library ensure &amp;ldquo;best execution&amp;rdquo; for computation?
+&lt;ul>
+&lt;li>The original Theano used the GCC C compiler for CPU computation, and the NVCC CUDA compiler for
+GPU computation.&lt;/li>
+&lt;li>The Theano-PyMC fork project &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">will use JAX as a
+backend&lt;/a>,
+which can utilize CPUs, GPUs and TPUs as available.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="an-observation-on-static-graphs-and-theano">An Observation on Static Graphs and Theano&lt;/h2>
+&lt;p>Finally, a quick observation on static graphs and the niche that Theano fills that other tensor
+computation libraries do not. I had huge help from &lt;a href="https://twiecki.io/">Thomas Wiecki&lt;/a> and
+&lt;a href="https://brandonwillard.github.io/">Brandon Willard&lt;/a> with this section.&lt;/p>
+&lt;p>There&amp;rsquo;s been a consistent movement in most tensor computation libraries away from static graphs (or
+more precisely, statically &lt;em>built&lt;/em> graphs): PyTorch and TensorFlow 2 both support dynamically
+generated graphs by default, and JAX forgoes an explicit computational graph entirely.&lt;/p>
+&lt;p>This movement is understandable - building the computational graph dynamically matches people&amp;rsquo;s
+programming intuition much better. When I write &lt;code>z = x + y&lt;/code>, I don&amp;rsquo;t mean &lt;em>&amp;ldquo;I want to register a sum
+operation with two inputs, which is waiting for data to be injected&amp;rdquo;&lt;/em> - I mean &lt;em>&amp;ldquo;I want to compute
+the sum of &lt;code>x&lt;/code> and &lt;code>y&lt;/code>&amp;rdquo;.&lt;/em> The extra layer of indirection is not helpful to most users, who just want
+to run their tensor computation at some reasonable speed.&lt;/p>
+&lt;p>So let me speak in defence of statically built graphs.&lt;/p>
+&lt;p>Having an explicit representation of the computational graph is immensely useful for certain things,
+even if it makes the graph harder to work with. You can modify the graph (e.g. graph optimizations,
+simplifications and rewriting), and you can reason about and analyze the graph. Having the
+computation as an actual &lt;em>object&lt;/em> helps immeasurably for tasks where you need to think about the
+computation itself, instead of just blindly running it.&lt;/p>
+&lt;p>On the other hand, with dynamically generated graphs, the computational graph is never actually
+defined anywhere: the computation is traced out on the fly and behind the scene. You can no longer
+do anything interesting with the computational graph: for example, if the computation is slow, you
+can&amp;rsquo;t reason about &lt;em>what&lt;/em> parts of the graph are slow. The end result is that you basically have to
+hope that the framework internals are doing the right things, which they might not!&lt;/p>
+&lt;p>This is the niche that Theano (or rather, Theano-PyMC/Aesara) fills that other contemporary tensor
+computation libraries do not: the promise is that if you take the time to specify your computation
+up front and all at once, Theano can optimize the living daylight out of your computation - whether
+by graph manipulation, efficient compilation or something else entirely - and that this is something
+you would only need to do once.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>https://www.georgeho.org/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/floating-point-deep-learning/</guid><description>&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#floating-point-in-_my_-deep-learning">Floating-Point? In &lt;em>My&lt;/em> Deep Learning?&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#floating-point-formats">Floating-Point Formats&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#ieee-floating-point-formats">IEEE floating-point formats&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#google-bfloat16">Google BFloat16&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#nvidia-tensorfloat">NVIDIA TensorFloat&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#advice-for-practitioners">Advice for Practitioners&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#automatic-mixed-precision-amp-training--a-good-default">Automatic mixed precision (AMP) training — a good default&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#alternative-floating-point-formats--make-sure-itll-be-worth-it">Alternative floating-point formats — make sure it&amp;rsquo;ll be worth it&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
+consideration when working with deep learning models: if your model isn&amp;rsquo;t working well,
+then your floating-point format certainly isn&amp;rsquo;t going to save you! However, past a
+certain point of model complexity/model size/training time, your choice of
+floating-point format can have a significant impact on your model training times and
+even performance.&lt;/p>
+&lt;p>Here&amp;rsquo;s how the rest of this post is structured:&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="#floating-point-in-my-deep-learning">Why should you, a deep learning practitioner,
+care&lt;/a> about what floating-point format your
+model uses?&lt;/li>
+&lt;li>&lt;a href="#floating-point-formats">What even &lt;em>is&lt;/em> floating-point&lt;/a>, especially these new
+floating-point formats made specifically for deep learning?&lt;/li>
+&lt;li>&lt;a href="#advice-for-practitioners">What practical advice is there&lt;/a> on using floating-point
+formats for deep learning?&lt;/li>
+&lt;/ol>
+&lt;h2 id="floating-point-in-_my_-deep-learning">Floating-Point? In &lt;em>My&lt;/em> Deep Learning?&lt;/h2>
+&lt;p>&lt;a href="https://knowyourmeme.com/photos/6052-its-more-likely-than-you-think">It&amp;rsquo;s more likely than you
+think!&lt;/a>&lt;/p>
+&lt;p>It&amp;rsquo;s been known for quite some time that &lt;a href="https://arxiv.org/abs/1502.02551">deep neural networks can
+tolerate&lt;/a> &lt;a href="https://arxiv.org/abs/1412.7024">lower numerical
+precision&lt;/a>. High-precision calculations turn out not
+to be that useful in training or inferencing neural networks: the additional precision
+confers no benefit while being slower and less memory-efficient.&lt;/p>
+&lt;p>Surprisingly, some models can even reach a higher accuracy with lower precision, which
+recent research attributes to the &lt;a href="https://arxiv.org/abs/1809.00095">regularization effects from the lower
+precision&lt;/a>.&lt;/p>
+&lt;p>Finally (and this is speculation on my part — I haven&amp;rsquo;t seen any experiments or papers
+corroborating this), it&amp;rsquo;s possible that certain complicated models &lt;em>cannot converge&lt;/em>
+unless you use an appropriately precise format. There&amp;rsquo;s a drift between the analytical
+gradient update and what the actual backward propagation looks like: the lower the
+precision, the bigger the drift. I&amp;rsquo;d expect that deep learning is particularly
+susceptible to an issue here because there&amp;rsquo;s a lot of multiplications, divisions and
+reduction operations.&lt;/p>
+&lt;h2 id="floating-point-formats">Floating-Point Formats&lt;/h2>
+&lt;p>Let&amp;rsquo;s take a quick look at three floating-point formats for deep learning. There are a
+lot more floating-point formats, but only a few have gained traction: floating-point
+formats require the appropriate hardware and firmware support, which restricts the
+introduction and adoption of new formats.&lt;/p>
+&lt;p>For a quick overview, Grigory Sapunov wrote a great &lt;a href="https://medium.com/@moocaholic/fp64-fp32-fp16-bfloat16-tf32-and-other-members-of-the-zoo-a1ca7897d407">run-down of various floating-point
+formats for deep
+learning&lt;/a>.&lt;/p>
+&lt;h3 id="ieee-floating-point-formats">IEEE floating-point formats&lt;/h3>
+&lt;p>These floating-point formats are probably what most people think of when someone says
+&amp;ldquo;floating-point&amp;rdquo;. The IEEE standard 754 sets out several formats, but for the purposes
+of deep learning we are only interested three:
+&lt;a href="https://en.wikipedia.org/wiki/Half-precision_floating-point_format">FP16&lt;/a>,
+&lt;a href="https://en.wikipedia.org/wiki/Single-precision_floating-point_format">FP32&lt;/a> and
+&lt;a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">FP64&lt;/a> (a.k.a.
+half-, single- and double-precision floating-point formats)&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>Let&amp;rsquo;s take FP32 as an example. Each FP32 number is a sequence of 32 bits,
+$b_{31} b_{30} &amp;hellip; b_{0}$. Altogether, this sequence represents the real number&lt;/p>
+&lt;p>$$ (-1)^{b_{31}} \cdot 2^{(b_{30} b_{29} &amp;hellip; b_{23}) - 127} \cdot (1.b_{22} b_{21} &amp;hellip; b_{0})_2 $$&lt;/p>
+&lt;p>Here, $b_{31}$ (the &lt;em>sign bit&lt;/em>) determines the sign of the represented value.&lt;/p>
+&lt;p>$b_{30}$ through $b_{23}$ determine the magnitude or scale of the represented value
+(notice that a change in any of these bits drastically changes the size of the
+represented value). These bits are called the &lt;em>exponent&lt;/em> or &lt;em>scale bits&lt;/em>.&lt;/p>
+&lt;p>Finally, $b_{22}$ through $b_{0}$ determine the precise value of the represented
+value. These bits are called the &lt;em>mantissa&lt;/em> or &lt;em>precision bits&lt;/em>.&lt;/p>
+&lt;p>Obviously, the more bits you have, the more you can do. Here&amp;rsquo;s how the three formats
+break down:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">&lt;/th>
+&lt;th style="text-align:right">Sign Bits&lt;/th>
+&lt;th style="text-align:right">Exponent (Scale) Bits&lt;/th>
+&lt;th style="text-align:right">Mantissa (Precision) Bits&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">FP16&lt;/td>
+&lt;td style="text-align:right">1&lt;/td>
+&lt;td style="text-align:right">5&lt;/td>
+&lt;td style="text-align:right">10&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">FP32&lt;/td>
+&lt;td style="text-align:right">1&lt;/td>
+&lt;td style="text-align:right">8&lt;/td>
+&lt;td style="text-align:right">23&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">FP64&lt;/td>
+&lt;td style="text-align:right">1&lt;/td>
+&lt;td style="text-align:right">11&lt;/td>
+&lt;td style="text-align:right">53&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>There are some details that I&amp;rsquo;m leaving out here (e.g. how to represent NaNs, positive
+and negative infinities), but this is largely how floating point numbers work. A lot
+more detail can be found on the &lt;a href="https://en.wikipedia.org/wiki/Floating-point_arithmetic#IEEE_754:_floating_point_in_modern_computers">Wikipedia
+page&lt;/a>
+and of course the &lt;a href="https://ieeexplore.ieee.org/document/8766229">latest revision of the IEEE standard
+754&lt;/a> itself.&lt;/p>
+&lt;p>FP32 and FP64 are widely supported by both software (C/C++, PyTorch, TensorFlow) and
+hardware (x86 CPUs and most NVIDIA/AMD GPUs).&lt;/p>
+&lt;p>FP16, on the other hand, is not as widely supported in software (you need to use &lt;a href="http://half.sourceforge.net/">a
+special library&lt;/a> to use them in C/C++). However, since
+deep learning is trending towards favoring FP16 over FP32, it has found support in the
+main deep learning frameworks (e.g. &lt;code>tf.float16&lt;/code> and &lt;code>torch.float16&lt;/code>). In terms of
+hardware, FP16 is not supported in x86 CPUs as a distinct type, but is well-supported on
+modern GPUs.&lt;/p>
+&lt;h3 id="google-bfloat16">Google BFloat16&lt;/h3>
+&lt;p>BFloat16 (a.k.a. the Brain Floating-Point Format, after Google Brain) is basically the
+same as FP16, but 3 mantissa bits become exponent bits (i.e. bfloat16 trades 3 bits'
+worth of precision for scale).&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bfloat16.png" alt="Diagram illustrating the number and type of bits in bfloat16.">
+&lt;figcaption>The number and type of bits in bfloat16. Source: &lt;a href="https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus">Google Cloud blog&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;p>When it comes to deep learning, there are generally three &amp;ldquo;flavors&amp;rdquo; of values: weights,
+activations and gradients. Google suggests storing weights and gradients in FP32, and
+storing activations in bfloat16. However, in particularly gracious circumstances,
+weights can be stored in bfloat16 without a significant performance degradation.&lt;/p>
+&lt;p>You can read a lot more on the &lt;a href="https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus">Google Cloud
+blog&lt;/a>,
+and &lt;a href="https://arxiv.org/abs/1905.12322">this paper by Intel and Facebook studying the bfloat16
+format&lt;/a>.&lt;/p>
+&lt;p>In terms of software support, bfloat16 is not supported in C/C++, but is supported in
+TensorFlow (&lt;a href="https://www.tensorflow.org/api_docs/python/tf#bfloat16">&lt;code>tf.bfloat16&lt;/code>&lt;/a>) and
+PyTorch (&lt;a href="https://www.tensorflow.org/api_docs/python/tf#bfloat16">&lt;code>torch.bfloat16&lt;/code>&lt;/a>).&lt;/p>
+&lt;p>In terms of hardware support, it is supported by &lt;a href="https://en.wikipedia.org/wiki/Cooper_Lake_(microarchitecture)">some modern
+CPUS&lt;/a>, but the real
+support comes out in GPUs and ASICs. At the time of writing, bfloat16 is supported by
+the NVIDIA A100 (the first GPU to support it!), and &lt;a href="https://www.techpowerup.com/260344/future-amd-gpu-architecture-to-implement-bfloat16-hardware">will be supported in future AMD
+GPUs&lt;/a>.
+And of course, it is supported by Google TPU v2/v3.&lt;/p>
+&lt;h3 id="nvidia-tensorfloat">NVIDIA TensorFloat&lt;/h3>
+&lt;p>Strictly speaking, this isn&amp;rsquo;t really its own floating-point format, just an overzealous
+branding of the technique that NVIDIA developed to train in mixed precision on their
+Tensor Core hardware&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>An NVIDIA TensorFloat (a.k.a. TF32) is just a 32-bit float that drops 13 precision bits
+in order to execute on Tensor Cores. Thus, it has the precision of FP16 (10 bits), with
+the range of FP32 (8 bits). However, if you&amp;rsquo;re not using Tensor Cores, it&amp;rsquo;s just a
+32-bit float; if you&amp;rsquo;re only thinking about storage, it&amp;rsquo;s just a 32-bit float.&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/tensorfloat32.png" alt="Diagram illustrating the number and type of bits in an NVIDIA TensorFloat">
+&lt;figcaption>The number and type of bits in an NVIDIA TensorFloat. Source: &lt;a href="https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/">NVIDIA blog&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;p>One distinct advantage of TF32 is that they&amp;rsquo;re kind of like FP32. To quote from the
+NVIDIA developer blog,&lt;/p>
+&lt;blockquote>
+&lt;p>Applications using NVIDIA libraries enable users to harness the benefits of TF32 with no
+code change required. TF32 Tensor Cores operate on FP32 inputs and produce results in
+FP32. Non-matrix operations continue to use FP32.&lt;/p>
+&lt;/blockquote>
+&lt;p>You can read more about TF32 &lt;a href="https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/">on the NVIDIA
+blog&lt;/a>, and
+about its hardware support in the Ampere architecture on &lt;a href="https://developer.nvidia.com/blog/nvidia-ampere-architecture-in-depth/">the NVIDIA developer
+blog&lt;/a>.&lt;/p>
+&lt;p>TF32 is not in the C/C++ standard at all, but is supported in &lt;a href="https://developer.nvidia.com/blog/cuda-11-features-revealed/">CUDA
+11&lt;/a>.&lt;/p>
+&lt;p>Hardware-wise, the NVIDIA A100 is the first GPU (and, at the time of writing, the only
+device) supporting TF32.&lt;/p>
+&lt;h2 id="advice-for-practitioners">Advice for Practitioners&lt;/h2>
+&lt;p>The first thing to say is that floating-point formats are &lt;em>by no means&lt;/em> the most
+important consideration for your deep learning model — not even close. Floating-point
+formats will most likely only make a difference for very large or complex models, for
+which fitting the model on GPU memory is a challenge, or for which training times are
+excruciatingly long.&lt;/p>
+&lt;p>The second thing to say is that any practical advice has to be heavily dependent on what
+hardware you have available to you.&lt;/p>
+&lt;h3 id="automatic-mixed-precision-amp-training--a-good-default">Automatic mixed precision (AMP) training — a good default&lt;/h3>
+&lt;p>Most deep learning stacks support mixed-precision training, which is a pretty good
+default option to reap some of the benefits of low-precision training, while still
+reasonably avoiding underflow and overflow problems.&lt;/p>
+&lt;p>TensorFlow supports &lt;a href="https://www.tensorflow.org/guide/mixed_precision">mixed-precision training
+natively&lt;/a>, whereas the &lt;a href="https://github.com/NVIDIA/apex">NVIDIA Apex
+library&lt;/a> makes automatic mixed precision training
+available in PyTorch. To get started, take a look at NVIDIA&amp;rsquo;s &lt;a href="https://developer.nvidia.com/automatic-mixed-precision">developer guide for
+AMP&lt;/a>, and &lt;a href="https://docs.nvidia.com/deeplearning/performance/mixed-precision-training/index.html">documentation for
+training in mixed
+precision&lt;/a>.&lt;/p>
+&lt;p>It&amp;rsquo;s worth going over the gist of mixed precision training. There are basically two main
+tricks:&lt;/p>
+&lt;ol>
+&lt;li>&lt;em>Loss scaling:&lt;/em> multiply the loss by some large number, and divide the gradient
+updates by this same large number. This avoids the loss underflowing (i.e. clamping
+to zero because of the finite precision) in FP16, while still maintaining faithful
+backward propagation.&lt;/li>
+&lt;li>&lt;em>FP32 master copy of weights&lt;/em>: store the weights themselves in FP32, but cast them to
+FP16 before doing the forward and backward propagation (to reap the performance
+benefits). During the weight update, the FP16 gradients are cast to FP32 to update
+the master copy.&lt;/li>
+&lt;/ol>
+&lt;p>You can read more about these techniques in &lt;a href="https://arxiv.org/abs/1710.03740">this paper by NVIDIA and Baidu
+Research&lt;/a>, or on the accompanying &lt;a href="https://developer.nvidia.com/blog/mixed-precision-training-deep-neural-networks/">blog post by
+NVIDIA&lt;/a>.&lt;/p>
+&lt;h3 id="alternative-floating-point-formats--make-sure-itll-be-worth-it">Alternative floating-point formats — make sure it&amp;rsquo;ll be worth it&lt;/h3>
+&lt;p>If you&amp;rsquo;ve already trained your model in mixed precision, it might not be worth the time
+or effort to port your code to take advantage of an alternative floating-point format
+and bleeding edge hardware.&lt;/p>
+&lt;p>However, if you choose to go that route, make sure your use case really demands it.
+Perhaps you can&amp;rsquo;t scale up your model without using bfloat16, or you really need to cut
+down on training times.&lt;/p>
+&lt;p>Unfortunately, I don&amp;rsquo;t have a well-informed opinion on how bfloat16 stacks up against
+TF32, so &amp;ldquo;do your homework&amp;rdquo; is all I can advise. However, since the NVIDIA A100s only
+just (at the time of writing) dropped into the market, it&amp;rsquo;ll be interesting to see what
+the machine learning community thinks of the various low precision options available.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Technically speaking, there are &lt;a href="https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format">quadruple-&lt;/a> and &lt;a href="https://en.wikipedia.org/wiki/Octuple-precision_floating-point_format">octuple-precision&lt;/a> floating-point formats, but those are pretty rarely used, and certainly unheard of in deep learning.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>A Tensor Core is essentially a mixed-precision FP16/FP32 core, which NVIDIA has optimized for deep learning applications.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+Transformer-based NLP models.&lt;/p>
+&lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
+models&lt;/a>, this blog post is a write-up
+of my reading and research: I assume basic familiarity with deep learning, and aim to
+highlight general trends in deep NLP, instead of commenting on individual architectures
+or systems.&lt;/p>
+&lt;p>As a disclaimer, this post is by no means exhaustive and is biased towards
+Transformer-based models, which seem to be the dominant breed of NLP systems (at least,
+at the time of writing).&lt;/p>
+&lt;h2 id="some-architectures-and-developments">Some Architectures and Developments&lt;/h2>
+&lt;p>Here&amp;rsquo;s an (obviously) abbreviated history of Transformer-based models in NLP&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> in
+(roughly) chronological order. I also cover some other non-Transformer-based models,
+because I think they illuminate the history of NLP.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>word2vec and GloVe&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>These were the first instances of word embeddings pre-trained on large amounts of
+unlabeled text. These word embeddings generalized well to most other tasks (even
+with limited amounts of labeled data), and usually led to appreciable improvements
+in performance.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>These ideas were immensely influential and have served NLP extraordinarily well.
+However, they suffer from a major limitation. They are &lt;em>shallow&lt;/em> representations
+that can only be used in the first layer of any network: the remainder of the
+network must still be trained from scratch.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The main appeal is well illustrated below: each word has its own vector
+representation, and there are linear vector relationships can encode common-sense
+semantic meanings of words.&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/linear-relationships.png" alt="Linear vector relationships in word embeddings">
+&lt;figcaption>Linear vector relationships in word embeddings. Source: &lt;a href="https://www.tensorflow.org/images/linear-relationships.png">TensorFlow documentation&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="http://arxiv.org/abs/1301.3781">word2vec: Mikolov et al., Google. January 2013&lt;/a>
+and &lt;a href="http://arxiv.org/abs/1310.4546">October 2013&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="https://nlp.stanford.edu/projects/glove/">GloVe: Pennington et al., Stanford CS. EMNLP
+2014.&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Broadly speaking, after word2vec/GloVe and before Transformers, a lot of ink was
+spilled on other different approaches to NLP, including (but certainly not limited
+to)&lt;/p>
+&lt;ol>
+&lt;li>Convolutional neural networks&lt;/li>
+&lt;li>Recurrent neural networks&lt;/li>
+&lt;li>Reinforcement learning approaches&lt;/li>
+&lt;li>Memory-augmented deep learning&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>Perhaps the most famous of such models is &lt;a href="https://allennlp.org/elmo">ELMo (Embeddings from Language
+Models)&lt;/a> by AI2, which learned bidirectional word
+embeddings using LSTMs, and began NLP&amp;rsquo;s fondness of Sesame Street.&lt;/li>
+&lt;li>I won&amp;rsquo;t go into much more detail here: partly because not all of these approaches
+have held up as well as current Transformer-based models, and partly because I have
+plans for my computer that don&amp;rsquo;t involve blogging about recent advances in NLP.&lt;/li>
+&lt;li>Here is &lt;a href="https://arxiv.org/abs/1708.02709">a survey paper&lt;/a> (and an &lt;a href="https://medium.com/dair-ai/deep-learning-for-nlp-an-overview-of-recent-trends-d0d8f40a776d">associated blog
+post&lt;/a>)
+published shortly after the Transformer was invented, which summarizes a lot of the
+work that was being done during this period.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Transformer&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The authors introduce a feed-forward network architecture, using only attention
+mechanisms and dispensing with convolutions and recurrence entirely (which were not
+uncommon techniques in NLP at the time).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>It achieved state-of-the-art performance on several tasks, and (perhaps more
+importantly) was found to generalize very well to other NLP tasks, even with
+limited data.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Since this architecture was the progenitor of so many other NLP models, it&amp;rsquo;s
+worthwhile to dig into the details a bit. The architecture is illustrated below:
+note that its feed-forward nature and multi-head self attention are critical
+aspects of this architecture!&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/asset/images/transformer-block.png" alt="Graphical representation of BERT">
+&lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1706.03762.pdf">Vaswani et al., Google Brain. December 2017.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://jalammar.github.io/illustrated-transformer/">&lt;em>The Illustrated Transformer&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;li>&lt;a href="http://nlp.seas.harvard.edu/2018/04/03/attention.html">&lt;em>The Annotated Transformer&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>ULMFiT (Universal Language Model Fine-tuning for Text Classification)&lt;/p>
+&lt;ul>
+&lt;li>The authors introduce an effective transfer learning method that can be applied to
+any task in NLP: this paper introduced the idea of general-domain, unsupervised
+pre-training, followed by task-specific fine-tuning. They also introduce other
+techniques that are fairly common in NLP now, such as slanted triangular learning
+rate schedules. (what some researchers now call warm-up).&lt;/li>
+&lt;li>Further reading
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1801.06146.pdf">Howard and Ruder. January 2018.&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>GPT-1 and GPT-2 (Generative Pre-trained Transformers)&lt;/p>
+&lt;ul>
+&lt;li>At the risk of peeking ahead, GPT is largely BERT but with Transformer decoder
+blocks, instead of encoder blocks. Note that in doing this, we lose the
+autoregressive/unidirectional nature of the model.&lt;/li>
+&lt;li>Arguably the main contribution of GPT-2 is that it demonstrated the value of
+training larger Transformer models (a trend that I personally refer to as the
+&lt;em>Embiggening&lt;/em>).&lt;/li>
+&lt;li>GPT-2 generated some controversy, as OpenAI &lt;a href="https://www.theverge.com/2019/2/14/18224704/ai-machine-learning-language-models-read-write-openai-gpt2">initially refused to open-source the
+model&lt;/a>,
+citing potential malicious uses, but &lt;a href="https://www.theverge.com/2019/11/7/20953040/openai-text-generation-ai-gpt-2-full-model-release-1-5b-parameters">ended up releasing the model
+later&lt;/a>.&lt;/li>
+&lt;li>Further reading
+&lt;ul>
+&lt;li>&lt;a href="https://openai.com/blog/language-unsupervised/">Radford et al., OpenAI. June
+2018&lt;/a> and &lt;a href="https://openai.com/blog/better-language-models/">February
+2019&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="http://jalammar.github.io/illustrated-gpt2/">&lt;em>The Illustrated GPT-2&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>BERT (Bidirectional Encoder Representations from Transformers)&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The authors use the Transformer encoder (and only the encoder) to pre-train deep
+bidirectional representations from unlabeled text. This pre-trained BERT model can
+then be fine-tuned with just one additional output layer to achieve
+state-of-the-art performance for many NLP tasks, without substantial task-specific
+architecture changes, as illustrated below.&lt;/p>
+&lt;figure class="align-center">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bert.png" alt="Graphical representation of BERT">
+&lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>BERT was a drastic development in the NLP landscape: it became almost a cliche to
+conclude that BERT performs &amp;ldquo;surprisingly well&amp;rdquo; on whatever task or dataset you
+throw at it.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1810.04805.pdf">Devlin et al., Google AI Language, May 2019.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html">Accompanying blog post&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://jalammar.github.io/illustrated-bert/">&lt;em>The Illustrated BERT&lt;/em> blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>RoBERTa (Robustly Optimized BERT Approach)&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>The scientific contributions of this paper are best quoted from its abstract:&lt;/p>
+&lt;blockquote>
+&lt;p>We find that BERT was significantly under-trained, and can match or exceed the
+performance of every model published after it. [&amp;hellip;] These results highlight the
+importance of previously overlooked design choices, and raise questions about the
+source of recently reported improvements.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>The authors use an identical architecture to BERT, but propose several improvements
+to the training routine, such as changing the dataset and removing the
+next-sentence-prediction (NSP) pre-training task. Funnily enough, far and away the
+best thing the authors did to improve BERT was just the most obvious thing: train
+BERT for longer!&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Further reading:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/abs/1907.11692">Liu et al., Facebook AI. June 2019.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://ai.facebook.com/blog/roberta-an-optimized-method-for-pretraining-self-supervised-nlp-systems/">Accompanying blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>T5 (Text-to-Text Transfer Transformer)&lt;/p>
+&lt;ul>
+&lt;li>There are two main contributions of this paper:
+&lt;ol>
+&lt;li>The authors recast all NLP tasks into a text-to-text format: for example,
+instead of performing a two-way softmax for binary classification, one could
+simply teach an NLP model to output the tokens &amp;ldquo;spam&amp;rdquo; or &amp;ldquo;ham&amp;rdquo;. This provides a
+unified text-to-text format for all NLP tasks.&lt;/li>
+&lt;li>The authors systematically study and compare the effects of pre-training
+objectives, architectures, unlabeled datasets, transfer approaches, and other
+factors on dozens of canonical NLP tasks.&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>This paper (and especially the tables in the appendices!) probably cost the Google
+team an incredible amount of money, and the authors were very thorough in ablating
+what does and doesn&amp;rsquo;t help for a good NLP system.&lt;/li>
+&lt;li>Further reading
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/pdf/1910.10683.pdf">Raffel et al., Google. October 2019.&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://ai.googleblog.com/2020/02/exploring-transfer-learning-with-t5.html">Accompanying blog post&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;h2 id="some-thoughts-and-observations">Some Thoughts and Observations&lt;/h2>
+&lt;p>Here I comment on some general trends that I see in Transformer-based models in NLP.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Ever since Google developed the Transformer in 2017, most NLP contributions are not
+architectural: instead most recent advances have used the Transformer model as-is, or
+using some subset of the Transformer (e.g. BERT and GPT use exclusively Transformer
+encoder and decoder blocks, respectively). Instead, recent research has focused on
+the way NLP models are pre-trained or fine-tuned, or creating a new dataset, or
+formulating a new NLP task to measure &amp;ldquo;language understanding&amp;rdquo;, etc.&lt;/p>
+&lt;ul>
+&lt;li>I&amp;rsquo;m personally not sure what to make of this development: why did we collectively
+agree that architectural research wasn&amp;rsquo;t worth pursuing anymore?&lt;/li>
+&lt;li>But spinning this the other way, we see that Transformers are a &lt;em>fascinating&lt;/em>
+architecture: the model has proven so surprisingly versatile and easy to teach that
+we are still making meaningful advances with the same architecture. In fact, it is
+still an open question how and why Transformers perform as well as they do: there
+is an open field of research focusing on answering this question for BERT (since
+BERT has been uniquely successful model) called
+&lt;a href="https://huggingface.co/transformers/bertology.html">BERTology&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>It was never a question of &lt;em>whether&lt;/em> NLP systems would follow computer vision&amp;rsquo;s model
+of fine-tuning pre-trained models (i.e. training a model on ImageNet and then doing
+task-specific fine-tuning for downstream applications), but rather &lt;em>how&lt;/em>.&lt;/p>
+&lt;ol>
+&lt;li>What specific task and/or dataset should NLP models be pre-trained on?
+&lt;ul>
+&lt;li>Language modelling has really won out here: BERT was originally published with a
+&lt;em>next-sentence prediction&lt;/em> (NSP) pre-training task, which RoBERTa completely did
+away with.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Exactly &lt;em>what&lt;/em> is being learnt during pre-training?
+&lt;ul>
+&lt;li>Initially it was a separate vector for each token (i.e. pre-training a shallow
+representation of text), and these days it is an entire network is pre-trained.&lt;/li>
+&lt;li>Sebastian Ruder &lt;a href="https://thegradient.pub/nlp-imagenet/">wrote a great article&lt;/a>
+that delves more into this topic.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>There are (generally speaking) three flavors of Transformer models.&lt;/p>
+&lt;ol>
+&lt;li>Autoregressive models&lt;/li>
+&lt;li>Autoencoding models&lt;/li>
+&lt;li>Sequence-to-sequence models&lt;/li>
+&lt;/ol>
+&lt;ul>
+&lt;li>Hugging Face does an excellent job of summarizing the differences between these
+three flavors of models in &lt;a href="https://huggingface.co/transformers/summary.html">their &lt;em>Summary of the
+Models&lt;/em>&lt;/a>, which I&amp;rsquo;ve reproduced
+here:&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>Autoregressive models are pretrained on the classic language modeling task: guess
+the next token having read all the previous ones. They correspond to the decoder of
+the original transformer model, and a mask is used on top of the full sentence so
+that the attention heads can only see what was before in the next, and not what’s
+after. Although those models can be fine-tuned and achieve great results on many
+tasks, the most natural application is text generation. A typical example of such
+models is GPT.&lt;/p>
+&lt;p>Autoencoding models are pretrained by corrupting the input tokens in some way and
+trying to reconstruct the original sentence. They correspond to the encoder of the
+original transformer model in the sense that they get access to the full inputs
+without any mask. Those models usually build a bidirectional representation of the
+whole sentence. They can be fine-tuned and achieve great results on many tasks such
+as text generation, but their most natural application is sentence classification
+or token classification. A typical example of such models is BERT.&lt;/p>
+&lt;p>[&amp;hellip;]&lt;/p>
+&lt;p>Sequence-to-sequence models use both the encoder and the decoder of the original
+transformer, either for translation tasks or by transforming other tasks to
+sequence-to-sequence problems. They can be fine-tuned to many tasks but their most
+natural applications are translation, summarization and question answering. The
+original transformer model is an example of such a model (only for translation), T5
+is an example that can be fine-tuned on other tasks.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;li>
+&lt;p>Different NLP models learn different kinds of embeddings, and it&amp;rsquo;s worth
+understanding the differences between these various learnt representations.&lt;/p>
+&lt;ol>
+&lt;li>Contextual vs non-contextual embeddings
+&lt;ul>
+&lt;li>The first word embeddings (that is, word2vec and GloVe) were &lt;em>non-contextual&lt;/em>:
+each word had its own embedding, independent of the words that came before or
+after it.&lt;/li>
+&lt;li>Almost all other embeddings are &lt;em>contextual&lt;/em> now: when embedding a token, they
+also consider the tokens before &amp;amp;/ after it.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Unidirectional vs bidirectional embeddings
+&lt;ul>
+&lt;li>When considering the context of a token, the question is whether you should
+consider the tokens both before and after it (i.e. bidirectional embeddings), or
+just the tokens that came before (i.e. unidirectional embeddings).&lt;/li>
+&lt;li>Unidirectional embeddings make the sense when generating text (i.e. text
+generation must be done in the way humans write text: in one direction). On the
+other hand, bidirectional embeddings make sense when performing sentence-level
+tasks such as summarization or rewriting.&lt;/li>
+&lt;li>The Transformer was notable in that it had bidirectional encoder blocks and
+unidirectional decoder blocks. That&amp;rsquo;s why BERT [GPT-2] produces bidirectional
+[unidirectional] embeddings, since it&amp;rsquo;s a stack of Transformer encoders
+[decoders].&lt;/li>
+&lt;li>Note that the unidirectional/bidirectional distinction is related to whether or
+not the model is autoregressive: autoregressive models learn unidirectional
+embeddings.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>
+&lt;p>Transformer-based models have had an interesting history with scaling.&lt;/p>
+&lt;ul>
+&lt;li>This trend probably started when GPT-2 was published: &amp;ldquo;it sounds very dumb and too
+easy, but magical things happen if you make your Transformer model bigger&amp;rdquo;.&lt;/li>
+&lt;li>An open question is, how do Transformer models scale (along any dimension of
+interest)? For example, how much does dataset size or the number of layers or the
+number of training iterations matter in the ultimate performance of a Transformer
+model? At what point does making your Transformer model &amp;ldquo;bigger&amp;rdquo; (along any
+dimension of interest) provide diminishing returns?&lt;/li>
+&lt;li>There is some &lt;a href="https://github.com/huggingface/awesome-papers#march-24-2020">solid
+work&lt;/a> being done to
+answer this question, and there seems to be good evidence for some fairly
+surprising conclusions!&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Autoregressive Models in Deep Learning — A Brief Survey</title><link>https://www.georgeho.org/deep-autoregressive-models/</link><pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/deep-autoregressive-models/</guid><description>&lt;p>My current project involves working with deep autoregressive models: a class of
+remarkable neural networks that aren&amp;rsquo;t usually seen on a first pass through deep
+learning. These notes are a quick write-up of my reading and research: I assume
+basic familiarity with deep learning, and aim to highlight general trends and
+similarities across autoregressive models, instead of commenting on individual
+architectures.&lt;/p>
+&lt;p>&lt;strong>tldr:&lt;/strong> &lt;em>Deep autoregressive models are sequence models, yet feed-forward
+(i.e. not recurrent); generative models, yet supervised. They are a compelling
+alternative to RNNs for sequential data, and GANs for generation tasks.&lt;/em>&lt;/p>
+&lt;h2 id="deep-autoregressive-models">Deep Autoregressive Models&lt;/h2>
+&lt;p>To be explicit (at the expense of redundancy), this blog post is about &lt;em>deep
+autoregressive generative sequence models&lt;/em>. That&amp;rsquo;s quite a mouthful of jargon
+(and two of those words are actually unnecessary), so let&amp;rsquo;s unpack that.&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Deep&lt;/p>
+&lt;ul>
+&lt;li>Well, these papers are using TensorFlow or PyTorch&amp;hellip; so they must be
+&amp;ldquo;deep&amp;rdquo; 😉&lt;/li>
+&lt;li>You would think this word is unnecessary, but it&amp;rsquo;s actually not!
+Autoregressive linear models like
+&lt;a href="https://en.wikipedia.org/wiki/Autoregressive%E2%80%93moving-average_model">ARMA&lt;/a>
+or
+&lt;a href="https://en.wikipedia.org/wiki/Autoregressive_conditional_heteroskedasticity">ARCH&lt;/a>
+have been used in statistics, econometrics and financial modelling for
+ages.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Autoregressive&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>&lt;a href="https://deepgenerativemodels.github.io/notes/autoregressive/">Stanford has a good
+introduction&lt;/a>
+to autoregressive models, but I think a good way to explain these models is
+to compare them to recurrent neural networks (RNNs), which are far more
+well-known.&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/rnn-unrolled.png">&lt;img src="https://www.georgeho.org/assets/images/rnn-unrolled.png" alt="Recurrent neural network (RNN) block diagram, both rolled and unrolled">&lt;/a>
+&lt;figcaption>Obligatory RNN diagram. Source: &lt;a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Chris Olah&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;ul>
+&lt;li>
+&lt;p>Like an RNN, an autoregressive model&amp;rsquo;s output $h_t$ at time $t$
+depends on not just $x_t$, but also $x$&amp;rsquo;s from previous time steps.
+However, &lt;em>unlike&lt;/em> an RNN, the previous $x$&amp;rsquo;s are not provided via some
+hidden state: they are given as just another input to the model.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The following animation of Google DeepMind&amp;rsquo;s WaveNet illustrates this
+well: the $t$th output is generated in a &lt;em>feed-forward&lt;/em> fashion from
+several input $x$ values.&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/wavenet-animation.gif">&lt;img src="https://www.georgeho.org/assets/images/wavenet-animation.gif" alt="WaveNet animation">&lt;/a>
+&lt;figcaption>WaveNet animation. Source: &lt;a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">Google DeepMind&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>Put simply, &lt;strong>an autoregressive model is merely a feed-forward model which
+predicts future values from past values.&lt;/strong>&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>I&amp;rsquo;ll explain this more later, but it&amp;rsquo;s worth saying now: autoregressive
+models offer a compelling bargain. You can have stable, parallel and
+easy-to-optimize training, faster inference computations, and completely
+do away with the fickleness of &lt;a href="https://en.wikipedia.org/wiki/Backpropagation_through_time">truncated backpropagation through
+time&lt;/a>, if you
+are willing to accept a model that (by design) &lt;em>cannot have&lt;/em> infinite
+memory. There is &lt;a href="http://www.offconvex.org/2018/07/27/approximating-recurrent/">recent
+research&lt;/a> to
+suggest that this is a worthwhile tradeoff.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Generative&lt;/p>
+&lt;ul>
+&lt;li>Informally, a generative model is one that can generate new data after
+learning from the dataset.&lt;/li>
+&lt;li>More formally, a generative model models the joint distribution $P(X, Y)$
+of the observation $X$ and the target $Y$. Contrast this to a
+discriminative model that models the conditional distribution $P(Y|X)$.&lt;/li>
+&lt;li>GANs and VAEs are two families of popular generative models.&lt;/li>
+&lt;li>This is unnecessary word #1: any autoregressive model can be run
+sequentially to generate a new sequence! Start with your seed $x_1, x_2,
+&amp;hellip;, x_k$ and predict $x_{k+1}$. Then use $x_2, x_3, &amp;hellip;, x_{k+1}$ to
+predict $x_{k+2}$, and so on.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Sequence model&lt;/p>
+&lt;ul>
+&lt;li>Fairly self explanatory: a model that deals with sequential data, whether
+it is mapping sequences to scalars (e.g. language models), or mapping
+sequences to sequences (e.g. machine translation models).&lt;/li>
+&lt;li>Although sequence models are designed for sequential data (duh), there has
+been success at applying them to non-sequential data. For example,
+PixelCNN (discussed below) can generate entire images, even though images
+are not sequential in nature: the model generates a pixel at a time, in
+sequence!&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>&lt;/li>
+&lt;li>Notice that an autoregressive model must be a sequence model, so it&amp;rsquo;s
+redundant to further describe these models as sequential (which makes this
+unnecessary word #2).&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>A good distinction is that &amp;ldquo;generative&amp;rdquo; and &amp;ldquo;sequential&amp;rdquo; describe &lt;em>what&lt;/em> these
+models do, or what kind of data they deal with. &amp;ldquo;Autoregressive&amp;rdquo; describes &lt;em>how&lt;/em>
+these models do what they do: i.e. they describe properties of the network or
+its architecture.&lt;/p>
+&lt;h2 id="some-architectures-and-applications">Some Architectures and Applications&lt;/h2>
+&lt;p>Deep autoregressive models have seen a good degree of success: below is a list
+of some of examples. Each architecture merits exposition and discussion, but
+unfortunately there isn&amp;rsquo;t enough space here to devote to do any of them justice.&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://arxiv.org/abs/1601.06759">PixelCNN by Google DeepMind&lt;/a> was probably
+the first deep autoregressive model, and the progenitor of most of the other
+models below. Ironically, the authors spend the bulk of the paper discussing a
+recurrent model, PixelRNN, and consider PixelCNN as a &amp;ldquo;workaround&amp;rdquo; to avoid
+excessive computation. However, PixelCNN is probably this paper&amp;rsquo;s most lasting
+contribution.&lt;/li>
+&lt;li>&lt;a href="https://arxiv.org/abs/1701.05517">PixelCNN++ by OpenAI&lt;/a> is, unsurprisingly,
+PixelCNN but with various improvements.&lt;/li>
+&lt;li>&lt;a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">WaveNet by Google
+DeepMind&lt;/a> is
+heavily inspired by PixelCNN, and models raw audio, not just encoded music.
+They had to pull &lt;a href="https://en.wikipedia.org/wiki/%CE%9C-law_algorithm">a neat trick from telecommunications/signals
+processing&lt;/a> in order to
+cope with the sheer size of audio (high-quality audio involves at least 16-bit
+precision samples, which means a 65,536-way-softmax per time step!)&lt;/li>
+&lt;li>&lt;a href="https://arxiv.org/abs/1706.03762">Transformer, a.k.a. &lt;em>the &amp;ldquo;attention is all you need&amp;rdquo; model&lt;/em> by Google
+Brain&lt;/a> is now a mainstay of NLP, performing
+very well at many NLP tasks and being incorporated into subsequent models like
+&lt;a href="https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html">BERT&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;p>These models have also found applications: for example, &lt;a href="https://arxiv.org/abs/1610.10099">Google DeepMind&amp;rsquo;s
+ByteNet can perform neural machine translation (in linear
+time!)&lt;/a> and &lt;a href="https://arxiv.org/abs/1610.00527">Google DeepMind&amp;rsquo;s Video Pixel
+Network can model video&lt;/a>.&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>&lt;/p>
+&lt;h2 id="some-thoughts-and-observations">Some Thoughts and Observations&lt;/h2>
+&lt;ol>
+&lt;li>
+&lt;p>Given previous values $x_1, x_2, &amp;hellip;, x_t$, these models do not output a
+&lt;em>value&lt;/em> for $x_{t+1}$, they output the &lt;em>predictive probability
+distribution&lt;/em> $P(x_{t+1} | x_1, x_2, &amp;hellip;, x_t)$ for $x_{t+1}$.&lt;/p>
+&lt;ul>
+&lt;li>If the $x$&amp;rsquo;s are discrete, then you can do this by outputting an $N$-way
+softmaxxed tensor, where $N$ is the number of discrete classes. This is
+what the original PixelCNN did, but gets problematic when $N$ is large
+(e.g. in the case of WaveNet, where $N = 2^{16}$).&lt;/li>
+&lt;li>If the $x$&amp;rsquo;s are continuous, you can model the probability distribution
+itself as the sum of basis functions, and having the model output the
+parameters of these basis functions. This massively reduces the memory
+footprint of the model, and was an important contribution of PixelCNN++.&lt;/li>
+&lt;li>Theoretically you could have an autoregressive model that &lt;em>doesn&amp;rsquo;t&lt;/em> model
+the conditional distribution&amp;hellip; but most recent models do.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Autoregressive models are supervised.&lt;/p>
+&lt;ul>
+&lt;li>With the success and hype of GANs and VAEs, it is easy to assume that all
+generative models are unsupervised: this is not true!&lt;/li>
+&lt;li>This means that that training is stable and highly parallelizable, that it
+is straightfoward to tune hyperparameters, and that inference is
+computationally inexpensive. We can also break out all the good stuff from
+ML-101: train-valid-test splits, cross validation, loss metrics, etc. These
+are all things that we lose when we resort to e.g. GANs.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Autoregressive models work on both continuous and discrete data.&lt;/p>
+&lt;ul>
+&lt;li>Autoregressive sequential models have worked for audio (WaveNet), images
+(PixelCNN++) and text (Transformer): these models are very flexible in the
+kind of data that they can model.&lt;/li>
+&lt;li>Contrast this to GANs, which (as far as I&amp;rsquo;m aware) cannot model discrete
+data.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Autoregressive models are very amenable to conditioning.&lt;/p>
+&lt;ul>
+&lt;li>There are many options for conditioning! You can condition on both discrete
+and continuous variables; you can condition at multiple time scales; you can
+even condition on latent embeddings or the outputs of other neural networks.&lt;/li>
+&lt;li>There is one ostensible problem with using autoregressive models as
+generative models: you can only condition on your data&amp;rsquo;s labels. I.e.
+unlike a GAN, you cannot condition on random noise and expect the model to
+shape the noise space into a semantically (stylistically) meaningful latent
+space.&lt;/li>
+&lt;li>Google DeepMind followed up their original PixelRNN paper with &lt;a href="https://arxiv.org/abs/1606.05328">another
+paper&lt;/a> that describes one way to overcome
+this problem. Briefly: to condition, they incorporate the latent vector into
+the PixelCNN&amp;rsquo;s activation functions; to produce/learn the latent vectors,
+they use a convolutional encoder; and to generate an image given a latent
+vector, they replace the traditional deconvolutional decoder with a
+conditional PixelCNN.&lt;/li>
+&lt;li>WaveNet goes even futher and employs &amp;ldquo;global&amp;rdquo; and &amp;ldquo;local&amp;rdquo; conditioning (both
+are achieved by incorporating the latent vectors into WaveNet&amp;rsquo;s activation
+functions). The authors devise a battery of conditioning schemes to capture
+speaker identity, linguistic features of input text, music genre, musical
+instrument, etc.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Generating output sequences of variable length is not straightforward.&lt;/p>
+&lt;ul>
+&lt;li>Neither WaveNet nor PixelCNN needed to worry about a variable output length:
+both audio and images are comprised of a fixed number of outputs (i.e. audio
+is just $N$ samples, and images are just $N^2$ pixels).&lt;/li>
+&lt;li>Text, on the other hand, is different: sentences can be of variable length.
+One would think that this is a nail in a coffin, but thankfully text is
+discrete: the standard trick is to have a &amp;ldquo;stop token&amp;rdquo; that indicates that
+the sentence is finished (i.e. model a full stop as its own token).&lt;/li>
+&lt;li>As far as I am aware, there is no prior literature on having both problems:
+a variable-length output of continuous values.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Autoregressive models can model multiple time scales&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>In the case of music, there are important patterns to model at multiple
+time scales: individual musical notes drive correlations between audio
+samples at the millisecond scale, and music exhibits rhythmic patterns
+over the course of minutes. This is well illustrated by the following
+animation:&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/audio-animation.gif">&lt;img src="https://www.georgeho.org/assets/images/audio-animation.gif" alt="Audio at multiple time scales">&lt;/a>
+&lt;figcaption>Audio exhibits patterns at multiple time scales. Source: &lt;a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">Google DeepMind&lt;/a>.&lt;/figcaption>
+&lt;/figure>
+&lt;/li>
+&lt;li>
+&lt;p>There are two main ways model many patterns at many different time scales:
+either make the receptive field of your model &lt;em>extremely&lt;/em> wide (e.g.
+through dilated convolutions), or condition your model on a subsampled
+version of your generated output, which is in turn produced by an
+unconditioned model.&lt;/p>
+&lt;ul>
+&lt;li>Google DeepMind composes an unconditional PixelRNN with one or more
+conditional PixelRNNs to form a so-called &amp;ldquo;multi-scale&amp;rdquo; PixelRNN: the
+first PixelRNN generates a lower-resolution image that conditions the
+subsequent PixelRNNs.&lt;/li>
+&lt;li>WaveNet employs a different technique and calls them &amp;ldquo;context stacks&amp;rdquo;.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>How the hell can any of this stuff work?&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>RNNs are theoretically more expressive and powerful than autoregressive
+models. However, recent work suggests that such infinite-horizon memory is
+seldom achieved in practice.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>To quote &lt;a href="http://www.offconvex.org/2018/07/27/approximating-recurrent/">John Miller at the Berkeley AI Research
+lab&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>&lt;strong>Recurrent models trained in practice are effectively feed-forward.&lt;/strong>
+This could happen either because truncated backpropagation through time
+cannot learn patterns significantly longer than $k$ steps, or, more
+provocatively, because models &lt;em>trainable by gradient descent&lt;/em> cannot have
+long-term memory.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>There&amp;rsquo;s actually a lot more nuance than meets the eye in this animation,
+but all I&amp;rsquo;m trying to illustrate is the feed-forward nature of autoregressive
+models.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>I personally think it&amp;rsquo;s breathtakingly that machines can do this. Imagine
+your phone keyboard&amp;rsquo;s word suggestions (those are autoregressive!) spitting
+out an entire novel. Or imagine weaving a sweater but you had to choose the
+color of every stitch, in order, in advance.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>In case you haven&amp;rsquo;t noticed, Google DeepMind seemed to have had an
+infatuation with autoregressive models back in 2016.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item></channel></rss>

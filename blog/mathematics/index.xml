@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>mathematics on ⁂ George Ho</title><link>https://www.georgeho.org/blog/mathematics/</link><description>Recent content in mathematics on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Fri, 28 Jun 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/mathematics/index.xml" rel="self" type="application/rss+xml"/><item><title>Python Port of _Common Statistical Tests are Linear Models_</title><link>https://www.georgeho.org/stat-tests-are-linear-model/</link><pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stat-tests-are-linear-model/</guid><description>&lt;p>I ported &lt;a href="https://lindeloev.net">Jonas Lindeløv&lt;/a>&amp;rsquo;s essay, &lt;a href="https://lindeloev.github.io/tests-as-linear/">&lt;em>Common Statistical
+Tests are Linear Models&lt;/em>&lt;/a> from R
+to Python. Check it out on &lt;a href="https://www.georgeho.org/tests-as-linear/">my
+blog&lt;/a>,
+&lt;a href="https://github.com/eigenfoo/tests-as-linear">GitHub&lt;/a>, or
+&lt;a href="https://gke.mybinder.org/v2/gh/eigenfoo/tests-as-linear/master?filepath=tests-as-linear.ipynb">Binder&lt;/a>!&lt;/p></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>https://www.georgeho.org/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
+&lt;em>Machine Learning Algorithm&lt;/em>. It&amp;rsquo;s got two modes: training mode and testing
+mode. You set it to training mode, and throw in a lot (sometimes &lt;em>a lot&lt;/em> a lot)
+of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called
+the &lt;em>examples&lt;/em> and the $y_i$ are called the &lt;em>targets&lt;/em>. Then, you set it to
+testing mode and throw in some more examples, for which you don&amp;rsquo;t have the
+corresponding targets. You hope the $y_i$s that come out are in some sense
+the “right” ones.&lt;/p>
+&lt;p>Generally speaking, this is a parable of &lt;em>supervised learning&lt;/em>. However, Vapnik
+(the inventor of the
+&lt;a href="https://en.wikipedia.org/wiki/Support_vector_machine">SVM&lt;/a>) recently described
+a new way to think about machine learning (e.g.
+&lt;a href="http://jmlr.csail.mit.edu/papers/volume16/vapnik15b/vapnik15b.pdf">here&lt;/a>):
+&lt;em>learning using privileged information&lt;/em>, or &lt;em>LUPI&lt;/em> for short.&lt;/p>
+&lt;p>This post is meant to introduce the LUPI paradigm of machine learning to
+people who are generally familiar with supervised learning and SVMs, and are
+interested in seeing the math and intuition behind both things extended to the
+LUPI paradigm.&lt;/p>
+&lt;h2 id="what-is-lupi">What is LUPI?&lt;/h2>
+&lt;p>The main idea is that instead of two-tuples $(x_i, y_i)$, the black box is fed
+three-tuples $(x_i, x_i^{&lt;em>}, y_i) $, where the $x^{&lt;/em>}$s are the so-called
+&lt;em>privileged information&lt;/em> that is only available during training, and not during
+testing. The hope is that this information will train the model to better
+generalize during the testing phase.&lt;/p>
+&lt;p>Vapnik offers many examples in which LUPI can be applied in real life: in
+bioinformatics and proteomics (where advanced biological models, which the
+machine might not necessarily “understand”, serve as the privileged
+information), in financial time series analysis (where future movements of the
+time series are the unknown at prediction time, but are available
+retrospectively), and in the classic MNIST dataset, where the images were
+converted to a lower resolution, but each annotated with a “poetic description”
+(which was available for the training data but not for the testing data).&lt;/p>
+&lt;p>Vapnik&amp;rsquo;s team ran tests on well-known datasets in all three application areas
+and found that his newly-developed LUPI methods performed noticeably better than
+classical SVMs in both convergence time (i.e. the number of examples necessary
+to achieve a certain degree of accuracy) and estimation of a good predictor
+function. In fact, Vapnik&amp;rsquo;s proof-of-concept experiments are so whacky that
+they actually &lt;a href="https://nautil.us/issue/6/secret-codes/teaching-me-softly">make for an entertaining read
+&lt;/a>!&lt;/p>
+&lt;h2 id="classical-svms-separable-and-non-separable-case">Classical SVMs (separable and non-separable case)&lt;/h2>
+&lt;p>There are many ways of thinking about SVMs, but I think that the one that is
+most instructive here is to think of them as solving the following optimization
+problem:&lt;/p>
+&lt;blockquote>
+&lt;p>Minimize $ \frac{1}{2} |w|^2 $&lt;/p>
+&lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1, 1 \leq i \leq l$.&lt;/p>
+&lt;/blockquote>
+&lt;p>Basically all this is saying is that we want to find the hyperplane that
+separates our data by the maximum margin. More technically speaking, this finds
+the parameters ($w$ and $b$) of the maximum margin hyperplane, with $l_2$
+regularization.&lt;/p>
+&lt;p>In the non-separable case, we concede that our hyperplane may not classify all
+examples perfectly (or that it may not be desireable to do so: think of
+overfitting), and so we introduce a so-called &lt;em>slack variable&lt;/em> $\xi_i \geq 0$
+for each example $i$, which measures the severity of misclassification of that
+example. With that, the optimization becomes:&lt;/p>
+&lt;blockquote>
+&lt;p>Minimize $\frac{1}{2} |w|^2 + C\sum_{i=1}^{l}{\xi_i}$&lt;/p>
+&lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - \xi_i, \xi_i \geq 0, 1
+\leq i \leq l$.&lt;/p>
+&lt;/blockquote>
+&lt;p>where $C$ is some regularization parameter.&lt;/p>
+&lt;p>This says the same thing as the previous optimization problem, but now allows
+points to be (a) classified properly ($\xi_i = 0$), (b) within the margin but
+still classified properly ($0 &amp;lt; \xi_i &amp;lt; 1$), or (c) misclassified
+($1 \leq \xi_i$).&lt;/p>
+&lt;p>In both the separable and non-separable cases, the decision rule is simply
+$\hat{y} = \text{sign}(w \cdot x + b)$.&lt;/p>
+&lt;p>An important thing to note is that, in the separable case, the SVM uses $l$
+examples to estimate the $n$ components of $w$, whereas in the nonseparable
+case, the SVM uses $l$ examples to estimate $n+l$ parameters: the $n$
+components of $w$ and $l$ values of slacks $\xi_i$. Thus, in the
+non-separable case, the number of parameters to be estimated is always larger
+than the number of examples: it does not matter here that most of slacks may be
+equal to zero: the SVM still has to estimate all of them.&lt;/p>
+&lt;p>The way both optimization problems are actually &lt;em>solved&lt;/em> is fairly involved (they
+require &lt;a href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange
+multipliers&lt;/a>), but in terms
+of getting an intuitive feel for how SVMs work, I think that examining the
+optimization problems suffice!&lt;/p>
+&lt;h2 id="what-is-svm">What is SVM+?&lt;/h2>
+&lt;p>In his paper introducing the LUPI paradigm, Vapnik outlines &lt;em>SVM+&lt;/em>, a
+modified form of the SVM that fits well into the LUPI paradigm, using privileged
+information to improve performance. It should be emphasized that LUPI is a
+paradigm - a way of thinking about machine learning - and not just a collection
+of algorithms. SVM+ is just one technique that interoperates with the LUPI
+paradigm.&lt;/p>
+&lt;p>The innovation of the SVM+ algorithm is that is uses the privileged information
+to estimate the slack variables. Given the training three-tuple $(x, x^{*},
+y)$, we map $x$ to the feature space $Z$, and $x^{*}$ to a separate feature
+space $Z^{*}$. Then, the decision rule is $\hat{y} = \text{sign}(w \cdot x +
+b)$ and the slack variables are estimated by $\xi = w^{*} \cdot x^{*} +
+b^{*}$.&lt;/p>
+&lt;p>In order to find $w$, $b$, $w^{*}$ and $b^{*}$, we solve the following
+optimization problem:&lt;/p>
+&lt;blockquote>
+&lt;p>Minimize $\frac{1}{2} (|w|^2 + \gamma |w^{*}|^2) +
+C \sum_{i=1}^{l}{(w^{*} \cdot x_i^{*} + b^{*})}$&lt;/p>
+&lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - (w^{*} \cdot x^{*} + b^{*}),
+(w^{*} \cdot x^{*} + b^{*}) \geq 0, 1 \leq i \leq l$.&lt;/p>
+&lt;/blockquote>
+&lt;p>where $\gamma$ indicates the extent to which the slack estimation should be
+regularized in comparison to the SVM. Notice how this optimization problem is
+essentially identical to the non-separable classical SVM, except the slacks
+$\xi_i$ are now estimated with $w^{*} \cdot x^{*} + b^{*}$.&lt;/p>
+&lt;p>Again, the method of actually solving this optimization problem involves
+Lagrange multipliers and quadratic programming, but I think the intuition is
+captured in the optimization problem statement.&lt;/p>
+&lt;h2 id="interpretation-of-svm">Interpretation of SVM+&lt;/h2>
+&lt;p>The SVM+ has a very ready interpretation. Instead of a single feature space, it
+has two: one in which the non-privileged information lives (where decisions are
+made), and one in which the privileged information lives (where slack variables
+are estimated).&lt;/p>
+&lt;p>But what&amp;rsquo;s the point of this second feature space? How does it help us? Vapnik
+terms this problem &lt;em>knowledge transfer&lt;/em>: it&amp;rsquo;s all well and good for us to learn
+from the privileged information, but it&amp;rsquo;s all for naught if we can&amp;rsquo;t use this
+newfound knowledge in the test phase.&lt;/p>
+&lt;p>The way knowledge transfer is resolved here is by assuming that &lt;em>examples in the
+training set that are hard to separate in the privileged space, are also hard to
+separate in the regular space&lt;/em>. Therefore, we can use the privileged information
+to obtain an estimate for the slack variables.&lt;/p>
+&lt;p>Of course, SVMs are a technique with many possible interpretations, of which my
+presentation (in terms of the optimization of $w$ and $b$) is just one. For
+example, it&amp;rsquo;s possible to think of SVMs in terms of kernels functions, or as
+linear classifiers minimizing hinge loss. In all cases, it&amp;rsquo;s possible and
+worthwhile to understand that interpretation of SVMs, and how the LUPI paradigm
+contributes to or extends that interpretation. I&amp;rsquo;m hoping to write a piece later
+to explain these exact topics.&lt;/p>
+&lt;p>Vapnik also puts a great emphasis on analyzing SVM+ based on its statistical
+learning theoretic properties (in particular, analyzing its rate of convergence
+via the &lt;a href="https://en.wikipedia.org/wiki/VC_dimension">VC dimension&lt;/a>). Vapnik was
+one of the main pioneers behind statistical learning theory, and has written an
+&lt;a href="https://www.amazon.com/Statistical-Learning-Theory-Vladimir-Vapnik/dp/0471030031">entire
+book&lt;/a>
+on this stuff &lt;del>which I have not read&lt;/del>, so I&amp;rsquo;ll leave that part aside for now. I
+hope to understand this stuff one day.&lt;/p>
+&lt;h2 id="implementation-of-svm">Implementation of SVM+&lt;/h2>
+&lt;p>There&amp;rsquo;s just one catch: SVM+ is actually an fairly inefficient algorithm, and
+definitely will not scale to large data sets. What&amp;rsquo;s so bad about it? &lt;em>It has
+$n$ training examples but $2n$ variables to estimate.&lt;/em> This is twice as many
+variables to estimate as the standard formulation of the &lt;a href="https://en.wikipedia.org/wiki/Support_vector_machine#Computing_the_SVM_classifier">vanilla
+SVM&lt;/a>.
+This isn&amp;rsquo;t something that we can patch: the problem is inherent to the
+Lagrangian dual formulation that Vapnik and Vashist proposed in 1995.&lt;/p>
+&lt;p>Even worse, the optimization problem has constraints that are very different
+from those of the standard SVM. In essence, this means that efficient libraries
+out-of-the-box solvers for the standard SVM (e.g.
+&lt;a href="https://www.csie.ntu.edu.tw/~cjlin/libsvm/">LIBSVM&lt;/a> and
+&lt;a href="https://www.csie.ntu.edu.tw/~cjlin/liblinear/">LIBLINEAR&lt;/a>) can&amp;rsquo;t be used to
+train an SVM+ model.&lt;/p>
+&lt;p>Luckily, &lt;a href="https://www.researchgate.net/publication/301880839_Simple_and_Efficient_Learning_using_Privileged_Information">a recent paper by Xu et
+al.&lt;/a>
+describes a neat mathematical trick to implement SVM+ in a simple and efficient
+way. With this amendment, the authors rechristen the algorithm as SVM2+.
+Essentially, instead of using the hinge loss when training SVM+, we will instead
+use the &lt;em>squared&lt;/em> hinge loss. It turns out that changing the loss function in
+this way leads to a tiny miracle.&lt;/p>
+&lt;p>This (re)formulation of SVM+ becomes &lt;em>identical&lt;/em> to that of the standard SVM,
+except we replace the Gram matrix (a.k.a. kernel matrix) $\bf K$ by $\bf K +
+\bf Q_\lambda \odot (\bf y y^t)$, where&lt;/p>
+&lt;ul>
+&lt;li>$\bf y$ is the target vector&lt;/li>
+&lt;li>$\odot$ denotes the Hadamard product&lt;/li>
+&lt;li>$\bf{Q_\lambda}$ is given by $Q_\lambda = \frac{1}{\lambda} (\tilde{K}
+(\frac{\lambda}{C} I_n + \tilde{K})^{-1} \tilde{K})$, and&lt;/li>
+&lt;li>$\bf \tilde{K}$ is the Gram matrix formed by the privileged information&lt;/li>
+&lt;/ul>
+&lt;p>So by replacing the hinge loss with the squared hinge loss, the SVM+ formulation
+can now be solved with existing libraries!&lt;/p>
+&lt;h2 id="extensions-to-svm">Extensions to SVM+&lt;/h2>
+&lt;p>In his paper, Vapnik makes it clear that LUPI is a very general and abstract
+paradigm, and as such there is plenty of room for creativity and innovation -
+not just in researching and developing new LUPI methods and algorithms, but also
+in implementing and applying them. It is unknown how to best go about supplying
+privileged information so as to get good performance. How should the data be
+feature engineered? How much signal should be in the privileged information?
+These are all open questions.&lt;/p>
+&lt;p>Vapnik himself opens up three avenues to extend the SVM+ algorithm:&lt;/p>
+&lt;ol>
+&lt;li>&lt;em>a mixture model of slacks:&lt;/em> when slacks are estimated by a mixture of a
+smooth function and some prior&lt;/li>
+&lt;li>&lt;em>a model where privileged information is available only for a part of the
+training data:&lt;/em> where we can only supply privileged information on a small
+subset of the training examples&lt;/li>
+&lt;li>&lt;em>multiple-space privileged information:&lt;/em> where the privileged information we
+can supply do not all share the same features&lt;/li>
+&lt;/ol>
+&lt;p>Clearly, there&amp;rsquo;s a lot of potential in the LUPI paradigm, as well as a lot of
+reasons to be skeptical. It&amp;rsquo;s very much a nascent perspective of machine
+learning, so I&amp;rsquo;m interested in keeping an eye on it going forward. I&amp;rsquo;m hoping
+to write more posts on LUPI in the future!&lt;/p></description></item><item><title>Linear Discriminant Analysis for Starters</title><link>https://www.georgeho.org/lda/</link><pubDate>Sat, 30 Dec 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda/</guid><description>&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#lda-as-an-algorithm">LDA as an Algorithm&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#problem-statement">Problem statement&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#solution">Solution&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#lda-as-a-theorem">LDA as a Theorem&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#lda-as-a-machine-learning-technique">LDA as a Machine Learning Technique&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#regularization-aka-shrinkage">Regularization (a.k.a. shrinkage)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#lda-as-a-classifier">LDA as a classifier&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#close-relatives-pca-qda-anova">Close relatives: PCA, QDA, ANOVA&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;p>&lt;em>Linear discriminant analysis&lt;/em> (commonly abbreviated to LDA, and not to be
+confused with &lt;a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">the other
+LDA&lt;/a>) is a very
+common dimensionality reduction technique for classification problems. However,
+that&amp;rsquo;s something of an understatement: it does so much more than “just”
+dimensionality reduction.&lt;/p>
+&lt;p>In plain English, if you have high-dimensional data (i.e. a large number of
+features) from which you wish to classify observations, LDA will help you
+transform your data so as to make the classes as distinct as possible. More
+rigorously, LDA will find the linear projection of your data into a
+lower-dimensional subspace that optimizes some measure of class separation. The
+dimension of this subspace is necessarily strictly less than the number of
+classes.&lt;/p>
+&lt;p>This separation-maximizing property of LDA makes it so good at its job that it&amp;rsquo;s
+sometimes considered a classification algorithm in and of itself, which leads to
+some confusion. &lt;em>Linear discriminant analysis&lt;/em> is a form of dimensionality
+reduction, but with a few extra assumptions, it can be turned into a classifier.
+(Avoiding these assumptions gives its relative, &lt;em>quadratic discriminant
+analysis&lt;/em>, but more on that later). Somewhat confusingly, some authors call the
+dimensionality reduction technique “discriminant analysis”, and only prepend the
+“linear” once we begin classifying. I actually like this naming convention more
+(it tracks the mathematical assumptions a bit better, I think), but most people
+nowadays call the entire technique “LDA”, so that&amp;rsquo;s what I&amp;rsquo;ll call it.&lt;/p>
+&lt;p>The goal of this post is to give a comprehensive introduction to, and
+explanation of, LDA. I&amp;rsquo;ll look at LDA in three ways:&lt;/p>
+&lt;ol>
+&lt;li>LDA as an algorithm: what does it do, and how does it do it?&lt;/li>
+&lt;li>LDA as a theorem: a mathematical derivation of LDA&lt;/li>
+&lt;li>LDA as a machine learning technique: practical considerations when using LDA&lt;/li>
+&lt;/ol>
+&lt;p>This is a lot for one post, but my hope is that there&amp;rsquo;s something in here for
+everyone.&lt;/p>
+&lt;h2 id="lda-as-an-algorithm">LDA as an Algorithm&lt;/h2>
+&lt;h3 id="problem-statement">Problem statement&lt;/h3>
+&lt;p>Before we dive into LDA, it&amp;rsquo;s good to get an intuitive grasp of what LDA
+tries to accomplish.&lt;/p>
+&lt;p>Suppose that:&lt;/p>
+&lt;ol>
+&lt;li>You have very high-dimensional data, and that&lt;/li>
+&lt;li>You are dealing with a classification problem&lt;/li>
+&lt;/ol>
+&lt;p>This could mean that the number of features is greater than the number of
+observations, or it could mean that you suspect there are noisy features that
+contain little information, or anything in between.&lt;/p>
+&lt;p>Given that this is the problem at hand, you wish to accomplish two things:&lt;/p>
+&lt;ol>
+&lt;li>Reduce the number of features (i.e. reduce the dimensionality of your feature
+space), and&lt;/li>
+&lt;li>Preserve (or even increase!) the “distinguishability” of your classes or the
+“separatedness” of the classes in your feature space.&lt;/li>
+&lt;/ol>
+&lt;p>This is the problem that LDA attempts to solve. It should be fairly obvious why
+this problem might be worth solving.&lt;/p>
+&lt;p>To judiciously appropriate a term from signal processing, we are interested in
+increasing the signal-to-noise ratio of our data, by both extracting or
+synthesizing features that are useful in classifying our data (amplifying our
+signal), and throwing out the features that are not as useful (attenuating our
+noise).&lt;/p>
+&lt;p>Below is simple illustration I made, inspired by &lt;a href="https://www.quora.com/Can-you-explain-the-comparison-between-principal-component-analysis-and-linear-discriminant-analysis-in-dimensionality-reduction-with-MATLAB-code-Which-one-is-more-efficient">Sebastian
+Raschka&lt;/a>
+that may help our intuition about the problem:&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/lda-pic.png" alt="Projections of two-dimensional data (in two clusters) onto the x and y axes">&lt;/p>
+&lt;p>A couple of points to make:&lt;/p>
+&lt;ul>
+&lt;li>LD1 and LD2 are among the projections that LDA would consider. In reality, LDA
+would consider &lt;em>all possible&lt;/em> projections, not just those along the x and y
+axes.&lt;/li>
+&lt;li>LD1 is the one that LDA would actually come up with: this projection gives the
+best “separation” of the two classes.&lt;/li>
+&lt;li>LD2 is a horrible projection by this metric: both classes get horribly
+overlapped… (this actually relates to PCA, but more on that later)&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>UPDATE:&lt;/strong> For another illustration, Rahul Sangole made a simple but great
+interactive visualization of LDA
+&lt;a href="https://rsangole.shinyapps.io/LDA_Visual/">here&lt;/a> using
+&lt;a href="https://shiny.rstudio.com/">Shiny&lt;/a>.&lt;/p>
+&lt;h3 id="solution">Solution&lt;/h3>
+&lt;p>First, some definitions:&lt;/p>
+&lt;p>Let:&lt;/p>
+&lt;ul>
+&lt;li>$n$ be the number of classes&lt;/li>
+&lt;li>$\mu$ be the mean of all observations&lt;/li>
+&lt;li>$N_i$ be the number of observations in the $i$th class&lt;/li>
+&lt;li>$\mu_i$ be the mean of the $i$th class&lt;/li>
+&lt;li>$\Sigma_i$ be the &lt;a href="https://en.wikipedia.org/wiki/Scatter_matrix">scatter
+matrix&lt;/a> of the $i$th class&lt;/li>
+&lt;/ul>
+&lt;p>Now, define $S_W$ to be the &lt;em>within-class scatter matrix&lt;/em>, given by&lt;/p>
+&lt;p>$$
+\begin{align*}
+S_W = \sum_{i=1}^{n}{\Sigma_i}
+\end{align*}
+$$&lt;/p>
+&lt;p>and define $S_B$ to be the &lt;em>between-class scatter matrix&lt;/em>, given by&lt;/p>
+&lt;p>$$
+\begin{align*}
+S_B = \sum_{i=1}^{n}{N_i (\mu_i - \mu) (\mu_i - \mu)^T}
+\end{align*}
+$$&lt;/p>
+&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Diagonalizable_matrix">Diagonalize&lt;/a> $S_W^{-1}
+S_B$ to get its eigenvalues and eigenvectors.&lt;/p>
+&lt;p>Pick the $k$ largest eigenvalues, and their associated eigenvectors. We will
+project our observations onto the subspace spanned by these vectors.&lt;/p>
+&lt;p>Concretely, what this means is that we form the matrix $A$, whose columns are the
+$k$ eigenvectors chosen above. $W$ will allow us to transform our
+observations into the new subspace via the equation $y = A^T x$, where $y$ is
+our transformed observation, and $x$ is our original observation.&lt;/p>
+&lt;p>And that&amp;rsquo;s it!&lt;/p>
+&lt;p>For a more detailed and intuitive explanation of the LDA “recipe”, see
+&lt;a href="http://sebastianraschka.com/Articles/2014_python_lda.html">Sebastian Raschka&amp;rsquo;s blog post on
+LDA&lt;/a>.&lt;/p>
+&lt;h2 id="lda-as-a-theorem">LDA as a Theorem&lt;/h2>
+&lt;p>&lt;strong>Sketch of Derivation:&lt;/strong>&lt;/p>
+&lt;p>In order to maximize class separability, we need some way of measuring it as a
+number. This number should be bigger when the between-class scatter is bigger,
+and smaller when the within-class scatter is larger. There are many such
+formulas/numbers that have this property: &lt;a href="https://www.elsevier.com/books/introduction-to-statistical-pattern-recognition/fukunaga/978-0-08-047865-4">Fukunaga&amp;rsquo;s &lt;em>Introduction to
+Statistical Pattern
+Recognition&lt;/em>&lt;/a>
+considers no less than four! Here, we&amp;rsquo;ll concern ourselves with just one:&lt;/p>
+&lt;p>$$ J_1 = tr(S_{WY}^{-1} S_{BY}) $$&lt;/p>
+&lt;p>where I denote the within and between-class scatter matrices of the projection
+vector $Y$ by $S_{WY}$ and $S_{BY}$, to avoid confusion with the
+corresponding matrices for the projected vector $X$.&lt;/p>
+&lt;p>Now, a standard result from probability is that for any random variable $X$
+and matrix $A$, we have $cov(A^T X) = A^T cov(X) A$. We&amp;rsquo;ll apply this
+result to our projection $y = A^T x$. It follows that&lt;/p>
+&lt;p>$$ S_{WY} = A^T S_{WX} A $$&lt;/p>
+&lt;p>and&lt;/p>
+&lt;p>$$ S_{BY} = A^T S_{BX} A $$&lt;/p>
+&lt;p>where $S_{BX}$ and $S_{BY}$ are the between-class scatter matrices, and
+$S_{WX}$ and $S_{WY}$ are the within-class scatter matrices, for $X$
+and its projection $Y$, respectively.&lt;/p>
+&lt;p>It&amp;rsquo;s now a simple matter to write $J_1$ in terms of $A$, and maximize
+$J_1$. Without going into the details, we set $\frac{\partial J_1}{\partial
+A} = 0$ (whatever that means), and use the fact that &lt;a href="https://math.stackexchange.com/questions/546155/proof-that-the-trace-of-a-matrix-is-the-sum-of-its-eigenvalues">the trace of a matrix is
+the sum of its
+eigenvalues&lt;/a>.&lt;/p>
+&lt;p>I don&amp;rsquo;t want to go into the weeds with this here, but if you really want to see
+the algebra, Fukunaga is a great resource. The end result, however, is the same
+condition on the eigenvalues and eigenvectors as stated above: in other words,
+the optimization gives us LDA as presented.&lt;/p>
+&lt;p>There&amp;rsquo;s one more quirk of LDA that&amp;rsquo;s very much worth knowing. Suppose you have
+10 classes, and you run LDA. It turns out that the &lt;em>maximum&lt;/em> number of features
+LDA can give you is one less than the number of class, so in this case, 9!&lt;/p>
+&lt;p>&lt;strong>Proposition:&lt;/strong> $S_W^{-1} S_B$ has at most $n-1$ non-zero eigenvalues, which
+implies that LDA is must reduce the dimension to &lt;em>at least&lt;/em> $n-1$.&lt;/p>
+&lt;p>To prove this, we first need a lemma.&lt;/p>
+&lt;p>&lt;strong>Lemma:&lt;/strong> Suppose ${v_i}&lt;em>{i=1}^{n}$ is a set of linearly dependent vectors, and
+let $\alpha_i$ be $n$ coefficients. Then, $M = \sum&lt;/em>{i=1}^{n}{\alpha_i v_i
+v_i^{T}}$, a linear combination of outer products of the vectors with
+themselves, is rank deficient.&lt;/p>
+&lt;p>&lt;strong>Proof:&lt;/strong> The row space of $M$ is generated by the set of vectors ${v_1, v_2,
+&amp;hellip;, v_n}$. However, because this set of vectors is linearly dependent, it must
+span a vector space of dimension strictly less than $n$, or in other words
+less than or equal to $n-1$. But the dimension of the row space is precisely
+the rank of the matrix $M$. Thus, $rank(M) \leq n-1$, as desired.&lt;/p>
+&lt;p>With the lemma, we&amp;rsquo;re now ready to prove our proposition.&lt;/p>
+&lt;p>&lt;strong>Proof:&lt;/strong> We have that&lt;/p>
+&lt;p>$$
+\begin{align*}
+\frac{1}{n} \sum_{i=1}^{n}{\mu_i} = \mu \implies \sum_{i=1}^{n}{\mu_i-\mu} = 0
+\end{align*}
+$$&lt;/p>
+&lt;p>So ${\mu_i-\mu}_{i=1}^{n}$ is a linearly dependent set. Applying our lemma, we
+see that&lt;/p>
+&lt;p>$$ S_B = \sum_{i=1}^{n}{N_i (\mu_i-\mu)(\mu_i-\mu)^{T}} $$&lt;/p>
+&lt;p>must be rank deficient. Thus, $rank(S_W) \leq n-1$. Now, $rank(AB) \leq
+rank(A)rank(B)$, so&lt;/p>
+&lt;p>$$
+\begin{align*}
+rank(S_W^{-1}S_B) \leq \min{(rank(S_W^{-1}), rank(S_B))} = n-1
+\end{align*}
+$$&lt;/p>
+&lt;p>as desired.&lt;/p>
+&lt;h2 id="lda-as-a-machine-learning-technique">LDA as a Machine Learning Technique&lt;/h2>
+&lt;p>OK so we&amp;rsquo;re done with the math, but how is LDA actually used in practice? One of
+the easiest ways is to look at how LDA is actually implemented in the real
+world. &lt;code>scikit-learn&lt;/code> has &lt;a href="http://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.LinearDiscriminantAnalysis.html#sklearn.discriminant_analysis.LinearDiscriminantAnalysis">a very well-documented implementation of
+LDA&lt;/a>:
+I find that reading the docs is a great way to learn stuff.&lt;/p>
+&lt;p>Below are a few miscellaneous comments on practical considerations when using
+LDA.&lt;/p>
+&lt;h3 id="regularization-aka-shrinkage">Regularization (a.k.a. shrinkage)&lt;/h3>
+&lt;p>&lt;code>scikit-learn&lt;/code>&amp;rsquo;s implementation of LDA has an interesting optional parameter:
+&lt;code>shrinkage&lt;/code>. What&amp;rsquo;s that about?&lt;/p>
+&lt;p>&lt;a href="https://stats.stackexchange.com/questions/106121/does-it-make-sense-to-combine-pca-and-lda/109810#109810">Here&amp;rsquo;s a wonderful Cross Validated
+post&lt;/a>
+on how LDA can introduce overfitting. In essence, matrix inversion is an
+extremely sensitive operation (in that small changes in the matrix may lead to
+large changes in its inverse, so that even a tiny bit of noise will be amplified
+upon inverting the matrix), and so unless the estimate of the within-class
+scatter matrix $S_W$ is very good, its inversion is likely to introduce
+overfitting.&lt;/p>
+&lt;p>One way to combat that is through regularizing LDA. It basically replaces
+$S_W$ with $(1-t)S_W + tI$, where $I$ is the identity matrix, and $t$ is
+the &lt;em>regularization parameter&lt;/em>, or the &lt;em>shrinkage constant&lt;/em>. That&amp;rsquo;s what
+&lt;code>scikit&lt;/code>&amp;rsquo;s &lt;code>shrinkage&lt;/code> parameter is: it&amp;rsquo;s $t$.&lt;/p>
+&lt;p>If you&amp;rsquo;re interested in &lt;em>why&lt;/em> this linear combination of the within-class
+scatter and the identity give such a well-conditioned estimate of $S_W$, check
+out &lt;a href="https://www.semanticscholar.org/paper/A-well-conditioned-estimator-for-large-dimensional-Ledoit-Wolf/23d8219db1aff006b41007effc696fca6fbcabcf">the original paper by Ledoit and
+Wolf&lt;/a>.
+Their original motivation was in financial portfolio optimization, so they&amp;rsquo;ve
+also authored several other papers
+(&lt;a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=433840&amp;amp;rec=1&amp;amp;srcabs=290916&amp;amp;alg=7&amp;amp;pos=6">here&lt;/a>
+and
+&lt;a href="https://www.semanticscholar.org/paper/A-well-conditioned-estimator-for-large-dimensional-Ledoit-Wolf/23d8219db1aff006b41007effc696fca6fbcabcf">here&lt;/a>)
+that go into the more financial details. That needn&amp;rsquo;t concern us though:
+covariance matrices are literally everywhere.&lt;/p>
+&lt;p>For an illustration of this, &lt;code>amoeba&lt;/code>&amp;rsquo;s post on Cross Validated gives a good
+example of LDA overfitting, and how regularization can help combat that.&lt;/p>
+&lt;h3 id="lda-as-a-classifier">LDA as a classifier&lt;/h3>
+&lt;p>We&amp;rsquo;ve talked a lot about how LDA is a dimensionality reduction technique. But in
+addition to it, you can make two extra assumptions, and LDA becomes a very
+robust classifier as well! Here they are:&lt;/p>
+&lt;ol>
+&lt;li>Assume that the class conditional distributions are Gaussian, and&lt;/li>
+&lt;li>Assume that these Gaussians have the same covariance matrix (a.k.a.
+assume &lt;a href="https://en.wikipedia.org/wiki/Homoscedasticity">homoskedasticity&lt;/a>)&lt;/li>
+&lt;/ol>
+&lt;p>Now, &lt;em>how&lt;/em> LDA acts as a classifier is a bit complicated: the problem is solved
+fairly easily if there are only two classes. In this case, the optimal Bayesian
+solution is to classify the observation depending on whether the log of the
+likelihood ratio is less than or greater than some threshold. This turns out to
+be a simple dot product: $\vec{w} \cdot \vec{x} &amp;gt; c$, where $\vec{w} =
+\Sigma^{-1} (\vec{\mu_1} - \vec{\mu_2})$. &lt;a href="https://en.wikipedia.org/wiki/Linear_discriminant_analysis#LDA_for_two_classes">Wikipedia has a good derivation of
+this&lt;/a>.&lt;/p>
+&lt;p>There isn&amp;rsquo;t really a nice dot-product solution for the multiclass case. So,
+what&amp;rsquo;s commonly done is to take a “one-against-the-rest” approach, in which
+there are $k$ binary classifiers, one for each of the $k$ classes. Another
+common technique is to take a pairwise approach, in which there are $k(k-1)/2$
+classifiers, one for each pair of classes. In either case, the outputs of all
+the classifiers are combined in some way to give the final classification.&lt;/p>
+&lt;h3 id="close-relatives-pca-qda-anova">Close relatives: PCA, QDA, ANOVA&lt;/h3>
+&lt;p>LDA is similar to a lot of other techniques, and the fact that they all go by
+acronyms doesn&amp;rsquo;t do anyone a favor. My goal here isn&amp;rsquo;t to introduce or explain
+these various techniques, but rather point out their differences.&lt;/p>
+&lt;p>&lt;em>1) Principal components analysis (PCA):&lt;/em>&lt;/p>
+&lt;p>LDA is very similar to &lt;a href="http://setosa.io/ev/principal-component-analysis">PCA&lt;/a>:
+in fact, the question posted in the Cross Validated post above was actually
+about whether or not it would make sense to perform PCA followed by LDA.&lt;/p>
+&lt;p>There is a crucial difference between the two techniques, though. PCA tries to
+find the axes with &lt;em>maximum variance&lt;/em> for the whole data set, whereas LDA tries
+to find the axes for best &lt;em>class separability&lt;/em>.&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/lda-pic.png" alt="Projections of two-dimensional data (in two clusters) onto the x and y axes">&lt;/p>
+&lt;p>Going back to the illustration from before (reproduced above), it&amp;rsquo;s not hard to
+see that PCA would give us LD2, whereas LDA would give us LD1. This makes the
+main difference between PCA and LDA painfully obvious: just because a feature
+has a high variance, doesn&amp;rsquo;t mean that it&amp;rsquo;s predictive of the classes!&lt;/p>
+&lt;p>&lt;em>2) Quadratic discriminant analysis (QDA):&lt;/em>&lt;/p>
+&lt;p>QDA is a generalization of LDA as a classifer. As mentioned above, LDA must
+assume that the class contidtional distributions are Gaussian with the same
+covariance matrix, if we want it to do any classification for us.&lt;/p>
+&lt;p>QDA doesn&amp;rsquo;t make this homoskedasticity assumption (assumption number 2 above),
+and attempts to estimate the covariance of all classes. While this might seem
+like a more robust algorithm (fewer assumptions! Occam&amp;rsquo;s razor!), this means
+there is a much larger number of parameters to estimate. In fact, the number of
+parameters grows quadratically with the number of classes! So unless you can
+guarantee that your covariance estimates are reliable, you might not want to use
+QDA.&lt;/p>
+&lt;p>After all of this, there might be some confusion about the relationship between
+LDA, QDA, what&amp;rsquo;s for dimensionality reduction, what&amp;rsquo;s for classification, etc.
+&lt;a href="https://stats.stackexchange.com/questions/71489/three-versions-of-discriminant-analysis-differences-and-how-to-use-them/71571#71571">This CrossValidated
+post&lt;/a>
+and everything that it links to, might help clear things up.&lt;/p>
+&lt;p>&lt;em>3) Analysis of variance (ANOVA):&lt;/em>&lt;/p>
+&lt;p>LDA and &lt;a href="https://en.wikipedia.org/wiki/Analysis_of_variance">ANOVA&lt;/a> seem to have
+similar aims: both try to “decompose” an observed variable into several
+explanatory/discriminatory variables. However, there is an important difference
+that &lt;a href="https://en.wikipedia.org/wiki/Linear_discriminant_analysis">the Wikipedia article on
+LDA&lt;/a> puts very
+succinctly (my emphases):&lt;/p>
+&lt;blockquote>
+&lt;p>LDA is closely related to analysis of variance (ANOVA) and regression
+analysis, which also attempt to express one dependent variable as a linear
+combination of other features or measurements. However, ANOVA uses
+&lt;strong>categorical&lt;/strong> independent variables and a &lt;strong>continuous&lt;/strong> dependent variable,
+whereas discriminant analysis has &lt;strong>continuous&lt;/strong> independent variables and a
+&lt;strong>categorical&lt;/strong> dependent variable (i.e. the class label).&lt;/p>
+&lt;/blockquote></description></item></channel></rss>

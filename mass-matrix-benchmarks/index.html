@@ -1,0 +1,180 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" href=https://www.georgeho.org/assets/images/favicon.ico>
+<title>Benchmarks for Mass Matrix Adaptation | ⁂ George Ho</title><meta name=title content="Benchmarks for Mass Matrix Adaptation">
+<meta name=description content="I was lucky enough to be invited to attend the Gradient Retreat earlier this month. It was an entire week on a beautiful island with some amazingly intelligent Bayesians, and no demands on my time other than the self-set (and admittedly vague) goal of contributing to probabilistic programming in some way.
+I initially tried to implement mass matrix adaptation in Tensorflow Probability, but I quickly readjusted my goals to something more achievable: running some benchmarks with tuning in Hamiltonian Monte Carlo (HMC).">
+<meta name=keywords content="open-source,pymc,">
+<meta property="og:title" content="Benchmarks for Mass Matrix Adaptation">
+<meta property="og:description" content="I was lucky enough to be invited to attend the Gradient Retreat earlier this month. It was an entire week on a beautiful island with some amazingly intelligent Bayesians, and no demands on my time other than the self-set (and admittedly vague) goal of contributing to probabilistic programming in some way.
+I initially tried to implement mass matrix adaptation in Tensorflow Probability, but I quickly readjusted my goals to something more achievable: running some benchmarks with tuning in Hamiltonian Monte Carlo (HMC).">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.georgeho.org/mass-matrix-benchmarks/"><meta property="og:image" content="https://www.georgeho.org/images/share.png"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2019-12-14T00:00:00+00:00">
+<meta property="article:modified_time" content="2019-12-14T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.georgeho.org/images/share.png">
+<meta name=twitter:title content="Benchmarks for Mass Matrix Adaptation">
+<meta name=twitter:description content="I was lucky enough to be invited to attend the Gradient Retreat earlier this month. It was an entire week on a beautiful island with some amazingly intelligent Bayesians, and no demands on my time other than the self-set (and admittedly vague) goal of contributing to probabilistic programming in some way.
+I initially tried to implement mass matrix adaptation in Tensorflow Probability, but I quickly readjusted my goals to something more achievable: running some benchmarks with tuning in Hamiltonian Monte Carlo (HMC).">
+<meta itemprop=name content="Benchmarks for Mass Matrix Adaptation">
+<meta itemprop=description content="I was lucky enough to be invited to attend the Gradient Retreat earlier this month. It was an entire week on a beautiful island with some amazingly intelligent Bayesians, and no demands on my time other than the self-set (and admittedly vague) goal of contributing to probabilistic programming in some way.
+I initially tried to implement mass matrix adaptation in Tensorflow Probability, but I quickly readjusted my goals to something more achievable: running some benchmarks with tuning in Hamiltonian Monte Carlo (HMC)."><meta itemprop=datePublished content="2019-12-14T00:00:00+00:00">
+<meta itemprop=dateModified content="2019-12-14T00:00:00+00:00">
+<meta itemprop=wordCount content="1434"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=keywords content="open-source,pymc,">
+<meta name=referrer content="no-referrer-when-downgrade">
+<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<header><a href=/ class=title>
+<h2>⁂ George Ho</h2></a>
+<nav><a href=/>Home</a>
+<a href=/work/>Work</a>
+<a href=/blog>Blog</a>
+</nav></header><main>
+<h1>Benchmarks for Mass Matrix Adaptation</h1><p>
+<i>
+<time datetime=2019-12-14 pubdate>
+14 Dec, 2019
+</time>
+</i>
+</p><content>
+<p>I was lucky enough to be invited to attend the <a href=https://gradientretreat.com/>Gradient
+Retreat</a> earlier this month. It was an entire week
+on a beautiful island with some amazingly intelligent Bayesians, and no demands
+on my time other than the self-set (and admittedly vague) goal of contributing
+to probabilistic programming in some way.</p><p>I initially tried to implement mass matrix adaptation in Tensorflow Probability,
+but I quickly readjusted my goals to something more achievable: running some
+benchmarks with tuning in Hamiltonian Monte Carlo (HMC).</p><figure>
+<a href=/assets/images/galiano.jpg><img src=/assets/images/galiano.jpg alt="A view of a forest on Galiano Island"></a>
+<a href=/assets/images/galiano2.jpg><img src=/assets/images/galiano2.jpg alt="The view from a bluff on Galiano Island"></a>
+<figcaption>Pictures from Galiano Island.</figcaption></figure><p>A quick rundown for those unfamiliar: <em>tuning</em> is what happens before sampling,
+during which the goal is not to actually draw samples, but to <em>prepare</em> to draw
+samples<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>. For HMC and its variants, this means estimating HMC parameters such
+as the step size, integration time and mass matrix<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>, the last of which is
+basically the covariance matrix of the model parameters. Because my life is
+finite (and I assume everybody else&rsquo;s is too), I limited myself to mass matrix
+adaptation.</p><p>(If you&rsquo;re still uncertain about the details of tuning or mass matrix
+adaptation, check out <a href=https://colcarroll.github.io/hmc_tuning_talk/>Colin Carroll&rsquo;s essay on HMC
+tuning</a> or the <a href=https://mc-stan.org/docs/2_20/reference-manual/hmc-algorithm-parameters.html>Stan reference
+manual on HMC
+parameters</a>:
+I don&rsquo;t explain many more concepts in the rest of this post.)</p><p>The interesting thing about tuning is that there are no rules: there are no
+asymptotic guarantees we can rely on and no mathematical results to which we can
+turn for enlightened inspiration. The only thing we care about is obtaining a
+decent estimate of the mass matrix, and preferably quickly.</p><p>Accompanying this lack of understanding of mass matrix adaptation is an
+commensurate lack of (apparent) scientific inquiry — there is scant literature
+to look to, and for open source developers, there is little prior art to draw
+from when writing new implementations of HMC!</p><p>So I decided to do some empirical legwork and benchmark various methods of mass
+matrix adaptation. Here are the questions I was interested in answering:</p><ol>
+<li>Is the assumption that the mass matrix is diagonal (in other words, assume
+that all parameters are uncorrelated) a good assumption to make? What are
+the implications of this assumption for the tuning time, and the number of
+effective samples per second?</li><li>Does the tuning schedule (i.e. the sizes of the adaptation windows) make a
+big difference? Specifically, should we have a schedule of constant
+adaptation windows, or an &ldquo;expanding schedule&rdquo; of exponentially growing
+adaptation windows?</li><li>Besides assuming the mass matrix is diagonal, are there any other ways of
+simplifying mass matrix adaptation? For example, could we approximate the
+mass matrix as low rank?</li></ol><p>I benchmarked five different mass matrix adaptation methods:</p><ol>
+<li>A diagonal mass matrix (<code>diag</code>)</li><li>A full (a.k.a. dense) mass matrix (<code>full</code>)</li><li>A diagonal mass matrix adapted on an expanding schedule (<code>diag_exp</code>)</li><li>A full mass matrix adapted on an expanding schedule (<code>diag_exp</code>)</li><li>A low-rank approximation to the mass matrix using <a href=https://github.com/aseyboldt/covadapt>Adrian Seyboldt&rsquo;s <code>covadapt</code> library</a>.</li></ol><p>I benchmarked these adaptation methods against six models:</p><ol>
+<li>A 100-dimensional multivariate normal with a non-diagonal covariance matrix (<code>mvnormal</code>)</li><li>A 100-dimensional multivariate normal with a low-rank covariance matrix (<code>lrnormal</code>)</li><li>A <a href=https://docs.pymc.io/notebooks/stochastic_volatility.html>stochastic volatility model</a> (<code>stoch_vol</code>)</li><li>The <a href=https://docs.pymc.io/notebooks/Diagnosing_biased_Inference_with_Divergences.html#The-Eight-Schools-Model>eight schools model</a> (<code>eight</code>)</li><li>The <a href=https://docs.pymc.io/notebooks/hierarchical_partial_pooling.html>PyMC3 baseball model</a> (<code>baseball</code>)</li><li>A <a href=https://docs.pymc.io/notebooks/GP-SparseApprox.html#Examples>sparse Gaussian process approximation</a> (<code>gp</code>)</li></ol><p>Without further ado, the main results are shown below. Afterwards, I make some
+general observations on the benchmarks, and finally I describe various
+shortcomings of my experimental setup (which, if I were more optimistic, I would
+call &ldquo;directions for further work&rdquo;).</p><h3 id=tuning-times>Tuning Times</h3><p>This tabulates the tuning time, in seconds, of each adaptation method for each
+model. Lower is better. The lowest tuning time for each model is shown in bold
+italics.</p><table>
+<thead>
+<tr>
+<th style=text-align:left></th><th style=text-align:right><strong><code>mvnormal</code></strong></th><th style=text-align:right><strong><code>lrnormal</code></strong></th><th style=text-align:right><strong><code>stoch_vol</code></strong></th><th style=text-align:right><strong><code>gp</code></strong></th><th style=text-align:right><strong><code>eight</code></strong></th><th style=text-align:right><strong><code>baseball</code></strong></th></tr></thead><tbody>
+<tr>
+<td style=text-align:left><strong><code>diag</code></strong></td><td style=text-align:right>365.34</td><td style=text-align:right>340.10</td><td style=text-align:right>239.59</td><td style=text-align:right>18.47</td><td style=text-align:right>2.92</td><td style=text-align:right>5.32</td></tr><tr>
+<td style=text-align:left><strong><code>full</code></strong></td><td style=text-align:right><em><strong>8.29</strong></em></td><td style=text-align:right>364.07</td><td style=text-align:right>904.95</td><td style=text-align:right><em><strong>14.24</strong></em></td><td style=text-align:right><em><strong>2.91</strong></em></td><td style=text-align:right><em><strong>4.93</strong></em></td></tr><tr>
+<td style=text-align:left><strong><code>diag_exp</code></strong></td><td style=text-align:right>358.50</td><td style=text-align:right>360.91</td><td style=text-align:right><em><strong>219.65</strong></em></td><td style=text-align:right>16.25</td><td style=text-align:right>3.05</td><td style=text-align:right>5.08</td></tr><tr>
+<td style=text-align:left><strong><code>full_exp</code></strong></td><td style=text-align:right>8.46</td><td style=text-align:right>142.20</td><td style=text-align:right>686.58</td><td style=text-align:right>14.87</td><td style=text-align:right>3.21</td><td style=text-align:right>6.04</td></tr><tr>
+<td style=text-align:left><strong><code>covadapt</code></strong></td><td style=text-align:right>386.13</td><td style=text-align:right><em><strong>89.92</strong></em></td><td style=text-align:right>398.08</td><td style=text-align:right>N/A</td><td style=text-align:right>N/A</td><td style=text-align:right>N/A</td></tr></tbody></table><h3 id=effective-samples-per-second>Effective Samples per Second</h3><p>This tabulates the number of effective samples drawn by each adaptation method
+for each model. Higher is better. The highest numbers of effective samples per
+second is shown in bold italics.</p><table>
+<thead>
+<tr>
+<th style=text-align:left></th><th style=text-align:right><strong><code>mvnormal</code></strong></th><th style=text-align:right><strong><code>lrnormal</code></strong></th><th style=text-align:right><strong><code>stoch_vol</code></strong></th><th style=text-align:right><strong><code>gp</code></strong></th><th style=text-align:right><strong><code>eight</code></strong></th><th style=text-align:right><strong><code>baseball</code></strong></th></tr></thead><tbody>
+<tr>
+<td style=text-align:left><strong><code>diag</code></strong></td><td style=text-align:right>0.02</td><td style=text-align:right>1.55</td><td style=text-align:right><em><strong>11.22</strong></em></td><td style=text-align:right>65.36</td><td style=text-align:right>761.82</td><td style=text-align:right>455.23</td></tr><tr>
+<td style=text-align:left><strong><code>full</code></strong></td><td style=text-align:right>1.73</td><td style=text-align:right>0.01</td><td style=text-align:right>6.71</td><td style=text-align:right><em><strong>106.30</strong></em></td><td style=text-align:right><em><strong>840.77</strong></em></td><td style=text-align:right><em><strong>495.93</strong></em></td></tr><tr>
+<td style=text-align:left><strong><code>diag_exp</code></strong></td><td style=text-align:right>0.02</td><td style=text-align:right>1.51</td><td style=text-align:right>9.79</td><td style=text-align:right>59.89</td><td style=text-align:right>640.90</td><td style=text-align:right>336.71</td></tr><tr>
+<td style=text-align:left><strong><code>full_exp</code></strong></td><td style=text-align:right><em><strong>1,799.11</strong></em></td><td style=text-align:right><em><strong>1,753.65</strong></em></td><td style=text-align:right>0.16</td><td style=text-align:right>101.99</td><td style=text-align:right>618.28</td><td style=text-align:right>360.14</td></tr><tr>
+<td style=text-align:left><strong><code>covadapt</code></strong></td><td style=text-align:right>0.02</td><td style=text-align:right>693.87</td><td style=text-align:right>5.71</td><td style=text-align:right>N/A</td><td style=text-align:right>N/A</td><td style=text-align:right>N/A</td></tr></tbody></table><h2 id=observations>Observations</h2><blockquote>
+<p><strong>tldr:</strong> As is typical with these sorts of things, no one adaptation method
+uniformly outperforms the others.</p></blockquote><ul>
+<li>A full mass matrix can provide significant improvements over a diagonal mass
+matrix for both the tuning time and the number of effective samples per
+second. This improvement can sometimes go up to two orders of magnitude!
+<ul>
+<li>This is most noticeable in the <code>mvnormal</code> model, with heavily correlated
+parameters.</li><li>Happily, my benchmarks are not the only instance of full mass matrices
+outperforming diagonal ones: <a href=https://dfm.io/posts/pymc3-mass-matrix/>Dan Foreman-Mackey demonstrated something
+similar in one of his blog posts</a>.</li><li>However, in models with less extreme correlations among parameters, this
+advantage shrinks significantly (although it doesn&rsquo;t go away entirely).
+Full matrices can also take longer to tune. You can see this in the baseball
+or eight schools model.</li><li>Nevertheless, full mass matrices never seem to perform egregiously <em>worse</em>
+than diagonal mass matrices. This makes sense theoretically: a full mass
+matrix can be estimated to be diagonal (at the cost of a quadratic memory
+requirement as opposed to linear), but not vice versa.</li></ul></li><li>Having an expanding schedule for tuning can sometimes give better performance,
+but nowhere near as significant as the difference between diagonal and full
+matrices. This difference is most noticeable for the <code>mvnormal</code> and <code>lrnormal</code>
+models (probably because these models have a constant covariance matrix and so
+more careful estimates using expanding windows can provide much better
+sampling).</li><li>I suspect the number of effective samples per second for a full mass matrix on
+the <code>lrnormal</code> model (0.01 effective samples per second) is a mistake (or
+some other computational fluke): it looks way too low to be reasonable.</li><li>I&rsquo;m also surprised that <code>full_exp</code> does really badly (in terms of effective
+samples per second) on the <code>stoch_vol</code> model, despite <code>full</code> doing decently
+well! This is either a fluke, or a really interesting phenomenon to dig in to.</li><li><code>covadapt</code> seems to run into some numerical difficulties? While running these
+benchmarks I ran into an inscrutable and non-reproducible
+<a href=https://stackoverflow.com/q/18436667><code>ArpackError</code></a> from SciPy.</li></ul><h2 id=experimental-setup>Experimental Setup</h2><ul>
+<li>All samplers were run for 2000 tuning steps and 1000 sampling steps. This is
+unusually high, but is necessary for <code>covadapt</code> to work well, and I wanted to
+use the same number of iterations across all the benchmarks.</li><li>My expanding schedule is as follows: the first adaptation window is 100
+iterations, and each subsequent window is 1.005 times the previous window.
+These numbers give 20 updates within 2000 iterations, while maintaining an
+exponentially increasing adaptation window size.</li><li>I didn&rsquo;t run <code>covadapt</code> for models with fewer than 100 model parameters.
+With so few parameters, there&rsquo;s no need to approximate a mass matrix as
+low-rank: you can just estimate the full mass matrix!</li><li>I set <code>target_accept</code> (a.k.a. <code>adapt_delta</code> to Stan users) to 0.9 to make all
+divergences go away.</li><li>All of these numbers were collected by sampling once per model per adaptation
+method (yes only once, sorry) in PyMC3, running on my MacBook Pro.</li></ul><h2 id=shortcomings>Shortcomings</h2><ul>
+<li>In some sense comparing tuning times is not a fair comparison: it&rsquo;s possible
+that some mass matrix estimates converge quicker than others, and so comparing
+their tuning times is essentially penalizing these methods for converging
+faster than others.</li><li>It&rsquo;s also possible that my expanding schedule for the adaptation windows just
+sucks! There&rsquo;s no reason why the first window needs to be 100 iterations, or
+why 1.005 should be a good multiplier. It looks like Stan <a href=https://github.com/stan-dev/stan/blob/736311d88e99b997f5b902409752fb29d6ec0def/src/stan/mcmc/windowed_adaptation.hpp#L95>doubles their
+adaptation window
+sizes</a>
+during warmup.</li><li>These benchmarks are done only for very basic toy models: I should test more
+extensively on more models that people in The Real World™ use.</li><li>If you are interested in taking these benchmarks further (or perhaps just want
+to fact-check me on my results), the code is <a href=https://github.com/eigenfoo/mass-matrix-benchmarks>sitting in this GitHub
+repository</a><sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup>.</li></ul><section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>It&rsquo;s good to point out that mass matrix adaptation is to make sampling
+more efficient, not more valid. Theoretically, any mass matrix would work,
+but a good one (i.e. a good estimate of the covariance matrix of the model
+parameters) could sample orders of magnitudes more efficiently.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
+<p>…uh, <em><em>sweats and looks around nervously for differential geometers</em></em>
+more formally called the <em>metric</em>…&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
+<p>There are some violin plots lying around in the notebook, a relic from a
+time when I thought that I would have the patience to run each model and
+adaptation method multiple times.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content>
+<p>
+<a href=https://www.georgeho.org/blog/open-source/>#open-source</a>
+<a href=https://www.georgeho.org/blog/pymc/>#pymc</a>
+</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer></body></html>

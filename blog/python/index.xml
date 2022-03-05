@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>python on ⁂ George Ho</title><link>https://www.georgeho.org/blog/python/</link><description>Recent content in python on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 05 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/python/index.xml" rel="self" type="application/rss+xml"/><item><title>Streaming Data with Tornado and WebSockets</title><link>https://www.georgeho.org/tornado-websockets/</link><pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tornado-websockets/</guid><description>&lt;p>A lot of data science and machine learning practice assumes a static dataset,
+maybe with some MLOps tooling for rerunning a model pipeline with the freshest
+version of the dataset.&lt;/p>
+&lt;p>Working with streaming data is an entirely different ball game, and it wasn&amp;rsquo;t
+clear to me what tools a data scientist might reach for when dealing with
+streaming data&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>I recently came across a pretty straightforward and robust solution:
+&lt;a href="https://datatracker.ietf.org/doc/html/rfc6455">WebSockets&lt;/a> and
+&lt;a href="https://www.tornadoweb.org/en/stable/">Tornado&lt;/a>. Tornado is a Python web
+framework with strong support for asynchronous networking. WebSockets are a
+way for two processes (or apps) to communicate with each other (similar to HTTP
+requests with REST endpoints). Of course, Tornado has pretty good support for
+WebSockets as well.&lt;/p>
+&lt;p>In this blog post I&amp;rsquo;ll give a minimal example of using Tornado and WebSockets
+to handle streaming data. The toy example I have is one app (&lt;code>server.py&lt;/code>)
+writing samples of a Bernoulli to a WebSocket, and another app (&lt;code>client.py&lt;/code>)
+listening to the WebSocket and keeping track of the posterior distribution for
+a &lt;a href="https://www.georgeho.org/bayesian-bandits/">Beta-Binomial conjugate model&lt;/a>.
+After walking through the code, I&amp;rsquo;ll discuss these tools, and why they&amp;rsquo;re good
+choices for working with streaming data.&lt;/p>
+&lt;p>For another tutorial on this same topic, you can check out &lt;a href="https://en.proft.me/2014/05/16/realtime-web-application-tornado-and-websocket/">&lt;code>proft&lt;/code>&amp;rsquo;s blog
+post&lt;/a>.&lt;/p>
+&lt;h2 id="server">Server&lt;/h2>
+&lt;ul>
+&lt;li>When &lt;code>WebSocketServer&lt;/code> is registered to a REST endpoint (in &lt;code>main&lt;/code>), it keeps
+track of any processes who are listening to that endpoint, and pushes
+messages to them when &lt;code>send_message&lt;/code> is called.
+&lt;ul>
+&lt;li>Note that &lt;code>clients&lt;/code> is a class variable, so &lt;code>send_message&lt;/code> is a class
+method.&lt;/li>
+&lt;li>This class could be extended to also listen to the endpoint, instead of
+just blindly pushing messages out - after all, WebSockets allow for
+bidirectional data flow.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>The &lt;code>RandomBernoulli&lt;/code> and &lt;code>PeriodicCallback&lt;/code> make a pretty crude example, but
+you could write a class that transmits data in real-time to suit your use
+case. For example, you could watch a file for any modifications using
+&lt;a href="https://pythonhosted.org/watchdog/">&lt;code>watchdog&lt;/code>&lt;/a>, and dump the changes into
+the WebSocket.&lt;/li>
+&lt;li>The &lt;a href="https://www.tornadoweb.org/en/stable/web.html?highlight=websocket_ping#tornado.web.Application.settings">&lt;code>websocket_ping_interval&lt;/code> and &lt;code>websocket_ping_timeout&lt;/code> arguments to
+&lt;code>tornado.Application&lt;/code>&lt;/a>
+configure periodic pings of WebSocket connections, keeping connections alive
+and allowing dropped connections to be detected and closed.&lt;/li>
+&lt;li>It&amp;rsquo;s also worth noting that there&amp;rsquo;s a
+&lt;a href="https://www.tornadoweb.org/en/stable/websocket.html?highlight=websocket_max_message_size#tornado.websocket.WebSocketHandler">&lt;code>tornado.websocket.WebSocketHandler.websocket_max_message_size&lt;/code>&lt;/a>
+attribute. While this is set to a generous 10 MiB, it&amp;rsquo;s important that the
+WebSocket messages don&amp;rsquo;t exceed this limit!&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34; Every 100ms, sample from a Bernoulli and write the value to a WebSocket. &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> random
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.ioloop
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.web
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.websocket
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">WebSocketServer&lt;/span>(tornado&lt;span style="color:#f92672">.&lt;/span>websocket&lt;span style="color:#f92672">.&lt;/span>WebSocketHandler):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;Simple WebSocket handler to serve clients.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Note that `clients` is a class variable and `send_message` is a&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># classmethod.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clients &lt;span style="color:#f92672">=&lt;/span> set()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">open&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> WebSocketServer&lt;span style="color:#f92672">.&lt;/span>clients&lt;span style="color:#f92672">.&lt;/span>add(self)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">on_close&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> WebSocketServer&lt;span style="color:#f92672">.&lt;/span>clients&lt;span style="color:#f92672">.&lt;/span>remove(self)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@classmethod&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">send_message&lt;/span>(cls, message: str):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Sending message &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>message&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> to &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>len(cls&lt;span style="color:#f92672">.&lt;/span>clients)&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> client(s).&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> client &lt;span style="color:#f92672">in&lt;/span> cls&lt;span style="color:#f92672">.&lt;/span>clients:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client&lt;span style="color:#f92672">.&lt;/span>write_message(message)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RandomBernoulli&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>p &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0.72&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;True p = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>self&lt;span style="color:#f92672">.&lt;/span>p&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">sample&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> int(random&lt;span style="color:#f92672">.&lt;/span>uniform(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>) &lt;span style="color:#f92672">&amp;lt;=&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>p)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Create a web app whose only endpoint is a WebSocket, and start the web&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># app on port 8888.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> app &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>web&lt;span style="color:#f92672">.&lt;/span>Application(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [(&lt;span style="color:#e6db74">r&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/websocket/&amp;#34;&lt;/span>, WebSocketServer)],
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> websocket_ping_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> websocket_ping_timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">30&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> app&lt;span style="color:#f92672">.&lt;/span>listen(&lt;span style="color:#ae81ff">8888&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Create an event loop (what Tornado calls an IOLoop).&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>ioloop&lt;span style="color:#f92672">.&lt;/span>IOLoop&lt;span style="color:#f92672">.&lt;/span>current()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Before starting the event loop, instantiate a RandomBernoulli and&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># register a periodic callback to write a sampled value to the WebSocket&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># every 100ms.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> random_bernoulli &lt;span style="color:#f92672">=&lt;/span> RandomBernoulli()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> periodic_callback &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>ioloop&lt;span style="color:#f92672">.&lt;/span>PeriodicCallback(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">lambda&lt;/span>: WebSocketServer&lt;span style="color:#f92672">.&lt;/span>send_message(str(random_bernoulli&lt;span style="color:#f92672">.&lt;/span>sample())), &lt;span style="color:#ae81ff">100&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> periodic_callback&lt;span style="color:#f92672">.&lt;/span>start()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Start the event loop.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop&lt;span style="color:#f92672">.&lt;/span>start()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;__main__&amp;#34;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> main()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="client">Client&lt;/h2>
+&lt;ul>
+&lt;li>&lt;code>WebSocketClient&lt;/code> is a class that:
+&lt;ol>
+&lt;li>Can be &lt;code>start&lt;/code>ed and &lt;code>stop&lt;/code>ped to connect/disconnect to the WebSocket and
+start/stop listening to it in a separate thread&lt;/li>
+&lt;li>Can process every message (&lt;code>on_message&lt;/code>) it hears from the WebSocket: in
+this case it simply maintains &lt;a href="https://www.georgeho.org/bayesian-bandits/#stochastic-aka-stationary-bandits">a count of the number of trials and
+successes&lt;/a>,
+but this processing could theoretically be anything. For example, you
+could do some further processing of the message and then dump that into a
+separate WebSocket for other apps (or even users!) to subscribe to.&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>To connect to the WebSocket, we need to use a WebSocket library: thankfully
+Tornado has a built-in WebSocket functionality (&lt;code>tornado.websocket&lt;/code>), but
+we&amp;rsquo;re also free to use other libraries such as the creatively named
+&lt;a href="https://github.com/aaugustin/websockets">&lt;code>websockets&lt;/code>&lt;/a> or
+&lt;a href="https://github.com/websocket-client/websocket-client">&lt;code>websocket-client&lt;/code>&lt;/a>.&lt;/li>
+&lt;li>Note that we run &lt;code>on_message&lt;/code> on the same thread as we run
+&lt;code>connect_and_read&lt;/code>. This isn&amp;rsquo;t a problem so long as &lt;code>on_message&lt;/code> is fast
+enough, but a potentially wiser choice would be to offload &lt;code>connect_and_read&lt;/code>
+to a separate thread by instantiating a
+&lt;a href="https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor">&lt;code>concurrent.futures.ThreadPoolExecutor&lt;/code>&lt;/a>
+and calling
+&lt;a href="https://www.tornadoweb.org/en/stable/ioloop.html#tornado.ioloop.IOLoop.run_in_executor">&lt;code>tornado.ioloop.IOLoop.run_in_executor&lt;/code>&lt;/a>,
+so as not to block the thread where the &lt;code>on_message&lt;/code> processing happens.&lt;/li>
+&lt;li>The &lt;code>io_loop&lt;/code> instantiated in &lt;code>main&lt;/code> (as well as in &lt;code>server.py&lt;/code>) is
+important: it&amp;rsquo;s how Tornado schedules tasks (a.k.a. &lt;em>callbacks&lt;/em>) for delayed
+(a.k.a. &lt;em>asynchronous&lt;/em>) execution. To add a callback, we simply call
+&lt;code>io_loop.add_callback()&lt;/code>.&lt;/li>
+&lt;li>The &lt;a href="https://www.tornadoweb.org/en/stable/websocket.html?highlight=ping_#tornado.websocket.websocket_connect">&lt;code>ping_interval&lt;/code> and &lt;code>ping_timeout&lt;/code> arguments to
+&lt;code>websocket_connect&lt;/code>&lt;/a>
+configure periodic pings of the WebSocket connection, keeping connections
+alive and allowing dropped connections to be detected and closed.&lt;/li>
+&lt;li>The &lt;code>callback=self.maybe_retry_connection&lt;/code> is &lt;a href="https://github.com/tornadoweb/tornado/blob/1db5b45918da8303d2c6958ee03dbbd5dc2709e9/tornado/websocket.py#L1654-L1655">run on a future
+&lt;code>WebSocketClientConnection&lt;/code>&lt;/a>.
+&lt;code>websocket_connect&lt;/code> doesn&amp;rsquo;t actually establish the connection directly, but
+rather returns a future. Hence, we try to get the &lt;code>future.result()&lt;/code> itself
+(i.e. the WebSocket client connection) — I don&amp;rsquo;t actually do anything with
+the &lt;code>self.connection&lt;/code>, but you could if you wanted. In the event of an
+exception while doing that, we assume there&amp;rsquo;s a problem with the WebSocket
+connection and retry &lt;code>connect_and_read&lt;/code> after 3 seconds. This all has the
+effect of recovering gracefully if the WebSocket is dropped or &lt;code>server.py&lt;/code>
+experiences a brief outage for whatever reason (both of which are probably
+inevitable for long-running apps using WebSockets).&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34; Read from the WebSocket and update the Beta posterior parameters online. &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.ioloop
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.websocket
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">WebSocketClient&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self, io_loop):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connection &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>io_loop &lt;span style="color:#f92672">=&lt;/span> io_loop
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_successes &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_trials &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">start&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connect_and_read()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">stop&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>io_loop&lt;span style="color:#f92672">.&lt;/span>stop()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">connect_and_read&lt;/span>(self):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Reading...&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tornado&lt;span style="color:#f92672">.&lt;/span>websocket&lt;span style="color:#f92672">.&lt;/span>websocket_connect(
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> url&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;ws://localhost:8888/websocket/&amp;#34;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> callback&lt;span style="color:#f92672">=&lt;/span>self&lt;span style="color:#f92672">.&lt;/span>maybe_retry_connection,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> on_message_callback&lt;span style="color:#f92672">=&lt;/span>self&lt;span style="color:#f92672">.&lt;/span>on_message,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ping_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ping_timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">30&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">maybe_retry_connection&lt;/span>(self, future) &lt;span style="color:#f92672">-&amp;gt;&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connection &lt;span style="color:#f92672">=&lt;/span> future&lt;span style="color:#f92672">.&lt;/span>result()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Could not reconnect, retrying in 3 seconds...&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>io_loop&lt;span style="color:#f92672">.&lt;/span>call_later(&lt;span style="color:#ae81ff">3&lt;/span>, self&lt;span style="color:#f92672">.&lt;/span>connect_and_read)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">on_message&lt;/span>(self, message):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> message &lt;span style="color:#f92672">is&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Disconnected, reconnecting...&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connect_and_read()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> message &lt;span style="color:#f92672">=&lt;/span> int(message)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_successes &lt;span style="color:#f92672">+=&lt;/span> message
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_trials &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> alpha &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span> &lt;span style="color:#f92672">+&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_successes
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> beta &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span> &lt;span style="color:#f92672">+&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_trials &lt;span style="color:#f92672">-&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_successes
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mean &lt;span style="color:#f92672">=&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_successes &lt;span style="color:#f92672">/&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_trials
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;α = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>alpha&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">; β = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>beta&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">; mean = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>mean&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>():
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Create an event loop (what Tornado calls an IOLoop).&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>ioloop&lt;span style="color:#f92672">.&lt;/span>IOLoop&lt;span style="color:#f92672">.&lt;/span>current()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Before starting the event loop, instantiate a WebSocketClient and add a&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># callback to the event loop to start it. This way the first thing the&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># event loop does is to start the client.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client &lt;span style="color:#f92672">=&lt;/span> WebSocketClient(io_loop)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop&lt;span style="color:#f92672">.&lt;/span>add_callback(client&lt;span style="color:#f92672">.&lt;/span>start)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Start the event loop.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop&lt;span style="color:#f92672">.&lt;/span>start()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;__main__&amp;#34;&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> main()
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="why-tornado">Why Tornado?&lt;/h2>
+&lt;p>Tornado is a Python web framework, but unlike the more popular Python web
+frameworks like &lt;a href="https://flask.palletsprojects.com/">Flask&lt;/a> or
+&lt;a href="https://www.djangoproject.com/">Django&lt;/a>, it has strong support for
+&lt;a href="https://www.tornadoweb.org/en/stable/guide/async.html#blocking">asynchronous networking and non-blocking
+calls&lt;/a> -
+essentially, Tornado apps have one (single-threaded) event loop
+(&lt;code>tornado.ioloop.IOLoop&lt;/code>), which handles all requests asynchronously,
+dispatching incoming requests to the relevant non-blocking function as the
+request comes in. As far as I know, Tornado is the only Python web framework
+that does this.&lt;/p>
+&lt;p>As an aside, Tornado seems to be &lt;a href="https://thehftguy.com/2020/10/27/my-experience-in-production-with-flask-bottle-tornado-and-twisted/">more popular in
+finance&lt;/a>,
+where streaming real-time data (e.g. market data) is very common.&lt;/p>
+&lt;h2 id="why-websockets">Why WebSockets?&lt;/h2>
+&lt;p>A sharper question might be, why WebSockets over HTTP requests to a REST
+endpoint? After all, both theoretically allow a client to stream data in
+real-time from a server.&lt;/p>
+&lt;p>&lt;a href="https://stackoverflow.com/a/45464306">A lot can be said&lt;/a> when comparing
+WebSockets and RESTful services, but I think the main points are accurately
+summarized by &lt;a href="https://www.baeldung.com/rest-vs-websockets#usage">Kumar Chandrakant on
+Baeldung&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>[A] WebSocket is more suitable for cases where a push-based and real-time
+communication defines the requirement more appropriately. Additionally,
+WebSocket works well for scenarios where a message needs to be pushed to
+multiple clients simultaneously. These are the cases where client and server
+communication over RESTful services will find it difficult if not prohibitive.&lt;/p>
+&lt;/blockquote>
+&lt;p>Tangentially, there&amp;rsquo;s one alternative that seems to be better than WebSockets
+from a protocol standpoint, but unfortunately doesn&amp;rsquo;t seem to have support from
+many Python web frameworks, and that is &lt;a href="https://www.smashingmagazine.com/2018/02/sse-websockets-data-flow-http2/">Server-Sent Events (a.k.a.
+SSE)&lt;/a>:
+it seems to be a cleaner protocol for unidirectional data flow, which is really
+all that we need.&lt;/p>
+&lt;p>Additionally, &lt;a href="https://lucumr.pocoo.org/2012/9/24/websockets-101/">Armin
+Ronacher&lt;/a> has a much
+starker view of WebSockets, seeing no value in using WebSockets over TCP/IP
+sockets for this application:&lt;/p>
+&lt;blockquote>
+&lt;p>Websockets make you sad. [&amp;hellip;] Websockets are complex, way more complex than I
+anticipated. I can understand that they work that way but I definitely don&amp;rsquo;t
+see a value in using websockets instead of regular TCP connections if all you
+want is to exchange data between different endpoints and neither is a browser.&lt;/p>
+&lt;/blockquote>
+&lt;p>My thought after reading these criticisms is that perhaps WebSockets aren&amp;rsquo;t the
+ideal technology for handling streaming data (from a maintainability or
+architectural point of view), but that doesn&amp;rsquo;t mean that they aren&amp;rsquo;t good
+scalable technologies when they do work.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>There is &lt;a href="https://sqlstream.com/real-time-vs-streaming-a-short-explanation/">technically a difference&lt;/a> between &amp;ldquo;real-time&amp;rdquo; and &amp;ldquo;streaming&amp;rdquo;: &amp;ldquo;real-time&amp;rdquo; refers to data that comes in as it is created, whereas &amp;ldquo;streaming&amp;rdquo; refers to a system that processes data continuously. You stream your TV show from Netflix, but since the show was created long before you watched it, you aren&amp;rsquo;t viewing it in real-time.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>https://www.georgeho.org/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/littlemcmc/</guid><description>&lt;center>
+&lt;img
+src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
+alt="LittleMCMC logo">
+&lt;/center>
+&lt;p>Recently there has been a modularization (or, if you&amp;rsquo;re hip with tech-lingo, an
+&lt;a href="https://techcrunch.com/2015/04/18/the-unbundling-of-everything/">&lt;em>unbundling&lt;/em>&lt;/a>)
+of Bayesian modelling libraries. Whereas before, probability distributions,
+model specification, inference and diagnostics were more or less rolled into one
+library, it&amp;rsquo;s becoming more and more realistic to specify a model in one
+library, accelerate it using another, perform inference with a third and use a
+fourth to visualize the results. (For example, Junpeng Lao has recently had
+&lt;a href="https://twitter.com/junpenglao/status/1309470970223226882">good success&lt;/a> doing
+exactly this!)&lt;/p>
+&lt;p>It&amp;rsquo;s in this spirit of unbundling that the PyMC developers wanted to &lt;a href="https://discourse.pymc.io/t/isolate-nuts-into-a-new-library/3974">spin out
+the core HMC and NUTS samplers from PyMC3 into a separate
+library&lt;/a>.
+PyMC3 has a very well-tested and performant Python implementation of HMC and
+NUTS, which would be very useful to any users who have their own functions for
+computing log-probability and its gradients, and who want to use a lightweight
+and reliable sampler.&lt;/p>
+&lt;p>So for example, if you&amp;rsquo;re a physical scientist with a Bayesian model who&amp;rsquo;s
+written your own functions to compute the log probability and its gradients
+(perhaps for performance or interoperability reasons), and need a good MCMC
+sampler, then &lt;code>littlemcmc&lt;/code> is for you! As long as you can call your functions
+from Python, you can use the same HMC or NUTS sampler that&amp;rsquo;s used by the rest of
+the PyMC3 community.&lt;/p>
+&lt;p>So without further ado: please check out &lt;code>littlemcmc&lt;/code>!&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>https://www.georgeho.org/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
+API by manipulating the &lt;a href="https://docs.python.org/3/library/ast.html">Python abstract syntax
+tree&lt;/a> (AST) of the model code. The PyMC
+developers didn&amp;rsquo;t end up pursuing those API changes any further, but not until I had the
+chance to learn a lot about Python ASTs.&lt;/p>
+&lt;p>Enough curious people have asked me about my experience tinkering with ASTs that I
+figure I&amp;rsquo;d write a short post about the details of my project, in the hope that someone
+else will find it useful.&lt;/p>
+&lt;p>You should read this blog post as a quick overview of my experience with Python ASTs, or
+an annotated list of links, and not a comprehensive tutorial on model specification APIs
+or Python ASTs. For a full paper trail of my adventures with Python ASTs, check out &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield">my
+notebooks on
+GitHub&lt;/a>.&lt;/p>
+&lt;h2 id="the-problem">The Problem&lt;/h2>
+&lt;p>Originally, PyMC4&amp;rsquo;s proposed model specification API looked something like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">linear_regression&lt;/span>(x):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scale &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>HalfCauchy(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> coefs &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>zeros(x&lt;span style="color:#f92672">.&lt;/span>shape[&lt;span style="color:#ae81ff">1&lt;/span>]), &lt;span style="color:#ae81ff">1&lt;/span>, )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> predictions &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>linalg&lt;span style="color:#f92672">.&lt;/span>matvec(x, coefs), scale)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> predictions
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The main drawback to this API was that the &lt;code>yield&lt;/code> keyword was confusing. Many users
+don’t really understand Python generators, and those who do might only understand
+&lt;code>yield&lt;/code> as a drop-in replacement for &lt;code>return&lt;/code> (that is, they might understand what it
+means for a function to end in &lt;code>yield foo&lt;/code>, but would be uncomfortable with &lt;code>bar = yield foo&lt;/code>).&lt;/p>
+&lt;p>Furthermore, the &lt;code>yield&lt;/code> keyword introduces a leaky abstraction&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>: users don’t care
+about whether model is a function or a generator, and they shouldn&amp;rsquo;t need to. More
+generally, users shouldn&amp;rsquo;t have to know anything about how PyMC works in order to use
+it: ideally, the only thing users would need to think about would be their data and
+their model. Having to graft several &lt;code>yield&lt;/code> keywords into their code is a fairly big
+intrusion in that respect.&lt;/p>
+&lt;p>Finally, this model specification API is essentially moving the problem off of our
+plates and onto our users. The entire point of the PyMC project is to provide a friendly
+and easy-to-use interface for Bayesian modelling.&lt;/p>
+&lt;p>To enumerate the problem further, we wanted to:&lt;/p>
+&lt;ol>
+&lt;li>Hide the &lt;code>yield&lt;/code> keyword from the user-facing model specification API.&lt;/li>
+&lt;li>Obtain the user-defined model as a generator.&lt;/li>
+&lt;/ol>
+&lt;p>The main difficulty with the first goal is that as soon as we remove &lt;code>yield&lt;/code> from the
+model function, it is no longer a generator. However, the PyMC inference engine needs the
+model as a generator, since this allows us to interrupt the control flow of the model at
+various points to do certain things:&lt;/p>
+&lt;ul>
+&lt;li>Manage random variable names.&lt;/li>
+&lt;li>Perform sampling.&lt;/li>
+&lt;li>Other arbitrary PyMC magic that I&amp;rsquo;m truthfully not familiar with.&lt;/li>
+&lt;/ul>
+&lt;p>In short, the user writes their model as a function, but we require the model as a
+generator.&lt;/p>
+&lt;p>I opine on why this problem is challenging a lot more
+&lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#why-is-this-problem-hard">here&lt;/a>.&lt;/p>
+&lt;h2 id="the-solution">The Solution&lt;/h2>
+&lt;p>First, I wrote a &lt;code>FunctionToGenerator&lt;/code> class:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">FunctionToGenerator&lt;/span>(ast&lt;span style="color:#f92672">.&lt;/span>NodeTransformer):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> This subclass traverses the AST of the user-written, decorated,
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> model specification and transforms it into a generator for the
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> model. Subclassing in this way is the idiomatic way to transform
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> an AST.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> Specifically:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> 1. Add `yield` keywords to all assignments
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> E.g. `x = tfd.Normal(0, 1)` -&amp;gt; `x = yield tfd.Normal(0, 1)`
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> 2. Rename the model specification function to
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> `_pm_compiled_model_generator`. This is done out an abundance
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> of caution more than anything.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> 3. Remove the @Model decorator. Otherwise, we risk running into
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> an infinite recursion.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">visit_Assign&lt;/span>(self, node):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node &lt;span style="color:#f92672">=&lt;/span> node
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node&lt;span style="color:#f92672">.&lt;/span>value &lt;span style="color:#f92672">=&lt;/span> ast&lt;span style="color:#f92672">.&lt;/span>Yield(value&lt;span style="color:#f92672">=&lt;/span>new_node&lt;span style="color:#f92672">.&lt;/span>value)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Tie up loose ends in the AST.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>copy_location(new_node, node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>fix_missing_locations(new_node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>generic_visit(node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> new_node
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">visit_FunctionDef&lt;/span>(self, node):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node &lt;span style="color:#f92672">=&lt;/span> node
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node&lt;span style="color:#f92672">.&lt;/span>name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;_pm_compiled_model_generator&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node&lt;span style="color:#f92672">.&lt;/span>decorator_list &lt;span style="color:#f92672">=&lt;/span> []
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Tie up loose ends in the AST.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>copy_location(new_node, node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>fix_missing_locations(new_node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>generic_visit(node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> new_node
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Subclassing &lt;code>ast.NodeTransformer&lt;/code> (as &lt;code>FunctionToGenerator&lt;/code> does) is the &lt;a href="https://greentreesnakes.readthedocs.io/en/latest/manipulating.html#modifying-the-tree">recommended
+way of modifying
+ASTs&lt;/a>.
+The functionality of &lt;code>FunctionToGenerator&lt;/code> is pretty well described by the docstring:
+the &lt;code>visit_Assign&lt;/code> method adds the &lt;code>yield&lt;/code> keyword to all assignments by wrapping the
+visited &lt;code>Assign&lt;/code> node within a &lt;code>Yield&lt;/code> node. The &lt;code>visit_FunctionDef&lt;/code> method removes the
+decorator and renames the function to &lt;code>_pm_compiled_model_generator&lt;/code>. All told, after
+the &lt;code>NodeTransformer&lt;/code> is done with the AST, we have one function,
+&lt;code>_pm_compiled_model_generator&lt;/code>, which is a modified version of the user-defined
+function.&lt;/p>
+&lt;p>Second, the &lt;code>Model&lt;/code> class:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Model&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34; pm.Model decorator. &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self, func):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>func &lt;span style="color:#f92672">=&lt;/span> func
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Introspect wrapped function, instead of the decorator class.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> functools&lt;span style="color:#f92672">.&lt;/span>update_wrapper(self, func)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Uncompile wrapped function.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> uncompiled &lt;span style="color:#f92672">=&lt;/span> uncompile(func&lt;span style="color:#f92672">.&lt;/span>__code__)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Parse AST and modify it.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tree &lt;span style="color:#f92672">=&lt;/span> parse_snippet(&lt;span style="color:#f92672">*&lt;/span>uncompiled)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tree &lt;span style="color:#f92672">=&lt;/span> FunctionToGenerator()&lt;span style="color:#f92672">.&lt;/span>visit(tree)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> uncompiled[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> tree
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Recompile wrapped function.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>recompiled &lt;span style="color:#f92672">=&lt;/span> recompile(&lt;span style="color:#f92672">*&lt;/span>uncompiled)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Execute recompiled code (defines `_pm_compiled_model_generator`)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># in the locals() namespace and assign it to an attribute.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Refer to http://lucumr.pocoo.org/2011/2/1/exec-in-python/&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> exec(self&lt;span style="color:#f92672">.&lt;/span>recompiled, &lt;span style="color:#66d9ef">None&lt;/span>, locals())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>model_generator &lt;span style="color:#f92672">=&lt;/span> locals()[&lt;span style="color:#e6db74">&amp;#34;_pm_compiled_model_generator&amp;#34;&lt;/span>]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This class isn&amp;rsquo;t meant to be instantiated: rather, it&amp;rsquo;s &lt;a href="https://realpython.com/primer-on-python-decorators/#classes-as-decorators">meant to be used as a Python
+decorator&lt;/a>.
+Essentially, it &amp;ldquo;uncompiles&amp;rdquo; the function to get the Python source code of the function.
+This source code is then passed to the &lt;code>parse_snippet&lt;/code>&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup> function, which returns the
+AST for the function. We then modify this AST with the &lt;code>FunctionToGenerator&lt;/code> class that
+we defined above. Finally, we recompile this AST and execute it. Recall that executing
+this recompiled AST defines a new function called &lt;code>_pm_compiled_model_generator&lt;/code>. This
+new function, accessed via the &lt;code>locals&lt;/code> variable&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup>, is then bound to the class&amp;rsquo;s
+&lt;code>self.model_generator&lt;/code>, which explains the confusing-looking
+&lt;code>self.model_generator = locals()[&amp;quot;_pm_compiled_model_generator&amp;quot;]&lt;/code>.&lt;/p>
+&lt;p>Finally, the user facing API looks like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@Model&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">linear_regression&lt;/span>(x):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scale &lt;span style="color:#f92672">=&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>HalfCauchy(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> coefs &lt;span style="color:#f92672">=&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>zeros(x&lt;span style="color:#f92672">.&lt;/span>shape[&lt;span style="color:#ae81ff">1&lt;/span>]), &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> predictions &lt;span style="color:#f92672">=&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>linalg&lt;span style="color:#f92672">.&lt;/span>matvec(x, coefs), scale)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> predictions
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># &amp;lt;generator object _pm_compiled_model_generator at 0x107a5c5c8&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>linear_regression&lt;span style="color:#f92672">.&lt;/span>model_generator(tf&lt;span style="color:#f92672">.&lt;/span>zeros([&lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#ae81ff">10&lt;/span>])) &lt;span style="color:#75715e"># Shape is irrelevant here&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>As you can see, the users need not write &lt;code>yield&lt;/code> while specifying their models, and the
+PyMC inference engine can now simply call the &lt;code>model_generator&lt;/code> method of
+&lt;code>linear_regression&lt;/code> to produce a generator called &lt;code>_pm_compiled_model_generator&lt;/code>, as
+desired. Success!&lt;/p>
+&lt;h2 id="lessons-learnt">Lessons Learnt&lt;/h2>
+&lt;p>Again, PyMC4&amp;rsquo;s model specification API will &lt;em>not&lt;/em> be incorporating these changes: the
+PyMC developers have since decided that the &lt;code>yield&lt;/code> keyword is the most elegant (but not
+necessarily the easiest) way for users to specify statistical models. This post is just
+meant to summarize the lessons learnt while pursuing this line of inquiry.&lt;/p>
+&lt;p>Reading and parsing the AST is perfectly safe: that&amp;rsquo;s basically just a form of code
+introspection, which is totally a valid thing to do! It&amp;rsquo;s when you want to modify or
+even rewrite the AST that things start getting &lt;del>janky&lt;/del> dangerous (especially if you
+want to execute the modified AST &lt;em>instead&lt;/em> of the written code, as I was trying to do!).&lt;/p>
+&lt;p>If you want to programmatically modify the AST (e.g. &amp;ldquo;insert a &lt;code>yield&lt;/code> keyword in front
+of every assignment of a TensorFlow Distribution&amp;rdquo;, as in our case), stop and consider if
+you&amp;rsquo;re attempting to modify the &lt;em>semantics&lt;/em> of the written code, and if you&amp;rsquo;re sure that
+that&amp;rsquo;s a good idea (e.g. the &lt;code>yield&lt;/code> keywords in the code &lt;em>mean something&lt;/em>, and remove
+those keywords changes the apparent semantics of the code).&lt;/p>
+&lt;h2 id="further-reading">Further Reading&lt;/h2>
+&lt;p>I&amp;rsquo;ve only given a high-level overview of this project here, and a lot of the technical
+details were glossed over. If you&amp;rsquo;re hungry for more, check out the following resources:&lt;/p>
+&lt;ul>
+&lt;li>Notebooks and more extensive documentation on this project &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield">are on
+GitHub&lt;/a>. In
+particular, it might be helpful to peruse the &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#links-and-references">links and references at the end of the
+READMEs&lt;/a>.&lt;/li>
+&lt;li>For those looking to programmatically inspect/modify Python ASTs the same way I did
+here, you might find &lt;a href="https://twitter.com/remilouf/status/1213079103156424704">this Twitter
+thread&lt;/a> helpful.&lt;/li>
+&lt;li>And for those wondering how PyMC4&amp;rsquo;s model specification API ended up, some very smart
+people gave their feedback on this work &lt;a href="https://twitter.com/avibryant/status/1150827954319982592">on
+Twitter&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Or should I say, complicating? At any rate, changing!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>I was &lt;a href="https://twitter.com/avibryant/status/1150827954319982592">subsequently
+convinced&lt;/a> that this
+isn&amp;rsquo;t a leaky abstraction after all.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>I omitted the implementation of &lt;code>parse_snippet&lt;/code> for brevity. If you want
+to see it, check out the &amp;ldquo;AST Helper Functions&amp;rdquo; section of &lt;a href="https://github.com/eigenfoo/random/blob/master/python/ast-hiding-yield/00-prototype/hiding-yield.ipynb">this
+notebook&lt;/a>.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>For way more information on &lt;code>exec&lt;/code>, &lt;code>eval&lt;/code>, &lt;code>locals&lt;/code> and &lt;code>globals&lt;/code>, check
+out &lt;a href="https://lucumr.pocoo.org/2011/2/1/exec-in-python/">Armin Ronacher&amp;rsquo;s blog
+post&lt;/a> and &lt;a href="https://stackoverflow.com/questions/2220699/whats-the-difference-between-eval-exec-and-compile">this
+StackOverflow
+answer&lt;/a>.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Python Port of _Common Statistical Tests are Linear Models_</title><link>https://www.georgeho.org/stat-tests-are-linear-model/</link><pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stat-tests-are-linear-model/</guid><description>&lt;p>I ported &lt;a href="https://lindeloev.net">Jonas Lindeløv&lt;/a>&amp;rsquo;s essay, &lt;a href="https://lindeloev.github.io/tests-as-linear/">&lt;em>Common Statistical
+Tests are Linear Models&lt;/em>&lt;/a> from R
+to Python. Check it out on &lt;a href="https://www.georgeho.org/tests-as-linear/">my
+blog&lt;/a>,
+&lt;a href="https://github.com/eigenfoo/tests-as-linear">GitHub&lt;/a>, or
+&lt;a href="https://gke.mybinder.org/v2/gh/eigenfoo/tests-as-linear/master?filepath=tests-as-linear.ipynb">Binder&lt;/a>!&lt;/p></description></item></channel></rss>

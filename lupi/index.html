@@ -1,0 +1,187 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" href=https://www.georgeho.org/assets/images/favicon.ico>
+<title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+ | ⁂ George Ho</title><meta name=title content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+">
+<meta name=description content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets.">
+<meta name=keywords content="mathematics,machine-learning,">
+<meta property="og:title" content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+">
+<meta property="og:description" content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.georgeho.org/lupi/"><meta property="og:image" content="https://www.georgeho.org/images/share.png"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2018-01-30T00:00:00+00:00">
+<meta property="article:modified_time" content="2018-01-30T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
+<meta name=twitter:card content="summary_large_image">
+<meta name=twitter:image content="https://www.georgeho.org/images/share.png">
+<meta name=twitter:title content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+">
+<meta name=twitter:description content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets.">
+<meta itemprop=name content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+">
+<meta itemprop=description content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets."><meta itemprop=datePublished content="2018-01-30T00:00:00+00:00">
+<meta itemprop=dateModified content="2018-01-30T00:00:00+00:00">
+<meta itemprop=wordCount content="1812"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=keywords content="mathematics,machine-learning,">
+<meta name=referrer content="no-referrer-when-downgrade">
+<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script>
+<link rel=preconnect href=https://fonts.googleapis.com>
+<link rel=preconnect href=https://fonts.gstatic.com crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<header><a href=/ class=title>
+<h2>⁂ George Ho</h2></a>
+<nav><a href=/>Home</a>
+<a href=/work/>Work</a>
+<a href=/blog>Blog</a>
+</nav></header><main>
+<h1><del>Fruit</del> Loops and Learning - The LUPI Paradigm and SVM+</h1><p>
+<i>
+<time datetime=2018-01-30 pubdate>
+30 Jan, 2018
+</time>
+</i>
+</p><content>
+<p>Here&rsquo;s a short story you might know: you have a black box, whose name is
+<em>Machine Learning Algorithm</em>. It&rsquo;s got two modes: training mode and testing
+mode. You set it to training mode, and throw in a lot (sometimes <em>a lot</em> a lot)
+of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called
+the <em>examples</em> and the $y_i$ are called the <em>targets</em>. Then, you set it to
+testing mode and throw in some more examples, for which you don&rsquo;t have the
+corresponding targets. You hope the $y_i$s that come out are in some sense
+the “right” ones.</p><p>Generally speaking, this is a parable of <em>supervised learning</em>. However, Vapnik
+(the inventor of the
+<a href=https://en.wikipedia.org/wiki/Support_vector_machine>SVM</a>) recently described
+a new way to think about machine learning (e.g.
+<a href=http://jmlr.csail.mit.edu/papers/volume16/vapnik15b/vapnik15b.pdf>here</a>):
+<em>learning using privileged information</em>, or <em>LUPI</em> for short.</p><p>This post is meant to introduce the LUPI paradigm of machine learning to
+people who are generally familiar with supervised learning and SVMs, and are
+interested in seeing the math and intuition behind both things extended to the
+LUPI paradigm.</p><h2 id=what-is-lupi>What is LUPI?</h2><p>The main idea is that instead of two-tuples $(x_i, y_i)$, the black box is fed
+three-tuples $(x_i, x_i^{<em>}, y_i) $, where the $x^{</em>}$s are the so-called
+<em>privileged information</em> that is only available during training, and not during
+testing. The hope is that this information will train the model to better
+generalize during the testing phase.</p><p>Vapnik offers many examples in which LUPI can be applied in real life: in
+bioinformatics and proteomics (where advanced biological models, which the
+machine might not necessarily “understand”, serve as the privileged
+information), in financial time series analysis (where future movements of the
+time series are the unknown at prediction time, but are available
+retrospectively), and in the classic MNIST dataset, where the images were
+converted to a lower resolution, but each annotated with a “poetic description”
+(which was available for the training data but not for the testing data).</p><p>Vapnik&rsquo;s team ran tests on well-known datasets in all three application areas
+and found that his newly-developed LUPI methods performed noticeably better than
+classical SVMs in both convergence time (i.e. the number of examples necessary
+to achieve a certain degree of accuracy) and estimation of a good predictor
+function. In fact, Vapnik&rsquo;s proof-of-concept experiments are so whacky that
+they actually <a href=https://nautil.us/issue/6/secret-codes/teaching-me-softly>make for an entertaining read
+</a>!</p><h2 id=classical-svms-separable-and-non-separable-case>Classical SVMs (separable and non-separable case)</h2><p>There are many ways of thinking about SVMs, but I think that the one that is
+most instructive here is to think of them as solving the following optimization
+problem:</p><blockquote>
+<p>Minimize $ \frac{1}{2} |w|^2 $</p><p>subject to $y_i [ w \cdot x_i + b ] \geq 1, 1 \leq i \leq l$.</p></blockquote><p>Basically all this is saying is that we want to find the hyperplane that
+separates our data by the maximum margin. More technically speaking, this finds
+the parameters ($w$ and $b$) of the maximum margin hyperplane, with $l_2$
+regularization.</p><p>In the non-separable case, we concede that our hyperplane may not classify all
+examples perfectly (or that it may not be desireable to do so: think of
+overfitting), and so we introduce a so-called <em>slack variable</em> $\xi_i \geq 0$
+for each example $i$, which measures the severity of misclassification of that
+example. With that, the optimization becomes:</p><blockquote>
+<p>Minimize $\frac{1}{2} |w|^2 + C\sum_{i=1}^{l}{\xi_i}$</p><p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - \xi_i, \xi_i \geq 0, 1
+\leq i \leq l$.</p></blockquote><p>where $C$ is some regularization parameter.</p><p>This says the same thing as the previous optimization problem, but now allows
+points to be (a) classified properly ($\xi_i = 0$), (b) within the margin but
+still classified properly ($0 &lt; \xi_i &lt; 1$), or (c) misclassified
+($1 \leq \xi_i$).</p><p>In both the separable and non-separable cases, the decision rule is simply
+$\hat{y} = \text{sign}(w \cdot x + b)$.</p><p>An important thing to note is that, in the separable case, the SVM uses $l$
+examples to estimate the $n$ components of $w$, whereas in the nonseparable
+case, the SVM uses $l$ examples to estimate $n+l$ parameters: the $n$
+components of $w$ and $l$ values of slacks $\xi_i$. Thus, in the
+non-separable case, the number of parameters to be estimated is always larger
+than the number of examples: it does not matter here that most of slacks may be
+equal to zero: the SVM still has to estimate all of them.</p><p>The way both optimization problems are actually <em>solved</em> is fairly involved (they
+require <a href=https://en.wikipedia.org/wiki/Lagrange_multiplier>Lagrange
+multipliers</a>), but in terms
+of getting an intuitive feel for how SVMs work, I think that examining the
+optimization problems suffice!</p><h2 id=what-is-svm>What is SVM+?</h2><p>In his paper introducing the LUPI paradigm, Vapnik outlines <em>SVM+</em>, a
+modified form of the SVM that fits well into the LUPI paradigm, using privileged
+information to improve performance. It should be emphasized that LUPI is a
+paradigm - a way of thinking about machine learning - and not just a collection
+of algorithms. SVM+ is just one technique that interoperates with the LUPI
+paradigm.</p><p>The innovation of the SVM+ algorithm is that is uses the privileged information
+to estimate the slack variables. Given the training three-tuple $(x, x^{*},
+y)$, we map $x$ to the feature space $Z$, and $x^{*}$ to a separate feature
+space $Z^{*}$. Then, the decision rule is $\hat{y} = \text{sign}(w \cdot x +
+b)$ and the slack variables are estimated by $\xi = w^{*} \cdot x^{*} +
+b^{*}$.</p><p>In order to find $w$, $b$, $w^{*}$ and $b^{*}$, we solve the following
+optimization problem:</p><blockquote>
+<p>Minimize $\frac{1}{2} (|w|^2 + \gamma |w^{*}|^2) +
+C \sum_{i=1}^{l}{(w^{*} \cdot x_i^{*} + b^{*})}$</p><p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - (w^{*} \cdot x^{*} + b^{*}),
+(w^{*} \cdot x^{*} + b^{*}) \geq 0, 1 \leq i \leq l$.</p></blockquote><p>where $\gamma$ indicates the extent to which the slack estimation should be
+regularized in comparison to the SVM. Notice how this optimization problem is
+essentially identical to the non-separable classical SVM, except the slacks
+$\xi_i$ are now estimated with $w^{*} \cdot x^{*} + b^{*}$.</p><p>Again, the method of actually solving this optimization problem involves
+Lagrange multipliers and quadratic programming, but I think the intuition is
+captured in the optimization problem statement.</p><h2 id=interpretation-of-svm>Interpretation of SVM+</h2><p>The SVM+ has a very ready interpretation. Instead of a single feature space, it
+has two: one in which the non-privileged information lives (where decisions are
+made), and one in which the privileged information lives (where slack variables
+are estimated).</p><p>But what&rsquo;s the point of this second feature space? How does it help us? Vapnik
+terms this problem <em>knowledge transfer</em>: it&rsquo;s all well and good for us to learn
+from the privileged information, but it&rsquo;s all for naught if we can&rsquo;t use this
+newfound knowledge in the test phase.</p><p>The way knowledge transfer is resolved here is by assuming that <em>examples in the
+training set that are hard to separate in the privileged space, are also hard to
+separate in the regular space</em>. Therefore, we can use the privileged information
+to obtain an estimate for the slack variables.</p><p>Of course, SVMs are a technique with many possible interpretations, of which my
+presentation (in terms of the optimization of $w$ and $b$) is just one. For
+example, it&rsquo;s possible to think of SVMs in terms of kernels functions, or as
+linear classifiers minimizing hinge loss. In all cases, it&rsquo;s possible and
+worthwhile to understand that interpretation of SVMs, and how the LUPI paradigm
+contributes to or extends that interpretation. I&rsquo;m hoping to write a piece later
+to explain these exact topics.</p><p>Vapnik also puts a great emphasis on analyzing SVM+ based on its statistical
+learning theoretic properties (in particular, analyzing its rate of convergence
+via the <a href=https://en.wikipedia.org/wiki/VC_dimension>VC dimension</a>). Vapnik was
+one of the main pioneers behind statistical learning theory, and has written an
+<a href=https://www.amazon.com/Statistical-Learning-Theory-Vladimir-Vapnik/dp/0471030031>entire
+book</a>
+on this stuff <del>which I have not read</del>, so I&rsquo;ll leave that part aside for now. I
+hope to understand this stuff one day.</p><h2 id=implementation-of-svm>Implementation of SVM+</h2><p>There&rsquo;s just one catch: SVM+ is actually an fairly inefficient algorithm, and
+definitely will not scale to large data sets. What&rsquo;s so bad about it? <em>It has
+$n$ training examples but $2n$ variables to estimate.</em> This is twice as many
+variables to estimate as the standard formulation of the <a href=https://en.wikipedia.org/wiki/Support_vector_machine#Computing_the_SVM_classifier>vanilla
+SVM</a>.
+This isn&rsquo;t something that we can patch: the problem is inherent to the
+Lagrangian dual formulation that Vapnik and Vashist proposed in 1995.</p><p>Even worse, the optimization problem has constraints that are very different
+from those of the standard SVM. In essence, this means that efficient libraries
+out-of-the-box solvers for the standard SVM (e.g.
+<a href=https://www.csie.ntu.edu.tw/~cjlin/libsvm/>LIBSVM</a> and
+<a href=https://www.csie.ntu.edu.tw/~cjlin/liblinear/>LIBLINEAR</a>) can&rsquo;t be used to
+train an SVM+ model.</p><p>Luckily, <a href=https://www.researchgate.net/publication/301880839_Simple_and_Efficient_Learning_using_Privileged_Information>a recent paper by Xu et
+al.</a>
+describes a neat mathematical trick to implement SVM+ in a simple and efficient
+way. With this amendment, the authors rechristen the algorithm as SVM2+.
+Essentially, instead of using the hinge loss when training SVM+, we will instead
+use the <em>squared</em> hinge loss. It turns out that changing the loss function in
+this way leads to a tiny miracle.</p><p>This (re)formulation of SVM+ becomes <em>identical</em> to that of the standard SVM,
+except we replace the Gram matrix (a.k.a. kernel matrix) $\bf K$ by $\bf K +
+\bf Q_\lambda \odot (\bf y y^t)$, where</p><ul>
+<li>$\bf y$ is the target vector</li><li>$\odot$ denotes the Hadamard product</li><li>$\bf{Q_\lambda}$ is given by $Q_\lambda = \frac{1}{\lambda} (\tilde{K}
+(\frac{\lambda}{C} I_n + \tilde{K})^{-1} \tilde{K})$, and</li><li>$\bf \tilde{K}$ is the Gram matrix formed by the privileged information</li></ul><p>So by replacing the hinge loss with the squared hinge loss, the SVM+ formulation
+can now be solved with existing libraries!</p><h2 id=extensions-to-svm>Extensions to SVM+</h2><p>In his paper, Vapnik makes it clear that LUPI is a very general and abstract
+paradigm, and as such there is plenty of room for creativity and innovation -
+not just in researching and developing new LUPI methods and algorithms, but also
+in implementing and applying them. It is unknown how to best go about supplying
+privileged information so as to get good performance. How should the data be
+feature engineered? How much signal should be in the privileged information?
+These are all open questions.</p><p>Vapnik himself opens up three avenues to extend the SVM+ algorithm:</p><ol>
+<li><em>a mixture model of slacks:</em> when slacks are estimated by a mixture of a
+smooth function and some prior</li><li><em>a model where privileged information is available only for a part of the
+training data:</em> where we can only supply privileged information on a small
+subset of the training examples</li><li><em>multiple-space privileged information:</em> where the privileged information we
+can supply do not all share the same features</li></ol><p>Clearly, there&rsquo;s a lot of potential in the LUPI paradigm, as well as a lot of
+reasons to be skeptical. It&rsquo;s very much a nascent perspective of machine
+learning, so I&rsquo;m interested in keeping an eye on it going forward. I&rsquo;m hoping
+to write more posts on LUPI in the future!</p></content>
+<p>
+<a href=https://www.georgeho.org/blog/mathematics/>#mathematics</a>
+<a href=https://www.georgeho.org/blog/machine-learning/>#machine-learning</a>
+</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
+</footer></body></html>

@@ -1,0 +1,1424 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>pymc on ⁂ George Ho</title><link>https://www.georgeho.org/blog/pymc/</link><description>Recent content in pymc on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 06 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/pymc/index.xml" rel="self" type="application/rss+xml"/><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>https://www.georgeho.org/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/littlemcmc/</guid><description>&lt;center>
+&lt;img
+src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
+alt="LittleMCMC logo">
+&lt;/center>
+&lt;p>Recently there has been a modularization (or, if you&amp;rsquo;re hip with tech-lingo, an
+&lt;a href="https://techcrunch.com/2015/04/18/the-unbundling-of-everything/">&lt;em>unbundling&lt;/em>&lt;/a>)
+of Bayesian modelling libraries. Whereas before, probability distributions,
+model specification, inference and diagnostics were more or less rolled into one
+library, it&amp;rsquo;s becoming more and more realistic to specify a model in one
+library, accelerate it using another, perform inference with a third and use a
+fourth to visualize the results. (For example, Junpeng Lao has recently had
+&lt;a href="https://twitter.com/junpenglao/status/1309470970223226882">good success&lt;/a> doing
+exactly this!)&lt;/p>
+&lt;p>It&amp;rsquo;s in this spirit of unbundling that the PyMC developers wanted to &lt;a href="https://discourse.pymc.io/t/isolate-nuts-into-a-new-library/3974">spin out
+the core HMC and NUTS samplers from PyMC3 into a separate
+library&lt;/a>.
+PyMC3 has a very well-tested and performant Python implementation of HMC and
+NUTS, which would be very useful to any users who have their own functions for
+computing log-probability and its gradients, and who want to use a lightweight
+and reliable sampler.&lt;/p>
+&lt;p>So for example, if you&amp;rsquo;re a physical scientist with a Bayesian model who&amp;rsquo;s
+written your own functions to compute the log probability and its gradients
+(perhaps for performance or interoperability reasons), and need a good MCMC
+sampler, then &lt;code>littlemcmc&lt;/code> is for you! As long as you can call your functions
+from Python, you can use the same HMC or NUTS sampler that&amp;rsquo;s used by the rest of
+the PyMC3 community.&lt;/p>
+&lt;p>So without further ado: please check out &lt;code>littlemcmc&lt;/code>!&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>https://www.georgeho.org/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
+API by manipulating the &lt;a href="https://docs.python.org/3/library/ast.html">Python abstract syntax
+tree&lt;/a> (AST) of the model code. The PyMC
+developers didn&amp;rsquo;t end up pursuing those API changes any further, but not until I had the
+chance to learn a lot about Python ASTs.&lt;/p>
+&lt;p>Enough curious people have asked me about my experience tinkering with ASTs that I
+figure I&amp;rsquo;d write a short post about the details of my project, in the hope that someone
+else will find it useful.&lt;/p>
+&lt;p>You should read this blog post as a quick overview of my experience with Python ASTs, or
+an annotated list of links, and not a comprehensive tutorial on model specification APIs
+or Python ASTs. For a full paper trail of my adventures with Python ASTs, check out &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield">my
+notebooks on
+GitHub&lt;/a>.&lt;/p>
+&lt;h2 id="the-problem">The Problem&lt;/h2>
+&lt;p>Originally, PyMC4&amp;rsquo;s proposed model specification API looked something like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">linear_regression&lt;/span>(x):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scale &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>HalfCauchy(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> coefs &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>zeros(x&lt;span style="color:#f92672">.&lt;/span>shape[&lt;span style="color:#ae81ff">1&lt;/span>]), &lt;span style="color:#ae81ff">1&lt;/span>, )
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> predictions &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>linalg&lt;span style="color:#f92672">.&lt;/span>matvec(x, coefs), scale)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> predictions
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The main drawback to this API was that the &lt;code>yield&lt;/code> keyword was confusing. Many users
+don’t really understand Python generators, and those who do might only understand
+&lt;code>yield&lt;/code> as a drop-in replacement for &lt;code>return&lt;/code> (that is, they might understand what it
+means for a function to end in &lt;code>yield foo&lt;/code>, but would be uncomfortable with &lt;code>bar = yield foo&lt;/code>).&lt;/p>
+&lt;p>Furthermore, the &lt;code>yield&lt;/code> keyword introduces a leaky abstraction&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>: users don’t care
+about whether model is a function or a generator, and they shouldn&amp;rsquo;t need to. More
+generally, users shouldn&amp;rsquo;t have to know anything about how PyMC works in order to use
+it: ideally, the only thing users would need to think about would be their data and
+their model. Having to graft several &lt;code>yield&lt;/code> keywords into their code is a fairly big
+intrusion in that respect.&lt;/p>
+&lt;p>Finally, this model specification API is essentially moving the problem off of our
+plates and onto our users. The entire point of the PyMC project is to provide a friendly
+and easy-to-use interface for Bayesian modelling.&lt;/p>
+&lt;p>To enumerate the problem further, we wanted to:&lt;/p>
+&lt;ol>
+&lt;li>Hide the &lt;code>yield&lt;/code> keyword from the user-facing model specification API.&lt;/li>
+&lt;li>Obtain the user-defined model as a generator.&lt;/li>
+&lt;/ol>
+&lt;p>The main difficulty with the first goal is that as soon as we remove &lt;code>yield&lt;/code> from the
+model function, it is no longer a generator. However, the PyMC inference engine needs the
+model as a generator, since this allows us to interrupt the control flow of the model at
+various points to do certain things:&lt;/p>
+&lt;ul>
+&lt;li>Manage random variable names.&lt;/li>
+&lt;li>Perform sampling.&lt;/li>
+&lt;li>Other arbitrary PyMC magic that I&amp;rsquo;m truthfully not familiar with.&lt;/li>
+&lt;/ul>
+&lt;p>In short, the user writes their model as a function, but we require the model as a
+generator.&lt;/p>
+&lt;p>I opine on why this problem is challenging a lot more
+&lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#why-is-this-problem-hard">here&lt;/a>.&lt;/p>
+&lt;h2 id="the-solution">The Solution&lt;/h2>
+&lt;p>First, I wrote a &lt;code>FunctionToGenerator&lt;/code> class:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">FunctionToGenerator&lt;/span>(ast&lt;span style="color:#f92672">.&lt;/span>NodeTransformer):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> This subclass traverses the AST of the user-written, decorated,
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> model specification and transforms it into a generator for the
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> model. Subclassing in this way is the idiomatic way to transform
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> an AST.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> Specifically:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> 1. Add `yield` keywords to all assignments
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> E.g. `x = tfd.Normal(0, 1)` -&amp;gt; `x = yield tfd.Normal(0, 1)`
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> 2. Rename the model specification function to
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> `_pm_compiled_model_generator`. This is done out an abundance
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> of caution more than anything.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> 3. Remove the @Model decorator. Otherwise, we risk running into
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> an infinite recursion.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">visit_Assign&lt;/span>(self, node):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node &lt;span style="color:#f92672">=&lt;/span> node
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node&lt;span style="color:#f92672">.&lt;/span>value &lt;span style="color:#f92672">=&lt;/span> ast&lt;span style="color:#f92672">.&lt;/span>Yield(value&lt;span style="color:#f92672">=&lt;/span>new_node&lt;span style="color:#f92672">.&lt;/span>value)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Tie up loose ends in the AST.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>copy_location(new_node, node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>fix_missing_locations(new_node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>generic_visit(node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> new_node
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">visit_FunctionDef&lt;/span>(self, node):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node &lt;span style="color:#f92672">=&lt;/span> node
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node&lt;span style="color:#f92672">.&lt;/span>name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;_pm_compiled_model_generator&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node&lt;span style="color:#f92672">.&lt;/span>decorator_list &lt;span style="color:#f92672">=&lt;/span> []
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Tie up loose ends in the AST.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>copy_location(new_node, node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>fix_missing_locations(new_node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>generic_visit(node)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> new_node
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Subclassing &lt;code>ast.NodeTransformer&lt;/code> (as &lt;code>FunctionToGenerator&lt;/code> does) is the &lt;a href="https://greentreesnakes.readthedocs.io/en/latest/manipulating.html#modifying-the-tree">recommended
+way of modifying
+ASTs&lt;/a>.
+The functionality of &lt;code>FunctionToGenerator&lt;/code> is pretty well described by the docstring:
+the &lt;code>visit_Assign&lt;/code> method adds the &lt;code>yield&lt;/code> keyword to all assignments by wrapping the
+visited &lt;code>Assign&lt;/code> node within a &lt;code>Yield&lt;/code> node. The &lt;code>visit_FunctionDef&lt;/code> method removes the
+decorator and renames the function to &lt;code>_pm_compiled_model_generator&lt;/code>. All told, after
+the &lt;code>NodeTransformer&lt;/code> is done with the AST, we have one function,
+&lt;code>_pm_compiled_model_generator&lt;/code>, which is a modified version of the user-defined
+function.&lt;/p>
+&lt;p>Second, the &lt;code>Model&lt;/code> class:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Model&lt;/span>:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34; pm.Model decorator. &amp;#34;&amp;#34;&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self, func):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>func &lt;span style="color:#f92672">=&lt;/span> func
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Introspect wrapped function, instead of the decorator class.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> functools&lt;span style="color:#f92672">.&lt;/span>update_wrapper(self, func)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Uncompile wrapped function.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> uncompiled &lt;span style="color:#f92672">=&lt;/span> uncompile(func&lt;span style="color:#f92672">.&lt;/span>__code__)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Parse AST and modify it.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tree &lt;span style="color:#f92672">=&lt;/span> parse_snippet(&lt;span style="color:#f92672">*&lt;/span>uncompiled)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tree &lt;span style="color:#f92672">=&lt;/span> FunctionToGenerator()&lt;span style="color:#f92672">.&lt;/span>visit(tree)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> uncompiled[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> tree
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Recompile wrapped function.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>recompiled &lt;span style="color:#f92672">=&lt;/span> recompile(&lt;span style="color:#f92672">*&lt;/span>uncompiled)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Execute recompiled code (defines `_pm_compiled_model_generator`)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># in the locals() namespace and assign it to an attribute.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Refer to http://lucumr.pocoo.org/2011/2/1/exec-in-python/&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> exec(self&lt;span style="color:#f92672">.&lt;/span>recompiled, &lt;span style="color:#66d9ef">None&lt;/span>, locals())
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>model_generator &lt;span style="color:#f92672">=&lt;/span> locals()[&lt;span style="color:#e6db74">&amp;#34;_pm_compiled_model_generator&amp;#34;&lt;/span>]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This class isn&amp;rsquo;t meant to be instantiated: rather, it&amp;rsquo;s &lt;a href="https://realpython.com/primer-on-python-decorators/#classes-as-decorators">meant to be used as a Python
+decorator&lt;/a>.
+Essentially, it &amp;ldquo;uncompiles&amp;rdquo; the function to get the Python source code of the function.
+This source code is then passed to the &lt;code>parse_snippet&lt;/code>&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup> function, which returns the
+AST for the function. We then modify this AST with the &lt;code>FunctionToGenerator&lt;/code> class that
+we defined above. Finally, we recompile this AST and execute it. Recall that executing
+this recompiled AST defines a new function called &lt;code>_pm_compiled_model_generator&lt;/code>. This
+new function, accessed via the &lt;code>locals&lt;/code> variable&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup>, is then bound to the class&amp;rsquo;s
+&lt;code>self.model_generator&lt;/code>, which explains the confusing-looking
+&lt;code>self.model_generator = locals()[&amp;quot;_pm_compiled_model_generator&amp;quot;]&lt;/code>.&lt;/p>
+&lt;p>Finally, the user facing API looks like this:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@Model&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">linear_regression&lt;/span>(x):
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scale &lt;span style="color:#f92672">=&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>HalfCauchy(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> coefs &lt;span style="color:#f92672">=&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>zeros(x&lt;span style="color:#f92672">.&lt;/span>shape[&lt;span style="color:#ae81ff">1&lt;/span>]), &lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> predictions &lt;span style="color:#f92672">=&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>linalg&lt;span style="color:#f92672">.&lt;/span>matvec(x, coefs), scale)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> predictions
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># &amp;lt;generator object _pm_compiled_model_generator at 0x107a5c5c8&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>linear_regression&lt;span style="color:#f92672">.&lt;/span>model_generator(tf&lt;span style="color:#f92672">.&lt;/span>zeros([&lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#ae81ff">10&lt;/span>])) &lt;span style="color:#75715e"># Shape is irrelevant here&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>As you can see, the users need not write &lt;code>yield&lt;/code> while specifying their models, and the
+PyMC inference engine can now simply call the &lt;code>model_generator&lt;/code> method of
+&lt;code>linear_regression&lt;/code> to produce a generator called &lt;code>_pm_compiled_model_generator&lt;/code>, as
+desired. Success!&lt;/p>
+&lt;h2 id="lessons-learnt">Lessons Learnt&lt;/h2>
+&lt;p>Again, PyMC4&amp;rsquo;s model specification API will &lt;em>not&lt;/em> be incorporating these changes: the
+PyMC developers have since decided that the &lt;code>yield&lt;/code> keyword is the most elegant (but not
+necessarily the easiest) way for users to specify statistical models. This post is just
+meant to summarize the lessons learnt while pursuing this line of inquiry.&lt;/p>
+&lt;p>Reading and parsing the AST is perfectly safe: that&amp;rsquo;s basically just a form of code
+introspection, which is totally a valid thing to do! It&amp;rsquo;s when you want to modify or
+even rewrite the AST that things start getting &lt;del>janky&lt;/del> dangerous (especially if you
+want to execute the modified AST &lt;em>instead&lt;/em> of the written code, as I was trying to do!).&lt;/p>
+&lt;p>If you want to programmatically modify the AST (e.g. &amp;ldquo;insert a &lt;code>yield&lt;/code> keyword in front
+of every assignment of a TensorFlow Distribution&amp;rdquo;, as in our case), stop and consider if
+you&amp;rsquo;re attempting to modify the &lt;em>semantics&lt;/em> of the written code, and if you&amp;rsquo;re sure that
+that&amp;rsquo;s a good idea (e.g. the &lt;code>yield&lt;/code> keywords in the code &lt;em>mean something&lt;/em>, and remove
+those keywords changes the apparent semantics of the code).&lt;/p>
+&lt;h2 id="further-reading">Further Reading&lt;/h2>
+&lt;p>I&amp;rsquo;ve only given a high-level overview of this project here, and a lot of the technical
+details were glossed over. If you&amp;rsquo;re hungry for more, check out the following resources:&lt;/p>
+&lt;ul>
+&lt;li>Notebooks and more extensive documentation on this project &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield">are on
+GitHub&lt;/a>. In
+particular, it might be helpful to peruse the &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#links-and-references">links and references at the end of the
+READMEs&lt;/a>.&lt;/li>
+&lt;li>For those looking to programmatically inspect/modify Python ASTs the same way I did
+here, you might find &lt;a href="https://twitter.com/remilouf/status/1213079103156424704">this Twitter
+thread&lt;/a> helpful.&lt;/li>
+&lt;li>And for those wondering how PyMC4&amp;rsquo;s model specification API ended up, some very smart
+people gave their feedback on this work &lt;a href="https://twitter.com/avibryant/status/1150827954319982592">on
+Twitter&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Or should I say, complicating? At any rate, changing!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>I was &lt;a href="https://twitter.com/avibryant/status/1150827954319982592">subsequently
+convinced&lt;/a> that this
+isn&amp;rsquo;t a leaky abstraction after all.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>I omitted the implementation of &lt;code>parse_snippet&lt;/code> for brevity. If you want
+to see it, check out the &amp;ldquo;AST Helper Functions&amp;rdquo; section of &lt;a href="https://github.com/eigenfoo/random/blob/master/python/ast-hiding-yield/00-prototype/hiding-yield.ipynb">this
+notebook&lt;/a>.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>For way more information on &lt;code>exec&lt;/code>, &lt;code>eval&lt;/code>, &lt;code>locals&lt;/code> and &lt;code>globals&lt;/code>, check
+out &lt;a href="https://lucumr.pocoo.org/2011/2/1/exec-in-python/">Armin Ronacher&amp;rsquo;s blog
+post&lt;/a> and &lt;a href="https://stackoverflow.com/questions/2220699/whats-the-difference-between-eval-exec-and-compile">this
+StackOverflow
+answer&lt;/a>.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>https://www.georgeho.org/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
+Retreat&lt;/a> earlier this month. It was an entire week
+on a beautiful island with some amazingly intelligent Bayesians, and no demands
+on my time other than the self-set (and admittedly vague) goal of contributing
+to probabilistic programming in some way.&lt;/p>
+&lt;p>I initially tried to implement mass matrix adaptation in Tensorflow Probability,
+but I quickly readjusted my goals to something more achievable: running some
+benchmarks with tuning in Hamiltonian Monte Carlo (HMC).&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/galiano.jpg">&lt;img src="https://www.georgeho.org/assets/images/galiano.jpg" alt="A view of a forest on Galiano Island">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/galiano2.jpg">&lt;img src="https://www.georgeho.org/assets/images/galiano2.jpg" alt="The view from a bluff on Galiano Island">&lt;/a>
+&lt;figcaption>Pictures from Galiano Island.&lt;/figcaption>
+&lt;/figure>
+&lt;p>A quick rundown for those unfamiliar: &lt;em>tuning&lt;/em> is what happens before sampling,
+during which the goal is not to actually draw samples, but to &lt;em>prepare&lt;/em> to draw
+samples&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>. For HMC and its variants, this means estimating HMC parameters such
+as the step size, integration time and mass matrix&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>, the last of which is
+basically the covariance matrix of the model parameters. Because my life is
+finite (and I assume everybody else&amp;rsquo;s is too), I limited myself to mass matrix
+adaptation.&lt;/p>
+&lt;p>(If you&amp;rsquo;re still uncertain about the details of tuning or mass matrix
+adaptation, check out &lt;a href="https://colcarroll.github.io/hmc_tuning_talk/">Colin Carroll&amp;rsquo;s essay on HMC
+tuning&lt;/a> or the &lt;a href="https://mc-stan.org/docs/2_20/reference-manual/hmc-algorithm-parameters.html">Stan reference
+manual on HMC
+parameters&lt;/a>:
+I don&amp;rsquo;t explain many more concepts in the rest of this post.)&lt;/p>
+&lt;p>The interesting thing about tuning is that there are no rules: there are no
+asymptotic guarantees we can rely on and no mathematical results to which we can
+turn for enlightened inspiration. The only thing we care about is obtaining a
+decent estimate of the mass matrix, and preferably quickly.&lt;/p>
+&lt;p>Accompanying this lack of understanding of mass matrix adaptation is an
+commensurate lack of (apparent) scientific inquiry — there is scant literature
+to look to, and for open source developers, there is little prior art to draw
+from when writing new implementations of HMC!&lt;/p>
+&lt;p>So I decided to do some empirical legwork and benchmark various methods of mass
+matrix adaptation. Here are the questions I was interested in answering:&lt;/p>
+&lt;ol>
+&lt;li>Is the assumption that the mass matrix is diagonal (in other words, assume
+that all parameters are uncorrelated) a good assumption to make? What are
+the implications of this assumption for the tuning time, and the number of
+effective samples per second?&lt;/li>
+&lt;li>Does the tuning schedule (i.e. the sizes of the adaptation windows) make a
+big difference? Specifically, should we have a schedule of constant
+adaptation windows, or an &amp;ldquo;expanding schedule&amp;rdquo; of exponentially growing
+adaptation windows?&lt;/li>
+&lt;li>Besides assuming the mass matrix is diagonal, are there any other ways of
+simplifying mass matrix adaptation? For example, could we approximate the
+mass matrix as low rank?&lt;/li>
+&lt;/ol>
+&lt;p>I benchmarked five different mass matrix adaptation methods:&lt;/p>
+&lt;ol>
+&lt;li>A diagonal mass matrix (&lt;code>diag&lt;/code>)&lt;/li>
+&lt;li>A full (a.k.a. dense) mass matrix (&lt;code>full&lt;/code>)&lt;/li>
+&lt;li>A diagonal mass matrix adapted on an expanding schedule (&lt;code>diag_exp&lt;/code>)&lt;/li>
+&lt;li>A full mass matrix adapted on an expanding schedule (&lt;code>diag_exp&lt;/code>)&lt;/li>
+&lt;li>A low-rank approximation to the mass matrix using &lt;a href="https://github.com/aseyboldt/covadapt">Adrian Seyboldt&amp;rsquo;s &lt;code>covadapt&lt;/code> library&lt;/a>.&lt;/li>
+&lt;/ol>
+&lt;p>I benchmarked these adaptation methods against six models:&lt;/p>
+&lt;ol>
+&lt;li>A 100-dimensional multivariate normal with a non-diagonal covariance matrix (&lt;code>mvnormal&lt;/code>)&lt;/li>
+&lt;li>A 100-dimensional multivariate normal with a low-rank covariance matrix (&lt;code>lrnormal&lt;/code>)&lt;/li>
+&lt;li>A &lt;a href="https://docs.pymc.io/notebooks/stochastic_volatility.html">stochastic volatility model&lt;/a> (&lt;code>stoch_vol&lt;/code>)&lt;/li>
+&lt;li>The &lt;a href="https://docs.pymc.io/notebooks/Diagnosing_biased_Inference_with_Divergences.html#The-Eight-Schools-Model">eight schools model&lt;/a> (&lt;code>eight&lt;/code>)&lt;/li>
+&lt;li>The &lt;a href="https://docs.pymc.io/notebooks/hierarchical_partial_pooling.html">PyMC3 baseball model&lt;/a> (&lt;code>baseball&lt;/code>)&lt;/li>
+&lt;li>A &lt;a href="https://docs.pymc.io/notebooks/GP-SparseApprox.html#Examples">sparse Gaussian process approximation&lt;/a> (&lt;code>gp&lt;/code>)&lt;/li>
+&lt;/ol>
+&lt;p>Without further ado, the main results are shown below. Afterwards, I make some
+general observations on the benchmarks, and finally I describe various
+shortcomings of my experimental setup (which, if I were more optimistic, I would
+call &amp;ldquo;directions for further work&amp;rdquo;).&lt;/p>
+&lt;h3 id="tuning-times">Tuning Times&lt;/h3>
+&lt;p>This tabulates the tuning time, in seconds, of each adaptation method for each
+model. Lower is better. The lowest tuning time for each model is shown in bold
+italics.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>mvnormal&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>lrnormal&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>stoch_vol&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>gp&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>eight&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>baseball&lt;/code>&lt;/strong>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>diag&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">365.34&lt;/td>
+&lt;td style="text-align:right">340.10&lt;/td>
+&lt;td style="text-align:right">239.59&lt;/td>
+&lt;td style="text-align:right">18.47&lt;/td>
+&lt;td style="text-align:right">2.92&lt;/td>
+&lt;td style="text-align:right">5.32&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>full&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>8.29&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">364.07&lt;/td>
+&lt;td style="text-align:right">904.95&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>14.24&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>2.91&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>4.93&lt;/strong>&lt;/em>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>diag_exp&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">358.50&lt;/td>
+&lt;td style="text-align:right">360.91&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>219.65&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">16.25&lt;/td>
+&lt;td style="text-align:right">3.05&lt;/td>
+&lt;td style="text-align:right">5.08&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>full_exp&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">8.46&lt;/td>
+&lt;td style="text-align:right">142.20&lt;/td>
+&lt;td style="text-align:right">686.58&lt;/td>
+&lt;td style="text-align:right">14.87&lt;/td>
+&lt;td style="text-align:right">3.21&lt;/td>
+&lt;td style="text-align:right">6.04&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>covadapt&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">386.13&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>89.92&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">398.08&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h3 id="effective-samples-per-second">Effective Samples per Second&lt;/h3>
+&lt;p>This tabulates the number of effective samples drawn by each adaptation method
+for each model. Higher is better. The highest numbers of effective samples per
+second is shown in bold italics.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>mvnormal&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>lrnormal&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>stoch_vol&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>gp&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>eight&lt;/code>&lt;/strong>&lt;/th>
+&lt;th style="text-align:right">&lt;strong>&lt;code>baseball&lt;/code>&lt;/strong>&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>diag&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">0.02&lt;/td>
+&lt;td style="text-align:right">1.55&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>11.22&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">65.36&lt;/td>
+&lt;td style="text-align:right">761.82&lt;/td>
+&lt;td style="text-align:right">455.23&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>full&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">1.73&lt;/td>
+&lt;td style="text-align:right">0.01&lt;/td>
+&lt;td style="text-align:right">6.71&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>106.30&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>840.77&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>495.93&lt;/strong>&lt;/em>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>diag_exp&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">0.02&lt;/td>
+&lt;td style="text-align:right">1.51&lt;/td>
+&lt;td style="text-align:right">9.79&lt;/td>
+&lt;td style="text-align:right">59.89&lt;/td>
+&lt;td style="text-align:right">640.90&lt;/td>
+&lt;td style="text-align:right">336.71&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>full_exp&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>1,799.11&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">&lt;em>&lt;strong>1,753.65&lt;/strong>&lt;/em>&lt;/td>
+&lt;td style="text-align:right">0.16&lt;/td>
+&lt;td style="text-align:right">101.99&lt;/td>
+&lt;td style="text-align:right">618.28&lt;/td>
+&lt;td style="text-align:right">360.14&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>&lt;code>covadapt&lt;/code>&lt;/strong>&lt;/td>
+&lt;td style="text-align:right">0.02&lt;/td>
+&lt;td style="text-align:right">693.87&lt;/td>
+&lt;td style="text-align:right">5.71&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="observations">Observations&lt;/h2>
+&lt;blockquote>
+&lt;p>&lt;strong>tldr:&lt;/strong> As is typical with these sorts of things, no one adaptation method
+uniformly outperforms the others.&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>A full mass matrix can provide significant improvements over a diagonal mass
+matrix for both the tuning time and the number of effective samples per
+second. This improvement can sometimes go up to two orders of magnitude!
+&lt;ul>
+&lt;li>This is most noticeable in the &lt;code>mvnormal&lt;/code> model, with heavily correlated
+parameters.&lt;/li>
+&lt;li>Happily, my benchmarks are not the only instance of full mass matrices
+outperforming diagonal ones: &lt;a href="https://dfm.io/posts/pymc3-mass-matrix/">Dan Foreman-Mackey demonstrated something
+similar in one of his blog posts&lt;/a>.&lt;/li>
+&lt;li>However, in models with less extreme correlations among parameters, this
+advantage shrinks significantly (although it doesn&amp;rsquo;t go away entirely).
+Full matrices can also take longer to tune. You can see this in the baseball
+or eight schools model.&lt;/li>
+&lt;li>Nevertheless, full mass matrices never seem to perform egregiously &lt;em>worse&lt;/em>
+than diagonal mass matrices. This makes sense theoretically: a full mass
+matrix can be estimated to be diagonal (at the cost of a quadratic memory
+requirement as opposed to linear), but not vice versa.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Having an expanding schedule for tuning can sometimes give better performance,
+but nowhere near as significant as the difference between diagonal and full
+matrices. This difference is most noticeable for the &lt;code>mvnormal&lt;/code> and &lt;code>lrnormal&lt;/code>
+models (probably because these models have a constant covariance matrix and so
+more careful estimates using expanding windows can provide much better
+sampling).&lt;/li>
+&lt;li>I suspect the number of effective samples per second for a full mass matrix on
+the &lt;code>lrnormal&lt;/code> model (0.01 effective samples per second) is a mistake (or
+some other computational fluke): it looks way too low to be reasonable.&lt;/li>
+&lt;li>I&amp;rsquo;m also surprised that &lt;code>full_exp&lt;/code> does really badly (in terms of effective
+samples per second) on the &lt;code>stoch_vol&lt;/code> model, despite &lt;code>full&lt;/code> doing decently
+well! This is either a fluke, or a really interesting phenomenon to dig in to.&lt;/li>
+&lt;li>&lt;code>covadapt&lt;/code> seems to run into some numerical difficulties? While running these
+benchmarks I ran into an inscrutable and non-reproducible
+&lt;a href="https://stackoverflow.com/q/18436667">&lt;code>ArpackError&lt;/code>&lt;/a> from SciPy.&lt;/li>
+&lt;/ul>
+&lt;h2 id="experimental-setup">Experimental Setup&lt;/h2>
+&lt;ul>
+&lt;li>All samplers were run for 2000 tuning steps and 1000 sampling steps. This is
+unusually high, but is necessary for &lt;code>covadapt&lt;/code> to work well, and I wanted to
+use the same number of iterations across all the benchmarks.&lt;/li>
+&lt;li>My expanding schedule is as follows: the first adaptation window is 100
+iterations, and each subsequent window is 1.005 times the previous window.
+These numbers give 20 updates within 2000 iterations, while maintaining an
+exponentially increasing adaptation window size.&lt;/li>
+&lt;li>I didn&amp;rsquo;t run &lt;code>covadapt&lt;/code> for models with fewer than 100 model parameters.
+With so few parameters, there&amp;rsquo;s no need to approximate a mass matrix as
+low-rank: you can just estimate the full mass matrix!&lt;/li>
+&lt;li>I set &lt;code>target_accept&lt;/code> (a.k.a. &lt;code>adapt_delta&lt;/code> to Stan users) to 0.9 to make all
+divergences go away.&lt;/li>
+&lt;li>All of these numbers were collected by sampling once per model per adaptation
+method (yes only once, sorry) in PyMC3, running on my MacBook Pro.&lt;/li>
+&lt;/ul>
+&lt;h2 id="shortcomings">Shortcomings&lt;/h2>
+&lt;ul>
+&lt;li>In some sense comparing tuning times is not a fair comparison: it&amp;rsquo;s possible
+that some mass matrix estimates converge quicker than others, and so comparing
+their tuning times is essentially penalizing these methods for converging
+faster than others.&lt;/li>
+&lt;li>It&amp;rsquo;s also possible that my expanding schedule for the adaptation windows just
+sucks! There&amp;rsquo;s no reason why the first window needs to be 100 iterations, or
+why 1.005 should be a good multiplier. It looks like Stan &lt;a href="https://github.com/stan-dev/stan/blob/736311d88e99b997f5b902409752fb29d6ec0def/src/stan/mcmc/windowed_adaptation.hpp#L95">doubles their
+adaptation window
+sizes&lt;/a>
+during warmup.&lt;/li>
+&lt;li>These benchmarks are done only for very basic toy models: I should test more
+extensively on more models that people in The Real World™ use.&lt;/li>
+&lt;li>If you are interested in taking these benchmarks further (or perhaps just want
+to fact-check me on my results), the code is &lt;a href="https://github.com/eigenfoo/mass-matrix-benchmarks">sitting in this GitHub
+repository&lt;/a>&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>.&lt;/li>
+&lt;/ul>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>It&amp;rsquo;s good to point out that mass matrix adaptation is to make sampling
+more efficient, not more valid. Theoretically, any mass matrix would work,
+but a good one (i.e. a good estimate of the covariance matrix of the model
+parameters) could sample orders of magnitudes more efficiently.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>…uh, &lt;em>&lt;em>sweats and looks around nervously for differential geometers&lt;/em>&lt;/em>
+more formally called the &lt;em>metric&lt;/em>…&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>There are some violin plots lying around in the notebook, a relic from a
+time when I thought that I would have the patience to run each model and
+adaptation method multiple times.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>https://www.georgeho.org/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
+abstract&lt;/a> to the &lt;a href="https://program-transformations.github.io/">&lt;em>Program Transformations
+for Machine Learning&lt;/em> NeurIPS workshop&lt;/a>. I
+realized that despite knowing a thing or two about Bayesian modelling, I don&amp;rsquo;t
+understand how probabilistic programming frameworks are structured, and therefore
+couldn&amp;rsquo;t appreciate the sophisticated design work going into PyMC4. So I trawled through
+papers, documentation and source code&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> of various open-source probabilistic
+programming frameworks, and this is what I&amp;rsquo;ve managed to take away from it.&lt;/p>
+&lt;p>I assume you know a fair bit about probabilistic programming and Bayesian modelling, and
+are familiar with the big players in the probabilistic programming world. If you&amp;rsquo;re
+unsure, you can &lt;a href="https://www.georgeho.org/bayesian-inference-reading/">read up here&lt;/a>.&lt;/p>
+&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#dissecting-probabilistic-programming-frameworks">Dissecting Probabilistic Programming Frameworks&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#specifying-the-model-languageapi">Specifying the model: language/API&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#building-the-model-density-distributions-and-transformations">Building the model density: distributions and transformations&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#computing-the-posterior-inference-algorithm">Computing the posterior: inference algorithm&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#computing-the-mode-optimizer">Computing the mode: optimizer&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#computing-gradients-autodifferentiation">Computing gradients: autodifferentiation&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#monitoring-inference-diagnostics">Monitoring inference: diagnostics&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#a-zoo-of-probabilistic-programming-frameworks">A Zoo of Probabilistic Programming Frameworks&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#stan">Stan&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#tensorflow-probability-aka-tfp">TensorFlow Probability (a.k.a. TFP)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#pymc3">PyMC3&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#pymc4">PyMC4&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#pyro">Pyro&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;h2 id="dissecting-probabilistic-programming-frameworks">Dissecting Probabilistic Programming Frameworks&lt;/h2>
+&lt;p>A probabilistic programming framework needs to provide six things:&lt;/p>
+&lt;ol>
+&lt;li>A language or API for users to specify a model&lt;/li>
+&lt;li>A library of probability distributions and transformations to build the posterior
+density&lt;/li>
+&lt;li>At least one inference algorithm, which either draws samples from the posterior (in
+the case of Markov Chain Monte Carlo, MCMC) or computes some approximation of it (in
+the case of variational inference, VI)&lt;/li>
+&lt;li>At least one optimizer, which can compute the mode of the posterior density&lt;/li>
+&lt;li>An autodifferentiation library to compute gradients required by the inference
+algorithm and optimizer&lt;/li>
+&lt;li>A suite of diagnostics to monitor and analyze the quality of inference&lt;/li>
+&lt;/ol>
+&lt;p>These six pieces come together like so:&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/prob-prog-flowchart.png" alt="Flowchart illustrating the structure of a probabilistic programmingframeworks">&lt;/p>
+&lt;p>Let&amp;rsquo;s break this down one by one.&lt;/p>
+&lt;h3 id="specifying-the-model-languageapi">Specifying the model: language/API&lt;/h3>
+&lt;p>This is what users will use to specify their models. Most frameworks will let users
+write in some existing programming language and call the framework&amp;rsquo;s functions and
+classes, but &lt;del>some others&lt;/del> — why don&amp;rsquo;t I just say it — Stan rolls their own
+domain-specific language.&lt;/p>
+&lt;p>The main question here is what language you think is best for users to specify models
+in: any sufficiently popular host language (such as Python) will reduce the learning
+curve for users and make the framework easier to develop and maintain, but a creating
+your own language allows you to introduce helpful abstractions for your framework&amp;rsquo;s
+particular use case (as &lt;a href="https://mc-stan.org/docs/2_20/reference-manual/blocks-chapter.html">Stan
+does&lt;/a>, for example).&lt;/p>
+&lt;p>At this point I should point out the non-universal, Python bias in this post: there are
+plenty of interesting non-Python probabilistic programming frameworks out there (e.g.
+&lt;a href="https://greta-stats.org/">Greta&lt;/a> in R, &lt;a href="https://turing.ml/dev/">Turing&lt;/a> and
+&lt;a href="https://www.gen.dev/">Gen&lt;/a> in Julia, &lt;a href="https://github.com/p2t2/figaro">Figaro&lt;/a> and
+&lt;a href="https://github.com/stripe/rainier">Rainier&lt;/a> in Scala), as well as universal
+probabilistic programming systems&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> (e.g.
+&lt;a href="http://probcomp.csail.mit.edu/software/venture/">Venture&lt;/a> from MIT,
+&lt;a href="https://probprog.github.io/anglican/index.html">Angelican&lt;/a> from Oxford)&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>. I just
+don&amp;rsquo;t know anything about any of them.&lt;/p>
+&lt;h3 id="building-the-model-density-distributions-and-transformations">Building the model density: distributions and transformations&lt;/h3>
+&lt;p>These are what the user&amp;rsquo;s model calls, in order to compile/build the model itself
+(whether that means a posterior log probability, in the case of MCMC, or some loss
+function to minimize, in the case of VI). By &lt;em>distributions&lt;/em>, I mean the probability
+distributions that the random variables in your model can assume (e.g. Normal or
+Poisson), and by &lt;em>transformations&lt;/em> I mean deterministic mathematical operations you can
+perform on these random variables, while still keeping track of the derivative of these
+transformations&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup> (e.g. exponentials, logarithms, sines or cosines).&lt;/p>
+&lt;p>This is a good time to point out that the interactions between the language/API and the
+distributions and transformations libraries is a major design problem. Here&amp;rsquo;s a (by no
+means exhaustive) list of necessary considerations:&lt;/p>
+&lt;ol>
+&lt;li>In order to build the model density, the framework must keep track of every
+distribution and transformation, while also computing the derivatives of any such
+transformations. This results in a Jekyll-and-Hyde problem where every transformation
+requires a forward and backwards definition. Should this tracking happen eagerly, or
+should it be deferred until the user specifies what the model will be used for?&lt;/li>
+&lt;li>Theoretically, a model&amp;rsquo;s specification should be the same whether it is to be used
+for evaluation, inference or debugging. However, in practice, the program execution
+(and computational graph) are different for these three purposes. How should the
+framework manage this?&lt;/li>
+&lt;li>The framework must also keep track of the shapes of random variables, which is
+frighteningly non-trivial! Check out &lt;a href="https://ericmjl.github.io/blog/2019/5/29/reasoning-about-shapes-and-probability-distributions/">this blog
+post&lt;/a>
+or &lt;a href="https://arxiv.org/abs/1711.10604">the original Tensorflow Distributions paper&lt;/a>
+(specifically section 3.3 on shape semantics) for more details.&lt;/li>
+&lt;/ol>
+&lt;p>For a more comprehensive treatment, I can&amp;rsquo;t recommend &lt;a href="https://docs.google.com/presentation/d/1xgNRJDwkWjTHOYMj5aGefwWiV8x-Tz55GfkBksZsN3g/edit?usp=sharing">Junpeng Lao&amp;rsquo;s PyData Córdoba 2019
+talk&lt;/a>
+highly enough — he explains in depth the main challenges in implementing a probabilistic
+programming API and highlights how various frameworks manage these difficulties.&lt;/p>
+&lt;h3 id="computing-the-posterior-inference-algorithm">Computing the posterior: inference algorithm&lt;/h3>
+&lt;p>Having specified and built the model, the framework must now actually perform inference:
+given a model and some data, obtain the posterior (either by sampling from it, in the
+case of MCMC, or by approximating it, in the case of VI).&lt;/p>
+&lt;p>Most probabilistic programming frameworks out there implement both MCMC and VI
+algorithms, although strength of support and quality of documentation can lean heavily
+one way or another. For example, Stan invests heavily into its MCMC, whereas Pyro has
+the most extensive support for its stochastic VI.&lt;/p>
+&lt;h3 id="computing-the-mode-optimizer">Computing the mode: optimizer&lt;/h3>
+&lt;p>Sometimes, instead of performing full-blown inference, it&amp;rsquo;s useful to find the mode of
+the model density. These modes can be used as point estimates of parameters, or as the
+basis of approximations to a Bayesian posterior. Or perhaps you&amp;rsquo;re doing VI, and you
+need some way to perform SGD on a loss function. In either case, a probabilistic
+programming framework calls for an optimizer.&lt;/p>
+&lt;p>If you don&amp;rsquo;t need to do VI, then a simple and sensible thing to do is to use some
+&lt;a href="https://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm">BFGS-based optimization
+algorithm&lt;/a>
+(e.g. some quasi-Newton method like
+&lt;a href="https://en.wikipedia.org/wiki/Limited-memory_BFGS">L-BFGS&lt;/a>) and call it a day.
+However, frameworks that focus on VI need to implement &lt;a href="http://docs.pyro.ai/en/stable/optimization.html#module-pyro.optim.optim">optimizers commonly seen in deep
+learning&lt;/a>, such
+as Adam or RMSProp.&lt;/p>
+&lt;h3 id="computing-gradients-autodifferentiation">Computing gradients: autodifferentiation&lt;/h3>
+&lt;p>Both the inference algorithm and the optimizer require gradients (at least, if you&amp;rsquo;re
+not using ancient inference algorithms and optimizers!), and so you&amp;rsquo;ll need some way to
+compute these gradients.&lt;/p>
+&lt;p>The easiest thing to do would be to rely on a deep learning framework like TensorFlow or
+PyTorch. I&amp;rsquo;ve learned not to get too excited about this though: while deep learning
+frameworks&amp;rsquo; heavy optimization of parallelized routines lets you e.g. obtain &lt;a href="https://colindcarroll.com/2019/08/18/very-parallel-mcmc-sampling/">thousands
+of MCMC chains in a reasonable amount of
+time&lt;/a>, it&amp;rsquo;s not
+obvious that this is useful at all (although there&amp;rsquo;s definitely some work going on in
+this area).&lt;/p>
+&lt;h3 id="monitoring-inference-diagnostics">Monitoring inference: diagnostics&lt;/h3>
+&lt;p>Finally, once the inference algorithm has worked its magic, you&amp;rsquo;ll want a way to verify
+the validity and efficiency of that inference. This involves some &lt;a href="https://arviz-devs.github.io/arviz/api.html#stats">off-the-shelf
+statistical diagnostics&lt;/a> (e.g. BFMI,
+information criteria, effective sample size, etc.), but mainly &lt;a href="https://arviz-devs.github.io/arviz/api.html#plots">lots and lots of
+visualization&lt;/a>.&lt;/p>
+&lt;h2 id="a-zoo-of-probabilistic-programming-frameworks">A Zoo of Probabilistic Programming Frameworks&lt;/h2>
+&lt;p>Having outlined the basic internals of probabilistic programming frameworks, I think
+it&amp;rsquo;s helpful to go through several of the popular frameworks as examples. I&amp;rsquo;ve tried to
+link to the relevant source code in the frameworks where possible.&lt;/p>
+&lt;h3 id="stan">Stan&lt;/h3>
+&lt;p>It&amp;rsquo;s very easy to describe how Stan is structured: literally everything is
+implemented from scratch in C++.&lt;/p>
+&lt;ol>
+&lt;li>Stan has a compiler for &lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/lang">a small domain-specific language for specifying Bayesian
+models&lt;/a>&lt;/li>
+&lt;li>Stan has libraries of &lt;a href="https://github.com/stan-dev/math/tree/develop/stan/math/prim">probability
+distributions&lt;/a> and
+&lt;a href="https://github.com/stan-dev/math/tree/develop/stan/math/prim/fun">transforms&lt;/a>&lt;/li>
+&lt;li>Stan implements &lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/mcmc/hmc">dynamic
+HMC&lt;/a> and
+&lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/variational">variational
+inference&lt;/a>&lt;/li>
+&lt;li>Stan also rolls their own &lt;a href="https://github.com/stan-dev/math/tree/develop/stan/math">autodifferentiation
+library&lt;/a>&lt;sup id="fnref:5">&lt;a href="#fn:5" class="footnote-ref" role="doc-noteref">5&lt;/a>&lt;/sup>&lt;/li>
+&lt;li>Stan implements an &lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/optimization">L-BFGS based
+optimizer&lt;/a> (but
+also implements &lt;a href="https://mc-stan.org/docs/2_20/reference-manual/optimization-algorithms-chapter.html">a less efficient Newton
+optimizer&lt;/a>)&lt;/li>
+&lt;li>Finally, Stan has a &lt;a href="https://github.com/stan-dev/stan/tree/develop/src/stan/analyze/mcmc">suite of
+diagnostics&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;p>Note that contrary to popular belief, Stan &lt;em>does not&lt;/em> implement NUTS:&lt;/p>
+&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">Stan implements a dynamic Hamiltonian Monte Carlo method with multinomial sampling of dynamic length trajectories, generalized termination criterion, and improved adaptation of the Euclidean metric.&lt;/p>&amp;mdash; Dan Simpson (&lt;a href="https://twitter.com/dan_p_simpson">@dan_p_simpson&lt;/a>) &lt;a href="https://twitter.com/dan_p_simpson/status/1037332473175265280">September 5, 2018&lt;/a>&lt;/blockquote>
+&lt;p>And in case you&amp;rsquo;re looking for a snazzy buzzword to drop:&lt;/p>
+&lt;blockquote class="twitter-tweet">&lt;p lang="en" dir="ltr">Adaptive HMC. &lt;a href="https://twitter.com/betanalpha">@betanalpha&lt;/a> is reluctant to give it a more specific name because, to paraphrase, that’s just marketing bullshit that leads to us celebrating tiny implementation details rather than actual meaningful contributions to comp stats. This is a wide-ranging subtweet.&lt;/p>&amp;mdash; Dan Simpson (&lt;a href="https://twitter.com/dan_p_simpson">@dan_p_simpson&lt;/a>) &lt;a href="https://twitter.com/dan_p_simpson/status/1034098649406554113">August 27, 2018&lt;/a>&lt;/blockquote>
+&lt;h3 id="tensorflow-probability-aka-tfp">TensorFlow Probability (a.k.a. TFP)&lt;/h3>
+&lt;ol>
+&lt;li>TFP users write Python (albeit through an &lt;a href="https://colcarroll.github.io/ppl-api/">extremely verbose
+API&lt;/a>)&lt;/li>
+&lt;li>TFP implements their own
+&lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/distributions">distributions&lt;/a>
+and
+&lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/bijectors">transforms&lt;/a>
+(which TensorFlow, for some reason, calls &amp;ldquo;bijectors&amp;rdquo;). You can find more details in
+&lt;a href="https://arxiv.org/abs/1711.10604">their arXiv paper&lt;/a>&lt;/li>
+&lt;li>TFP implements &lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/mcmc">a ton of
+MCMC&lt;/a>
+algorithms and a handful of &lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/vi">VI
+algorithms&lt;/a>
+in TensorFlow&lt;/li>
+&lt;li>TFP implements &lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/optimizer">several
+optimizers&lt;/a>,
+including Nelder-Mead, BFGS and L-BFGS (again, in TensorFlow)&lt;/li>
+&lt;li>TFP relies on TensorFlow to compute gradients (er, duh)&lt;/li>
+&lt;li>TFP implements &lt;a href="https://github.com/tensorflow/probability/blob/master/tensorflow_probability/python/mcmc/diagnostic.py">a handful of
+metrics&lt;/a>
+(e.g. effective sample size and potential scale reduction), but seems to lack a
+comprehensive suite of diagnostics and visualizations: even
+&lt;a href="https://github.com/tensorflow/probability/tree/master/tensorflow_probability/python/experimental/edward2">Edward2&lt;/a>
+(an experimental interface to TFP for flexible modelling, inference and criticism)
+suggests that you &lt;a href="https://github.com/tensorflow/probability/blob/master/tensorflow_probability/python/experimental/edward2/Upgrading_From_Edward_To_Edward2.md#model--inference-criticism">build your metrics manually or use boilerplate in
+&lt;code>tf.metrics&lt;/code>&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;h3 id="pymc3">PyMC3&lt;/h3>
+&lt;ol>
+&lt;li>PyMC3 users write Python code, using a context manager pattern (i.e. &lt;code>with pm.Model as model&lt;/code>)&lt;/li>
+&lt;li>PyMC3 implements its own
+&lt;a href="https://github.com/pymc-devs/pymc3/tree/master/pymc3/distributions">distributions&lt;/a>
+and
+&lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/distributions/transforms.py">transforms&lt;/a>&lt;/li>
+&lt;li>PyMC3 implements
+&lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/step_methods/hmc/nuts.py">NUTS&lt;/a>,
+(as well as &lt;a href="https://github.com/pymc-devs/pymc3/tree/master/pymc3/step_methods">a range of other MCMC step
+methods&lt;/a>) and
+&lt;a href="https://github.com/pymc-devs/pymc3/tree/master/pymc3/variational">several variational inference
+algorithms&lt;/a>,
+although NUTS is the default and recommended inference algorithm&lt;/li>
+&lt;li>PyMC3 (specifically, the &lt;code>find_MAP&lt;/code> function) &lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/tuning/starting.py">relies on
+&lt;code>scipy.optimize&lt;/code>&lt;/a>,
+which in turn implements a BFGS-based optimizer&lt;/li>
+&lt;li>PyMC3 &lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/theanof.py">relies on
+Theano&lt;/a> to compute
+gradients&lt;/li>
+&lt;li>PyMC3 &lt;a href="https://github.com/pymc-devs/pymc3/blob/master/pymc3/plots/__init__.py">delegates posterior visualization and
+diagnostics&lt;/a>
+to its cousin project &lt;a href="https://arviz-devs.github.io/arviz/">ArviZ&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;p>Some remarks:&lt;/p>
+&lt;ul>
+&lt;li>PyMC3&amp;rsquo;s context manager pattern is an interceptor for sampling statements: essentially
+&lt;a href="https://arxiv.org/abs/1811.06150">an accidental implementation of effect handlers&lt;/a>.&lt;/li>
+&lt;li>PyMC3&amp;rsquo;s distributions are simpler than those of TFP or PyTorch: they simply need to
+have a &lt;code>random&lt;/code> and a &lt;code>logp&lt;/code> method, whereas TFP/PyTorch implement a whole bunch of
+other methods to handle shapes, parameterizations, etc. In retrospect, we realize
+that this is &lt;a href="https://docs.pymc.io/developer_guide.html#what-we-got-wrong">one of PyMC3&amp;rsquo;s design
+flaws&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;h3 id="pymc4">PyMC4&lt;/h3>
+&lt;p>PyMC4 is still under active development (at least, at the time of writing), but it&amp;rsquo;s
+safe to call out the overall architecture.&lt;/p>
+&lt;ol>
+&lt;li>PyMC4 users will write Python, although now with a generator pattern (e.g. &lt;code>x = yield Normal(0, 1, &amp;quot;x&amp;quot;)&lt;/code>), instead of a context manager&lt;/li>
+&lt;li>PyMC4 will &lt;a href="https://github.com/pymc-devs/pymc4/tree/master/pymc4/distributions/">rely on TensorFlow distributions (a.k.a.
+&lt;code>tfd&lt;/code>)&lt;/a> for both
+distributions and transforms&lt;/li>
+&lt;li>PyMC4 will also &lt;a href="https://github.com/pymc-devs/pymc4/tree/master/pymc4/inference/">rely on TensorFlow for
+MCMC&lt;/a> (although the
+specifics of the exact MCMC algorithm are still fairly fluid at the time of writing)&lt;/li>
+&lt;li>As far as I can tell, the optimizer is still TBD&lt;/li>
+&lt;li>Because PyMC4 relies on TFP, which relies on TensorFlow, TensorFlow manages all
+gradient computations automatically&lt;/li>
+&lt;li>Like its predecessor, PyMC4 will delegate diagnostics and visualization to ArviZ&lt;/li>
+&lt;/ol>
+&lt;p>Some remarks:&lt;/p>
+&lt;ul>
+&lt;li>With the generator pattern for model specification, PyMC4 embraces the notion of a
+probabilistic program as one that defers its computation. For more color on this, see
+&lt;a href="https://twitter.com/avibryant/status/1150827954319982592">this Twitter thread&lt;/a> I had
+with &lt;a href="https://about.me/avibryant">Avi Bryant&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;h3 id="pyro">Pyro&lt;/h3>
+&lt;ol>
+&lt;li>Pyro users write Python&lt;/li>
+&lt;li>Pyro &lt;a href="https://github.com/pyro-ppl/pyro/blob/dev/pyro/distributions/__init__.py">relies on PyTorch
+distributions&lt;/a>
+(&lt;a href="https://github.com/pyro-ppl/pyro/tree/dev/pyro/distributions">implementing its own where
+necessary&lt;/a>), and also
+relies on PyTorch distributions &lt;a href="https://github.com/pyro-ppl/pyro/tree/dev/pyro/distributions/transforms">for its
+transforms&lt;/a>&lt;/li>
+&lt;li>Pyro implements &lt;a href="http://docs.pyro.ai/en/stable/inference.html">many inference
+algorithms&lt;/a> in PyTorch (including &lt;a href="https://github.com/pyro-ppl/pyro/tree/dev/pyro/infer/mcmc">HMC
+and NUTS&lt;/a>), but support
+for &lt;a href="https://github.com/pyro-ppl/pyro/blob/dev/pyro/infer/svi.py">stochastic VI&lt;/a> is
+the most extensive&lt;/li>
+&lt;li>Pyro implements &lt;a href="https://github.com/pyro-ppl/pyro/blob/master/pyro/optim/optim.py">its own
+optimizer&lt;/a> in
+PyTorch&lt;/li>
+&lt;li>Pyro relies on PyTorch to compute gradients (again, duh)&lt;/li>
+&lt;li>As far as I can tell, Pyro doesn&amp;rsquo;t provide any diagnostic or visualization
+functionality&lt;/li>
+&lt;/ol>
+&lt;p>Some remarks:&lt;/p>
+&lt;ul>
+&lt;li>Pyro includes the Poutine submodule, which is a library of composable &lt;a href="https://arxiv.org/abs/1811.06150">effect
+handlers&lt;/a>. While this might sound like recondite
+abstractions, they allow you to implement your own custom inference algorithms and
+otherwise manipulate Pyro probabilistic programs. In fact, all of Pyro&amp;rsquo;s inference
+algorithms use these effect handlers.&lt;/li>
+&lt;/ul>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>In case you&amp;rsquo;re testifying under oath and need more reliable sources than
+a blog post, I&amp;rsquo;ve kept a &lt;a href="https://www.zotero.org/eigenfoo/items/collectionKey/AE8882GQ">Zotero
+collection&lt;/a> for
+this project.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>Universal probabilistic programming is an interesting field of inquiry,
+but has mainly remained in the realm of academic research. For a (much) more
+comprehensive treatment, check out &lt;a href="http://www.robots.ox.ac.uk/~twgr/assets/pdf/rainforth2017thesis.pdf">Tom Rainforth&amp;rsquo;s PhD
+thesis&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>Since publishing this blog post, I have been informed that I am more
+ignorant than I know: I have forgotten
+&lt;a href="https://github.com/cscherrer/Soss.jl">Soss.jl&lt;/a> in Julia and
+&lt;a href="https://github.com/thu-ml/zhusuan">ZhuSuan&lt;/a> in Python.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>It turns out that such transformations must be &lt;a href="https://en.wikipedia.org/wiki/Local_diffeomorphism">local
+diffeomorphisms&lt;/a>, and the
+derivative information requires computing the log determinant of the Jacobian
+of the transformation, commonly abbreviated to &lt;code>log_det_jac&lt;/code> or something
+similar.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:5" role="doc-endnote">
+&lt;p>As an aside, I&amp;rsquo;ll say that it&amp;rsquo;s mind boggling how Stan does this. To
+quote a (nameless) PyMC core developer:&lt;/p>
+&lt;blockquote>
+&lt;p>I think that maintaining your own autodifferentiation library is the
+path of a crazy person.&lt;/p>
+&lt;/blockquote>
+&amp;#160;&lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
+Bayesian modelling, and it&amp;rsquo;s an amazing piece of software! The API only exposes
+as much of heavy machinery of MCMC as you need — by which I mean, just the
+&lt;code>pm.sample()&lt;/code> method (a.k.a., as &lt;a href="http://twiecki.github.io/blog/2013/08/12/bayesian-glms-1/">Thomas
+Wiecki&lt;/a> puts it, the
+&lt;em>Magic Inference Button™&lt;/em>). This really frees up your mind to think about your
+data and model, which is really the heart and soul of data science!&lt;/p>
+&lt;p>That being said however, I quickly realized that the water gets very deep very
+fast: I explored my data set, specified a hierarchical model that made sense to
+me, hit the &lt;em>Magic Inference Button™&lt;/em>, and… uh, what now? I blinked at the
+angry red warnings the sampler spat out.&lt;/p>
+&lt;p>So began by long, rewarding and ongoing exploration of Bayesian modelling. This
+is a compilation of notes, tips, tricks and recipes that I&amp;rsquo;ve collected from
+everywhere: papers, documentation, peppering my &lt;a href="https://twitter.com/twiecki">more
+experienced&lt;/a>
+&lt;a href="https://twitter.com/aseyboldt">colleagues&lt;/a> with questions. It&amp;rsquo;s still very much
+a work in progress, but hopefully somebody else finds it useful!&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/pymc-logo.png" alt="PyMC logo">&lt;/p>
+&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#for-the-uninitiated">For the Uninitiated&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#bayesian-modelling">Bayesian modelling&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#markov-chain-monte-carlo">Markov-chain Monte Carlo&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#variational-inference">Variational inference&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#model-formulation">Model Formulation&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#hierarchical-models">Hierarchical models&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#model-implementation">Model Implementation&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#mcmc-initialization-and-sampling">MCMC Initialization and Sampling&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#mcmc-trace-diagnostics">MCMC Trace Diagnostics&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#fixing-divergences">Fixing divergences&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#other-common-warnings">Other common warnings&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#model-reparameterization">Model reparameterization&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#model-diagnostics">Model Diagnostics&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;h2 id="for-the-uninitiated">For the Uninitiated&lt;/h2>
+&lt;ul>
+&lt;li>First of all, &lt;em>welcome!&lt;/em> It&amp;rsquo;s a brave new world out there — where statistics
+is cool, Bayesian and (if you&amp;rsquo;re lucky) even easy. Dive in!&lt;/li>
+&lt;/ul>
+&lt;blockquote>
+&lt;p>&lt;strong>EDIT (1/24/2020):&lt;/strong> I published a &lt;a href="https://www.georgeho.org/bayesian-inference-reading/">subsequent blog
+post&lt;/a> with a reading list
+for Bayesian inference and modelling. Check it out for reading material in
+addition to the ones I list below!&lt;/p>
+&lt;/blockquote>
+&lt;h3 id="bayesian-modelling">Bayesian modelling&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>If you don&amp;rsquo;t know any probability, I&amp;rsquo;d recommend &lt;a href="https://betanalpha.github.io/assets/case_studies/probability_theory.html">Michael
+Betancourt&amp;rsquo;s&lt;/a>
+crash-course in practical probability theory.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>For an introduction to general Bayesian methods and modelling, I really liked
+&lt;a href="http://camdavidsonpilon.github.io/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/">Cam Davidson Pilon&amp;rsquo;s &lt;em>Bayesian Methods for
+Hackers&lt;/em>&lt;/a>:
+it really made the whole “thinking like a Bayesian” thing click for me.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>If you&amp;rsquo;re willing to spend some money, I&amp;rsquo;ve heard that &lt;a href="https://sites.google.com/site/doingbayesiandataanalysis/">&lt;em>Doing Bayesian Data
+Analysis&lt;/em> by
+Kruschke&lt;/a> (a.k.a.
+&lt;em>“the puppy book”&lt;/em>) is for the bucket list.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Here we come to a fork in the road. The central problem in Bayesian modelling
+is this: given data and a probabilistic model that we think models this data,
+how do we find the posterior distribution of the model&amp;rsquo;s parameters? There are
+currently two good solutions to this problem. One is Markov-chain Monte Carlo
+sampling (a.k.a. MCMC sampling), and the other is variational inference
+(a.k.a. VI). Both methods are mathematical Death Stars: extremely powerful but
+incredibly complicated. Nevertheless, I think it&amp;rsquo;s important to get at least a
+hand-wavy understanding of what these methods are. If you&amp;rsquo;re new to all this,
+my personal recommendation is to invest your time in learning MCMC: it&amp;rsquo;s been
+around longer, we know that there are sufficiently robust tools to help you,
+and there&amp;rsquo;s a lot more support/documentation out there.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="markov-chain-monte-carlo">Markov-chain Monte Carlo&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>For a good high-level introduction to MCMC, I liked &lt;a href="https://www.youtube.com/watch?v=DJ0c7Bm5Djk&amp;amp;feature=youtu.be&amp;amp;t=4h40m9s">Michael Betancourt&amp;rsquo;s
+StanCon 2017
+talk&lt;/a>:
+especially the first few minutes where he provides a motivation for MCMC, that
+really put all this math into context for me.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>For a more in-depth (and mathematical) treatment of MCMC, I&amp;rsquo;d check out his
+&lt;a href="https://arxiv.org/abs/1701.02434">paper on Hamiltonian Monte Carlo&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="variational-inference">Variational inference&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>VI has been around for a while, but it was only in 2017 (2 years ago, at the
+time of writing) that &lt;em>automatic differentiation variational inference&lt;/em> was
+invented. As such, variational inference is undergoing a renaissance and is
+currently an active area of statistical research. Since it&amp;rsquo;s such a nascent
+field, most resources on it are very theoretical and academic in nature.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Chapter 10 (on approximate inference) in Bishop&amp;rsquo;s &lt;em>Pattern Recognition and
+Machine Learning&lt;/em> and &lt;a href="https://www.cs.princeton.edu/courses/archive/fall11/cos597C/lectures/variational-inference-i.pdf">this
+tutorial&lt;/a>
+by David Blei are excellent, if a bit mathematically-intensive, resources.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The most hands-on explanation of variational inference I&amp;rsquo;ve seen is the docs
+for &lt;a href="http://pyro.ai/examples/svi_part_i.html">Pyro&lt;/a>, a probabilistic
+programming language developed by Uber that specializes in variational
+inference.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="model-formulation">Model Formulation&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>Try thinking about &lt;em>how&lt;/em> your data would be generated: what kind of machine
+has your data as outputs? This will help you both explore your data, as well
+as help you arrive at a reasonable model formulation.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Try to avoid correlated variables. Some of the more robust samplers can cope
+with &lt;em>a posteriori&lt;/em> correlated random variables, but sampling is much easier
+for everyone involved if the variables are uncorrelated. By the way, the bar
+is pretty low here: if the jointplot/scattergram of the two variables looks
+like an ellipse, thats usually okay. It&amp;rsquo;s when the ellipse starts looking like
+a line that you should be alarmed.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Try to avoid discrete latent variables, and discrete parameters in general.
+There is no good method to sample them in a smart way (since discrete
+parameters have no gradients); and with “naïve” samplers (i.e. those that do
+not take advantage of the gradient), the number of samples one needs to make
+good inferences generally scales exponentially in the number of parameters.
+For an instance of this, see &lt;a href="https://docs.pymc.io/notebooks/marginalized_gaussian_mixture_model.html">this example on marginal Gaussian
+mixtures&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The &lt;a href="https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations">Stan GitHub
+wiki&lt;/a> has
+some excellent recommendations on how to choose good priors. Once you get a
+good handle on the basics of using PyMC3, I &lt;em>100% recommend&lt;/em> reading this wiki
+from start to end: the Stan community has fantastic resources on Bayesian
+statistics, and even though their APIs are quite different, the mathematical
+theory all translates over.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="hierarchical-models">Hierarchical models&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>First of all, hierarchical models can be amazing! &lt;a href="https://docs.pymc.io/notebooks/GLM-hierarchical.html">The PyMC3
+docs&lt;/a> opine on this at
+length, so let&amp;rsquo;s not waste any digital ink.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The poster child of a Bayesian hierarchical model looks something like this
+(equations taken from
+&lt;a href="https://en.wikipedia.org/wiki/Bayesian_hierarchical_modeling">Wikipedia&lt;/a>):&lt;/p>
+&lt;p>&lt;img style="float: center"
+src="https://wikimedia.org/api/rest_v1/media/math/render/svg/765f37f86fa26bef873048952dccc6e8067b78f4"
+alt="Example Bayesian hierarchical model equation #1">&lt;/p>
+&lt;p>&lt;img style="float: center"
+src="https://wikimedia.org/api/rest_v1/media/math/render/svg/ca8c0e1233fd69fa4325c6eacf8462252ed6b00a"
+alt="Example Bayesian hierarchical model equation #2">&lt;/p>
+&lt;p>&lt;img style="float: center"
+src="https://wikimedia.org/api/rest_v1/media/math/render/svg/1e56b3077b1b3ec867d6a0f2539ba9a3e79b45c1"
+alt="Example Bayesian hierarchical model equation #3">&lt;/p>
+&lt;p>This hierarchy has 3 levels (some would say it has 2 levels, since there are
+only 2 levels of parameters to infer, but honestly whatever: by my count there
+are 3). 3 levels is fine, but add any more levels, and it becomes harder for
+to sample. Try out a taller hierarchy to see if it works, but err on the side
+of 3-level hierarchies.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>If your hierarchy is too tall, you can truncate it by introducing a
+deterministic function of your parameters somewhere (this usually turns out to
+just be a sum). For example, instead of modelling your observations are drawn
+from a 4-level hierarchy, maybe your observations can be modeled as the sum of
+three parameters, where these parameters are drawn from a 3-level hierarchy.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>More in-depth treatment here in &lt;a href="https://arxiv.org/abs/1312.0906">(Betancourt and Girolami,
+2013)&lt;/a>. &lt;strong>tl;dr:&lt;/strong> hierarchical models all
+but &lt;em>require&lt;/em> you use to use Hamiltonian Monte Carlo; also included are some
+practical tips and goodies on how to do that stuff in the real world.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="model-implementation">Model Implementation&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>At the risk of overgeneralizing, there are only two things that can go wrong
+in Bayesian modelling: either your data is wrong, or your model is wrong. And
+it is a hell of a lot easier to debug your data than it is to debug your
+model. So before you even try implementing your model, plot histograms of your
+data, count the number of data points, drop any NaNs, etc. etc.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>PyMC3 has one quirky piece of syntax, which I tripped up on for a while. It&amp;rsquo;s
+described quite well in &lt;a href="http://twiecki.github.io/blog/2014/03/17/bayesian-glms-3/#comment-2213376737">this comment on Thomas Wiecki&amp;rsquo;s
+blog&lt;/a>.
+Basically, suppose you have several groups, and want to initialize several
+variables per group, but you want to initialize different numbers of variables
+for each group. Then you need to use the quirky &lt;code>variables[index]&lt;/code>
+notation. I suggest using &lt;code>scikit-learn&lt;/code>&amp;rsquo;s &lt;code>LabelEncoder&lt;/code> to easily create the
+index. For example, to make normally distributed heights for the iris dataset:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Different numbers of examples for each species&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>species &lt;span style="color:#f92672">=&lt;/span> (&lt;span style="color:#ae81ff">48&lt;/span> &lt;span style="color:#f92672">*&lt;/span> [&lt;span style="color:#e6db74">&amp;#39;setosa&amp;#39;&lt;/span>] &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">52&lt;/span> &lt;span style="color:#f92672">*&lt;/span> [&lt;span style="color:#e6db74">&amp;#39;virginica&amp;#39;&lt;/span>] &lt;span style="color:#f92672">+&lt;/span> &lt;span style="color:#ae81ff">63&lt;/span> &lt;span style="color:#f92672">*&lt;/span> [&lt;span style="color:#e6db74">&amp;#39;versicolor&amp;#39;&lt;/span>])
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>num_species &lt;span style="color:#f92672">=&lt;/span> len(list(set(species))) &lt;span style="color:#75715e"># 3&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># One variable per group&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>heights_per_species &lt;span style="color:#f92672">=&lt;/span> pm&lt;span style="color:#f92672">.&lt;/span>Normal(&lt;span style="color:#e6db74">&amp;#39;heights_per_species&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mu&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>, sd&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, shape&lt;span style="color:#f92672">=&lt;/span>num_species)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>idx &lt;span style="color:#f92672">=&lt;/span> sklearn&lt;span style="color:#f92672">.&lt;/span>preprocessing&lt;span style="color:#f92672">.&lt;/span>LabelEncoder()&lt;span style="color:#f92672">.&lt;/span>fit_transform(species)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>heights &lt;span style="color:#f92672">=&lt;/span> heights_per_species[idx]
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>You might find yourself in a situation in which you want to use a centered
+parameterization for a portion of your data set, but a noncentered
+parameterization for the rest of your data set (see below for what these
+parameterizations are). There&amp;rsquo;s a useful idiom for you here:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>num_xs &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>use_centered &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>array([&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>]) &lt;span style="color:#75715e"># len(use_centered) = num_xs&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>x_sd &lt;span style="color:#f92672">=&lt;/span> pm&lt;span style="color:#f92672">.&lt;/span>HalfCauchy(&lt;span style="color:#e6db74">&amp;#39;x_sd&amp;#39;&lt;/span>, sd&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>x_raw &lt;span style="color:#f92672">=&lt;/span> pm&lt;span style="color:#f92672">.&lt;/span>Normal(&lt;span style="color:#e6db74">&amp;#39;x_raw&amp;#39;&lt;/span>, mu&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">0&lt;/span>, sd&lt;span style="color:#f92672">=&lt;/span>x_sd&lt;span style="color:#f92672">**&lt;/span>use_centered, shape&lt;span style="color:#f92672">=&lt;/span>num_xs)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>x &lt;span style="color:#f92672">=&lt;/span> pm&lt;span style="color:#f92672">.&lt;/span>Deterministic(&lt;span style="color:#e6db74">&amp;#39;x&amp;#39;&lt;/span>, x_sd&lt;span style="color:#f92672">**&lt;/span>(&lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#f92672">-&lt;/span> use_centered) &lt;span style="color:#f92672">*&lt;/span> x_raw)
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>You could even experiment with allowing &lt;code>use_centered&lt;/code> to be &lt;em>between&lt;/em> 0 and
+1, instead of being &lt;em>either&lt;/em> 0 or 1!&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>I prefer to use the &lt;code>pm.Deterministic&lt;/code> function instead of simply using normal
+arithmetic operations (e.g. I&amp;rsquo;d prefer to write &lt;code>x = pm.Deterministic('x', y + z)&lt;/code> instead of &lt;code>x = y + z&lt;/code>). This means that you can index the &lt;code>trace&lt;/code> object
+later on with just &lt;code>trace['x']&lt;/code>, instead of having to compute it yourself with
+&lt;code>trace['y'] + trace['z']&lt;/code>.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="mcmc-initialization-and-sampling">MCMC Initialization and Sampling&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>Have faith in PyMC3&amp;rsquo;s default initialization and sampling settings: someone
+much more experienced than us took the time to choose them! NUTS is the most
+efficient MCMC sampler known to man, and &lt;code>jitter+adapt_diag&lt;/code>… well, you get
+the point.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>However, if you&amp;rsquo;re truly grasping at straws, a more powerful initialization
+setting would be &lt;code>advi&lt;/code> or &lt;code>advi+adapt_diag&lt;/code>, which uses variational inference
+to initialize the sampler. An even better option would be to use
+&lt;code>advi+adapt_diag_grad&lt;/code> &lt;del>which is (at the time of writing) an experimental
+feature in beta&lt;/del>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Never initialize the sampler with the MAP estimate! In low dimensional
+problems the MAP estimate (a.k.a. the mode of the posterior) is often quite a
+reasonable point. But in high dimensions, the MAP becomes very strange. Check
+out &lt;a href="http://www.inference.vc/high-dimensional-gaussian-distributions-are-soap-bubble/">Ferenc Huszár&amp;rsquo;s blog
+post&lt;/a>
+on high-dimensional Gaussians to see why. Besides, at the MAP all the derivatives
+of the posterior are zero, and that isn&amp;rsquo;t great for derivative-based samplers.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="mcmc-trace-diagnostics">MCMC Trace Diagnostics&lt;/h2>
+&lt;ul>
+&lt;li>You&amp;rsquo;ve hit the &lt;em>Magic Inference Button™&lt;/em>, and you have a &lt;code>trace&lt;/code> object. Now
+what? First of all, make sure that your sampler didn&amp;rsquo;t barf itself, and that
+your chains are safe for consumption (i.e., analysis).&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>
+&lt;p>Theoretically, run the chain for as long as you have the patience or
+resources for. In practice, just use the PyMC3 defaults: 500 tuning
+iterations, 1000 sampling iterations.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Check for divergences. PyMC3&amp;rsquo;s sampler will spit out a warning if there are
+diverging chains, but the following code snippet may make things easier:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Display the total number and percentage of divergent chains&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>diverging &lt;span style="color:#f92672">=&lt;/span> trace[&lt;span style="color:#e6db74">&amp;#39;diverging&amp;#39;&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(&lt;span style="color:#e6db74">&amp;#39;Number of Divergent Chains: &lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&lt;/span>&lt;span style="color:#f92672">.&lt;/span>format(diverging&lt;span style="color:#f92672">.&lt;/span>nonzero()[&lt;span style="color:#ae81ff">0&lt;/span>]&lt;span style="color:#f92672">.&lt;/span>size))
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>diverging_pct &lt;span style="color:#f92672">=&lt;/span> diverging&lt;span style="color:#f92672">.&lt;/span>nonzero()[&lt;span style="color:#ae81ff">0&lt;/span>]&lt;span style="color:#f92672">.&lt;/span>size &lt;span style="color:#f92672">/&lt;/span> len(trace) &lt;span style="color:#f92672">*&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(&lt;span style="color:#e6db74">&amp;#39;Percentage of Divergent Chains: &lt;/span>&lt;span style="color:#e6db74">{:.1f}&lt;/span>&lt;span style="color:#e6db74">&amp;#39;&lt;/span>&lt;span style="color:#f92672">.&lt;/span>format(diverging_pct))
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>Check the traceplot (&lt;code>pm.traceplot(trace)&lt;/code>). You&amp;rsquo;re looking for traceplots
+that look like “fuzzy caterpillars”. If the trace moves into some region and
+stays there for a long time (a.k.a. there are some “sticky regions”), that&amp;rsquo;s
+cause for concern! That indicates that once the sampler moves into some
+region of parameter space, it gets stuck there (probably due to high
+curvature or other bad topological properties).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>In addition to the traceplot, there are &lt;a href="https://docs.pymc.io/api/plots.html">a ton of other
+plots&lt;/a> you can make with your trace:&lt;/p>
+&lt;ul>
+&lt;li>&lt;code>pm.plot_posterior(trace)&lt;/code>: check if your posteriors look reasonable.&lt;/li>
+&lt;li>&lt;code>pm.forestplot(trace)&lt;/code>: check if your variables have reasonable credible
+intervals, and Gelman–Rubin scores close to 1.&lt;/li>
+&lt;li>&lt;code>pm.autocorrplot(trace)&lt;/code>: check if your chains are impaired by high
+autocorrelation. Also remember that thinning your chains is a waste of
+time at best, and deluding yourself at worst. See Chris Fonnesbeck&amp;rsquo;s
+comment on &lt;a href="https://github.com/pymc-devs/pymc/issues/23">this GitHub
+issue&lt;/a> and &lt;a href="https://twitter.com/junpenglao/status/1009748562136256512">Junpeng Lao&amp;rsquo;s
+reply to Michael Betancourt&amp;rsquo;s
+tweet&lt;/a>&lt;/li>
+&lt;li>&lt;code>pm.energyplot(trace)&lt;/code>: ideally the energy and marginal energy
+distributions should look very similar. Long tails in the distribution of
+energy levels indicates deteriorated sampler efficiency.&lt;/li>
+&lt;li>&lt;code>pm.densityplot(trace)&lt;/code>: a souped-up version of &lt;code>pm.plot_posterior&lt;/code>. It
+doesn&amp;rsquo;t seem to be wildly useful unless you&amp;rsquo;re plotting posteriors from
+multiple models.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>PyMC3 has a nice helper function to pretty-print a summary table of the
+trace: &lt;code>pm.summary(trace)&lt;/code> (I usually tack on a &lt;code>.round(2)&lt;/code> for my sanity).
+Look out for:&lt;/p>
+&lt;ul>
+&lt;li>the $\hat{R}$ values (a.k.a. the Gelman–Rubin statistic, a.k.a. the
+potential scale reduction factor, a.k.a. the PSRF): are they all close to
+1? If not, something is &lt;em>horribly&lt;/em> wrong. Consider respecifying or
+reparameterizing your model. You can also inspect these in the forest plot.&lt;/li>
+&lt;li>the sign and magnitude of the inferred values: do they make sense, or are
+they unexpected and unreasonable? This could indicate a poorly specified
+model. (E.g. parameters of the unexpected sign that have low uncertainties
+might indicate that your model needs interaction terms.)&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>As a drastic debugging measure, try to &lt;code>pm.sample&lt;/code> with &lt;code>draws=1&lt;/code>,
+&lt;code>tune=500&lt;/code>, and &lt;code>discard_tuned_samples=False&lt;/code>, and inspect the traceplot.
+During the tuning phase, we don&amp;rsquo;t expect to see friendly fuzzy caterpillars,
+but we &lt;em>do&lt;/em> expect to see good (if noisy) exploration of parameter space. So
+if the sampler is getting stuck during the tuning phase, that might explain
+why the trace looks horrible.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>If you get scary errors that describe mathematical problems (e.g. &lt;code>ValueError: Mass matrix contains zeros on the diagonal. Some derivatives might always be zero.&lt;/code>), then you&amp;rsquo;re &lt;del>shit out of luck&lt;/del> exceptionally unlucky: those kinds of
+errors are notoriously hard to debug. I can only point to the &lt;a href="http://andrewgelman.com/2008/05/13/the_folk_theore/">Folk Theorem of
+Statistical Computing&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>If you&amp;rsquo;re having computational problems, probably your model is wrong.&lt;/p>
+&lt;/blockquote>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="fixing-divergences">Fixing divergences&lt;/h3>
+&lt;blockquote>
+&lt;p>&lt;code>There were N divergences after tuning. Increase 'target_accept' or reparameterize.&lt;/code>&lt;/p>
+&lt;p>— The &lt;em>Magic Inference Button™&lt;/em>&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>
+&lt;p>Divergences in HMC occur when the sampler finds itself in regions of extremely
+high curvature (such as the opening of the a hierarchical funnel). Broadly
+speaking, the sampler is prone to malfunction in such regions, causing the
+sampler to fly off towards to infinity. The ruins the chains by heavily
+biasing the samples.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Remember: if you have even &lt;em>one&lt;/em> diverging chain, you should be worried.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Increase &lt;code>target_accept&lt;/code>: usually 0.9 is a good number (currently the default
+in PyMC3 is 0.8). This will help get rid of false positives from the test for
+divergences. However, divergences that &lt;em>don&amp;rsquo;t&lt;/em> go away are cause for alarm.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Increasing &lt;code>tune&lt;/code> can sometimes help as well: this gives the sampler more time
+to 1) find the typical set and 2) find good values for the step size, mass
+matrix elements, etc. If you&amp;rsquo;re running into divergences, it&amp;rsquo;s always possible
+that the sampler just hasn&amp;rsquo;t started the mixing phase and is still trying to
+find the typical set.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Consider a &lt;em>noncentered&lt;/em> parameterization. This is an amazing trick: it all
+boils down to the familiar equation $X = \sigma Z + \mu$ from STAT 101, but
+it honestly works wonders. See &lt;a href="http://twiecki.github.io/blog/2017/02/08/bayesian-hierchical-non-centered/">Thomas Wiecki&amp;rsquo;s blog
+post&lt;/a>
+on it, and &lt;a href="https://docs.pymc.io/notebooks/Diagnosing_biased_Inference_with_Divergences.html">this page from the PyMC3
+documentation&lt;/a>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>If that doesn&amp;rsquo;t work, there may be something wrong with the way you&amp;rsquo;re
+thinking about your data: consider reparameterizing your model, or
+respecifying it entirely.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="other-common-warnings">Other common warnings&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>It&amp;rsquo;s worth noting that far and away the worst warning to get is the one about
+divergences. While a divergent chain indicates that your inference may be
+flat-out &lt;em>invalid&lt;/em>, the rest of these warnings indicate that your inference is
+merely (lol, “merely”) &lt;em>inefficient&lt;/em>.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>It&amp;rsquo;s also worth noting that the &lt;a href="https://mc-stan.org/misc/warnings.html">Brief Guide to Stan&amp;rsquo;s
+Warnings&lt;/a> is a tremendous resource for
+exactly what kinds of errors you might get when running HMC or NUTS, and how
+you should think about them.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>The number of effective samples is smaller than XYZ for some parameters.&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>Quoting &lt;a href="https://discourse.pymc.io/t/the-number-of-effective-samples-is-smaller-than-25-for-some-parameters/1050/3">Junpeng Lao on
+&lt;code>discourse.pymc3.io&lt;/code>&lt;/a>:
+“A low number of effective samples is usually an indication of strong
+autocorrelation in the chain.”&lt;/li>
+&lt;li>Make sure you&amp;rsquo;re using an efficient sampler like NUTS. (And not, for
+instance, Gibbs or Metropolis–Hastings.)&lt;/li>
+&lt;li>Tweak the acceptance probability (&lt;code>target_accept&lt;/code>) — it should be large
+enough to ensure good exploration, but small enough to not reject all
+proposals and get stuck.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>The gelman-rubin statistic is larger than XYZ for some parameters. This indicates slight problems during sampling.&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>When PyMC3 samples, it runs several chains in parallel. Loosely speaking,
+the Gelman–Rubin statistic measures how similar these chains are. Ideally it
+should be close to 1.&lt;/li>
+&lt;li>Increasing the &lt;code>tune&lt;/code> parameter may help, for the same reasons as described
+in the &lt;em>Fixing Divergences&lt;/em> section.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;code>The chain reached the maximum tree depth. Increase max_treedepth, increase target_accept or reparameterize.&lt;/code>&lt;/p>
+&lt;ul>
+&lt;li>NUTS puts a cap on the depth of the trees that it evaluates during each
+iteration, which is controlled through the &lt;code>max_treedepth&lt;/code>. Reaching the
+maximum allowable tree depth indicates that NUTS is prematurely pulling the
+plug to avoid excessive compute time.&lt;/li>
+&lt;li>Yeah, what the &lt;em>Magic Inference Button™&lt;/em> says: try increasing
+&lt;code>max_treedepth&lt;/code> or &lt;code>target_accept&lt;/code>.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h3 id="model-reparameterization">Model reparameterization&lt;/h3>
+&lt;ul>
+&lt;li>
+&lt;p>Countless warnings have told you to engage in this strange activity of
+“reparameterization”. What even is that? Luckily, the &lt;a href="https://github.com/stan-dev/stan/releases">Stan User
+Manual&lt;/a> (specifically the
+&lt;em>Reparameterization and Change of Variables&lt;/em> section) has an excellent
+explanation of reparameterization, and even some practical tips to help you do
+it (although your mileage may vary on how useful those tips will be to you).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Asides from meekly pointing to other resources, there&amp;rsquo;s not much I can do to
+help: this stuff really comes from a combination of intuition, statistical
+knowledge and good ol&amp;rsquo; experience. I can, however, cite some examples to give
+you a better idea.&lt;/p>
+&lt;ul>
+&lt;li>The noncentered parameterization is a classic example. If you have a
+parameter whose mean and variance you are also modelling, the noncentered
+parameterization decouples the sampling of mean and variance from the
+sampling of the parameter, so that they are now independent. In this way, we
+avoid “funnels”.&lt;/li>
+&lt;li>The &lt;a href="http://proceedings.mlr.press/v5/carvalho09a.html">&lt;em>horseshoe
+distribution&lt;/em>&lt;/a> is known to
+be a good shrinkage prior, as it is &lt;em>very&lt;/em> spikey near zero, and has &lt;em>very&lt;/em>
+long tails. However, modelling it using one parameter can give multimodal
+posteriors — an exceptionally bad result. The trick is to reparameterize and
+model it as the product of two parameters: one to create spikiness at zero,
+and one to create long tails (which makes sense: to sample from the
+horseshoe, take the product of samples from a normal and a half-Cauchy).&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;h2 id="model-diagnostics">Model Diagnostics&lt;/h2>
+&lt;ul>
+&lt;li>Admittedly the distinction between the previous section and this one is
+somewhat artificial (since problems with your chains indicate problems with
+your model), but I still think it&amp;rsquo;s useful to make this distinction because
+these checks indicate that you&amp;rsquo;re thinking about your data in the wrong way,
+(i.e. you made a poor modelling decision), and &lt;em>not&lt;/em> that the sampler is
+having a hard time doing its job.&lt;/li>
+&lt;/ul>
+&lt;ol>
+&lt;li>
+&lt;p>Run the following snippet of code to inspect the pairplot of your variables
+one at a time (if you have a plate of variables, it&amp;rsquo;s fine to pick a couple
+at random). It&amp;rsquo;ll tell you if the two random variables are correlated, and
+help identify any troublesome neighborhoods in the parameter space (divergent
+samples will be colored differently, and will cluster near such
+neighborhoods).&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>pm&lt;span style="color:#f92672">.&lt;/span>pairplot(trace,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> sub_varnames&lt;span style="color:#f92672">=&lt;/span>[variable_1, variable_2],
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> divergences&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">True&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> color&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#39;C3&amp;#39;&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> kwargs_divergence&lt;span style="color:#f92672">=&lt;/span>{&lt;span style="color:#e6db74">&amp;#39;color&amp;#39;&lt;/span>: &lt;span style="color:#e6db74">&amp;#39;C2&amp;#39;&lt;/span>})
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>Look at your posteriors (either from the traceplot, density plots or
+posterior plots). Do they even make sense? E.g. are there outliers or long
+tails that you weren&amp;rsquo;t expecting? Do their uncertainties look reasonable to
+you? If you had &lt;a href="https://en.wikipedia.org/wiki/Plate_notation">a plate&lt;/a> of
+variables, are their posteriors different? Did you expect them to be that
+way? If not, what about the data made the posteriors different? You&amp;rsquo;re the
+only one who knows your problem/use case, so the posteriors better look good
+to you!&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Broadly speaking, there are four kinds of bad geometries that your posterior
+can suffer from:&lt;/p>
+&lt;ul>
+&lt;li>highly correlated posteriors: this will probably cause divergences or
+traces that don&amp;rsquo;t look like “fuzzy caterpillars”. Either look at the
+jointplots of each pair of variables, or look at the correlation matrix of
+all variables. Try using a centered parameterization, or reparameterize in
+some other way, to remove these correlations.&lt;/li>
+&lt;li>posteriors that form “funnels”: this will probably cause divergences. Try
+using a noncentered parameterization.&lt;/li>
+&lt;li>heavy tailed posteriors: this will probably raise warnings about
+&lt;code>max_treedepth&lt;/code> being exceeded. If your data has long tails, you should
+model that with a long-tailed distribution. If your data doesn&amp;rsquo;t have long
+tails, then your model is ill-specified: perhaps a more informative prior
+would help.&lt;/li>
+&lt;li>multimodal posteriors: right now this is pretty much a death blow. At the
+time of writing, all samplers have a hard time with multimodality, and
+there&amp;rsquo;s not much you can do about that. Try reparameterizing to get a
+unimodal posterior. If that&amp;rsquo;s not possible (perhaps you&amp;rsquo;re &lt;em>modelling&lt;/em>
+multimodality using a mixture model), you&amp;rsquo;re out of luck: just let NUTS
+sample for a day or so, and hopefully you&amp;rsquo;ll get a good trace.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>Pick a small subset of your raw data, and see what exactly your model does
+with that data (i.e. run the model on a specific subset of your data). I find
+that a lot of problems with your model can be found this way.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Run &lt;a href="https://docs.pymc.io/notebooks/posterior_predictive.html">&lt;em>posterior predictive
+checks&lt;/em>&lt;/a> (a.k.a.
+PPCs): sample from your posterior, plug it back in to your model, and
+“generate new data sets”. PyMC3 even has a nice function to do all this for
+you: &lt;code>pm.sample_ppc&lt;/code>. But what do you do with these new data sets? That&amp;rsquo;s a
+question only you can answer! The point of a PPC is to see if the generated
+data sets reproduce patterns you care about in the observed real data set,
+and only you know what patterns you care about. E.g. how close are the PPC
+means to the observed sample mean? What about the variance?&lt;/p>
+&lt;ul>
+&lt;li>For example, suppose you were modelling the levels of radon gas in
+different counties in a country (through a hierarchical model). Then you
+could sample radon gas levels from the posterior for each county, and take
+the maximum within each county. You&amp;rsquo;d then have a distribution of maximum
+radon gas levels across counties. You could then check if the &lt;em>actual&lt;/em>
+maximum radon gas level (in your observed data set) is acceptably within
+that distribution. If it&amp;rsquo;s much larger than the maxima, then you would know
+that the actual likelihood has longer tails than you assumed (e.g. perhaps
+you should use a Student&amp;rsquo;s T instead of a normal?)&lt;/li>
+&lt;li>Remember that how well the posterior predictive distribution fits the data
+is of little consequence (e.g. the expectation that 90% of the data should
+fall within the 90% credible interval of the posterior). The posterior
+predictive distribution tells you what values for data you would expect if
+we were to remeasure, given that you&amp;rsquo;ve already observed the data you did.
+As such, it&amp;rsquo;s informed by your prior as well as your data, and it&amp;rsquo;s not its
+job to adequately fit your data!&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol></description></item></channel></rss>
