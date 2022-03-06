@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>typography on ⁂ George Ho</title><link>https://www.georgeho.org/blog/typography/</link><description>Recent content in typography on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 05 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/typography/feed.xml" rel="self" type="application/rss+xml"/><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
+&lt;p>This weekend I migrated my blog to Hugo.&lt;/p>
+&lt;p>My website is now based on the &lt;a href="https://github.com/janraasch/hugo-bearblog/">Hugo Bear Blog
+theme&lt;/a>, generated with
+&lt;a href="https://gohugo.io/">Hugo&lt;/a>, hosted by &lt;a href="https://pages.github.com/">GitHub Pages&lt;/a>
+and served with &lt;a href="https://www.cloudflare.com/">Cloudflare&lt;/a>. I&amp;rsquo;ve also migrated
+from the &lt;code>eigenfoo.xyz&lt;/code> domain to the more creditable-sounding &lt;code>georgeho.org&lt;/code>
+(sadly, &lt;code>georgeho.com&lt;/code> and &lt;code>georgeho.net&lt;/code> were already taken). In terms of
+typography, the header typeface is &lt;a href="https://www.1001freefonts.com/nicholson-gothic.font">Nicholson
+Gothic&lt;/a> and the body
+typeface is &lt;a href="https://fonts.google.com/specimen/Source+Serif+Pro">Source Serif
+Pro&lt;/a> and &lt;a href="https://fonts.google.com/specimen/Source+Code+Pro">Source Code
+Pro&lt;/a> for the occasional
+monospaced snippet. In all, I probably spend the equivalent of two fancy lattes
+a year for this setup.&lt;/p>
+&lt;h2 id="why-hugo-why-not-jekyll">Why Hugo? Why Not Jekyll?&lt;/h2>
+&lt;p>Honestly, no good reason! &lt;a href="https://vickiboykis.com/2022/01/08/migrating-to-hugo/">Others have pointed
+out&lt;/a> that Jekyll is not
+very actively maintained or used anymore, and that GitHub Pages does not
+support Jekyll 4.0. However, those aren&amp;rsquo;t really good enough reasons for
+migrating a blogging stack.&lt;/p>
+&lt;p>Here&amp;rsquo;s a short list of things I like about Hugo over Jekyll &amp;mdash; but again, none
+of these things really should have enticed me to make the jump.&lt;/p>
+&lt;ul>
+&lt;li>Hugo is easy to install and use (it&amp;rsquo;s a binary executable instead of a Ruby
+library), and it was very easy to make the changes I wanted to the theme
+(e.g. changing the font or &lt;a href="https://practicaltypography.com/line-length.html">increasing the font
+size&lt;/a>) &amp;mdash; although that
+could just be because &lt;a href="https://github.com/janraasch/hugo-bearblog/">the theme that I&amp;rsquo;m
+using&lt;/a> is dead simple.&lt;/li>
+&lt;li>Automatic generation of a &lt;a href="https://www.georgeho.org/sitemap.xml">sitemap&lt;/a> and &lt;a href="https://www.georgeho.org/feed.xml">RSS feed&lt;/a>
+&amp;mdash; with Jekyll, these needed to be done manually (or by your theme).&lt;/li>
+&lt;li>Minor typographical conveniences like automatic &lt;a href="https://practicaltypography.com/straight-and-curly-quotes.html">smart
+quotes&lt;/a>,
+rendering &lt;code>-&lt;/code>, &lt;code>--&lt;/code> and &lt;code>---&lt;/code> into &lt;a href="https://practicaltypography.com/hyphens-and-dashes.html">the appropriate hyphen or
+dash&lt;/a>, and &lt;code>...&lt;/code>
+into &lt;a href="https://practicaltypography.com/ellipses.html">an ellipsis&lt;/a>.&lt;/li>
+&lt;li>Faster builds of my website&amp;hellip; although this isn&amp;rsquo;t really that helpful for
+me, since my blog barely has a few dozen pages.&lt;/li>
+&lt;/ul>
+&lt;h2 id="the-migration">The Migration&lt;/h2>
+&lt;p>&amp;hellip;was surprisingly painless! All I &lt;em>really&lt;/em> needed to do was to &lt;a href="https://themes.gohugo.io/">pick out a
+theme&lt;/a>, follow the &lt;a href="https://gohugo.io/getting-started/quick-start/">Hugo Quick
+Start&lt;/a>, dump my Markdown blog
+posts into the &lt;code>content/&lt;/code> directory and change some of the YAML front matter in
+all of my blog posts.&lt;/p>
+&lt;p>In reality, I spent a few extra hours fiddling with the typography and making
+sure that all my links were back-compatible with my previous website.&lt;/p>
+&lt;h2 id="pollen">Pollen&lt;/h2>
+&lt;p>This is actually not the first time I tried to rewrite my website: earlier this
+year I experimented with writing a
+&lt;a href="https://edwardtufte.github.io/tufte-css/">Tufte-inspired&lt;/a> blog using
+&lt;a href="https://pollenpub.com">Pollen&lt;/a>. For those unfamiliar, it&amp;rsquo;s like R Markdown (in
+that it&amp;rsquo;s a markup language that allows arbitrary R code to be embedded in it),
+but instead of R, it&amp;rsquo;s &lt;a href="https://racket-lang.org/">Racket&lt;/a>, and instead of
+Markdown, it&amp;rsquo;s your own domain-specific markup language that you build with
+Racket.&lt;/p>
+&lt;p>This means that I wrote a custom language specifically for formatting
+Tufte-style two-column blog posts. It actually worked out pretty well (and the
+resulting blog posts looked &lt;em>damn good&lt;/em>), but I couldn&amp;rsquo;t justify maintaining my
+own language specifically for writing blog posts. I&amp;rsquo;d probably recommend using
+Pollen for large, one-off pieces of writing (like a book), instead of small,
+recurring pieces of writing (like a blog).&lt;/p></description></item></channel></rss>
