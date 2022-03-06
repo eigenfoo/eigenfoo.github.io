@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>natural-language-processing on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/natural-language-processing/</link><description>Recent content in natural-language-processing on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 23 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/natural-language-processing/feed.xml" rel="self" type="application/rss+xml"/><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>http://www.georgeho.org/georgeho/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>natural-language-processing on ⁂ George Ho</title><link>https://www.georgeho.org/blog/natural-language-processing/</link><description>Recent content in natural-language-processing on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 23 May 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/natural-language-processing/feed.xml" rel="self" type="application/rss+xml"/><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
 Transformer-based NLP models.&lt;/p>
 &lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
 models&lt;/a>, this blog post is a write-up
@@ -33,7 +33,7 @@ network must still be trained from scratch.&lt;/p>
 representation, and there are linear vector relationships can encode common-sense
 semantic meanings of words.&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/linear-relationships.png" alt="Linear vector relationships in word embeddings">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/linear-relationships.png" alt="Linear vector relationships in word embeddings">
 &lt;figcaption>Linear vector relationships in word embeddings. Source: &lt;a href="https://www.tensorflow.org/images/linear-relationships.png">TensorFlow documentation&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -90,7 +90,7 @@ worthwhile to dig into the details a bit. The architecture is illustrated below:
 note that its feed-forward nature and multi-head self attention are critical
 aspects of this architecture!&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/transformer-block.png" alt="Graphical representation of BERT">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/transformer-block.png" alt="Graphical representation of BERT">
 &lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -152,7 +152,7 @@ then be fine-tuned with just one additional output layer to achieve
 state-of-the-art performance for many NLP tasks, without substantial task-specific
 architecture changes, as illustrated below.&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bert.png" alt="Graphical representation of BERT">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bert.png" alt="Graphical representation of BERT">
 &lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -363,7 +363,7 @@ surprising conclusions!&lt;/li>
 &lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>http://www.georgeho.org/georgeho/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
+&lt;/section></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
 late bloomer (as far as machine learning subfields go), and it&amp;rsquo;s not immediately
 obvious how close the field is to viable, large-scale, production-ready
 techniques (in the same way that, say, &lt;a href="https://clarifai.com/models/">computer vision
@@ -422,7 +422,7 @@ but with uncorrelated (a.k.a. “spherical”) multivariate Gaussian priors plac
 on the rows and columns of $U$ and $V$. Expressed as a graphical model, PMF
 would look like this:&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/pmf.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/pmf.png" alt="Graphical model (using plate notation) for probabilistic matrix factorization (PMF)">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/pmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/pmf.png" alt="Graphical model (using plate notation) for probabilistic matrix factorization (PMF)">&lt;/a>
 &lt;/figure>
 &lt;p>Note that the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$ matrices.&lt;/p>
 &lt;p>The authors then (somewhat disappointing) proceed to find the MAP estimate of
@@ -457,7 +457,7 @@ Gaussian priors on the means (with mean $\mu_0$ and covariance equal to the
 covariance given by the Wishart prior). Expressed as a graphical model, BPMF
 would look like this:&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/bpmf.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bpmf.png" alt="Graphical model (using plate notation) for Bayesian probabilistic matrix factorization (BPMF)">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/bpmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bpmf.png" alt="Graphical model (using plate notation) for Bayesian probabilistic matrix factorization (BPMF)">&lt;/a>
 &lt;/figure>
 &lt;p>Note that, as above, the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$
 matrices, and that $n$ is the dimensionality of latent space (i.e. the number
@@ -513,7 +513,7 @@ machine learning.&lt;/p>
 learning&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Understanding Hate Speech on Reddit through Text Clustering</title><link>http://www.georgeho.org/georgeho/reddit-clusters/</link><pubDate>Sun, 18 Mar 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/reddit-clusters/</guid><description>&lt;blockquote>
+&lt;/section></description></item><item><title>Understanding Hate Speech on Reddit through Text Clustering</title><link>https://www.georgeho.org/reddit-clusters/</link><pubDate>Sun, 18 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-clusters/</guid><description>&lt;blockquote>
 &lt;p>Note: the following article contains several examples of hate speech
 (including but not limited to racist, misogynistic and homophobic views).&lt;/p>
 &lt;/blockquote>
@@ -633,7 +633,7 @@ subreddits.&lt;/p>
 technique in which we’re given data points, and tasked with grouping them in
 some way. A picture will explain better than words:&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/clusters.png">&lt;img src="http://www.georgeho.org/georgeho/assets/images/clusters.png" alt="Illustration of clustering">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/clusters.png">&lt;img src="https://www.georgeho.org/assets/images/clusters.png" alt="Illustration of clustering">&lt;/a>
 &lt;figcaption>Clustering.&lt;/figcaption>
 &lt;/figure>
 &lt;p>The clustering algorithm was hard to decide on. After several dead ends were
@@ -778,7 +778,7 @@ Medium&lt;/a>
 and &lt;a href="https://bts.nomadgate.com/medium-evergreen-content">deleted my account&lt;/a> and
 &lt;a href="https://www.joshjahans.com/ditching-medium/">all my stories&lt;/a>.&lt;/em>&lt;/p>
 &lt;p>&lt;em>This post was also reprinted in the inaugural issue of The Cooper Union&amp;rsquo;s
-&lt;a href="https://www.facebook.com/theunionjournal/">UNION Journal&lt;/a>.&lt;/em>&lt;/p></description></item><item><title>Why Latent Dirichlet Allocation Sucks</title><link>http://www.georgeho.org/georgeho/lda-sucks/</link><pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/lda-sucks/</guid><description>&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
+&lt;a href="https://www.facebook.com/theunionjournal/">UNION Journal&lt;/a>.&lt;/em>&lt;/p></description></item><item><title>Why Latent Dirichlet Allocation Sucks</title><link>https://www.georgeho.org/lda-sucks/</link><pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda-sucks/</guid><description>&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
 that a lot of resources out there go something like this:&lt;/p>
 &lt;blockquote>
 &lt;p>Check out this thing! It&amp;rsquo;s great at this task! The important task! The one
@@ -813,7 +813,7 @@ LDA&lt;/a>, which I wrote a blog post about before).&lt;/p>
 &lt;p>If you&amp;rsquo;ve already encountered LDA and have seen &lt;a href="https://en.wikipedia.org/wiki/Plate_notation">plate
 notation&lt;/a> before, this picture
 will probably refresh your memory:&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/latent-dirichlet-allocation.png" alt="Latent Dirichlet allocation">&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/latent-dirichlet-allocation.png" alt="Latent Dirichlet allocation">&lt;/p>
 &lt;p>If you don&amp;rsquo;t know what LDA is, fret not, for there is
 &lt;a href="http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf">no&lt;/a>
 &lt;a href="http://obphio.us/pdfs/lda_tutorial.pdf">shortage&lt;/a>
@@ -868,7 +868,7 @@ the EM algorthm, instead of using MCMC-based algorithms, which &lt;code>lda&lt;/
 seems that variational Bayes scales better to very large corpora than collapsed
 Gibbs sampling.)&lt;/p>
 &lt;p>Here are the results:&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/lda-sucks.png" alt="LDA followed by t-SNE on the Reddit dataset">&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/lda-sucks.png" alt="LDA followed by t-SNE on the Reddit dataset">&lt;/p>
 &lt;p>Horrible, right? Nowhere near the well-separated clusters that Shuai got with
 the 20 newsgroups. In fact, the tiny little huddles of around 5 to 10 comments
 are probably artifacts of the dimensionality reduction done by t-SNE, so those
@@ -887,8 +887,8 @@ visualizations for multiple other values and the results aren&amp;rsquo;t so hot
 Note that I did these on a random subsample of 1000 comments, so as to reduce
 compute time.&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/perplexity50.png">&lt;img src="http://www.georgeho.org/georgeho/assets/images/perplexity50.png" alt="t-SNE with perplexity value of 50">&lt;/a>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/perplexity100.png">&lt;img src="http://www.georgeho.org/georgeho/assets/images/perplexity100.png" alt="t-SNE with perplexity value of 100">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/perplexity50.png">&lt;img src="https://www.georgeho.org/assets/images/perplexity50.png" alt="t-SNE with perplexity value of 50">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/perplexity100.png">&lt;img src="https://www.georgeho.org/assets/images/perplexity100.png" alt="t-SNE with perplexity value of 100">&lt;/a>
 &lt;figcaption>t-SNE with perplexity values of 50 and 100, respectively.&lt;/figcaption>
 &lt;/figure>
 &lt;p>So, what went wrong? There&amp;rsquo;s a &lt;a href="https://stackoverflow.com/questions/29786985/whats-the-disadvantage-of-lda-for-short-texts">nice StackOverflow
@@ -979,7 +979,7 @@ hard to justify that there are topic clusters in the first place.&lt;/p>
 am linking to the Internet Archive of his blog post instead.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>http://www.georgeho.org/georgeho/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
+&lt;/section></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>https://www.georgeho.org/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
 speech on Reddit&lt;/a>. If you haven&amp;rsquo;t
 taken a look at my first post, please do!&lt;/p>
 &lt;p>I recently gave a talk on the technical, data science side of the project,

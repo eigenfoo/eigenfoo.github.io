@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>deep-learning on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/deep-learning/</link><description>Recent content in deep-learning on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 15 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/deep-learning/feed.xml" rel="self" type="application/rss+xml"/><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>http://www.georgeho.org/georgeho/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>deep-learning on ⁂ George Ho</title><link>https://www.georgeho.org/blog/deep-learning/</link><description>Recent content in deep-learning on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 15 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/deep-learning/feed.xml" rel="self" type="application/rss+xml"/><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>https://www.georgeho.org/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
 algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
 &lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
 prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
@@ -304,7 +304,7 @@ you would only need to do once.&lt;/p>
 &lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>http://www.georgeho.org/georgeho/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/floating-point-deep-learning/</guid><description>&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
+&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>https://www.georgeho.org/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/floating-point-deep-learning/</guid><description>&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
 consideration when working with deep learning models: if your model isn&amp;rsquo;t working well,
 then your floating-point format certainly isn&amp;rsquo;t going to save you! However, past a
 certain point of model complexity/model size/training time, your choice of
@@ -414,7 +414,7 @@ modern GPUs.&lt;/p>
 same as FP16, but 3 mantissa bits become exponent bits (i.e. bfloat16 trades 3 bits'
 worth of precision for scale).&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bfloat16.png" alt="Diagram illustrating the number and type of bits in bfloat16.">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bfloat16.png" alt="Diagram illustrating the number and type of bits in bfloat16.">
 &lt;figcaption>The number and type of bits in bfloat16. Source: &lt;a href="https://cloud.google.com/blog/products/ai-machine-learning/bfloat16-the-secret-to-high-performance-on-cloud-tpus">Google Cloud blog&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;p>When it comes to deep learning, there are generally three &amp;ldquo;flavors&amp;rdquo; of values: weights,
@@ -443,7 +443,7 @@ in order to execute on Tensor Cores. Thus, it has the precision of FP16 (10 bits
 the range of FP32 (8 bits). However, if you&amp;rsquo;re not using Tensor Cores, it&amp;rsquo;s just a
 32-bit float; if you&amp;rsquo;re only thinking about storage, it&amp;rsquo;s just a 32-bit float.&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/tensorfloat32.png" alt="Diagram illustrating the number and type of bits in an NVIDIA TensorFloat">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/tensorfloat32.png" alt="Diagram illustrating the number and type of bits in an NVIDIA TensorFloat">
 &lt;figcaption>The number and type of bits in an NVIDIA TensorFloat. Source: &lt;a href="https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/">NVIDIA blog&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;p>One distinct advantage of TF32 is that they&amp;rsquo;re kind of like FP32. To quote from the
@@ -516,7 +516,7 @@ the machine learning community thinks of the various low precision options avail
 &lt;p>A Tensor Core is essentially a mixed-precision FP16/FP32 core, which NVIDIA has optimized for deep learning applications.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>http://www.georgeho.org/georgeho/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+&lt;/section></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
 Transformer-based NLP models.&lt;/p>
 &lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
 models&lt;/a>, this blog post is a write-up
@@ -551,7 +551,7 @@ network must still be trained from scratch.&lt;/p>
 representation, and there are linear vector relationships can encode common-sense
 semantic meanings of words.&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/linear-relationships.png" alt="Linear vector relationships in word embeddings">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/linear-relationships.png" alt="Linear vector relationships in word embeddings">
 &lt;figcaption>Linear vector relationships in word embeddings. Source: &lt;a href="https://www.tensorflow.org/images/linear-relationships.png">TensorFlow documentation&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -608,7 +608,7 @@ worthwhile to dig into the details a bit. The architecture is illustrated below:
 note that its feed-forward nature and multi-head self attention are critical
 aspects of this architecture!&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/transformer-block.png" alt="Graphical representation of BERT">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/transformer-block.png" alt="Graphical representation of BERT">
 &lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -670,7 +670,7 @@ then be fine-tuned with just one additional output layer to achieve
 state-of-the-art performance for many NLP tasks, without substantial task-specific
 architecture changes, as illustrated below.&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bert.png" alt="Graphical representation of BERT">
+&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bert.png" alt="Graphical representation of BERT">
 &lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -881,7 +881,7 @@ surprising conclusions!&lt;/li>
 &lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Autoregressive Models in Deep Learning — A Brief Survey</title><link>http://www.georgeho.org/georgeho/deep-autoregressive-models/</link><pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/deep-autoregressive-models/</guid><description>&lt;p>My current project involves working with deep autoregressive models: a class of
+&lt;/section></description></item><item><title>Autoregressive Models in Deep Learning — A Brief Survey</title><link>https://www.georgeho.org/deep-autoregressive-models/</link><pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/deep-autoregressive-models/</guid><description>&lt;p>My current project involves working with deep autoregressive models: a class of
 remarkable neural networks that aren&amp;rsquo;t usually seen on a first pass through deep
 learning. These notes are a quick write-up of my reading and research: I assume
 basic familiarity with deep learning, and aim to highlight general trends and
@@ -919,7 +919,7 @@ to autoregressive models, but I think a good way to explain these models is
 to compare them to recurrent neural networks (RNNs), which are far more
 well-known.&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/rnn-unrolled.png">&lt;img src="http://www.georgeho.org/georgeho/assets/images/rnn-unrolled.png" alt="Recurrent neural network (RNN) block diagram, both rolled and unrolled">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/rnn-unrolled.png">&lt;img src="https://www.georgeho.org/assets/images/rnn-unrolled.png" alt="Recurrent neural network (RNN) block diagram, both rolled and unrolled">&lt;/a>
 &lt;figcaption>Obligatory RNN diagram. Source: &lt;a href="https://colah.github.io/posts/2015-08-Understanding-LSTMs/">Chris Olah&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;ul>
@@ -934,7 +934,7 @@ hidden state: they are given as just another input to the model.&lt;/p>
 well: the $t$th output is generated in a &lt;em>feed-forward&lt;/em> fashion from
 several input $x$ values.&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/wavenet-animation.gif">&lt;img src="http://www.georgeho.org/georgeho/assets/images/wavenet-animation.gif" alt="WaveNet animation">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/wavenet-animation.gif">&lt;img src="https://www.georgeho.org/assets/images/wavenet-animation.gif" alt="WaveNet animation">&lt;/a>
 &lt;figcaption>WaveNet animation. Source: &lt;a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">Google DeepMind&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -1112,7 +1112,7 @@ samples at the millisecond scale, and music exhibits rhythmic patterns
 over the course of minutes. This is well illustrated by the following
 animation:&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/audio-animation.gif">&lt;img src="http://www.georgeho.org/georgeho/assets/images/audio-animation.gif" alt="Audio at multiple time scales">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/audio-animation.gif">&lt;img src="https://www.georgeho.org/assets/images/audio-animation.gif" alt="Audio at multiple time scales">&lt;/a>
 &lt;figcaption>Audio exhibits patterns at multiple time scales. Source: &lt;a href="https://deepmind.com/blog/wavenet-generative-model-raw-audio/">Google DeepMind&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>

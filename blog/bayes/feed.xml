@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>bayes on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/bayes/</link><description>Recent content in bayes on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 06 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/bayes/feed.xml" rel="self" type="application/rss+xml"/><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>http://www.georgeho.org/georgeho/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/littlemcmc/</guid><description>&lt;center>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>bayes on ⁂ George Ho</title><link>https://www.georgeho.org/blog/bayes/</link><description>Recent content in bayes on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 06 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/bayes/feed.xml" rel="self" type="application/rss+xml"/><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>https://www.georgeho.org/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/littlemcmc/</guid><description>&lt;center>
 &lt;img
 src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
 alt="LittleMCMC logo">
@@ -29,7 +29,7 @@ the PyMC3 community.&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
-&lt;/ul></description></item><item><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link>http://www.georgeho.org/georgeho/bayesian-bandits-2/</link><pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/bayesian-bandits-2/</guid><description>&lt;blockquote>
+&lt;/ul></description></item><item><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link>https://www.georgeho.org/bayesian-bandits-2/</link><pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits-2/</guid><description>&lt;blockquote>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
 Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -42,7 +42,7 @@ as the rewards are bounded.&lt;/p>
 multi-armed bandit. The first allows the bandit to model nonstationary rewards
 distributions, whereas the second allows the bandit to model context. Jump in!&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/multi-armed-bandit.jpg">&lt;img src="http://www.georgeho.org/georgeho/assets/images/multi-armed-bandit.jpg" alt="Cartoon of a multi-armed bandit">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/multi-armed-bandit.jpg">&lt;img src="https://www.georgeho.org/assets/images/multi-armed-bandit.jpg" alt="Cartoon of a multi-armed bandit">&lt;/a>
 &lt;figcaption>An example of a multi-armed bandit situation. Source: &lt;a href="https://www.inverse.com/article/13762-how-the-multi-armed-bandit-determines-what-ads-and-stories-you-see-online">Inverse&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;h2 id="nonstationary-bandits">Nonstationary Bandits&lt;/h2>
@@ -192,7 +192,7 @@ solutions manual &lt;a href="https://github.com/GoldenCheese/PRML-Solution-Manua
 GitHub&lt;/a> 😉&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Modern Computational Methods for Bayesian Inference — A Reading List</title><link>http://www.georgeho.org/georgeho/bayesian-inference-reading/</link><pubDate>Wed, 02 Jan 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/bayesian-inference-reading/</guid><description>&lt;p>Lately I&amp;rsquo;ve been troubled by how little I actually knew about how Bayesian
+&lt;/section></description></item><item><title>Modern Computational Methods for Bayesian Inference — A Reading List</title><link>https://www.georgeho.org/bayesian-inference-reading/</link><pubDate>Wed, 02 Jan 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-inference-reading/</guid><description>&lt;p>Lately I&amp;rsquo;ve been troubled by how little I actually knew about how Bayesian
 inference &lt;em>really worked&lt;/em>. I could explain to you &lt;a href="https://maria-antoniak.github.io/2018/11/19/data-science-crash-course.html">many other machine learning
 techniques&lt;/a>,
 but with Bayesian modelling&amp;hellip; well, there&amp;rsquo;s a model (which is basically the
@@ -378,7 +378,7 @@ Betancourt’s excellent essay on a principles Bayesian
 workflow&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>http://www.georgeho.org/georgeho/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
+&lt;/section></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
 late bloomer (as far as machine learning subfields go), and it&amp;rsquo;s not immediately
 obvious how close the field is to viable, large-scale, production-ready
 techniques (in the same way that, say, &lt;a href="https://clarifai.com/models/">computer vision
@@ -437,7 +437,7 @@ but with uncorrelated (a.k.a. “spherical”) multivariate Gaussian priors plac
 on the rows and columns of $U$ and $V$. Expressed as a graphical model, PMF
 would look like this:&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/pmf.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/pmf.png" alt="Graphical model (using plate notation) for probabilistic matrix factorization (PMF)">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/pmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/pmf.png" alt="Graphical model (using plate notation) for probabilistic matrix factorization (PMF)">&lt;/a>
 &lt;/figure>
 &lt;p>Note that the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$ matrices.&lt;/p>
 &lt;p>The authors then (somewhat disappointing) proceed to find the MAP estimate of
@@ -472,7 +472,7 @@ Gaussian priors on the means (with mean $\mu_0$ and covariance equal to the
 covariance given by the Wishart prior). Expressed as a graphical model, BPMF
 would look like this:&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/bpmf.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bpmf.png" alt="Graphical model (using plate notation) for Bayesian probabilistic matrix factorization (BPMF)">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/bpmf.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bpmf.png" alt="Graphical model (using plate notation) for Bayesian probabilistic matrix factorization (BPMF)">&lt;/a>
 &lt;/figure>
 &lt;p>Note that, as above, the priors are placed on the &lt;em>rows&lt;/em> of the $U$ and $V$
 matrices, and that $n$ is the dimensionality of latent space (i.e. the number
@@ -528,7 +528,7 @@ machine learning.&lt;/p>
 learning&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>http://www.georgeho.org/georgeho/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/bayesian-bandits/</guid><description>&lt;blockquote>
+&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -609,7 +609,7 @@ to keep track of the number of times we win and the number of times we played
 out the &lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">Jupyter notebook on my
 GitHub&lt;/a>&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/beta-binomial.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/beta-binomial.png" alt="Posterior distribution after several pulls for the Beta-Binomial model">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/beta-binomial.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/beta-binomial.png" alt="Posterior distribution after several pulls for the Beta-Binomial model">&lt;/a>
 &lt;/figure>
 &lt;h3 id="generalizing-to-conjugate-models">Generalizing to conjugate models&lt;/h3>
 &lt;p>In fact, this algorithm isn&amp;rsquo;t just limited to Bernoulli-distributed rewards: it
@@ -630,7 +630,7 @@ in production!)&lt;/li>
 &lt;p>Without further ado:&lt;/p>
 &lt;script src="https://gist.github.com/eigenfoo/e9a9933d94524e6dee717276c6b6f732.js">&lt;/script>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/gamma-poisson.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/gamma-poisson.png" alt="Posterior distribution after several pulls for the Gamma-Poisson model">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/gamma-poisson.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/gamma-poisson.png" alt="Posterior distribution after several pulls for the Gamma-Poisson model">&lt;/a>
 &lt;/figure>
 &lt;p>This really demonstrates how lean and mean conjugate models can be, especially
 considering how much of a pain MCMC or approximate inference methods would be,
@@ -664,7 +664,7 @@ logit is normally distributed). Note that &lt;code>np.expit&lt;/code> is the inv
 function.&lt;/p>
 &lt;script src="https://gist.github.com/eigenfoo/7a397fef8aaa028c5119c9f86860d72e.js">&lt;/script>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/bounded.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bounded.png" alt="Posterior distribution after several pulls with an arbitrary reward distribution (e.g. the logit normal)">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/bounded.png">&lt;img style="float: middle" src="https://www.georgeho.org/assets/images/bounded.png" alt="Posterior distribution after several pulls with an arbitrary reward distribution (e.g. the logit normal)">&lt;/a>
 &lt;/figure>
 &lt;h2 id="final-remarks">Final Remarks&lt;/h2>
 &lt;p>None of this theory is new: I&amp;rsquo;m just advertising it! See Cam Davidson-Pilon&amp;rsquo;s
@@ -693,7 +693,7 @@ library or even a class. Just two functions!&amp;#160;&lt;a href="#fnref:1" clas
 &lt;p>&lt;a href="https://arxiv.org/abs/1111.1797">arXiv:1111.1797&lt;/a> [cs.LG]&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>http://www.georgeho.org/georgeho/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
+&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
 Bayesian modelling, and it&amp;rsquo;s an amazing piece of software! The API only exposes
 as much of heavy machinery of MCMC as you need — by which I mean, just the
 &lt;code>pm.sample()&lt;/code> method (a.k.a., as &lt;a href="http://twiecki.github.io/blog/2013/08/12/bayesian-glms-1/">Thomas
@@ -710,7 +710,7 @@ everywhere: papers, documentation, peppering my &lt;a href="https://twitter.com/
 experienced&lt;/a>
 &lt;a href="https://twitter.com/aseyboldt">colleagues&lt;/a> with questions. It&amp;rsquo;s still very much
 a work in progress, but hopefully somebody else finds it useful!&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/pymc-logo.png" alt="PyMC logo">&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/pymc-logo.png" alt="PyMC logo">&lt;/p>
 &lt;div>
 &lt;h2>Contents&lt;/h2>
 &lt;nav id="TableOfContents">

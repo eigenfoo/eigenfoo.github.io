@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>open-source on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/open-source/</link><description>Recent content in open-source on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 11 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/open-source/feed.xml" rel="self" type="application/rss+xml"/><item><title>`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues</title><link>http://www.georgeho.org/georgeho/cryptic-clues/</link><pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/cryptic-clues/</guid><description>&lt;p>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of cryptic crossword clues&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, collected
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>open-source on ⁂ George Ho</title><link>https://www.georgeho.org/blog/open-source/</link><description>Recent content in open-source on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 11 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/open-source/feed.xml" rel="self" type="application/rss+xml"/><item><title>`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues</title><link>https://www.georgeho.org/cryptic-clues/</link><pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/cryptic-clues/</guid><description>&lt;p>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of cryptic crossword clues&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, collected
 from various blogs and publicly available digital archives. I originally
 started this project to practice my web scraping and data engineering skills,
 but as it&amp;rsquo;s evolved I hope it can be a resource to solvers and constructors of
@@ -18,7 +18,7 @@ years&lt;/strong>, which makes for a rich and peculiar dataset.&lt;/p>
 &lt;p>If you&amp;rsquo;re new to cryptic crosswords, rejoice! A whole new world awaits you! The New Yorker has &lt;a href="https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/reintroducing-the-new-yorkers-cryptic-crossword">an excellent introduction to cryptic crosswords&lt;/a>, and Matt Gritzmacher has &lt;a href="https://crosswordlinks.substack.com/">a daily newsletter with links to crosswords&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>http://www.georgeho.org/georgeho/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
+&lt;/section></description></item><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>https://www.georgeho.org/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
 algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
 &lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
 prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
@@ -324,7 +324,7 @@ you would only need to do once.&lt;/p>
 &lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>http://www.georgeho.org/georgeho/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/littlemcmc/</guid><description>&lt;center>
+&lt;/section></description></item><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>https://www.georgeho.org/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/littlemcmc/</guid><description>&lt;center>
 &lt;img
 src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
 alt="LittleMCMC logo">
@@ -355,7 +355,7 @@ the PyMC3 community.&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
-&lt;/ul></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>http://www.georgeho.org/georgeho/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
+&lt;/ul></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>https://www.georgeho.org/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
 Retreat&lt;/a> earlier this month. It was an entire week
 on a beautiful island with some amazingly intelligent Bayesians, and no demands
 on my time other than the self-set (and admittedly vague) goal of contributing
@@ -364,8 +364,8 @@ to probabilistic programming in some way.&lt;/p>
 but I quickly readjusted my goals to something more achievable: running some
 benchmarks with tuning in Hamiltonian Monte Carlo (HMC).&lt;/p>
 &lt;figure>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/galiano.jpg">&lt;img src="http://www.georgeho.org/georgeho/assets/images/galiano.jpg" alt="A view of a forest on Galiano Island">&lt;/a>
-&lt;a href="http://www.georgeho.org/georgeho/assets/images/galiano2.jpg">&lt;img src="http://www.georgeho.org/georgeho/assets/images/galiano2.jpg" alt="The view from a bluff on Galiano Island">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/galiano.jpg">&lt;img src="https://www.georgeho.org/assets/images/galiano.jpg" alt="A view of a forest on Galiano Island">&lt;/a>
+&lt;a href="https://www.georgeho.org/assets/images/galiano2.jpg">&lt;img src="https://www.georgeho.org/assets/images/galiano2.jpg" alt="The view from a bluff on Galiano Island">&lt;/a>
 &lt;figcaption>Pictures from Galiano Island.&lt;/figcaption>
 &lt;/figure>
 &lt;p>A quick rundown for those unfamiliar: &lt;em>tuning&lt;/em> is what happens before sampling,
@@ -648,9 +648,9 @@ time when I thought that I would have the patience to run each model and
 adaptation method multiple times.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Introducing `stan-vim`</title><link>http://www.georgeho.org/georgeho/stan-vim/</link><pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/stan-vim/</guid><description>&lt;center>
+&lt;/section></description></item><item><title>Introducing `stan-vim`</title><link>https://www.georgeho.org/stan-vim/</link><pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stan-vim/</guid><description>&lt;center>
 &lt;img
-src="http://www.georgeho.org/georgeho/assets/images/stan-logo.png"
+src="https://www.georgeho.org/assets/images/stan-logo.png"
 alt="Stan logo">
 &lt;/center>
 &lt;p>I made a Vim plugin for Stan!&lt;/p>
@@ -687,7 +687,7 @@ language&lt;/a>.
 This is probably the last Vim plugin I write.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>http://www.georgeho.org/georgeho/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
+&lt;/section></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>https://www.georgeho.org/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
 abstract&lt;/a> to the &lt;a href="https://program-transformations.github.io/">&lt;em>Program Transformations
 for Machine Learning&lt;/em> NeurIPS workshop&lt;/a>. I
 realized that despite knowing a thing or two about Bayesian modelling, I don&amp;rsquo;t
@@ -739,7 +739,7 @@ algorithm and optimizer&lt;/li>
 &lt;li>A suite of diagnostics to monitor and analyze the quality of inference&lt;/li>
 &lt;/ol>
 &lt;p>These six pieces come together like so:&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/prob-prog-flowchart.png" alt="Flowchart illustrating the structure of a probabilistic programmingframeworks">&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/prob-prog-flowchart.png" alt="Flowchart illustrating the structure of a probabilistic programmingframeworks">&lt;/p>
 &lt;p>Let&amp;rsquo;s break this down one by one.&lt;/p>
 &lt;h3 id="specifying-the-model-languageapi">Specifying the model: language/API&lt;/h3>
 &lt;p>This is what users will use to specify their models. Most frameworks will let users
@@ -1012,7 +1012,7 @@ path of a crazy person.&lt;/p>
 &lt;/blockquote>
 &amp;#160;&lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>http://www.georgeho.org/georgeho/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
+&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
 Bayesian modelling, and it&amp;rsquo;s an amazing piece of software! The API only exposes
 as much of heavy machinery of MCMC as you need — by which I mean, just the
 &lt;code>pm.sample()&lt;/code> method (a.k.a., as &lt;a href="http://twiecki.github.io/blog/2013/08/12/bayesian-glms-1/">Thomas
@@ -1029,7 +1029,7 @@ everywhere: papers, documentation, peppering my &lt;a href="https://twitter.com/
 experienced&lt;/a>
 &lt;a href="https://twitter.com/aseyboldt">colleagues&lt;/a> with questions. It&amp;rsquo;s still very much
 a work in progress, but hopefully somebody else finds it useful!&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/pymc-logo.png" alt="PyMC logo">&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/pymc-logo.png" alt="PyMC logo">&lt;/p>
 &lt;div>
 &lt;h2>Contents&lt;/h2>
 &lt;nav id="TableOfContents">
@@ -1583,7 +1583,7 @@ As such, it&amp;rsquo;s informed by your prior as well as your data, and it&amp;
 job to adequately fit your data!&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ol></description></item><item><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio</title><link>http://www.georgeho.org/georgeho/pyfolio/</link><pubDate>Sat, 16 Dec 2017 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/pyfolio/</guid><description>&lt;p>I was lucky enough to have the chance to intern at
+&lt;/ol></description></item><item><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio</title><link>https://www.georgeho.org/pyfolio/</link><pubDate>Sat, 16 Dec 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/pyfolio/</guid><description>&lt;p>I was lucky enough to have the chance to intern at
 &lt;a href="https://www.quantopian.com/">Quantopian&lt;/a> this summer. During that time I
 contributed some exciting stuff to their open-source portfolio analytics engine,
 &lt;a href="https://github.com/quantopian/pyfolio">&lt;code>pyfolio&lt;/code>&lt;/a>, and learnt a truckload of
@@ -1592,7 +1592,7 @@ the new features that I authored: the risk and performance attribution tear
 sheets.&lt;/p>
 &lt;center>
 &lt;img
-src="http://www.georgeho.org/georgeho/assets/images/pyfolio-logo.png"
+src="https://www.georgeho.org/assets/images/pyfolio-logo.png"
 alt="Pyfolio logo">
 &lt;/center>
 &lt;h2 id="risk-analytics">Risk Analytics&lt;/h2>
@@ -1613,7 +1613,7 @@ quantified by the volatility of returns (as in the Sharpe ratio). Finally,
 there is no easy, free, open-source way to get this sort of analysis.&lt;/p>
 &lt;p>Enter &lt;code>pyfolio&lt;/code>&amp;rsquo;s new risk tear sheet! It addresses all the problems outlined
 above, and more. Let&amp;rsquo;s jump right in with an example.&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/pyfolio-risk-tear-sheet.png" alt="Example risk tear sheet">&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/pyfolio-risk-tear-sheet.png" alt="Example risk tear sheet">&lt;/p>
 &lt;p>&lt;em>(Note: this example risk tear sheet came from the &lt;a href="https://github.com/quantopian/pyfolio/pull/391">original pull
 request&lt;/a>, and may therefore be
 out of date)&lt;/em>&lt;/p>

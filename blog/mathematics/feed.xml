@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>mathematics on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/mathematics/</link><description>Recent content in mathematics on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Fri, 28 Jun 2019 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/mathematics/feed.xml" rel="self" type="application/rss+xml"/><item><title>Python Port of _Common Statistical Tests are Linear Models_</title><link>http://www.georgeho.org/georgeho/stat-tests-are-linear-model/</link><pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/stat-tests-are-linear-model/</guid><description>&lt;p>I ported &lt;a href="https://lindeloev.net">Jonas Lindeløv&lt;/a>&amp;rsquo;s essay, &lt;a href="https://lindeloev.github.io/tests-as-linear/">&lt;em>Common Statistical
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>mathematics on ⁂ George Ho</title><link>https://www.georgeho.org/blog/mathematics/</link><description>Recent content in mathematics on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Fri, 28 Jun 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/mathematics/feed.xml" rel="self" type="application/rss+xml"/><item><title>Python Port of _Common Statistical Tests are Linear Models_</title><link>https://www.georgeho.org/stat-tests-are-linear-model/</link><pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stat-tests-are-linear-model/</guid><description>&lt;p>I ported &lt;a href="https://lindeloev.net">Jonas Lindeløv&lt;/a>&amp;rsquo;s essay, &lt;a href="https://lindeloev.github.io/tests-as-linear/">&lt;em>Common Statistical
 Tests are Linear Models&lt;/em>&lt;/a> from R
 to Python. Check it out on &lt;a href="https://www.georgeho.org/tests-as-linear/">my
 blog&lt;/a>,
 &lt;a href="https://github.com/eigenfoo/tests-as-linear">GitHub&lt;/a>, or
-&lt;a href="https://gke.mybinder.org/v2/gh/eigenfoo/tests-as-linear/master?filepath=tests-as-linear.ipynb">Binder&lt;/a>!&lt;/p></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>http://www.georgeho.org/georgeho/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
+&lt;a href="https://gke.mybinder.org/v2/gh/eigenfoo/tests-as-linear/master?filepath=tests-as-linear.ipynb">Binder&lt;/a>!&lt;/p></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>https://www.georgeho.org/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
 &lt;em>Machine Learning Algorithm&lt;/em>. It&amp;rsquo;s got two modes: training mode and testing
 mode. You set it to training mode, and throw in a lot (sometimes &lt;em>a lot&lt;/em> a lot)
 of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called
@@ -193,7 +193,7 @@ can supply do not all share the same features&lt;/li>
 &lt;p>Clearly, there&amp;rsquo;s a lot of potential in the LUPI paradigm, as well as a lot of
 reasons to be skeptical. It&amp;rsquo;s very much a nascent perspective of machine
 learning, so I&amp;rsquo;m interested in keeping an eye on it going forward. I&amp;rsquo;m hoping
-to write more posts on LUPI in the future!&lt;/p></description></item><item><title>Linear Discriminant Analysis for Starters</title><link>http://www.georgeho.org/georgeho/lda/</link><pubDate>Sat, 30 Dec 2017 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/lda/</guid><description>&lt;p>&lt;em>Linear discriminant analysis&lt;/em> (commonly abbreviated to LDA, and not to be
+to write more posts on LUPI in the future!&lt;/p></description></item><item><title>Linear Discriminant Analysis for Starters</title><link>https://www.georgeho.org/lda/</link><pubDate>Sat, 30 Dec 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda/</guid><description>&lt;p>&lt;em>Linear discriminant analysis&lt;/em> (commonly abbreviated to LDA, and not to be
 confused with &lt;a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">the other
 LDA&lt;/a>) is a very
 common dimensionality reduction technique for classification problems. However,
@@ -275,7 +275,7 @@ noise).&lt;/p>
 &lt;p>Below is simple illustration I made, inspired by &lt;a href="https://www.quora.com/Can-you-explain-the-comparison-between-principal-component-analysis-and-linear-discriminant-analysis-in-dimensionality-reduction-with-MATLAB-code-Which-one-is-more-efficient">Sebastian
 Raschka&lt;/a>
 that may help our intuition about the problem:&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/lda-pic.png" alt="Projections of two-dimensional data (in two clusters) onto the x and y axes">&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/lda-pic.png" alt="Projections of two-dimensional data (in two clusters) onto the x and y axes">&lt;/p>
 &lt;p>A couple of points to make:&lt;/p>
 &lt;ul>
 &lt;li>LD1 and LD2 are among the projections that LDA would consider. In reality, LDA
@@ -458,7 +458,7 @@ about whether or not it would make sense to perform PCA followed by LDA.&lt;/p>
 &lt;p>There is a crucial difference between the two techniques, though. PCA tries to
 find the axes with &lt;em>maximum variance&lt;/em> for the whole data set, whereas LDA tries
 to find the axes for best &lt;em>class separability&lt;/em>.&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/lda-pic.png" alt="Projections of two-dimensional data (in two clusters) onto the x and y axes">&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/lda-pic.png" alt="Projections of two-dimensional data (in two clusters) onto the x and y axes">&lt;/p>
 &lt;p>Going back to the illustration from before (reproduced above), it&amp;rsquo;s not hard to
 see that PCA would give us LD2, whereas LDA would give us LD1. This makes the
 main difference between PCA and LDA painfully obvious: just because a feature

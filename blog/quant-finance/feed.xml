@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>quant-finance on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/quant-finance/</link><description>Recent content in quant-finance on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 16 Dec 2017 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/quant-finance/feed.xml" rel="self" type="application/rss+xml"/><item><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio</title><link>http://www.georgeho.org/georgeho/pyfolio/</link><pubDate>Sat, 16 Dec 2017 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/pyfolio/</guid><description>&lt;p>I was lucky enough to have the chance to intern at
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>quant-finance on ⁂ George Ho</title><link>https://www.georgeho.org/blog/quant-finance/</link><description>Recent content in quant-finance on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 16 Dec 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/quant-finance/feed.xml" rel="self" type="application/rss+xml"/><item><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio</title><link>https://www.georgeho.org/pyfolio/</link><pubDate>Sat, 16 Dec 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/pyfolio/</guid><description>&lt;p>I was lucky enough to have the chance to intern at
 &lt;a href="https://www.quantopian.com/">Quantopian&lt;/a> this summer. During that time I
 contributed some exciting stuff to their open-source portfolio analytics engine,
 &lt;a href="https://github.com/quantopian/pyfolio">&lt;code>pyfolio&lt;/code>&lt;/a>, and learnt a truckload of
@@ -7,7 +7,7 @@ the new features that I authored: the risk and performance attribution tear
 sheets.&lt;/p>
 &lt;center>
 &lt;img
-src="http://www.georgeho.org/georgeho/assets/images/pyfolio-logo.png"
+src="https://www.georgeho.org/assets/images/pyfolio-logo.png"
 alt="Pyfolio logo">
 &lt;/center>
 &lt;h2 id="risk-analytics">Risk Analytics&lt;/h2>
@@ -28,7 +28,7 @@ quantified by the volatility of returns (as in the Sharpe ratio). Finally,
 there is no easy, free, open-source way to get this sort of analysis.&lt;/p>
 &lt;p>Enter &lt;code>pyfolio&lt;/code>&amp;rsquo;s new risk tear sheet! It addresses all the problems outlined
 above, and more. Let&amp;rsquo;s jump right in with an example.&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/pyfolio-risk-tear-sheet.png" alt="Example risk tear sheet">&lt;/p>
+&lt;p>&lt;img src="https://www.georgeho.org/assets/images/pyfolio-risk-tear-sheet.png" alt="Example risk tear sheet">&lt;/p>
 &lt;p>&lt;em>(Note: this example risk tear sheet came from the &lt;a href="https://github.com/quantopian/pyfolio/pull/391">original pull
 request&lt;/a>, and may therefore be
 out of date)&lt;/em>&lt;/p>

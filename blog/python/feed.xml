@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>python on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/python/</link><description>Recent content in python on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 05 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/python/feed.xml" rel="self" type="application/rss+xml"/><item><title>Streaming Data with Tornado and WebSockets</title><link>http://www.georgeho.org/georgeho/tornado-websockets/</link><pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/tornado-websockets/</guid><description>&lt;p>A lot of data science and machine learning practice assumes a static dataset,
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>python on ⁂ George Ho</title><link>https://www.georgeho.org/blog/python/</link><description>Recent content in python on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 05 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/python/feed.xml" rel="self" type="application/rss+xml"/><item><title>Streaming Data with Tornado and WebSockets</title><link>https://www.georgeho.org/tornado-websockets/</link><pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tornado-websockets/</guid><description>&lt;p>A lot of data science and machine learning practice assumes a static dataset,
 maybe with some MLOps tooling for rerunning a model pipeline with the freshest
 version of the dataset.&lt;/p>
 &lt;p>Working with streaming data is an entirely different ball game, and it wasn&amp;rsquo;t
@@ -152,7 +152,7 @@ scalable technologies when they do work.&lt;/p>
 &lt;p>There is &lt;a href="https://sqlstream.com/real-time-vs-streaming-a-short-explanation/">technically a difference&lt;/a> between &amp;ldquo;real-time&amp;rdquo; and &amp;ldquo;streaming&amp;rdquo;: &amp;ldquo;real-time&amp;rdquo; refers to data that comes in as it is created, whereas &amp;ldquo;streaming&amp;rdquo; refers to a system that processes data continuously. You stream your TV show from Netflix, but since the show was created long before you watched it, you aren&amp;rsquo;t viewing it in real-time.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>http://www.georgeho.org/georgeho/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/littlemcmc/</guid><description>&lt;center>
+&lt;/section></description></item><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>https://www.georgeho.org/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/littlemcmc/</guid><description>&lt;center>
 &lt;img
 src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
 alt="LittleMCMC logo">
@@ -183,7 +183,7 @@ the PyMC3 community.&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
-&lt;/ul></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>http://www.georgeho.org/georgeho/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
+&lt;/ul></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>https://www.georgeho.org/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
 API by manipulating the &lt;a href="https://docs.python.org/3/library/ast.html">Python abstract syntax
 tree&lt;/a> (AST) of the model code. The PyMC
 developers didn&amp;rsquo;t end up pursuing those API changes any further, but not until I had the
@@ -314,7 +314,7 @@ StackOverflow
 answer&lt;/a>.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Python Port of _Common Statistical Tests are Linear Models_</title><link>http://www.georgeho.org/georgeho/stat-tests-are-linear-model/</link><pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/stat-tests-are-linear-model/</guid><description>&lt;p>I ported &lt;a href="https://lindeloev.net">Jonas Lindeløv&lt;/a>&amp;rsquo;s essay, &lt;a href="https://lindeloev.github.io/tests-as-linear/">&lt;em>Common Statistical
+&lt;/section></description></item><item><title>Python Port of _Common Statistical Tests are Linear Models_</title><link>https://www.georgeho.org/stat-tests-are-linear-model/</link><pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stat-tests-are-linear-model/</guid><description>&lt;p>I ported &lt;a href="https://lindeloev.net">Jonas Lindeløv&lt;/a>&amp;rsquo;s essay, &lt;a href="https://lindeloev.github.io/tests-as-linear/">&lt;em>Common Statistical
 Tests are Linear Models&lt;/em>&lt;/a> from R
 to Python. Check it out on &lt;a href="https://www.georgeho.org/tests-as-linear/">my
 blog&lt;/a>,
