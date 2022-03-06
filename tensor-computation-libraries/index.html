@@ -5,10 +5,12 @@
 <meta name=viewport content="width=device-width,initial-scale=1">
 <link rel="shortcut icon" href=http://www.georgeho.org/georgeho/assets/images/favicon.ico>
 <title>What I Wish Someone Had Told Me About Tensor Computation Libraries | ⁂ George Ho</title><meta name=title content="What I Wish Someone Had Told Me About Tensor Computation Libraries">
-<meta name=description content="Contents  Dissecting Tensor Computation Libraries  &ldquo;Tensor Computation Library&rdquo; - Maybe Not The Best Name (Some) Differences Between Tensor Computation Libraries   A Zoo of Tensor Computation Libraries  PyTorch JAX Theano   An Observation on Static Graphs and Theano    I get confused with tensor computation libraries (or computational graph libraries, or symbolic algebra libraries, or whatever they&rsquo;re marketing themselves as these days).">
+<meta name=description content="I get confused with tensor computation libraries (or computational graph libraries, or symbolic algebra libraries, or whatever they&rsquo;re marketing themselves as these days).
+I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways. This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although I couldn&rsquo;t articulate what exactly they were).">
 <meta name=keywords content="open-source,machine-learning,deep-learning,">
 <meta property="og:title" content="What I Wish Someone Had Told Me About Tensor Computation Libraries">
-<meta property="og:description" content="Contents  Dissecting Tensor Computation Libraries  &ldquo;Tensor Computation Library&rdquo; - Maybe Not The Best Name (Some) Differences Between Tensor Computation Libraries   A Zoo of Tensor Computation Libraries  PyTorch JAX Theano   An Observation on Static Graphs and Theano    I get confused with tensor computation libraries (or computational graph libraries, or symbolic algebra libraries, or whatever they&rsquo;re marketing themselves as these days).">
+<meta property="og:description" content="I get confused with tensor computation libraries (or computational graph libraries, or symbolic algebra libraries, or whatever they&rsquo;re marketing themselves as these days).
+I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways. This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although I couldn&rsquo;t articulate what exactly they were).">
 <meta property="og:type" content="article">
 <meta property="og:url" content="http://www.georgeho.org/georgeho/tensor-computation-libraries/"><meta property="og:image" content="http://www.georgeho.org/georgeho/images/share.png"><meta property="article:section" content="blog">
 <meta property="article:published_time" content="2020-12-15T00:00:00+00:00">
@@ -16,9 +18,11 @@
 <meta name=twitter:card content="summary_large_image">
 <meta name=twitter:image content="http://www.georgeho.org/georgeho/images/share.png">
 <meta name=twitter:title content="What I Wish Someone Had Told Me About Tensor Computation Libraries">
-<meta name=twitter:description content="Contents  Dissecting Tensor Computation Libraries  &ldquo;Tensor Computation Library&rdquo; - Maybe Not The Best Name (Some) Differences Between Tensor Computation Libraries   A Zoo of Tensor Computation Libraries  PyTorch JAX Theano   An Observation on Static Graphs and Theano    I get confused with tensor computation libraries (or computational graph libraries, or symbolic algebra libraries, or whatever they&rsquo;re marketing themselves as these days).">
+<meta name=twitter:description content="I get confused with tensor computation libraries (or computational graph libraries, or symbolic algebra libraries, or whatever they&rsquo;re marketing themselves as these days).
+I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways. This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although I couldn&rsquo;t articulate what exactly they were).">
 <meta itemprop=name content="What I Wish Someone Had Told Me About Tensor Computation Libraries">
-<meta itemprop=description content="Contents  Dissecting Tensor Computation Libraries  &ldquo;Tensor Computation Library&rdquo; - Maybe Not The Best Name (Some) Differences Between Tensor Computation Libraries   A Zoo of Tensor Computation Libraries  PyTorch JAX Theano   An Observation on Static Graphs and Theano    I get confused with tensor computation libraries (or computational graph libraries, or symbolic algebra libraries, or whatever they&rsquo;re marketing themselves as these days)."><meta itemprop=datePublished content="2020-12-15T00:00:00+00:00">
+<meta itemprop=description content="I get confused with tensor computation libraries (or computational graph libraries, or symbolic algebra libraries, or whatever they&rsquo;re marketing themselves as these days).
+I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways. This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although I couldn&rsquo;t articulate what exactly they were)."><meta itemprop=datePublished content="2020-12-15T00:00:00+00:00">
 <meta itemprop=dateModified content="2020-12-15T00:00:00+00:00">
 <meta itemprop=wordCount content="2077"><meta itemprop=image content="http://www.georgeho.org/georgeho/images/share.png">
 <meta itemprop=keywords content="open-source,machine-learning,deep-learning,">
@@ -29,8 +33,8 @@
 </script>
 <link rel=preconnect href=https://fonts.googleapis.com>
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
-<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:125%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body>
 <header><a href=/georgeho/ class=title>
 <h2>⁂ George Ho</h2></a>
 <nav><a href=/georgeho/>Home</a>
@@ -44,14 +48,7 @@
 </time>
 </i>
 </p><content>
-<div>
-<h2>Contents</h2><nav id=TableOfContents>
-<ul>
-<li><a href=#dissecting-tensor-computation-libraries>Dissecting Tensor Computation Libraries</a>
-<ul>
-<li><a href=#tensor-computation-library---maybe-not-the-best-name>&ldquo;Tensor Computation Library&rdquo; - Maybe Not The Best Name</a></li><li><a href=#some-differences-between-tensor-computation-libraries>(Some) Differences Between Tensor Computation Libraries</a></li></ul></li><li><a href=#a-zoo-of-tensor-computation-libraries>A Zoo of Tensor Computation Libraries</a>
-<ul>
-<li><a href=#pytorchhttpspytorchorg><a href=https://pytorch.org/>PyTorch</a></a></li><li><a href=#jaxhttpsjaxreadthedocsioenlatest><a href=https://jax.readthedocs.io/en/latest/>JAX</a></a></li><li><a href=#theanohttpstheano-pymcreadthedocsioenlatest><a href=https://theano-pymc.readthedocs.io/en/latest/>Theano</a></a></li></ul></li><li><a href=#an-observation-on-static-graphs-and-theano>An Observation on Static Graphs and Theano</a></li></ul></nav></div><p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
+<p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
 algebra libraries, or whatever they&rsquo;re marketing themselves as these days).</p><p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
 prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
 less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways.
@@ -62,7 +59,14 @@ backend</a>.</p><p>Anyways, this confusion prompted a lot of research and eventu
 frameworks</a>, I’ll first discuss tensor computation
 libraries in general - what they are and how they can differ from one another. Then I&rsquo;ll discuss
 some libraries in detail, and finally offer an observation on the future of Theano in the context of
-contemporary tensor computation libraries.</p><h2 id=dissecting-tensor-computation-libraries>Dissecting Tensor Computation Libraries</h2><p>First, a characterization: what do tensor computation libraries even do?</p><ol>
+contemporary tensor computation libraries.</p><div>
+<h2>Contents</h2><nav id=TableOfContents>
+<ul>
+<li><a href=#dissecting-tensor-computation-libraries>Dissecting Tensor Computation Libraries</a>
+<ul>
+<li><a href=#tensor-computation-library---maybe-not-the-best-name>&ldquo;Tensor Computation Library&rdquo; - Maybe Not The Best Name</a></li><li><a href=#some-differences-between-tensor-computation-libraries>(Some) Differences Between Tensor Computation Libraries</a></li></ul></li><li><a href=#a-zoo-of-tensor-computation-libraries>A Zoo of Tensor Computation Libraries</a>
+<ul>
+<li><a href=#pytorchhttpspytorchorg><a href=https://pytorch.org/>PyTorch</a></a></li><li><a href=#jaxhttpsjaxreadthedocsioenlatest><a href=https://jax.readthedocs.io/en/latest/>JAX</a></a></li><li><a href=#theanohttpstheano-pymcreadthedocsioenlatest><a href=https://theano-pymc.readthedocs.io/en/latest/>Theano</a></a></li></ul></li><li><a href=#an-observation-on-static-graphs-and-theano>An Observation on Static Graphs and Theano</a></li></ul></nav></div><h2 id=dissecting-tensor-computation-libraries>Dissecting Tensor Computation Libraries</h2><p>First, a characterization: what do tensor computation libraries even do?</p><ol>
 <li>They provide ways of specifying and building computational graphs,</li><li>They run the computation itself (duh), but also run &ldquo;related&rdquo; computations that either (a) <em>use
 the computational graph</em>, or (b) operate <em>directly on the computational graph itself</em>,
 <ul>

@@ -90,7 +90,7 @@ worthwhile to dig into the details a bit. The architecture is illustrated below:
 note that its feed-forward nature and multi-head self attention are critical
 aspects of this architecture!&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/asset/images/transformer-block.png" alt="Graphical representation of BERT">
+&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/transformer-block.png" alt="Graphical representation of BERT">
 &lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>

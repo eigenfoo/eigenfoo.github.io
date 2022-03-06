@@ -1,4 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>machine-learning on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/machine-learning/</link><description>Recent content in machine-learning on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 15 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/machine-learning/index.xml" rel="self" type="application/rss+xml"/><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>http://www.georgeho.org/georgeho/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/tensor-computation-libraries/</guid><description>&lt;div>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>machine-learning on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/machine-learning/</link><description>Recent content in machine-learning on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 15 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/machine-learning/index.xml" rel="self" type="application/rss+xml"/><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>http://www.georgeho.org/georgeho/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
+algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
+&lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
+prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
+less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways.
+This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although
+I couldn&amp;rsquo;t articulate what exactly they were). Then came &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">the announcement by the PyMC developers
+that Theano would have a new JAX
+backend&lt;/a>.&lt;/p>
+&lt;p>Anyways, this confusion prompted a lot of research and eventually, this blog post.&lt;/p>
+&lt;p>Similar to &lt;a href="https://www.georgeho.org/prob-prog-frameworks/">my previous post on the anatomy of probabilistic programming
+frameworks&lt;/a>, I’ll first discuss tensor computation
+libraries in general - what they are and how they can differ from one another. Then I&amp;rsquo;ll discuss
+some libraries in detail, and finally offer an observation on the future of Theano in the context of
+contemporary tensor computation libraries.&lt;/p>
+&lt;div>
 &lt;h2>Contents&lt;/h2>
 &lt;nav id="TableOfContents">
 &lt;ul>
@@ -19,21 +34,6 @@
 &lt;/ul>
 &lt;/nav>
 &lt;/div>
-&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
-algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
-&lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
-prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
-less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways.
-This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although
-I couldn&amp;rsquo;t articulate what exactly they were). Then came &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">the announcement by the PyMC developers
-that Theano would have a new JAX
-backend&lt;/a>.&lt;/p>
-&lt;p>Anyways, this confusion prompted a lot of research and eventually, this blog post.&lt;/p>
-&lt;p>Similar to &lt;a href="https://www.georgeho.org/prob-prog-frameworks/">my previous post on the anatomy of probabilistic programming
-frameworks&lt;/a>, I’ll first discuss tensor computation
-libraries in general - what they are and how they can differ from one another. Then I&amp;rsquo;ll discuss
-some libraries in detail, and finally offer an observation on the future of Theano in the context of
-contemporary tensor computation libraries.&lt;/p>
 &lt;h2 id="dissecting-tensor-computation-libraries">Dissecting Tensor Computation Libraries&lt;/h2>
 &lt;p>First, a characterization: what do tensor computation libraries even do?&lt;/p>
 &lt;ol>
@@ -304,28 +304,7 @@ you would only need to do once.&lt;/p>
 &lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>http://www.georgeho.org/georgeho/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/floating-point-deep-learning/</guid><description>&lt;div>
-&lt;h2>Contents&lt;/h2>
-&lt;nav id="TableOfContents">
-&lt;ul>
-&lt;li>&lt;a href="#floating-point-in-_my_-deep-learning">Floating-Point? In &lt;em>My&lt;/em> Deep Learning?&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#floating-point-formats">Floating-Point Formats&lt;/a>
-&lt;ul>
-&lt;li>&lt;a href="#ieee-floating-point-formats">IEEE floating-point formats&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#google-bfloat16">Google BFloat16&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#nvidia-tensorfloat">NVIDIA TensorFloat&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;a href="#advice-for-practitioners">Advice for Practitioners&lt;/a>
-&lt;ul>
-&lt;li>&lt;a href="#automatic-mixed-precision-amp-training--a-good-default">Automatic mixed precision (AMP) training — a good default&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#alternative-floating-point-formats--make-sure-itll-be-worth-it">Alternative floating-point formats — make sure it&amp;rsquo;ll be worth it&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/nav>
-&lt;/div>
-&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
+&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>http://www.georgeho.org/georgeho/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/floating-point-deep-learning/</guid><description>&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
 consideration when working with deep learning models: if your model isn&amp;rsquo;t working well,
 then your floating-point format certainly isn&amp;rsquo;t going to save you! However, past a
 certain point of model complexity/model size/training time, your choice of
@@ -333,7 +312,7 @@ floating-point format can have a significant impact on your model training times
 even performance.&lt;/p>
 &lt;p>Here&amp;rsquo;s how the rest of this post is structured:&lt;/p>
 &lt;ol>
-&lt;li>&lt;a href="#floating-point-in-my-deep-learning">Why should you, a deep learning practitioner,
+&lt;li>&lt;a href="#floating-point-in-_my_-deep-learning">Why should you, a deep learning practitioner,
 care&lt;/a> about what floating-point format your
 model uses?&lt;/li>
 &lt;li>&lt;a href="#floating-point-formats">What even &lt;em>is&lt;/em> floating-point&lt;/a>, especially these new
@@ -629,7 +608,7 @@ worthwhile to dig into the details a bit. The architecture is illustrated below:
 note that its feed-forward nature and multi-head self attention are critical
 aspects of this architecture!&lt;/p>
 &lt;figure class="align-center">
-&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/asset/images/transformer-block.png" alt="Graphical representation of BERT">
+&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/transformer-block.png" alt="Graphical representation of BERT">
 &lt;figcaption>Graphical representation of BERT. Source: &lt;a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest&lt;/a>.&lt;/figcaption>
 &lt;/figure>
 &lt;/li>
@@ -1132,42 +1111,8 @@ posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref:2">&lt;a href="#f
 distributed (this would be the situation we face when e.g. modelling
 click-through rates). The conjugate prior for the Bernoulli distribution is the
 Beta distribution (this is a special case of the Beta-Binomial model).&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">make_bandits&lt;/span>(params):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">pull&lt;/span>(arm, size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Bernoulli distributed rewards&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>binomial(n&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, p&lt;span style="color:#f92672">=&lt;/span>params[arm], size&lt;span style="color:#f92672">=&lt;/span>size)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> reward
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> pull, len(params)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">bayesian_strategy&lt;/span>(pull, num_bandits):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample from the bandits&amp;#39; priors, and choose largest&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>argmax(np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>beta(a&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_rewards,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> b&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_trials&lt;span style="color:#f92672">-&lt;/span>num_rewards))
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample the chosen bandit&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> next(pull(choice))
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Update&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards[choice] &lt;span style="color:#f92672">+=&lt;/span> reward
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials[choice] &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> choice, reward, num_rewards, num_trials
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pull, num_bandits &lt;span style="color:#f92672">=&lt;/span> make_bandits([&lt;span style="color:#ae81ff">0.2&lt;/span>, &lt;span style="color:#ae81ff">0.5&lt;/span>, &lt;span style="color:#ae81ff">0.7&lt;/span>])
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> play &lt;span style="color:#f92672">=&lt;/span> bayesian_strategy(pull, num_bandits)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Here, &lt;code>pull&lt;/code> returns the result of pulling on the &lt;code>arm&lt;/code>&amp;lsquo;th bandit, and
+&lt;script src="https://gist.github.com/eigenfoo/3d8d318f5bd8fdea24f7b12936de77b5.js">&lt;/script>
+&lt;p>Here, &lt;code>pull&lt;/code> returns the result of pulling on the &lt;code>arm&lt;/code>&amp;lsquo;th bandit, and
 &lt;code>make_bandits&lt;/code> is just a factory function for &lt;code>pull&lt;/code>.&lt;/p>
 &lt;p>The &lt;code>bayesian_strategy&lt;/code> function actually implements the algorithm. We only need
 to keep track of the number of times we win and the number of times we played
@@ -1199,42 +1144,8 @@ in production!)&lt;/li>
 &lt;li>The variables you need to keep track of and the update rule in &lt;code>bayesian_strategy&lt;/code>&lt;/li>
 &lt;/ul>
 &lt;p>Without further ado:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">make_bandits&lt;/span>(params):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">pull&lt;/span>(arm, size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Poisson distributed rewards&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>poisson(lam&lt;span style="color:#f92672">=&lt;/span>params[arm], size&lt;span style="color:#f92672">=&lt;/span>size)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> reward
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> pull, len(params)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">bayesian_strategy&lt;/span>(pull, num_bandits):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>ones(num_bandits)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>ones(num_bandits)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample from the bandits&amp;#39; priors, and choose largest&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>argmax(np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>gamma(num_rewards,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scale&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>&lt;span style="color:#f92672">/&lt;/span>num_trials))
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample the chosen bandit&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> next(pull(choice))
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Update&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards[choice] &lt;span style="color:#f92672">+=&lt;/span> reward
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials[choice] &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> choice, reward, num_rewards, num_trials
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pull, num_bandits &lt;span style="color:#f92672">=&lt;/span> make_bandits([&lt;span style="color:#ae81ff">4.0&lt;/span>, &lt;span style="color:#ae81ff">4.5&lt;/span>, &lt;span style="color:#ae81ff">5.0&lt;/span>])
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> play &lt;span style="color:#f92672">=&lt;/span> bayesian_strategy(pull, num_bandits)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
+&lt;script src="https://gist.github.com/eigenfoo/e9a9933d94524e6dee717276c6b6f732.js">&lt;/script>
+&lt;figure>
 &lt;a href="http://www.georgeho.org/georgeho/assets/images/gamma-poisson.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/gamma-poisson.png" alt="Posterior distribution after several pulls for the Gamma-Poisson model">&lt;/a>
 &lt;/figure>
 &lt;p>This really demonstrates how lean and mean conjugate models can be, especially
@@ -1267,49 +1178,8 @@ all $b$.&lt;/li>
 &lt;p>Here I do this for the logit-normal distribution (i.e. a random variable whose
 logit is normally distributed). Note that &lt;code>np.expit&lt;/code> is the inverse of the logit
 function.&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">make_bandits&lt;/span>(params):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">pull&lt;/span>(arm, size&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#66d9ef">None&lt;/span>):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Logit-normal distributed returns (or any distribution with finite&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># support) `expit` is the inverse of `logit`&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> expit(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>normal(loc&lt;span style="color:#f92672">=&lt;/span>params[arm], scale&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, size&lt;span style="color:#f92672">=&lt;/span>size)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> reward
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> pull, len(params)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">bayesian_strategy&lt;/span>(pull, num_bandits):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>zeros(num_bandits)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">while&lt;/span> &lt;span style="color:#66d9ef">True&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample from the bandits&amp;#39; priors, and choose largest&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>argmax(np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>beta(&lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_rewards,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#ae81ff">2&lt;/span>&lt;span style="color:#f92672">+&lt;/span>num_trials&lt;span style="color:#f92672">-&lt;/span>num_rewards))
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample the chosen bandit&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> reward &lt;span style="color:#f92672">=&lt;/span> next(pull(choice))
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Sample a Bernoulli with probability of success = reward&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Remember, reward is normalized to be in [0, 1]&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> outcome &lt;span style="color:#f92672">=&lt;/span> np&lt;span style="color:#f92672">.&lt;/span>random&lt;span style="color:#f92672">.&lt;/span>binomial(n&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>, p&lt;span style="color:#f92672">=&lt;/span>reward)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Update&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_rewards[choice] &lt;span style="color:#f92672">+=&lt;/span> outcome
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> num_trials[choice] &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">yield&lt;/span> choice, reward, num_rewards, num_trials
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#39;__main__&amp;#39;&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> pull, num_bandits &lt;span style="color:#f92672">=&lt;/span> make_bandits([&lt;span style="color:#ae81ff">0.2&lt;/span>, &lt;span style="color:#ae81ff">1.8&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>])
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> play &lt;span style="color:#f92672">=&lt;/span> bayesian_strategy(pull, num_bandits)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> _ &lt;span style="color:#f92672">in&lt;/span> range(&lt;span style="color:#ae81ff">100&lt;/span>):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> choice, reward, num_rewards, num_trials &lt;span style="color:#f92672">=&lt;/span> next(play)
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
+&lt;script src="https://gist.github.com/eigenfoo/7a397fef8aaa028c5119c9f86860d72e.js">&lt;/script>
+&lt;figure>
 &lt;a href="http://www.georgeho.org/georgeho/assets/images/bounded.png">&lt;img style="float: middle" src="http://www.georgeho.org/georgeho/assets/images/bounded.png" alt="Posterior distribution after several pulls with an arbitrary reward distribution (e.g. the logit normal)">&lt;/a>
 &lt;/figure>
 &lt;h2 id="final-remarks">Final Remarks&lt;/h2>

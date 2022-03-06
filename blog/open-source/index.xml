@@ -18,7 +18,22 @@ years&lt;/strong>, which makes for a rich and peculiar dataset.&lt;/p>
 &lt;p>If you&amp;rsquo;re new to cryptic crosswords, rejoice! A whole new world awaits you! The New Yorker has &lt;a href="https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/reintroducing-the-new-yorkers-cryptic-crossword">an excellent introduction to cryptic crosswords&lt;/a>, and Matt Gritzmacher has &lt;a href="https://crosswordlinks.substack.com/">a daily newsletter with links to crosswords&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>http://www.georgeho.org/georgeho/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/tensor-computation-libraries/</guid><description>&lt;div>
+&lt;/section></description></item><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>http://www.georgeho.org/georgeho/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
+algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
+&lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
+prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
+less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways.
+This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although
+I couldn&amp;rsquo;t articulate what exactly they were). Then came &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">the announcement by the PyMC developers
+that Theano would have a new JAX
+backend&lt;/a>.&lt;/p>
+&lt;p>Anyways, this confusion prompted a lot of research and eventually, this blog post.&lt;/p>
+&lt;p>Similar to &lt;a href="https://www.georgeho.org/prob-prog-frameworks/">my previous post on the anatomy of probabilistic programming
+frameworks&lt;/a>, I’ll first discuss tensor computation
+libraries in general - what they are and how they can differ from one another. Then I&amp;rsquo;ll discuss
+some libraries in detail, and finally offer an observation on the future of Theano in the context of
+contemporary tensor computation libraries.&lt;/p>
+&lt;div>
 &lt;h2>Contents&lt;/h2>
 &lt;nav id="TableOfContents">
 &lt;ul>
@@ -39,21 +54,6 @@ years&lt;/strong>, which makes for a rich and peculiar dataset.&lt;/p>
 &lt;/ul>
 &lt;/nav>
 &lt;/div>
-&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
-algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
-&lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
-prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
-less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways.
-This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although
-I couldn&amp;rsquo;t articulate what exactly they were). Then came &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">the announcement by the PyMC developers
-that Theano would have a new JAX
-backend&lt;/a>.&lt;/p>
-&lt;p>Anyways, this confusion prompted a lot of research and eventually, this blog post.&lt;/p>
-&lt;p>Similar to &lt;a href="https://www.georgeho.org/prob-prog-frameworks/">my previous post on the anatomy of probabilistic programming
-frameworks&lt;/a>, I’ll first discuss tensor computation
-libraries in general - what they are and how they can differ from one another. Then I&amp;rsquo;ll discuss
-some libraries in detail, and finally offer an observation on the future of Theano in the context of
-contemporary tensor computation libraries.&lt;/p>
 &lt;h2 id="dissecting-tensor-computation-libraries">Dissecting Tensor Computation Libraries&lt;/h2>
 &lt;p>First, a characterization: what do tensor computation libraries even do?&lt;/p>
 &lt;ol>

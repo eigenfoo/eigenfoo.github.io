@@ -193,28 +193,7 @@ can supply do not all share the same features&lt;/li>
 &lt;p>Clearly, there&amp;rsquo;s a lot of potential in the LUPI paradigm, as well as a lot of
 reasons to be skeptical. It&amp;rsquo;s very much a nascent perspective of machine
 learning, so I&amp;rsquo;m interested in keeping an eye on it going forward. I&amp;rsquo;m hoping
-to write more posts on LUPI in the future!&lt;/p></description></item><item><title>Linear Discriminant Analysis for Starters</title><link>http://www.georgeho.org/georgeho/lda/</link><pubDate>Sat, 30 Dec 2017 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/lda/</guid><description>&lt;div>
-&lt;h2>Contents&lt;/h2>
-&lt;nav id="TableOfContents">
-&lt;ul>
-&lt;li>&lt;a href="#lda-as-an-algorithm">LDA as an Algorithm&lt;/a>
-&lt;ul>
-&lt;li>&lt;a href="#problem-statement">Problem statement&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#solution">Solution&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;a href="#lda-as-a-theorem">LDA as a Theorem&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#lda-as-a-machine-learning-technique">LDA as a Machine Learning Technique&lt;/a>
-&lt;ul>
-&lt;li>&lt;a href="#regularization-aka-shrinkage">Regularization (a.k.a. shrinkage)&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#lda-as-a-classifier">LDA as a classifier&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#close-relatives-pca-qda-anova">Close relatives: PCA, QDA, ANOVA&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;/nav>
-&lt;/div>
-&lt;p>&lt;em>Linear discriminant analysis&lt;/em> (commonly abbreviated to LDA, and not to be
+to write more posts on LUPI in the future!&lt;/p></description></item><item><title>Linear Discriminant Analysis for Starters</title><link>http://www.georgeho.org/georgeho/lda/</link><pubDate>Sat, 30 Dec 2017 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/lda/</guid><description>&lt;p>&lt;em>Linear discriminant analysis&lt;/em> (commonly abbreviated to LDA, and not to be
 confused with &lt;a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">the other
 LDA&lt;/a>) is a very
 common dimensionality reduction technique for classification problems. However,
@@ -246,6 +225,27 @@ explanation of, LDA. I&amp;rsquo;ll look at LDA in three ways:&lt;/p>
 &lt;/ol>
 &lt;p>This is a lot for one post, but my hope is that there&amp;rsquo;s something in here for
 everyone.&lt;/p>
+&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#lda-as-an-algorithm">LDA as an Algorithm&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#problem-statement">Problem statement&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#solution">Solution&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#lda-as-a-theorem">LDA as a Theorem&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#lda-as-a-machine-learning-technique">LDA as a Machine Learning Technique&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#regularization-aka-shrinkage">Regularization (a.k.a. shrinkage)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#lda-as-a-classifier">LDA as a classifier&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#close-relatives-pca-qda-anova">Close relatives: PCA, QDA, ANOVA&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
 &lt;h2 id="lda-as-an-algorithm">LDA as an Algorithm&lt;/h2>
 &lt;h3 id="problem-statement">Problem statement&lt;/h3>
 &lt;p>Before we dive into LDA, it&amp;rsquo;s good to get an intuitive grasp of what LDA

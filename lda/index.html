@@ -5,10 +5,12 @@
 <meta name=viewport content="width=device-width,initial-scale=1">
 <link rel="shortcut icon" href=http://www.georgeho.org/georgeho/assets/images/favicon.ico>
 <title>Linear Discriminant Analysis for Starters | ⁂ George Ho</title><meta name=title content="Linear Discriminant Analysis for Starters">
-<meta name=description content="Contents  LDA as an Algorithm  Problem statement Solution   LDA as a Theorem LDA as a Machine Learning Technique  Regularization (a.k.a. shrinkage) LDA as a classifier Close relatives: PCA, QDA, ANOVA      Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.">
+<meta name=description content="Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.
+In plain English, if you have high-dimensional data (i.e. a large number of features) from which you wish to classify observations, LDA will help you transform your data so as to make the classes as distinct as possible.">
 <meta name=keywords content="mathematics,">
 <meta property="og:title" content="Linear Discriminant Analysis for Starters">
-<meta property="og:description" content="Contents  LDA as an Algorithm  Problem statement Solution   LDA as a Theorem LDA as a Machine Learning Technique  Regularization (a.k.a. shrinkage) LDA as a classifier Close relatives: PCA, QDA, ANOVA      Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.">
+<meta property="og:description" content="Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.
+In plain English, if you have high-dimensional data (i.e. a large number of features) from which you wish to classify observations, LDA will help you transform your data so as to make the classes as distinct as possible.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="http://www.georgeho.org/georgeho/lda/"><meta property="og:image" content="http://www.georgeho.org/georgeho/images/share.png"><meta property="article:section" content="blog">
 <meta property="article:published_time" content="2017-12-30T00:00:00+00:00">
@@ -16,9 +18,11 @@
 <meta name=twitter:card content="summary_large_image">
 <meta name=twitter:image content="http://www.georgeho.org/georgeho/images/share.png">
 <meta name=twitter:title content="Linear Discriminant Analysis for Starters">
-<meta name=twitter:description content="Contents  LDA as an Algorithm  Problem statement Solution   LDA as a Theorem LDA as a Machine Learning Technique  Regularization (a.k.a. shrinkage) LDA as a classifier Close relatives: PCA, QDA, ANOVA      Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.">
+<meta name=twitter:description content="Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.
+In plain English, if you have high-dimensional data (i.e. a large number of features) from which you wish to classify observations, LDA will help you transform your data so as to make the classes as distinct as possible.">
 <meta itemprop=name content="Linear Discriminant Analysis for Starters">
-<meta itemprop=description content="Contents  LDA as an Algorithm  Problem statement Solution   LDA as a Theorem LDA as a Machine Learning Technique  Regularization (a.k.a. shrinkage) LDA as a classifier Close relatives: PCA, QDA, ANOVA      Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction."><meta itemprop=datePublished content="2017-12-30T00:00:00+00:00">
+<meta itemprop=description content="Linear discriminant analysis (commonly abbreviated to LDA, and not to be confused with the other LDA) is a very common dimensionality reduction technique for classification problems. However, that&rsquo;s something of an understatement: it does so much more than “just” dimensionality reduction.
+In plain English, if you have high-dimensional data (i.e. a large number of features) from which you wish to classify observations, LDA will help you transform your data so as to make the classes as distinct as possible."><meta itemprop=datePublished content="2017-12-30T00:00:00+00:00">
 <meta itemprop=dateModified content="2017-12-30T00:00:00+00:00">
 <meta itemprop=wordCount content="2287"><meta itemprop=image content="http://www.georgeho.org/georgeho/images/share.png">
 <meta itemprop=keywords content="mathematics,">
@@ -29,8 +33,8 @@
 </script>
 <link rel=preconnect href=https://fonts.googleapis.com>
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
-<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:125%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body>
 <header><a href=/georgeho/ class=title>
 <h2>⁂ George Ho</h2></a>
 <nav><a href=/georgeho/>Home</a>
@@ -44,14 +48,7 @@
 </time>
 </i>
 </p><content>
-<div>
-<h2>Contents</h2><nav id=TableOfContents>
-<ul>
-<li><a href=#lda-as-an-algorithm>LDA as an Algorithm</a>
-<ul>
-<li><a href=#problem-statement>Problem statement</a></li><li><a href=#solution>Solution</a></li></ul></li><li><a href=#lda-as-a-theorem>LDA as a Theorem</a></li><li><a href=#lda-as-a-machine-learning-technique>LDA as a Machine Learning Technique</a>
-<ul>
-<li><a href=#regularization-aka-shrinkage>Regularization (a.k.a. shrinkage)</a></li><li><a href=#lda-as-a-classifier>LDA as a classifier</a></li><li><a href=#close-relatives-pca-qda-anova>Close relatives: PCA, QDA, ANOVA</a></li></ul></li></ul></nav></div><p><em>Linear discriminant analysis</em> (commonly abbreviated to LDA, and not to be
+<p><em>Linear discriminant analysis</em> (commonly abbreviated to LDA, and not to be
 confused with <a href=https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation>the other
 LDA</a>) is a very
 common dimensionality reduction technique for classification problems. However,
@@ -74,7 +71,14 @@ dimensionality reduction technique “discriminant analysis”, and only prepend
 nowadays call the entire technique “LDA”, so that&rsquo;s what I&rsquo;ll call it.</p><p>The goal of this post is to give a comprehensive introduction to, and
 explanation of, LDA. I&rsquo;ll look at LDA in three ways:</p><ol>
 <li>LDA as an algorithm: what does it do, and how does it do it?</li><li>LDA as a theorem: a mathematical derivation of LDA</li><li>LDA as a machine learning technique: practical considerations when using LDA</li></ol><p>This is a lot for one post, but my hope is that there&rsquo;s something in here for
-everyone.</p><h2 id=lda-as-an-algorithm>LDA as an Algorithm</h2><h3 id=problem-statement>Problem statement</h3><p>Before we dive into LDA, it&rsquo;s good to get an intuitive grasp of what LDA
+everyone.</p><div>
+<h2>Contents</h2><nav id=TableOfContents>
+<ul>
+<li><a href=#lda-as-an-algorithm>LDA as an Algorithm</a>
+<ul>
+<li><a href=#problem-statement>Problem statement</a></li><li><a href=#solution>Solution</a></li></ul></li><li><a href=#lda-as-a-theorem>LDA as a Theorem</a></li><li><a href=#lda-as-a-machine-learning-technique>LDA as a Machine Learning Technique</a>
+<ul>
+<li><a href=#regularization-aka-shrinkage>Regularization (a.k.a. shrinkage)</a></li><li><a href=#lda-as-a-classifier>LDA as a classifier</a></li><li><a href=#close-relatives-pca-qda-anova>Close relatives: PCA, QDA, ANOVA</a></li></ul></li></ul></nav></div><h2 id=lda-as-an-algorithm>LDA as an Algorithm</h2><h3 id=problem-statement>Problem statement</h3><p>Before we dive into LDA, it&rsquo;s good to get an intuitive grasp of what LDA
 tries to accomplish.</p><p>Suppose that:</p><ol>
 <li>You have very high-dimensional data, and that</li><li>You are dealing with a classification problem</li></ol><p>This could mean that the number of features is greater than the number of
 observations, or it could mean that you suspect there are noisy features that

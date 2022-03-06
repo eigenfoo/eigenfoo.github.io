@@ -47,72 +47,8 @@ and allowing dropped connections to be detected and closed.&lt;/li>
 attribute. While this is set to a generous 10 MiB, it&amp;rsquo;s important that the
 WebSocket messages don&amp;rsquo;t exceed this limit!&lt;/li>
 &lt;/ul>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34; Every 100ms, sample from a Bernoulli and write the value to a WebSocket. &amp;#34;&amp;#34;&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> random
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.ioloop
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.web
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.websocket
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">WebSocketServer&lt;/span>(tornado&lt;span style="color:#f92672">.&lt;/span>websocket&lt;span style="color:#f92672">.&lt;/span>WebSocketHandler):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;Simple WebSocket handler to serve clients.&amp;#34;&amp;#34;&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Note that `clients` is a class variable and `send_message` is a&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># classmethod.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clients &lt;span style="color:#f92672">=&lt;/span> set()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">open&lt;/span>(self):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> WebSocketServer&lt;span style="color:#f92672">.&lt;/span>clients&lt;span style="color:#f92672">.&lt;/span>add(self)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">on_close&lt;/span>(self):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> WebSocketServer&lt;span style="color:#f92672">.&lt;/span>clients&lt;span style="color:#f92672">.&lt;/span>remove(self)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@classmethod&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">send_message&lt;/span>(cls, message: str):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;Sending message &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>message&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> to &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>len(cls&lt;span style="color:#f92672">.&lt;/span>clients)&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74"> client(s).&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">for&lt;/span> client &lt;span style="color:#f92672">in&lt;/span> cls&lt;span style="color:#f92672">.&lt;/span>clients:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client&lt;span style="color:#f92672">.&lt;/span>write_message(message)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">RandomBernoulli&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>p &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0.72&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;True p = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>self&lt;span style="color:#f92672">.&lt;/span>p&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">sample&lt;/span>(self):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> int(random&lt;span style="color:#f92672">.&lt;/span>uniform(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>) &lt;span style="color:#f92672">&amp;lt;=&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>p)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Create a web app whose only endpoint is a WebSocket, and start the web&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># app on port 8888.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> app &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>web&lt;span style="color:#f92672">.&lt;/span>Application(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> [(&lt;span style="color:#e6db74">r&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/websocket/&amp;#34;&lt;/span>, WebSocketServer)],
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> websocket_ping_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> websocket_ping_timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">30&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> app&lt;span style="color:#f92672">.&lt;/span>listen(&lt;span style="color:#ae81ff">8888&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Create an event loop (what Tornado calls an IOLoop).&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>ioloop&lt;span style="color:#f92672">.&lt;/span>IOLoop&lt;span style="color:#f92672">.&lt;/span>current()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Before starting the event loop, instantiate a RandomBernoulli and&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># register a periodic callback to write a sampled value to the WebSocket&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># every 100ms.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> random_bernoulli &lt;span style="color:#f92672">=&lt;/span> RandomBernoulli()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> periodic_callback &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>ioloop&lt;span style="color:#f92672">.&lt;/span>PeriodicCallback(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">lambda&lt;/span>: WebSocketServer&lt;span style="color:#f92672">.&lt;/span>send_message(str(random_bernoulli&lt;span style="color:#f92672">.&lt;/span>sample())), &lt;span style="color:#ae81ff">100&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> periodic_callback&lt;span style="color:#f92672">.&lt;/span>start()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Start the event loop.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop&lt;span style="color:#f92672">.&lt;/span>start()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;__main__&amp;#34;&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> main()
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="client">Client&lt;/h2>
+&lt;script src="https://gist.github.com/eigenfoo/22f46166fa6924d684d68ca06e08b055.js">&lt;/script>
+&lt;h2 id="client">Client&lt;/h2>
 &lt;ul>
 &lt;li>&lt;code>WebSocketClient&lt;/code> is a class that:
 &lt;ol>
@@ -159,74 +95,8 @@ effect of recovering gracefully if the WebSocket is dropped or &lt;code>server.p
 experiences a brief outage for whatever reason (both of which are probably
 inevitable for long-running apps using WebSockets).&lt;/li>
 &lt;/ul>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34; Read from the WebSocket and update the Beta posterior parameters online. &amp;#34;&amp;#34;&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.ioloop
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> tornado.websocket
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">WebSocketClient&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self, io_loop):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connection &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>io_loop &lt;span style="color:#f92672">=&lt;/span> io_loop
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_successes &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_trials &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">start&lt;/span>(self):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connect_and_read()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">stop&lt;/span>(self):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>io_loop&lt;span style="color:#f92672">.&lt;/span>stop()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">connect_and_read&lt;/span>(self):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Reading...&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tornado&lt;span style="color:#f92672">.&lt;/span>websocket&lt;span style="color:#f92672">.&lt;/span>websocket_connect(
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> url&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;ws://localhost:8888/websocket/&amp;#34;&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> callback&lt;span style="color:#f92672">=&lt;/span>self&lt;span style="color:#f92672">.&lt;/span>maybe_retry_connection,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> on_message_callback&lt;span style="color:#f92672">=&lt;/span>self&lt;span style="color:#f92672">.&lt;/span>on_message,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ping_interval&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">10&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ping_timeout&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#ae81ff">30&lt;/span>,
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">maybe_retry_connection&lt;/span>(self, future) &lt;span style="color:#f92672">-&amp;gt;&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">try&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connection &lt;span style="color:#f92672">=&lt;/span> future&lt;span style="color:#f92672">.&lt;/span>result()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">except&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Could not reconnect, retrying in 3 seconds...&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>io_loop&lt;span style="color:#f92672">.&lt;/span>call_later(&lt;span style="color:#ae81ff">3&lt;/span>, self&lt;span style="color:#f92672">.&lt;/span>connect_and_read)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">on_message&lt;/span>(self, message):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">if&lt;/span> message &lt;span style="color:#f92672">is&lt;/span> &lt;span style="color:#66d9ef">None&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">&amp;#34;Disconnected, reconnecting...&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>connect_and_read()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> message &lt;span style="color:#f92672">=&lt;/span> int(message)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_successes &lt;span style="color:#f92672">+=&lt;/span> message
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>num_trials &lt;span style="color:#f92672">+=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> alpha &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span> &lt;span style="color:#f92672">+&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_successes
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> beta &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span> &lt;span style="color:#f92672">+&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_trials &lt;span style="color:#f92672">-&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_successes
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> mean &lt;span style="color:#f92672">=&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_successes &lt;span style="color:#f92672">/&lt;/span> self&lt;span style="color:#f92672">.&lt;/span>num_trials
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> print(&lt;span style="color:#e6db74">f&lt;/span>&lt;span style="color:#e6db74">&amp;#34;α = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>alpha&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">; β = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>beta&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">; mean = &lt;/span>&lt;span style="color:#e6db74">{&lt;/span>mean&lt;span style="color:#e6db74">}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>():
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Create an event loop (what Tornado calls an IOLoop).&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop &lt;span style="color:#f92672">=&lt;/span> tornado&lt;span style="color:#f92672">.&lt;/span>ioloop&lt;span style="color:#f92672">.&lt;/span>IOLoop&lt;span style="color:#f92672">.&lt;/span>current()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Before starting the event loop, instantiate a WebSocketClient and add a&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># callback to the event loop to start it. This way the first thing the&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># event loop does is to start the client.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> client &lt;span style="color:#f92672">=&lt;/span> WebSocketClient(io_loop)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop&lt;span style="color:#f92672">.&lt;/span>add_callback(client&lt;span style="color:#f92672">.&lt;/span>start)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Start the event loop.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> io_loop&lt;span style="color:#f92672">.&lt;/span>start()
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">if&lt;/span> __name__ &lt;span style="color:#f92672">==&lt;/span> &lt;span style="color:#e6db74">&amp;#34;__main__&amp;#34;&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> main()
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="why-tornado">Why Tornado?&lt;/h2>
+&lt;script src="https://gist.github.com/eigenfoo/341f6c6c578d34120bccc4229e434377.js">&lt;/script>
+&lt;h2 id="why-tornado">Why Tornado?&lt;/h2>
 &lt;p>Tornado is a Python web framework, but unlike the more popular Python web
 frameworks like &lt;a href="https://flask.palletsprojects.com/">Flask&lt;/a> or
 &lt;a href="https://www.djangoproject.com/">Django&lt;/a>, it has strong support for
@@ -328,12 +198,8 @@ notebooks on
 GitHub&lt;/a>.&lt;/p>
 &lt;h2 id="the-problem">The Problem&lt;/h2>
 &lt;p>Originally, PyMC4&amp;rsquo;s proposed model specification API looked something like this:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">linear_regression&lt;/span>(x):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scale &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>HalfCauchy(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> coefs &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>zeros(x&lt;span style="color:#f92672">.&lt;/span>shape[&lt;span style="color:#ae81ff">1&lt;/span>]), &lt;span style="color:#ae81ff">1&lt;/span>, )
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> predictions &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">yield&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>linalg&lt;span style="color:#f92672">.&lt;/span>matvec(x, coefs), scale)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> predictions
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The main drawback to this API was that the &lt;code>yield&lt;/code> keyword was confusing. Many users
+&lt;script src="https://gist.github.com/eigenfoo/8917e2fd72ea8940d54916c1cfbe1755.js">&lt;/script>
+&lt;p>The main drawback to this API was that the &lt;code>yield&lt;/code> keyword was confusing. Many users
 don’t really understand Python generators, and those who do might only understand
 &lt;code>yield&lt;/code> as a drop-in replacement for &lt;code>return&lt;/code> (that is, they might understand what it
 means for a function to end in &lt;code>yield foo&lt;/code>, but would be uncomfortable with &lt;code>bar = yield foo&lt;/code>).&lt;/p>
@@ -366,43 +232,8 @@ generator.&lt;/p>
 &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#why-is-this-problem-hard">here&lt;/a>.&lt;/p>
 &lt;h2 id="the-solution">The Solution&lt;/h2>
 &lt;p>First, I wrote a &lt;code>FunctionToGenerator&lt;/code> class:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">FunctionToGenerator&lt;/span>(ast&lt;span style="color:#f92672">.&lt;/span>NodeTransformer):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34;
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> This subclass traverses the AST of the user-written, decorated,
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> model specification and transforms it into a generator for the
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> model. Subclassing in this way is the idiomatic way to transform
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> an AST.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> Specifically:
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74">
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> 1. Add `yield` keywords to all assignments
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> E.g. `x = tfd.Normal(0, 1)` -&amp;gt; `x = yield tfd.Normal(0, 1)`
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> 2. Rename the model specification function to
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> `_pm_compiled_model_generator`. This is done out an abundance
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> of caution more than anything.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> 3. Remove the @Model decorator. Otherwise, we risk running into
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> an infinite recursion.
-&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#e6db74"> &amp;#34;&amp;#34;&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">visit_Assign&lt;/span>(self, node):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node &lt;span style="color:#f92672">=&lt;/span> node
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node&lt;span style="color:#f92672">.&lt;/span>value &lt;span style="color:#f92672">=&lt;/span> ast&lt;span style="color:#f92672">.&lt;/span>Yield(value&lt;span style="color:#f92672">=&lt;/span>new_node&lt;span style="color:#f92672">.&lt;/span>value)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Tie up loose ends in the AST.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>copy_location(new_node, node)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>fix_missing_locations(new_node)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>generic_visit(node)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> new_node
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">visit_FunctionDef&lt;/span>(self, node):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node &lt;span style="color:#f92672">=&lt;/span> node
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node&lt;span style="color:#f92672">.&lt;/span>name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;_pm_compiled_model_generator&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> new_node&lt;span style="color:#f92672">.&lt;/span>decorator_list &lt;span style="color:#f92672">=&lt;/span> []
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Tie up loose ends in the AST.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>copy_location(new_node, node)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> ast&lt;span style="color:#f92672">.&lt;/span>fix_missing_locations(new_node)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>generic_visit(node)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> new_node
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Subclassing &lt;code>ast.NodeTransformer&lt;/code> (as &lt;code>FunctionToGenerator&lt;/code> does) is the &lt;a href="https://greentreesnakes.readthedocs.io/en/latest/manipulating.html#modifying-the-tree">recommended
+&lt;script src="https://gist.github.com/eigenfoo/43282c4e69156647d7bb2505f1dbafb2.js">&lt;/script>
+&lt;p>Subclassing &lt;code>ast.NodeTransformer&lt;/code> (as &lt;code>FunctionToGenerator&lt;/code> does) is the &lt;a href="https://greentreesnakes.readthedocs.io/en/latest/manipulating.html#modifying-the-tree">recommended
 way of modifying
 ASTs&lt;/a>.
 The functionality of &lt;code>FunctionToGenerator&lt;/code> is pretty well described by the docstring:
@@ -413,32 +244,8 @@ the &lt;code>NodeTransformer&lt;/code> is done with the AST, we have one functio
 &lt;code>_pm_compiled_model_generator&lt;/code>, which is a modified version of the user-defined
 function.&lt;/p>
 &lt;p>Second, the &lt;code>Model&lt;/code> class:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Model&lt;/span>:
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;&amp;#34;&amp;#34; pm.Model decorator. &amp;#34;&amp;#34;&amp;#34;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">def&lt;/span> __init__(self, func):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>func &lt;span style="color:#f92672">=&lt;/span> func
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Introspect wrapped function, instead of the decorator class.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> functools&lt;span style="color:#f92672">.&lt;/span>update_wrapper(self, func)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Uncompile wrapped function.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> uncompiled &lt;span style="color:#f92672">=&lt;/span> uncompile(func&lt;span style="color:#f92672">.&lt;/span>__code__)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Parse AST and modify it.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tree &lt;span style="color:#f92672">=&lt;/span> parse_snippet(&lt;span style="color:#f92672">*&lt;/span>uncompiled)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> tree &lt;span style="color:#f92672">=&lt;/span> FunctionToGenerator()&lt;span style="color:#f92672">.&lt;/span>visit(tree)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> uncompiled[&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> tree
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Recompile wrapped function.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>recompiled &lt;span style="color:#f92672">=&lt;/span> recompile(&lt;span style="color:#f92672">*&lt;/span>uncompiled)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Execute recompiled code (defines `_pm_compiled_model_generator`)&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># in the locals() namespace and assign it to an attribute.&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e"># Refer to http://lucumr.pocoo.org/2011/2/1/exec-in-python/&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> exec(self&lt;span style="color:#f92672">.&lt;/span>recompiled, &lt;span style="color:#66d9ef">None&lt;/span>, locals())
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> self&lt;span style="color:#f92672">.&lt;/span>model_generator &lt;span style="color:#f92672">=&lt;/span> locals()[&lt;span style="color:#e6db74">&amp;#34;_pm_compiled_model_generator&amp;#34;&lt;/span>]
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This class isn&amp;rsquo;t meant to be instantiated: rather, it&amp;rsquo;s &lt;a href="https://realpython.com/primer-on-python-decorators/#classes-as-decorators">meant to be used as a Python
+&lt;script src="https://gist.github.com/eigenfoo/5e69bba2ab7ec6d6a2f53c13cbfd7b48.js">&lt;/script>
+&lt;p>This class isn&amp;rsquo;t meant to be instantiated: rather, it&amp;rsquo;s &lt;a href="https://realpython.com/primer-on-python-decorators/#classes-as-decorators">meant to be used as a Python
 decorator&lt;/a>.
 Essentially, it &amp;ldquo;uncompiles&amp;rdquo; the function to get the Python source code of the function.
 This source code is then passed to the &lt;code>parse_snippet&lt;/code>&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup> function, which returns the
@@ -449,17 +256,8 @@ new function, accessed via the &lt;code>locals&lt;/code> variable&lt;sup id="fnr
 &lt;code>self.model_generator&lt;/code>, which explains the confusing-looking
 &lt;code>self.model_generator = locals()[&amp;quot;_pm_compiled_model_generator&amp;quot;]&lt;/code>.&lt;/p>
 &lt;p>Finally, the user facing API looks like this:&lt;/p>
-&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@Model&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">def&lt;/span> &lt;span style="color:#a6e22e">linear_regression&lt;/span>(x):
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> scale &lt;span style="color:#f92672">=&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>HalfCauchy(&lt;span style="color:#ae81ff">0&lt;/span>, &lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> coefs &lt;span style="color:#f92672">=&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>zeros(x&lt;span style="color:#f92672">.&lt;/span>shape[&lt;span style="color:#ae81ff">1&lt;/span>]), &lt;span style="color:#ae81ff">1&lt;/span>)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> predictions &lt;span style="color:#f92672">=&lt;/span> tfd&lt;span style="color:#f92672">.&lt;/span>Normal(tf&lt;span style="color:#f92672">.&lt;/span>linalg&lt;span style="color:#f92672">.&lt;/span>matvec(x, coefs), scale)
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> predictions
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># &amp;lt;generator object _pm_compiled_model_generator at 0x107a5c5c8&amp;gt;&lt;/span>
-&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>linear_regression&lt;span style="color:#f92672">.&lt;/span>model_generator(tf&lt;span style="color:#f92672">.&lt;/span>zeros([&lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#ae81ff">10&lt;/span>])) &lt;span style="color:#75715e"># Shape is irrelevant here&lt;/span>
-&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>As you can see, the users need not write &lt;code>yield&lt;/code> while specifying their models, and the
+&lt;script src="https://gist.github.com/eigenfoo/0bc4047ea0245a3f5f3c3a6ff8143154.js">&lt;/script>
+&lt;p>As you can see, the users need not write &lt;code>yield&lt;/code> while specifying their models, and the
 PyMC inference engine can now simply call the &lt;code>model_generator&lt;/code> method of
 &lt;code>linear_regression&lt;/code> to produce a generator called &lt;code>_pm_compiled_model_generator&lt;/code>, as
 desired. Success!&lt;/p>

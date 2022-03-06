@@ -24,7 +24,7 @@
 <meta itemprop=description content="This is the first of a two-part series about Bayesian bandit algorithms. Check out the second post here.
  Let&rsquo;s talk about Bayesianism. It&rsquo;s developed a reputation (not entirely justified, but not entirely unjustified either) for being too mathematically sophisticated or too computationally intensive to work at scale. For instance, inferring from a Gaussian mixture model is fraught with computational problems (hierarchical funnels, multimodal posteriors, etc.), and may take a seasoned Bayesian anywhere between a day and a month to do well."><meta itemprop=datePublished content="2018-08-31T00:00:00+00:00">
 <meta itemprop=dateModified content="2018-08-31T00:00:00+00:00">
-<meta itemprop=wordCount content="1511"><meta itemprop=image content="http://www.georgeho.org/georgeho/images/share.png">
+<meta itemprop=wordCount content="1203"><meta itemprop=image content="http://www.georgeho.org/georgeho/images/share.png">
 <meta itemprop=keywords content="bayes,reinforcement-learning,machine-learning,">
 <meta name=referrer content="no-referrer-when-downgrade">
 <style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -33,8 +33,8 @@
 </script>
 <link rel=preconnect href=https://fonts.googleapis.com>
 <link rel=preconnect href=https://fonts.gstatic.com crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel=stylesheet>
-<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:120%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}}</style></head><body>
+<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel=stylesheet>
+<style>@font-face{font-family:NicholsonGothic;src:url(/assets/fonts/NicholsonGothic-Regular.otf)format("opentype");font-weight:400;font-style:normal}body{font-family:source serif pro,Georgia,serif;font-size:125%;background-color:#fffff8}code{font-family:source code pro,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body>
 <header><a href=/georgeho/ class=title>
 <h2>⁂ George Ho</h2></a>
 <nav><a href=/georgeho/>Home</a>
@@ -91,42 +91,8 @@ upper bound of the 90% credible region, or some dynamic quantile of the
 posterior (as in Bayes UCB). See Data Origami<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup> for more information.</p><h3 id=stochastic-aka-stationary-bandits>Stochastic (a.k.a. stationary) bandits</h3><p>Let&rsquo;s take this algorithm for a spin! Assume we have rewards which are Bernoulli
 distributed (this would be the situation we face when e.g. modelling
 click-through rates). The conjugate prior for the Bernoulli distribution is the
-Beta distribution (this is a special case of the Beta-Binomial model).</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>make_bandits</span>(params):
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>pull</span>(arm, size<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
-</span></span><span style=display:flex><span>            <span style=color:#75715e># Bernoulli distributed rewards</span>
-</span></span><span style=display:flex><span>            reward <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>binomial(n<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>, p<span style=color:#f92672>=</span>params[arm], size<span style=color:#f92672>=</span>size)
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>yield</span> reward
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> pull, len(params)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>bayesian_strategy</span>(pull, num_bandits):
-</span></span><span style=display:flex><span>    num_rewards <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>zeros(num_bandits)
-</span></span><span style=display:flex><span>    num_trials <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>zeros(num_bandits)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Sample from the bandits&#39; priors, and choose largest</span>
-</span></span><span style=display:flex><span>        choice <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>argmax(np<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>beta(a<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span><span style=color:#f92672>+</span>num_rewards,
-</span></span><span style=display:flex><span>                                          b<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span><span style=color:#f92672>+</span>num_trials<span style=color:#f92672>-</span>num_rewards))
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Sample the chosen bandit</span>
-</span></span><span style=display:flex><span>        reward <span style=color:#f92672>=</span> next(pull(choice))
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Update</span>
-</span></span><span style=display:flex><span>        num_rewards[choice] <span style=color:#f92672>+=</span> reward
-</span></span><span style=display:flex><span>        num_trials[choice] <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>yield</span> choice, reward, num_rewards, num_trials
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;__main__&#39;</span>:
-</span></span><span style=display:flex><span>    pull, num_bandits <span style=color:#f92672>=</span> make_bandits([<span style=color:#ae81ff>0.2</span>, <span style=color:#ae81ff>0.5</span>, <span style=color:#ae81ff>0.7</span>])
-</span></span><span style=display:flex><span>    play <span style=color:#f92672>=</span> bayesian_strategy(pull, num_bandits)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>100</span>):
-</span></span><span style=display:flex><span>        choice, reward, num_rewards, num_trials <span style=color:#f92672>=</span> next(play)
-</span></span></code></pre></div><p>Here, <code>pull</code> returns the result of pulling on the <code>arm</code>&lsquo;th bandit, and
+Beta distribution (this is a special case of the Beta-Binomial model).</p><script src=https://gist.github.com/eigenfoo/3d8d318f5bd8fdea24f7b12936de77b5.js></script>
+<p>Here, <code>pull</code> returns the result of pulling on the <code>arm</code>&lsquo;th bandit, and
 <code>make_bandits</code> is just a factory function for <code>pull</code>.</p><p>The <code>bayesian_strategy</code> function actually implements the algorithm. We only need
 to keep track of the number of times we win and the number of times we played
 (<code>num_rewards</code> and <code>num_trials</code>, respectively). It samples from all current
@@ -146,42 +112,8 @@ with a Gamma conjugate prior) to illustrate how extensible this framework is.
 returning customers, for one!)</p><p>Here&rsquo;s what we need to change:</p><ul>
 <li>The rewards distribution in the <code>pull</code> function (in practice, you don&rsquo;t get
 to pick this, so <em>technically</em> there&rsquo;s nothing to change if you&rsquo;re doing this
-in production!)</li><li>The sampling from the prior in <code>bayesian_strategy</code></li><li>The variables you need to keep track of and the update rule in <code>bayesian_strategy</code></li></ul><p>Without further ado:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>make_bandits</span>(params):
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>pull</span>(arm, size<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
-</span></span><span style=display:flex><span>            <span style=color:#75715e># Poisson distributed rewards</span>
-</span></span><span style=display:flex><span>            reward <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>poisson(lam<span style=color:#f92672>=</span>params[arm], size<span style=color:#f92672>=</span>size)
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>yield</span> reward
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> pull, len(params)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>bayesian_strategy</span>(pull, num_bandits):
-</span></span><span style=display:flex><span>    num_rewards <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>ones(num_bandits)
-</span></span><span style=display:flex><span>    num_trials <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>ones(num_bandits)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Sample from the bandits&#39; priors, and choose largest</span>
-</span></span><span style=display:flex><span>        choice <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>argmax(np<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>gamma(num_rewards,
-</span></span><span style=display:flex><span>                                           scale<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span><span style=color:#f92672>/</span>num_trials))
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Sample the chosen bandit</span>
-</span></span><span style=display:flex><span>        reward <span style=color:#f92672>=</span> next(pull(choice))
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Update</span>
-</span></span><span style=display:flex><span>        num_rewards[choice] <span style=color:#f92672>+=</span> reward
-</span></span><span style=display:flex><span>        num_trials[choice] <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>yield</span> choice, reward, num_rewards, num_trials
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;__main__&#39;</span>:
-</span></span><span style=display:flex><span>    pull, num_bandits <span style=color:#f92672>=</span> make_bandits([<span style=color:#ae81ff>4.0</span>, <span style=color:#ae81ff>4.5</span>, <span style=color:#ae81ff>5.0</span>])
-</span></span><span style=display:flex><span>    play <span style=color:#f92672>=</span> bayesian_strategy(pull, num_bandits)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>100</span>):
-</span></span><span style=display:flex><span>        choice, reward, num_rewards, num_trials <span style=color:#f92672>=</span> next(play)
-</span></span></code></pre></div><figure>
+in production!)</li><li>The sampling from the prior in <code>bayesian_strategy</code></li><li>The variables you need to keep track of and the update rule in <code>bayesian_strategy</code></li></ul><p>Without further ado:</p><script src=https://gist.github.com/eigenfoo/e9a9933d94524e6dee717276c6b6f732.js></script>
+<figure>
 <a href=/assets/images/gamma-poisson.png><img style=float:middle src=/assets/images/gamma-poisson.png alt="Posterior distribution after several pulls for the Gamma-Poisson model"></a>
 </figure><p>This really demonstrates how lean and mean conjugate models can be, especially
 considering how much of a pain MCMC or approximate inference methods would be,
@@ -200,49 +132,8 @@ Here&rsquo;s what happens:</p><ol>
 all $b$.</li><li>Select the bandit with largest sample, i.e. select bandit $B =
 \text{argmax}(X_b)$.</li><li>Observe the reward $R$ from bandit $B$.</li><li><strong>Observe the outcome $r$ from a Bernoulli trial with probability of success $R$.</strong></li><li>Update posterior of $B$ with this observation $r$.</li><li>Repeat!</li></ol><p>Here I do this for the logit-normal distribution (i.e. a random variable whose
 logit is normally distributed). Note that <code>np.expit</code> is the inverse of the logit
-function.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>make_bandits</span>(params):
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>pull</span>(arm, size<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
-</span></span><span style=display:flex><span>            <span style=color:#75715e># Logit-normal distributed returns (or any distribution with finite</span>
-</span></span><span style=display:flex><span>            <span style=color:#75715e># support) `expit` is the inverse of `logit`</span>
-</span></span><span style=display:flex><span>            reward <span style=color:#f92672>=</span> expit(
-</span></span><span style=display:flex><span>                np<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>normal(loc<span style=color:#f92672>=</span>params[arm], scale<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>, size<span style=color:#f92672>=</span>size)
-</span></span><span style=display:flex><span>            )
-</span></span><span style=display:flex><span>            <span style=color:#66d9ef>yield</span> reward
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> pull, len(params)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>bayesian_strategy</span>(pull, num_bandits):
-</span></span><span style=display:flex><span>    num_rewards <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>zeros(num_bandits)
-</span></span><span style=display:flex><span>    num_trials <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>zeros(num_bandits)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>while</span> <span style=color:#66d9ef>True</span>:
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Sample from the bandits&#39; priors, and choose largest</span>
-</span></span><span style=display:flex><span>        choice <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>argmax(np<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>beta(<span style=color:#ae81ff>2</span><span style=color:#f92672>+</span>num_rewards,
-</span></span><span style=display:flex><span>                                          <span style=color:#ae81ff>2</span><span style=color:#f92672>+</span>num_trials<span style=color:#f92672>-</span>num_rewards))
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Sample the chosen bandit</span>
-</span></span><span style=display:flex><span>        reward <span style=color:#f92672>=</span> next(pull(choice))
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Sample a Bernoulli with probability of success = reward</span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Remember, reward is normalized to be in [0, 1]</span>
-</span></span><span style=display:flex><span>        outcome <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>binomial(n<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>, p<span style=color:#f92672>=</span>reward)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#75715e># Update</span>
-</span></span><span style=display:flex><span>        num_rewards[choice] <span style=color:#f92672>+=</span> outcome
-</span></span><span style=display:flex><span>        num_trials[choice] <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>        <span style=color:#66d9ef>yield</span> choice, reward, num_rewards, num_trials
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span><span style=color:#66d9ef>if</span> __name__ <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;__main__&#39;</span>:
-</span></span><span style=display:flex><span>    pull, num_bandits <span style=color:#f92672>=</span> make_bandits([<span style=color:#ae81ff>0.2</span>, <span style=color:#ae81ff>1.8</span>, <span style=color:#ae81ff>2</span>])
-</span></span><span style=display:flex><span>    play <span style=color:#f92672>=</span> bayesian_strategy(pull, num_bandits)
-</span></span><span style=display:flex><span>
-</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>100</span>):
-</span></span><span style=display:flex><span>        choice, reward, num_rewards, num_trials <span style=color:#f92672>=</span> next(play)
-</span></span></code></pre></div><figure>
+function.</p><script src=https://gist.github.com/eigenfoo/7a397fef8aaa028c5119c9f86860d72e.js></script>
+<figure>
 <a href=/assets/images/bounded.png><img style=float:middle src=/assets/images/bounded.png alt="Posterior distribution after several pulls with an arbitrary reward distribution (e.g. the logit normal)"></a>
 </figure><h2 id=final-remarks>Final Remarks</h2><p>None of this theory is new: I&rsquo;m just advertising it! See Cam Davidson-Pilon&rsquo;s
 great blog post about Bayesian bandits<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup> for a much more in-depth treatment,
