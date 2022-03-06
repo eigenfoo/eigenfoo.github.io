@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>⁂ George Ho</title><link>https://www.georgeho.org/</link><description>Recent content on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 05 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/feed.xml" rel="self" type="application/rss+xml"/><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>George Ho</title><link>https://www.georgeho.org/</link><description>Recent content on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 05 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/feed.xml" rel="self" type="application/rss+xml"/><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
 &lt;p>This weekend I migrated my blog to Hugo.&lt;/p>
 &lt;p>My website is now based on the &lt;a href="https://github.com/janraasch/hugo-bearblog/">Hugo Bear Blog
 theme&lt;/a>, generated with
@@ -7,12 +7,11 @@ and served with &lt;a href="https://www.cloudflare.com/">Cloudflare&lt;/a>. I&am
 from the &lt;code>eigenfoo.xyz&lt;/code> domain to the more creditable-sounding &lt;code>georgeho.org&lt;/code>
 (sadly, &lt;code>georgeho.com&lt;/code> and &lt;code>georgeho.net&lt;/code> were already taken). In terms of
 typography, the header typeface is &lt;a href="https://www.1001freefonts.com/nicholson-gothic.font">Nicholson
-Gothic&lt;/a> and the body
-typeface is &lt;a href="https://fonts.google.com/specimen/Source+Serif+Pro">Source Serif
-Pro&lt;/a> and &lt;a href="https://fonts.google.com/specimen/Source+Code+Pro">Source Code
-Pro&lt;/a> for the occasional
-monospaced snippet. In all, I probably spend the equivalent of two fancy lattes
-a year for this setup.&lt;/p>
+Gothic&lt;/a>, the body typeface
+is &lt;a href="https://mbtype.com/fonts/equity/">Equity&lt;/a> and the monospaced typeface for
+occasional code snippets is &lt;a href="https://mbtype.com/fonts/triplicate/">Triplicate&lt;/a>.
+In all, I probably spend the equivalent of two fancy lattes a year for this
+setup.&lt;/p>
 &lt;h2 id="why-hugo-why-not-jekyll">Why Hugo? Why Not Jekyll?&lt;/h2>
 &lt;p>Honestly, no good reason! &lt;a href="https://vickiboykis.com/2022/01/08/migrating-to-hugo/">Some people point
 out&lt;/a> that Jekyll is not
