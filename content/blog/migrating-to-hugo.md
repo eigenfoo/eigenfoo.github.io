@@ -25,24 +25,24 @@ a year for this setup.
 
 ## Why Hugo? Why Not Jekyll?
 
-Honestly, no good reason! [Others have pointed
+Honestly, no good reason! [Some people point
 out](https://vickiboykis.com/2022/01/08/migrating-to-hugo/) that Jekyll is not
-very actively maintained or used anymore, and that GitHub Pages does not
-support Jekyll 4.0. However, those aren't really good enough reasons for
-migrating a blogging stack.
+actively maintained or used anymore, and that GitHub Pages doesn't support
+Jekyll 4.0. However, those aren't really good enough reasons for migrating a
+blogging stack.
 
 Here's a short list of things I like about Hugo over Jekyll --- but again, none
 of these things really should have enticed me to make the jump.
 
-- Hugo is easy to install and use (it's a binary executable instead of a Ruby
-  library), and it was very easy to make the changes I wanted to the theme
-  (e.g. changing the font or [increasing the font
+- Ease of installation and use (Hugo is a binary executable instead of a Ruby
+  library), and it was very easy to make changes to the theme (e.g. changing
+  the font or [increasing the font
   size](https://practicaltypography.com/line-length.html)) --- although that
   could just be because [the theme that I'm
   using](https://github.com/janraasch/hugo-bearblog/) is dead simple.
 - Automatic generation of a [sitemap](/sitemap.xml) and [RSS feed](/feed.xml)
   --- with Jekyll, these needed to be done manually (or by your theme).
-- Minor typographical conveniences like automatic [smart
+- Typographical conveniences like automatic [smart
   quotes](https://practicaltypography.com/straight-and-curly-quotes.html),
   rendering `-`, `--` and `---` into [the appropriate hyphen or
   dash](https://practicaltypography.com/hyphens-and-dashes.html), and `...`
