@@ -24,7 +24,7 @@ My website is now based on the Hugo Bear Blog theme, generated with Hugo, hosted
 <meta itemprop=description content="This weekend I migrated my blog to Hugo.
 My website is now based on the Hugo Bear Blog theme, generated with Hugo, hosted by GitHub Pages and served with Cloudflare. I&rsquo;ve also migrated from the eigenfoo.xyz domain to the more creditable-sounding georgeho.org (sadly, georgeho.com and georgeho.net were already taken). In terms of typography, the header typeface is Nicholson Gothic and the body typeface is Source Serif Pro and Source Code Pro for the occasional monospaced snippet."><meta itemprop=datePublished content="2022-03-05T00:00:00+00:00">
 <meta itemprop=dateModified content="2022-03-05T00:00:00+00:00">
-<meta itemprop=wordCount content="490"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
+<meta itemprop=wordCount content="483"><meta itemprop=image content="https://www.georgeho.org/images/share.png">
 <meta itemprop=keywords content="typography,">
 <meta name=referrer content="no-referrer-when-downgrade">
 <style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -62,19 +62,19 @@ typeface is <a href=https://fonts.google.com/specimen/Source+Serif+Pro>Source Se
 Pro</a> and <a href=https://fonts.google.com/specimen/Source+Code+Pro>Source Code
 Pro</a> for the occasional
 monospaced snippet. In all, I probably spend the equivalent of two fancy lattes
-a year for this setup.</p><h2 id=why-hugo-why-not-jekyll>Why Hugo? Why Not Jekyll?</h2><p>Honestly, no good reason! <a href=https://vickiboykis.com/2022/01/08/migrating-to-hugo/>Others have pointed
+a year for this setup.</p><h2 id=why-hugo-why-not-jekyll>Why Hugo? Why Not Jekyll?</h2><p>Honestly, no good reason! <a href=https://vickiboykis.com/2022/01/08/migrating-to-hugo/>Some people point
 out</a> that Jekyll is not
-very actively maintained or used anymore, and that GitHub Pages does not
-support Jekyll 4.0. However, those aren&rsquo;t really good enough reasons for
-migrating a blogging stack.</p><p>Here&rsquo;s a short list of things I like about Hugo over Jekyll &mdash; but again, none
+actively maintained or used anymore, and that GitHub Pages doesn&rsquo;t support
+Jekyll 4.0. However, those aren&rsquo;t really good enough reasons for migrating a
+blogging stack.</p><p>Here&rsquo;s a short list of things I like about Hugo over Jekyll &mdash; but again, none
 of these things really should have enticed me to make the jump.</p><ul>
-<li>Hugo is easy to install and use (it&rsquo;s a binary executable instead of a Ruby
-library), and it was very easy to make the changes I wanted to the theme
-(e.g. changing the font or <a href=https://practicaltypography.com/line-length.html>increasing the font
+<li>Ease of installation and use (Hugo is a binary executable instead of a Ruby
+library), and it was very easy to make changes to the theme (e.g. changing
+the font or <a href=https://practicaltypography.com/line-length.html>increasing the font
 size</a>) &mdash; although that
 could just be because <a href=https://github.com/janraasch/hugo-bearblog/>the theme that I&rsquo;m
 using</a> is dead simple.</li><li>Automatic generation of a <a href=/sitemap.xml>sitemap</a> and <a href=/feed.xml>RSS feed</a>
-&mdash; with Jekyll, these needed to be done manually (or by your theme).</li><li>Minor typographical conveniences like automatic <a href=https://practicaltypography.com/straight-and-curly-quotes.html>smart
+&mdash; with Jekyll, these needed to be done manually (or by your theme).</li><li>Typographical conveniences like automatic <a href=https://practicaltypography.com/straight-and-curly-quotes.html>smart
 quotes</a>,
 rendering <code>-</code>, <code>--</code> and <code>---</code> into <a href=https://practicaltypography.com/hyphens-and-dashes.html>the appropriate hyphen or
 dash</a>, and <code>...</code>

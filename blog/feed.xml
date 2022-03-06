@@ -14,23 +14,23 @@ Pro&lt;/a> for the occasional
 monospaced snippet. In all, I probably spend the equivalent of two fancy lattes
 a year for this setup.&lt;/p>
 &lt;h2 id="why-hugo-why-not-jekyll">Why Hugo? Why Not Jekyll?&lt;/h2>
-&lt;p>Honestly, no good reason! &lt;a href="https://vickiboykis.com/2022/01/08/migrating-to-hugo/">Others have pointed
+&lt;p>Honestly, no good reason! &lt;a href="https://vickiboykis.com/2022/01/08/migrating-to-hugo/">Some people point
 out&lt;/a> that Jekyll is not
-very actively maintained or used anymore, and that GitHub Pages does not
-support Jekyll 4.0. However, those aren&amp;rsquo;t really good enough reasons for
-migrating a blogging stack.&lt;/p>
+actively maintained or used anymore, and that GitHub Pages doesn&amp;rsquo;t support
+Jekyll 4.0. However, those aren&amp;rsquo;t really good enough reasons for migrating a
+blogging stack.&lt;/p>
 &lt;p>Here&amp;rsquo;s a short list of things I like about Hugo over Jekyll &amp;mdash; but again, none
 of these things really should have enticed me to make the jump.&lt;/p>
 &lt;ul>
-&lt;li>Hugo is easy to install and use (it&amp;rsquo;s a binary executable instead of a Ruby
-library), and it was very easy to make the changes I wanted to the theme
-(e.g. changing the font or &lt;a href="https://practicaltypography.com/line-length.html">increasing the font
+&lt;li>Ease of installation and use (Hugo is a binary executable instead of a Ruby
+library), and it was very easy to make changes to the theme (e.g. changing
+the font or &lt;a href="https://practicaltypography.com/line-length.html">increasing the font
 size&lt;/a>) &amp;mdash; although that
 could just be because &lt;a href="https://github.com/janraasch/hugo-bearblog/">the theme that I&amp;rsquo;m
 using&lt;/a> is dead simple.&lt;/li>
 &lt;li>Automatic generation of a &lt;a href="https://www.georgeho.org/sitemap.xml">sitemap&lt;/a> and &lt;a href="https://www.georgeho.org/feed.xml">RSS feed&lt;/a>
 &amp;mdash; with Jekyll, these needed to be done manually (or by your theme).&lt;/li>
-&lt;li>Minor typographical conveniences like automatic &lt;a href="https://practicaltypography.com/straight-and-curly-quotes.html">smart
+&lt;li>Typographical conveniences like automatic &lt;a href="https://practicaltypography.com/straight-and-curly-quotes.html">smart
 quotes&lt;/a>,
 rendering &lt;code>-&lt;/code>, &lt;code>--&lt;/code> and &lt;code>---&lt;/code> into &lt;a href="https://practicaltypography.com/hyphens-and-dashes.html">the appropriate hyphen or
 dash&lt;/a>, and &lt;code>...&lt;/code>
