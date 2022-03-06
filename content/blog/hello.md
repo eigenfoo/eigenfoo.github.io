@@ -19,3 +19,8 @@ Pages](https://pages.github.com/) and served using
 blogging stack: the only thing I pay for is the custom
 [`eigenfoo.xyz`](https://eigenfoo.xyz/) domain name, which costs the same as
 maybe two or three cups of coffee a year.
+
+---
+
+**Update (2022-03-06):** I've since made several changes to this blog, which
+you can read about in [a subsequent blog post](/migrating-to-hugo).
