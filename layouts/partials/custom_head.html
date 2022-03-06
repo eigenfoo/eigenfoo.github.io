@@ -8,29 +8,35 @@
 <script async src="//static.getclicky.com/101349618.js"></script>
 <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101349618ns.gif" /></p></noscript>
 
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&family=Source+Serif+Pro:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"> 
-
-<!-- Additional styling -->
-<style>
-  @font-face{
-    font-family: NicholsonGothic;
-    src: url(/assets/fonts/NicholsonGothic-Regular.otf) format("opentype");
-    font-weight: 400;
-    font-style: normal;
+<!-- Custom fonts: Nicholson Gothic, Triplicate A Code, Equity A or B -->
+<link rel="stylesheet" media="all" href="/assets/fonts/nicholson-gothic.css" type="text/css"/>
+<link rel="stylesheet" media="all" href="/assets/fonts/triplicate-a.css" type="text/css"/>
+<script type="text/javascript">
+  if (navigator.appVersion.indexOf("Win")!=-1) {
+    document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>');
+  } else if (navigator.appVersion.indexOf("Mac")!=-1) {
+    if (navigator.userAgent.match(/iPad/i) != null) {
+      document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>');
+      document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>');
+    } else {
+      document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>');
+    }
+  } else {
+    document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>');
   }
+</script>
 
+<!-- Custom styling -->
+<style>
   body {
-    font-family: 'Source Serif Pro', Georgia, serif;
-    font-size: 125%;
+    font-family: Equity, Georgia, serif;
+    font-size: 1.45em;
     background-color: #fffff8;
   }
 
   code {
-    font-family: 'Source Code Pro', 'Lucida Console', monospace;
-    font-size: 90%;
+    font-family: Triplicate, 'Lucida Console', monospace;
+    font-size: 85%;
   }
 
   h1, h2, h3, h4, h5, h6 {

@@ -16,12 +16,11 @@ and served with [Cloudflare](https://www.cloudflare.com/). I've also migrated
 from the `eigenfoo.xyz` domain to the more creditable-sounding `georgeho.org`
 (sadly, `georgeho.com` and `georgeho.net` were already taken). In terms of
 typography, the header typeface is [Nicholson
-Gothic](https://www.1001freefonts.com/nicholson-gothic.font) and the body
-typeface is [Source Serif
-Pro](https://fonts.google.com/specimen/Source+Serif+Pro) and [Source Code
-Pro](https://fonts.google.com/specimen/Source+Code+Pro) for the occasional
-monospaced snippet. In all, I probably spend the equivalent of two fancy lattes
-a year for this setup.
+Gothic](https://www.1001freefonts.com/nicholson-gothic.font), the body typeface
+is [Equity](https://mbtype.com/fonts/equity/) and the monospaced typeface for
+occasional code snippets is [Triplicate](https://mbtype.com/fonts/triplicate/).
+In all, I probably spend the equivalent of two fancy lattes a year for this
+setup.
 
 ## Why Hugo? Why Not Jekyll?
 
