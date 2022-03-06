@@ -1,330 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>open-source on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/open-source/</link><description>Recent content in open-source on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 11 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/open-source/index.xml" rel="self" type="application/rss+xml"/><item><title>`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues</title><link>http://www.georgeho.org/georgeho/cryptic-clues/</link><pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/cryptic-clues/</guid><description>&lt;p>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of cryptic crossword clues&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, collected
-from various blogs and publicly available digital archives. I originally
-started this project to practice my web scraping and data engineering skills,
-but as it&amp;rsquo;s evolved I hope it can be a resource to solvers and constructors of
-cryptic crosswords.&lt;/p>
-&lt;p>The project scrapes several blogs and digital archives for cryptic crosswords.
-Out of these collected web pages, the clues, answers, clue numbers, blogger’s
-explanation and commentary, puzzle title and publication date are all parsed
-and extracted into a tabular dataset. The result (as of September 2021) is &lt;strong>a
-little over half a million clues from cryptic crosswords over the past twelve
-years&lt;/strong>, which makes for a rich and peculiar dataset.&lt;/p>
-&lt;p>Without further ado, please check out
-&lt;a href="https://cryptics.georgeho.org/">&lt;code>cryptics.georgeho.org&lt;/code>&lt;/a>!&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
-&lt;hr>
-&lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
-&lt;p>If you&amp;rsquo;re new to cryptic crosswords, rejoice! A whole new world awaits you! The New Yorker has &lt;a href="https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/reintroducing-the-new-yorkers-cryptic-crossword">an excellent introduction to cryptic crosswords&lt;/a>, and Matt Gritzmacher has &lt;a href="https://crosswordlinks.substack.com/">a daily newsletter with links to crosswords&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
-&lt;/li>
-&lt;/ol>
-&lt;/section></description></item><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>http://www.georgeho.org/georgeho/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
-algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
-&lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
-prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
-less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways.
-This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although
-I couldn&amp;rsquo;t articulate what exactly they were). Then came &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">the announcement by the PyMC developers
-that Theano would have a new JAX
-backend&lt;/a>.&lt;/p>
-&lt;p>Anyways, this confusion prompted a lot of research and eventually, this blog post.&lt;/p>
-&lt;p>Similar to &lt;a href="https://www.georgeho.org/prob-prog-frameworks/">my previous post on the anatomy of probabilistic programming
-frameworks&lt;/a>, I’ll first discuss tensor computation
-libraries in general - what they are and how they can differ from one another. Then I&amp;rsquo;ll discuss
-some libraries in detail, and finally offer an observation on the future of Theano in the context of
-contemporary tensor computation libraries.&lt;/p>
-&lt;div>
-&lt;h2>Contents&lt;/h2>
-&lt;nav id="TableOfContents">
-&lt;ul>
-&lt;li>&lt;a href="#dissecting-tensor-computation-libraries">Dissecting Tensor Computation Libraries&lt;/a>
-&lt;ul>
-&lt;li>&lt;a href="#tensor-computation-library---maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; - Maybe Not The Best Name&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#some-differences-between-tensor-computation-libraries">(Some) Differences Between Tensor Computation Libraries&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;a href="#a-zoo-of-tensor-computation-libraries">A Zoo of Tensor Computation Libraries&lt;/a>
-&lt;ul>
-&lt;li>&lt;a href="#pytorchhttpspytorchorg">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#jaxhttpsjaxreadthedocsioenlatest">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#theanohttpstheano-pymcreadthedocsioenlatest">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;a href="#an-observation-on-static-graphs-and-theano">An Observation on Static Graphs and Theano&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/nav>
-&lt;/div>
-&lt;h2 id="dissecting-tensor-computation-libraries">Dissecting Tensor Computation Libraries&lt;/h2>
-&lt;p>First, a characterization: what do tensor computation libraries even do?&lt;/p>
-&lt;ol>
-&lt;li>They provide ways of specifying and building computational graphs,&lt;/li>
-&lt;li>They run the computation itself (duh), but also run &amp;ldquo;related&amp;rdquo; computations that either (a) &lt;em>use
-the computational graph&lt;/em>, or (b) operate &lt;em>directly on the computational graph itself&lt;/em>,
-&lt;ul>
-&lt;li>The most salient example of the former is computing gradients via
-&lt;a href="https://arxiv.org/abs/1502.05767">autodifferentiation&lt;/a>,&lt;/li>
-&lt;li>A good example of the latter is optimizing the computation itself: think symbolic
-simplifications (e.g. &lt;code>xy/x = y&lt;/code>) or modifications for numerical stability (e.g. &lt;a href="https://cs.stackexchange.com/q/68411">&lt;code>log(1 + x)&lt;/code>
-for small values of &lt;code>x&lt;/code>&lt;/a>).&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>And they provide &amp;ldquo;best execution&amp;rdquo; for the computation: whether it&amp;rsquo;s changing the execution by JIT
-(just-in-time) compiling it, by utilizing special hardware (GPUs/TPUs), by vectorizing the
-computation, or in any other way.&lt;/li>
-&lt;/ol>
-&lt;h3 id="tensor-computation-library---maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; - Maybe Not The Best Name&lt;/h3>
-&lt;p>As an aside: I realize that the name &amp;ldquo;tensor computation library&amp;rdquo; is too broad, and that the
-characterization above precludes some libraries that might also justifiably be called &amp;ldquo;tensor
-computation libraries&amp;rdquo;. Better names might be &amp;ldquo;graph computation library&amp;rdquo; (although that might get
-mixed up with libraries like &lt;a href="https://networkx.org/">&lt;code>networkx&lt;/code>&lt;/a>) or &amp;ldquo;computational graph management
-library&amp;rdquo; or even &amp;ldquo;symbolic tensor algebra libraries&amp;rdquo;.&lt;/p>
-&lt;p>So for the avoidance of doubt, here is a list of libraries that this blog post is &lt;em>not&lt;/em> about:&lt;/p>
-&lt;ul>
-&lt;li>NumPy and SciPy
-&lt;ul>
-&lt;li>These libraries don&amp;rsquo;t have a concept of a computational graph - they’re more like a toolbox of
-functions, called from Python and executed in C or Fortran.&lt;/li>
-&lt;li>However, this might be a controversial distinction - as we’ll see later, JAX also doesn&amp;rsquo;t build
-an explicit computational graph either, and I definitely want to include JAX as a &amp;ldquo;tensor
-computation library&amp;rdquo;&amp;hellip; ¯\_(ツ)_/¯&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>Numba and Cython
-&lt;ul>
-&lt;li>These libraries provide best execution for code (and in fact some tensor computation libraries,
-such as Theano, make good use them), but like NumPy and SciPy, they do not actually manage the
-computational graph itself.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>Keras, Trax, Flax and PyTorch-Lightning
-&lt;ul>
-&lt;li>These libraries are high-level wrappers around tensor computation libraries - they basically
-provide abstractions and a user-facing API to utilize tensor computation libraries in a
-friendlier way.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h3 id="some-differences-between-tensor-computation-libraries">(Some) Differences Between Tensor Computation Libraries&lt;/h3>
-&lt;p>Anyways, back to tensor computation libraries.&lt;/p>
-&lt;p>All three aforementioned goals are ambitious undertakings with sophisticated solutions, so it
-shouldn&amp;rsquo;t be surprising to learn that decisions in pursuit on goal can have implications for (or
-even incur a trade-off with!) other goals. Here&amp;rsquo;s a list of common differences along all three axes:&lt;/p>
-&lt;ol>
-&lt;li>
-&lt;p>Tensor computation libraries can differ in how they represent the computational graph, and how it
-is built.&lt;/p>
-&lt;ul>
-&lt;li>Static or dynamic graphs: do we first define the graph completely and then inject data to run
-(a.k.a. define-and-run), or is the graph defined on-the-fly via the actual forward computation
-(a.k.a. define-by-run)?
-&lt;ul>
-&lt;li>TensorFlow 1.x was (in)famous for its static graphs, which made users feel like they were
-&amp;ldquo;working with their computational graph through a keyhole&amp;rdquo;, especially when &lt;a href="https://news.ycombinator.com/item?id=13429355">compared to
-PyTorch&amp;rsquo;s dynamic graphs&lt;/a>.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>Lazy or eager execution: do we evaluate variables as soon as they are defined, or only when a
-dependent variable is evaluated? Usually, tensor computation libraries either choose to support
-dynamic graphs with eager execution, or static graphs with lazy execution - for example,
-&lt;a href="https://www.tensorflow.org/guide/eager">TensorFlow 2.0 supports both modes&lt;/a>.&lt;/li>
-&lt;li>Interestingly, some tensor computation libraries (e.g. &lt;a href="https://thinc.ai/">Thinc&lt;/a>) don&amp;rsquo;t even
-construct an explicit computational graph: they represent it as &lt;a href="https://thinc.ai/docs/concept">chained higher-order
-functions&lt;/a>.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>Tensor computation libraries can also differ in what they want to use the computational graph
-&lt;em>for&lt;/em> - for example, are we aiming to do things that basically amount to running the
-computational graph in a &amp;ldquo;different mode&amp;rdquo;, or are we aiming to modify the computational graph
-itself?&lt;/p>
-&lt;ul>
-&lt;li>Almost all tensor computation libraries support autodifferentiation in some capacity (either
-forward-mode, backward-mode, or both).&lt;/li>
-&lt;li>Obviously, how you represent the computational graph and what you want to use it for are very
-related questions! For example, if you want to be able to represent aribtrary computation as a
-graph, you&amp;rsquo;ll have to handle control flow like if-else statements or for-loops - this leads to
-common gotchas with &lt;a href="https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#%F0%9F%94%AA-Control-Flow">using Python for-loops in
-JAX&lt;/a>
-or needing to use &lt;a href="https://discuss.pytorch.org/t/can-you-have-for-loops-in-the-forward-prop/68295">&lt;code>torch.nn.ModuleList&lt;/code> in for-loops with
-PyTorch&lt;/a>.&lt;/li>
-&lt;li>Some tensor computation libraries (e.g. &lt;a href="https://github.com/Theano/Theano">Theano&lt;/a> and it&amp;rsquo;s
-fork, &lt;a href="https://theano-pymc.readthedocs.io/en/latest/index.html">Theano-PyMC&lt;/a>) aim to &lt;a href="https://theano-pymc.readthedocs.io/en/latest/extending/optimization.html">optimize
-the computational graph
-itself&lt;/a>, for which an
-&lt;a href="#an-observation-on-static-graphs-and-theano">explicit graph is necessary&lt;/a>.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>Finally, tensor computation libraries can also differ in how they execute code.&lt;/p>
-&lt;ul>
-&lt;li>All tensor computation libraries run on CPU, but the strength of GPU and TPU support is a major
-differentiator among tensor computation libraries.&lt;/li>
-&lt;li>Another differentiator is how tensor computation libraries compile code to be executed on
-hardware. For example, do they use JIT compilation or not? Do they use &amp;ldquo;vanilla&amp;rdquo; C or CUDA
-compilers, or &lt;a href="https://tensorflow.google.cn/xla">the XLA compiler for machine-learning specific
-code&lt;/a>?&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ol>
-&lt;h2 id="a-zoo-of-tensor-computation-libraries">A Zoo of Tensor Computation Libraries&lt;/h2>
-&lt;p>Having outlined the basic similarities and differences of tensor computation libraries, I think
-it&amp;rsquo;ll be helpful to go through several of the popular libraries as examples. I&amp;rsquo;ve tried to link to
-the relevant documentation where possible.&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/p>
-&lt;h3 id="pytorchhttpspytorchorg">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/h3>
-&lt;ol>
-&lt;li>How is the computational graph represented and built?
-&lt;ul>
-&lt;li>PyTorch dynamically builds (and eagerly evaluates) an explicit computational graph. For more
-detail on how this is done, check out &lt;a href="https://pytorch.org/docs/stable/notes/autograd.html">the PyTorch docs on autograd
-mechanics&lt;/a>.&lt;/li>
-&lt;li>For more on how PyTorch computational graphs, see &lt;a href="https://jdhao.github.io/2017/11/12/pytorch-computation-graph/">&lt;code>jdhao&lt;/code>&amp;rsquo;s introductory blog post on
-computational graphs in
-PyTorch&lt;/a>.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>What is the computational graph used for?
-&lt;ul>
-&lt;li>To quote the &lt;a href="https://pytorch.org/docs/stable/index.html">PyTorch docs&lt;/a>, &amp;ldquo;PyTorch is an
-optimized tensor library for deep learning using GPUs and CPUs&amp;rdquo; - as such, the main focus is on
-&lt;a href="https://pytorch.org/docs/stable/notes/autograd.html">autodifferentiation&lt;/a>.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>How does the library ensure &amp;ldquo;best execution&amp;rdquo; for computation?
-&lt;ul>
-&lt;li>PyTorch has &lt;a href="https://pytorch.org/docs/stable/notes/cuda.html">native GPU support&lt;/a> via CUDA.&lt;/li>
-&lt;li>PyTorch also has support for TPU through projects like
-&lt;a href="https://github.com/pytorch/xla">PyTorch/XLA&lt;/a> and
-&lt;a href="https://www.pytorchlightning.ai/">PyTorch-Lightning&lt;/a>.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ol>
-&lt;h3 id="jaxhttpsjaxreadthedocsioenlatest">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/h3>
-&lt;ol>
-&lt;li>
-&lt;p>How is the computational graph represented and built?&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>Instead of building an explicit computational graph to compute gradients, JAX simply supplies a
-&lt;code>grad()&lt;/code> that returns the gradient function of any supplied function. As such, there is
-technically no concept of a computational graph - only pure (i.e. stateless and
-side-effect-free) functions and their gradients.&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>&lt;a href="https://sjmielke.com/jax-purify.htm">Sabrina Mielke summarizes the situation very well&lt;/a>:&lt;/p>
-&lt;blockquote>
-&lt;p>PyTorch builds up a graph as you compute the forward pass, and one call to &lt;code>backward()&lt;/code> on
-some &amp;ldquo;result&amp;rdquo; node then augments each intermediate node in the graph with the gradient of the
-result node with respect to that intermediate node. JAX on the other hand makes you express
-your computation as a Python function, and by transforming it with &lt;code>grad()&lt;/code> gives you a
-gradient function that you can evaluate like your computation function — but instead of the
-output it gives you the gradient of the output with respect to (by default) the first
-parameter that your function took as input.&lt;/p>
-&lt;/blockquote>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>What is the computational graph used for?&lt;/p>
-&lt;ul>
-&lt;li>According to the &lt;a href="https://jax.readthedocs.io/en/latest/notebooks/quickstart.html">JAX quickstart&lt;/a>,
-JAX bills itself as &amp;ldquo;NumPy on the CPU, GPU, and TPU, with great automatic differentiation for
-high-performance machine learning research&amp;rdquo;. Hence, its focus is heavily on
-autodifferentiation.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>
-&lt;p>How does the library ensure &amp;ldquo;best execution&amp;rdquo; for computation?&lt;/p>
-&lt;ul>
-&lt;li>
-&lt;p>This is best explained by quoting the &lt;a href="https://jax.readthedocs.io/en/latest/notebooks/quickstart.html">JAX quickstart&lt;/a>:&lt;/p>
-&lt;blockquote>
-&lt;p>JAX uses XLA to compile and run your NumPy code on [&amp;hellip;] GPUs and TPUs. Compilation happens
-under the hood by default, with library calls getting just-in-time compiled and executed. But
-JAX even lets you just-in-time compile your own Python functions into XLA-optimized kernels
-[&amp;hellip;] Compilation and automatic differentiation can be composed arbitrarily [&amp;hellip;]&lt;/p>
-&lt;/blockquote>
-&lt;/li>
-&lt;li>
-&lt;p>For more detail on JAX’s four-function API (&lt;code>grad&lt;/code>, &lt;code>jit&lt;/code>, &lt;code>vmap&lt;/code> and &lt;code>pmap&lt;/code>), see
-&lt;a href="http://alexminnaar.com/2020/08/15/jax-overview.html">Alex Minaar&amp;rsquo;s overview of how JAX works&lt;/a>.&lt;/p>
-&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ol>
-&lt;h3 id="theanohttpstheano-pymcreadthedocsioenlatest">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/h3>
-&lt;blockquote>
-&lt;p>&lt;strong>Note:&lt;/strong> the &lt;a href="https://github.com/Theano/Theano">original Theano&lt;/a> (maintained by
-&lt;a href="https://mila.quebec/en/">MILA&lt;/a>) has been discontinued, and the PyMC developers have forked the
-project: &lt;a href="https://github.com/pymc-devs/Theano-PyMC">Theano-PyMC&lt;/a> (soon to be renamed Aesara). I&amp;rsquo;ll
-discuss both the original and forked projects below.&lt;/p>
-&lt;/blockquote>
-&lt;ol>
-&lt;li>How is the computational graph represented and built?
-&lt;ul>
-&lt;li>Theano statically builds (and lazily evaluates) an explicit computational graph.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>What is the computational graph used for?
-&lt;ul>
-&lt;li>Theano is unique among tensor computation libraries in that it places more emphasis on
-reasoning about the computational graph itself. In other words, while Theano has &lt;a href="https://theano-pymc.readthedocs.io/en/latest/library/gradient.html">strong
-support for
-autodifferentiation&lt;/a>,
-running the computation and computing gradients isn&amp;rsquo;t the be-all and end-all: Theano has an
-entire module for &lt;a href="https://theano-pymc.readthedocs.io/en/latest/optimizations.html">optimizing the computational graph
-itself&lt;/a>, and makes it fairly
-straightforward to compile the Theano graph to different computational backends (by default,
-Theano compiles to C or CUDA, but it’s straightforward to compile to JAX).&lt;/li>
-&lt;li>Theano is often remembered as a library for deep learning research, but it’s so much more than
-that!&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>How does the library ensure &amp;ldquo;best execution&amp;rdquo; for computation?
-&lt;ul>
-&lt;li>The original Theano used the GCC C compiler for CPU computation, and the NVCC CUDA compiler for
-GPU computation.&lt;/li>
-&lt;li>The Theano-PyMC fork project &lt;a href="https://pymc-devs.medium.com/the-future-of-pymc3-or-theano-is-dead-long-live-theano-d8005f8a0e9b">will use JAX as a
-backend&lt;/a>,
-which can utilize CPUs, GPUs and TPUs as available.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ol>
-&lt;h2 id="an-observation-on-static-graphs-and-theano">An Observation on Static Graphs and Theano&lt;/h2>
-&lt;p>Finally, a quick observation on static graphs and the niche that Theano fills that other tensor
-computation libraries do not. I had huge help from &lt;a href="https://twiecki.io/">Thomas Wiecki&lt;/a> and
-&lt;a href="https://brandonwillard.github.io/">Brandon Willard&lt;/a> with this section.&lt;/p>
-&lt;p>There&amp;rsquo;s been a consistent movement in most tensor computation libraries away from static graphs (or
-more precisely, statically &lt;em>built&lt;/em> graphs): PyTorch and TensorFlow 2 both support dynamically
-generated graphs by default, and JAX forgoes an explicit computational graph entirely.&lt;/p>
-&lt;p>This movement is understandable - building the computational graph dynamically matches people&amp;rsquo;s
-programming intuition much better. When I write &lt;code>z = x + y&lt;/code>, I don&amp;rsquo;t mean &lt;em>&amp;ldquo;I want to register a sum
-operation with two inputs, which is waiting for data to be injected&amp;rdquo;&lt;/em> - I mean &lt;em>&amp;ldquo;I want to compute
-the sum of &lt;code>x&lt;/code> and &lt;code>y&lt;/code>&amp;rdquo;.&lt;/em> The extra layer of indirection is not helpful to most users, who just want
-to run their tensor computation at some reasonable speed.&lt;/p>
-&lt;p>So let me speak in defence of statically built graphs.&lt;/p>
-&lt;p>Having an explicit representation of the computational graph is immensely useful for certain things,
-even if it makes the graph harder to work with. You can modify the graph (e.g. graph optimizations,
-simplifications and rewriting), and you can reason about and analyze the graph. Having the
-computation as an actual &lt;em>object&lt;/em> helps immeasurably for tasks where you need to think about the
-computation itself, instead of just blindly running it.&lt;/p>
-&lt;p>On the other hand, with dynamically generated graphs, the computational graph is never actually
-defined anywhere: the computation is traced out on the fly and behind the scene. You can no longer
-do anything interesting with the computational graph: for example, if the computation is slow, you
-can&amp;rsquo;t reason about &lt;em>what&lt;/em> parts of the graph are slow. The end result is that you basically have to
-hope that the framework internals are doing the right things, which they might not!&lt;/p>
-&lt;p>This is the niche that Theano (or rather, Theano-PyMC/Aesara) fills that other contemporary tensor
-computation libraries do not: the promise is that if you take the time to specify your computation
-up front and all at once, Theano can optimize the living daylight out of your computation - whether
-by graph manipulation, efficient compilation or something else entirely - and that this is something
-you would only need to do once.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
-&lt;hr>
-&lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
-&lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
-&lt;/li>
-&lt;/ol>
-&lt;/section></description></item><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>http://www.georgeho.org/georgeho/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/littlemcmc/</guid><description>&lt;center>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>pymc on ⁂ George Ho</title><link>http://www.georgeho.org/georgeho/blog/pymc/</link><description>Recent content in pymc on ⁂ George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Tue, 06 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://www.georgeho.org/georgeho/blog/pymc/feed.xml" rel="self" type="application/rss+xml"/><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>http://www.georgeho.org/georgeho/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/littlemcmc/</guid><description>&lt;center>
 &lt;img
 src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
 alt="LittleMCMC logo">
@@ -355,7 +29,138 @@ the PyMC3 community.&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
-&lt;/ul></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>http://www.georgeho.org/georgeho/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
+&lt;/ul></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>http://www.georgeho.org/georgeho/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
+API by manipulating the &lt;a href="https://docs.python.org/3/library/ast.html">Python abstract syntax
+tree&lt;/a> (AST) of the model code. The PyMC
+developers didn&amp;rsquo;t end up pursuing those API changes any further, but not until I had the
+chance to learn a lot about Python ASTs.&lt;/p>
+&lt;p>Enough curious people have asked me about my experience tinkering with ASTs that I
+figure I&amp;rsquo;d write a short post about the details of my project, in the hope that someone
+else will find it useful.&lt;/p>
+&lt;p>You should read this blog post as a quick overview of my experience with Python ASTs, or
+an annotated list of links, and not a comprehensive tutorial on model specification APIs
+or Python ASTs. For a full paper trail of my adventures with Python ASTs, check out &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield">my
+notebooks on
+GitHub&lt;/a>.&lt;/p>
+&lt;h2 id="the-problem">The Problem&lt;/h2>
+&lt;p>Originally, PyMC4&amp;rsquo;s proposed model specification API looked something like this:&lt;/p>
+&lt;script src="https://gist.github.com/eigenfoo/8917e2fd72ea8940d54916c1cfbe1755.js">&lt;/script>
+&lt;p>The main drawback to this API was that the &lt;code>yield&lt;/code> keyword was confusing. Many users
+don’t really understand Python generators, and those who do might only understand
+&lt;code>yield&lt;/code> as a drop-in replacement for &lt;code>return&lt;/code> (that is, they might understand what it
+means for a function to end in &lt;code>yield foo&lt;/code>, but would be uncomfortable with &lt;code>bar = yield foo&lt;/code>).&lt;/p>
+&lt;p>Furthermore, the &lt;code>yield&lt;/code> keyword introduces a leaky abstraction&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>: users don’t care
+about whether model is a function or a generator, and they shouldn&amp;rsquo;t need to. More
+generally, users shouldn&amp;rsquo;t have to know anything about how PyMC works in order to use
+it: ideally, the only thing users would need to think about would be their data and
+their model. Having to graft several &lt;code>yield&lt;/code> keywords into their code is a fairly big
+intrusion in that respect.&lt;/p>
+&lt;p>Finally, this model specification API is essentially moving the problem off of our
+plates and onto our users. The entire point of the PyMC project is to provide a friendly
+and easy-to-use interface for Bayesian modelling.&lt;/p>
+&lt;p>To enumerate the problem further, we wanted to:&lt;/p>
+&lt;ol>
+&lt;li>Hide the &lt;code>yield&lt;/code> keyword from the user-facing model specification API.&lt;/li>
+&lt;li>Obtain the user-defined model as a generator.&lt;/li>
+&lt;/ol>
+&lt;p>The main difficulty with the first goal is that as soon as we remove &lt;code>yield&lt;/code> from the
+model function, it is no longer a generator. However, the PyMC inference engine needs the
+model as a generator, since this allows us to interrupt the control flow of the model at
+various points to do certain things:&lt;/p>
+&lt;ul>
+&lt;li>Manage random variable names.&lt;/li>
+&lt;li>Perform sampling.&lt;/li>
+&lt;li>Other arbitrary PyMC magic that I&amp;rsquo;m truthfully not familiar with.&lt;/li>
+&lt;/ul>
+&lt;p>In short, the user writes their model as a function, but we require the model as a
+generator.&lt;/p>
+&lt;p>I opine on why this problem is challenging a lot more
+&lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#why-is-this-problem-hard">here&lt;/a>.&lt;/p>
+&lt;h2 id="the-solution">The Solution&lt;/h2>
+&lt;p>First, I wrote a &lt;code>FunctionToGenerator&lt;/code> class:&lt;/p>
+&lt;script src="https://gist.github.com/eigenfoo/43282c4e69156647d7bb2505f1dbafb2.js">&lt;/script>
+&lt;p>Subclassing &lt;code>ast.NodeTransformer&lt;/code> (as &lt;code>FunctionToGenerator&lt;/code> does) is the &lt;a href="https://greentreesnakes.readthedocs.io/en/latest/manipulating.html#modifying-the-tree">recommended
+way of modifying
+ASTs&lt;/a>.
+The functionality of &lt;code>FunctionToGenerator&lt;/code> is pretty well described by the docstring:
+the &lt;code>visit_Assign&lt;/code> method adds the &lt;code>yield&lt;/code> keyword to all assignments by wrapping the
+visited &lt;code>Assign&lt;/code> node within a &lt;code>Yield&lt;/code> node. The &lt;code>visit_FunctionDef&lt;/code> method removes the
+decorator and renames the function to &lt;code>_pm_compiled_model_generator&lt;/code>. All told, after
+the &lt;code>NodeTransformer&lt;/code> is done with the AST, we have one function,
+&lt;code>_pm_compiled_model_generator&lt;/code>, which is a modified version of the user-defined
+function.&lt;/p>
+&lt;p>Second, the &lt;code>Model&lt;/code> class:&lt;/p>
+&lt;script src="https://gist.github.com/eigenfoo/5e69bba2ab7ec6d6a2f53c13cbfd7b48.js">&lt;/script>
+&lt;p>This class isn&amp;rsquo;t meant to be instantiated: rather, it&amp;rsquo;s &lt;a href="https://realpython.com/primer-on-python-decorators/#classes-as-decorators">meant to be used as a Python
+decorator&lt;/a>.
+Essentially, it &amp;ldquo;uncompiles&amp;rdquo; the function to get the Python source code of the function.
+This source code is then passed to the &lt;code>parse_snippet&lt;/code>&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup> function, which returns the
+AST for the function. We then modify this AST with the &lt;code>FunctionToGenerator&lt;/code> class that
+we defined above. Finally, we recompile this AST and execute it. Recall that executing
+this recompiled AST defines a new function called &lt;code>_pm_compiled_model_generator&lt;/code>. This
+new function, accessed via the &lt;code>locals&lt;/code> variable&lt;sup id="fnref:4">&lt;a href="#fn:4" class="footnote-ref" role="doc-noteref">4&lt;/a>&lt;/sup>, is then bound to the class&amp;rsquo;s
+&lt;code>self.model_generator&lt;/code>, which explains the confusing-looking
+&lt;code>self.model_generator = locals()[&amp;quot;_pm_compiled_model_generator&amp;quot;]&lt;/code>.&lt;/p>
+&lt;p>Finally, the user facing API looks like this:&lt;/p>
+&lt;script src="https://gist.github.com/eigenfoo/0bc4047ea0245a3f5f3c3a6ff8143154.js">&lt;/script>
+&lt;p>As you can see, the users need not write &lt;code>yield&lt;/code> while specifying their models, and the
+PyMC inference engine can now simply call the &lt;code>model_generator&lt;/code> method of
+&lt;code>linear_regression&lt;/code> to produce a generator called &lt;code>_pm_compiled_model_generator&lt;/code>, as
+desired. Success!&lt;/p>
+&lt;h2 id="lessons-learnt">Lessons Learnt&lt;/h2>
+&lt;p>Again, PyMC4&amp;rsquo;s model specification API will &lt;em>not&lt;/em> be incorporating these changes: the
+PyMC developers have since decided that the &lt;code>yield&lt;/code> keyword is the most elegant (but not
+necessarily the easiest) way for users to specify statistical models. This post is just
+meant to summarize the lessons learnt while pursuing this line of inquiry.&lt;/p>
+&lt;p>Reading and parsing the AST is perfectly safe: that&amp;rsquo;s basically just a form of code
+introspection, which is totally a valid thing to do! It&amp;rsquo;s when you want to modify or
+even rewrite the AST that things start getting &lt;del>janky&lt;/del> dangerous (especially if you
+want to execute the modified AST &lt;em>instead&lt;/em> of the written code, as I was trying to do!).&lt;/p>
+&lt;p>If you want to programmatically modify the AST (e.g. &amp;ldquo;insert a &lt;code>yield&lt;/code> keyword in front
+of every assignment of a TensorFlow Distribution&amp;rdquo;, as in our case), stop and consider if
+you&amp;rsquo;re attempting to modify the &lt;em>semantics&lt;/em> of the written code, and if you&amp;rsquo;re sure that
+that&amp;rsquo;s a good idea (e.g. the &lt;code>yield&lt;/code> keywords in the code &lt;em>mean something&lt;/em>, and remove
+those keywords changes the apparent semantics of the code).&lt;/p>
+&lt;h2 id="further-reading">Further Reading&lt;/h2>
+&lt;p>I&amp;rsquo;ve only given a high-level overview of this project here, and a lot of the technical
+details were glossed over. If you&amp;rsquo;re hungry for more, check out the following resources:&lt;/p>
+&lt;ul>
+&lt;li>Notebooks and more extensive documentation on this project &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield">are on
+GitHub&lt;/a>. In
+particular, it might be helpful to peruse the &lt;a href="https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#links-and-references">links and references at the end of the
+READMEs&lt;/a>.&lt;/li>
+&lt;li>For those looking to programmatically inspect/modify Python ASTs the same way I did
+here, you might find &lt;a href="https://twitter.com/remilouf/status/1213079103156424704">this Twitter
+thread&lt;/a> helpful.&lt;/li>
+&lt;li>And for those wondering how PyMC4&amp;rsquo;s model specification API ended up, some very smart
+people gave their feedback on this work &lt;a href="https://twitter.com/avibryant/status/1150827954319982592">on
+Twitter&lt;/a>.&lt;/li>
+&lt;/ul>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Or should I say, complicating? At any rate, changing!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>I was &lt;a href="https://twitter.com/avibryant/status/1150827954319982592">subsequently
+convinced&lt;/a> that this
+isn&amp;rsquo;t a leaky abstraction after all.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:3" role="doc-endnote">
+&lt;p>I omitted the implementation of &lt;code>parse_snippet&lt;/code> for brevity. If you want
+to see it, check out the &amp;ldquo;AST Helper Functions&amp;rdquo; section of &lt;a href="https://github.com/eigenfoo/random/blob/master/python/ast-hiding-yield/00-prototype/hiding-yield.ipynb">this
+notebook&lt;/a>.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:4" role="doc-endnote">
+&lt;p>For way more information on &lt;code>exec&lt;/code>, &lt;code>eval&lt;/code>, &lt;code>locals&lt;/code> and &lt;code>globals&lt;/code>, check
+out &lt;a href="https://lucumr.pocoo.org/2011/2/1/exec-in-python/">Armin Ronacher&amp;rsquo;s blog
+post&lt;/a> and &lt;a href="https://stackoverflow.com/questions/2220699/whats-the-difference-between-eval-exec-and-compile">this
+StackOverflow
+answer&lt;/a>.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>http://www.georgeho.org/georgeho/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
 Retreat&lt;/a> earlier this month. It was an entire week
 on a beautiful island with some amazingly intelligent Bayesians, and no demands
 on my time other than the self-set (and admittedly vague) goal of contributing
@@ -646,45 +451,6 @@ more formally called the &lt;em>metric&lt;/em>…&amp;#160;&lt;a href="#fnref:2"
 &lt;p>There are some violin plots lying around in the notebook, a relic from a
 time when I thought that I would have the patience to run each model and
 adaptation method multiple times.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
-&lt;/li>
-&lt;/ol>
-&lt;/section></description></item><item><title>Introducing `stan-vim`</title><link>http://www.georgeho.org/georgeho/stan-vim/</link><pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/stan-vim/</guid><description>&lt;center>
-&lt;img
-src="http://www.georgeho.org/georgeho/assets/images/stan-logo.png"
-alt="Stan logo">
-&lt;/center>
-&lt;p>I made a Vim plugin for Stan!&lt;/p>
-&lt;p>I&amp;rsquo;ve been reading and writing a lot of Stan lately, but mainly in barebones text
-editors (or even just by &lt;code>cat&lt;/code>ing out the file), so I had to make do with none
-of the creature comforts of my favorite text editor, Vim.&lt;/p>
-&lt;p>But I also wasn&amp;rsquo;t happy with the syntax highlighting provided by
-&lt;a href="https://github.com/maverickg/stan.vim">existing&lt;/a>
-&lt;a href="https://github.com/mdlerch/mc-stan.vim">Vim&lt;/a>
-&lt;a href="https://github.com/ssp3nc3r/stan-syntax-vim">plugins&lt;/a> (and they also looked out
-of date and thinly maintained&amp;hellip;), so I just went ahead and learnt a truckload
-of Vimscript&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>.&lt;/p>
-&lt;p>Check out the plugin! You can find installation instructions
-&lt;a href="https://github.com/eigenfoo/stan-vim#installation">here&lt;/a> and documentation
-&lt;a href="https://github.com/eigenfoo/stan-vim#documentation">here&lt;/a>. Screenshots of
-syntax highlighting and projects links are below.&lt;/p>
-&lt;ul>
-&lt;li>&lt;a href="https://github.com/eigenfoo/stan-vim">GitHub&lt;/a>&lt;/li>
-&lt;li>&lt;a href="https://vimawesome.com/plugin/stan-vim-is-written-on">VimAwesome&lt;/a>&lt;/li>
-&lt;li>&lt;a href="https://www.vim.org/scripts/script.php?script_id=5835">Vim Online&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;figure>
-&lt;a href="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot0.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot0.png" alt="Screenshot of a Stan model in stan-vim">&lt;/a>
-&lt;a href="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot1.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot1.png" alt="Screenshot of the stan-vim documentation">&lt;/a>
-&lt;a href="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot2.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot2.png" alt="Screenshot of another Stan model in stan-vim">&lt;/a>
-&lt;figcaption>Screenshots of &lt;code>stan-vim&lt;/code> syntax highlighting.&lt;/figcaption>
-&lt;/figure>
-&lt;section class="footnotes" role="doc-endnotes">
-&lt;hr>
-&lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
-&lt;p>As it turns out, &lt;a href="https://www.reddit.com/r/vim/comments/54224o/why_is_there_so_much_hate_for_vimscript/">Vimscript is a very not-good
-language&lt;/a>.
-This is probably the last Vim plugin I write.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
 &lt;/section></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>http://www.georgeho.org/georgeho/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
@@ -1583,230 +1349,4 @@ As such, it&amp;rsquo;s informed by your prior as well as your data, and it&amp;
 job to adequately fit your data!&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ol></description></item><item><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio</title><link>http://www.georgeho.org/georgeho/pyfolio/</link><pubDate>Sat, 16 Dec 2017 00:00:00 +0000</pubDate><guid>http://www.georgeho.org/georgeho/pyfolio/</guid><description>&lt;p>I was lucky enough to have the chance to intern at
-&lt;a href="https://www.quantopian.com/">Quantopian&lt;/a> this summer. During that time I
-contributed some exciting stuff to their open-source portfolio analytics engine,
-&lt;a href="https://github.com/quantopian/pyfolio">&lt;code>pyfolio&lt;/code>&lt;/a>, and learnt a truckload of
-stuff while doing it! In this blog post, I&amp;rsquo;ll describe and walk through two of
-the new features that I authored: the risk and performance attribution tear
-sheets.&lt;/p>
-&lt;center>
-&lt;img
-src="http://www.georgeho.org/georgeho/assets/images/pyfolio-logo.png"
-alt="Pyfolio logo">
-&lt;/center>
-&lt;h2 id="risk-analytics">Risk Analytics&lt;/h2>
-&lt;p>A well-known truth of algorithmic trading is that it&amp;rsquo;s insufficient to merely
-maximize the returns of your algorithm: you must also do so while minimizing the
-risk it takes on board. This idea is probably most famously codified in the
-&lt;a href="https://en.wikipedia.org/wiki/Sharpe_ratio#Definition">Sharpe ratio&lt;/a>, which
-divides by the volatility of the returns stream in order to give a measure of
-the “risk-adjusted returns”.&lt;/p>
-&lt;p>However, the volatility of returns is a rather poor proxy for the amount of
-“risk” that an algorithm takes on. What if our algo loaded all of its money in
-the real estate sector? What if the algo shorted extremely large-cap stocks?
-What if half of our portfolio is in illiquid, impossible-to-exit positions?&lt;/p>
-&lt;p>These are all “risky” behavior for an algorithm to have, and we&amp;rsquo;d like to know
-about and understand this kind of behavior before we seriously consider investing
-money in the algo. However, these formulations of risk are neither captured nor
-quantified by the volatility of returns (as in the Sharpe ratio). Finally,
-there is no easy, free, open-source way to get this sort of analysis.&lt;/p>
-&lt;p>Enter &lt;code>pyfolio&lt;/code>&amp;rsquo;s new risk tear sheet! It addresses all the problems outlined
-above, and more. Let&amp;rsquo;s jump right in with an example.&lt;/p>
-&lt;p>&lt;img src="http://www.georgeho.org/georgeho/assets/images/pyfolio-risk-tear-sheet.png" alt="Example risk tear sheet">&lt;/p>
-&lt;p>&lt;em>(Note: this example risk tear sheet came from the &lt;a href="https://github.com/quantopian/pyfolio/pull/391">original pull
-request&lt;/a>, and may therefore be
-out of date)&lt;/em>&lt;/p>
-&lt;p>The first 4 plots show the exposure to common style factors: specifically, the
-size of the company (natural log of the market cap), mean reversion (measured
-by the &lt;a href="http://www.investopedia.com/terms/m/macd.asp">MACD Signal&lt;/a>), long-term
-momentum, and volatility.
-A style factor is best explained with examples: mean reversion, momentum,
-volatility and the Fama-French canonical factors (SMB, HML, UMD) are all
-examples of style factors. They are factors that indicate broad market trends
-(instead of being characteristic to individual stocks, like sectors or market
-caps) and characterize a particular &lt;em>style&lt;/em> of investing (e.g. mean reversion,
-trend-following strategies, etc.).
-The analysis is not limited to 4 style factors, though: &lt;code>pyfolio&lt;/code> will handle
-as many as you pass in (but see below for a possible complication). As we can
-see, the algorithm has a significant exposure to the MACD signal, which may or
-may not worry us. For instance, it wouldn&amp;rsquo;t worry us if we knew that it was a
-mean-reversion algo, but we would raise some eyebrows if it was something
-else… perhaps the author &lt;em>wanted&lt;/em> to write a wonderful, event-driven
-sentiment algo, but inadvertently &lt;em>ended up&lt;/em> writing a mean reversion algo!
-One important caveat here is that &lt;code>pyfolio&lt;/code> requires you to supply your own
-style factors, for every stock in your universe. This is an unfortunately large
-complication for the average user, as it would require you to formulate and
-implement your own risk model — I explain this in greater detail below.&lt;/p>
-&lt;p>The next 3 plots show the exposures to sectors. This first plot shows us how much
-the algorithm longed or shorted a specific sector: above the x-axis if it
-longed, and below if it shorted. The second plot simply shows the gross exposure
-to each sector: taking the absolute value of the positions before normalizing.
-The last plot shows the net exposure to each sector: taking the long position
-&lt;em>less the short position&lt;/em> before normalizing. This particular algo looks
-beautiful: it is equally exposed to all sectors, and not overly exposed to any
-one of them. Evidently, this algo must be taking account its sector exposures
-in its trading logic: given what we know from above, perhaps it is longing the
-top 10 most “mean reverting” stocks in each sector at the start of every
-week… This analysis requires no addition data other than your algorithm&amp;rsquo;s
-positions: you can supply your own sectors if you like, but if not, the analysis
-will default to the &lt;a href="https://www.quantopian.com/help/fundamentals#asset-classification">Morningstar sector
-mappings&lt;/a>
-(specifically, the &lt;code>morningstar_sector_code&lt;/code> field), available for free on the
-Quantopian platform.&lt;/p>
-&lt;p>The next 3 plots show the exposures to market caps. In every other respect, it
-is identical to the previous 3 plots. These plots look fairly reasonable: most
-algos spend most of their positions in large and mega cap names, and have almost
-no positions in micro cap stocks. (Quantopian actually discourages investing in
-micro cap stocks by pushing users towards using the &lt;a href="https://www.quantopian.com/posts/the-q500us-and-q1500us">Q500 or
-Q1500&lt;/a> as a tradeable
-universe). This analysis uses &lt;a href="https://www.quantopian.com/help/fundamentals#valuation">Morningstar&amp;rsquo;s &lt;code>market cap&lt;/code>
-field&lt;/a>.&lt;/p>
-&lt;p>The last 2 plots show the portfolio&amp;rsquo;s exposure to illiquidity (or low trading
-volume). This one is a bit trickier to understand: every the end of every day,
-we take the number of shares held in each position and divide that by the
-total volume. That gives us a number per position per day. We find the 10th
-percentile of this number (i.e. the most illiquid) and plot that as a time
-series. So it is a measure of how exposed our portfolio is to illiquid stocks.
-The first plot shows the illiquid exposure in our long and short positions,
-respectively: that is, it takes the number of shares held in each long/short
-position, and divides it by the daily total volume. The second plot shows the
-gross illiquid exposure, taking the absolute value of positions before
-dividing. So it looks like for this particular algo, for the 10% most illiquid
-stock in our portfolio, our position accounts for around 0.2–0.6% (&lt;em>not&lt;/em>
-0.002–0.006%!) of market volume, on any given day. That&amp;rsquo;s an acceptably low
-number! This analysis obviously requires daily volume data per stock, but that&amp;rsquo;s
-freely available on Quantopian&amp;rsquo;s platform.&lt;/p>
-&lt;p>That&amp;rsquo;s it for the risk tear sheet! There are some more cool ideas in the
-works (there always are), such as including plots to show a portfolio&amp;rsquo;s
-concentration risk exposure, or a portfolio&amp;rsquo;s exposure to penny stocks. If you
-have any suggestions, please file a &lt;a href="https://github.com/quantopian/pyfolio/issues">new GitHub
-issue&lt;/a> to let the dev team know!
-Pyfolio is open-source and under active development, and outside contributions
-are always loved and appreciated. Alternatively, if you just want to find out
-more about the nuts and bolts (i.e. the math and the data) that goes into risk
-tear sheet, you can dig around &lt;a href="https://github.com/quantopian/pyfolio/tree/master/pyfolio">the source code
-itself&lt;/a>!&lt;/p>
-&lt;h2 id="risk-models-and-performance-attribution">Risk Models and Performance Attribution&lt;/h2>
-&lt;p>There are two things in the discussion of the risk tear sheet that are worth
-talking about in further detail:&lt;/p>
-&lt;ol>
-&lt;li>I mentioned how the computation of style factor exposures (i.e. the first 4
-plots) required your own “risk model” (whatever that is), and&lt;/li>
-&lt;li>It was nice that we can guess at the inner workings of the algo, just by
-seeing its exposure to common factors. E.g., I guessed that the example algo
-was a sector-neutral mean reversion algo, because it was equally exposed to
-all 11 sectors, and had a high (in magnitude) exposure to the MACD signal.&lt;/li>
-&lt;/ol>
-&lt;p>I&amp;rsquo;ll talk about both points in order.&lt;/p>
-&lt;p>In order to find out your exposure to a style factor, you obviously must first
-know how much each stock is affected by the style factor. But how do you get
-that? That is what a risk model is for!&lt;/p>
-&lt;p>At the end of every period (usually every trading day), the risk model wakes
-up, looks at all the pricing data and style factor data for that day.
-It then tries to explain as best it can how much each stock was affected by
-each style factor. The end result is that each stock will have a couple of
-numbers associated with it, one for every style factor. These numbers indicate
-how sensitive the stock&amp;rsquo;s returns were to movements in the style factors. These
-numbers are called &lt;em>factor loadings&lt;/em> or &lt;em>betas&lt;/em> (although I prefer “factor
-loadings” because a lot of things in quant finance are called “beta”).&lt;/p>
-&lt;p>Even better, there&amp;rsquo;s no reason why the risk model should limit itself to style
-factors! I previously made the distinction between style factors and other
-factors such as sectors: theoretically, a risk model should also be able to find
-out how sensitive a stock&amp;rsquo;s returns are to movements in its sector: compute a
-“sector factor loading”, if you will. Collectively, all the factors that we want
-the risk model to consider — be they sector, style or otherwise — are called
-&lt;em>common factors&lt;/em>.&lt;/p>
-&lt;p>Clearly, having a risk model allows us to do a whole lot of stuff! This is
-because, if we want to know how style factors and other prevailing market trends
-are affecting our &lt;em>portfolio&lt;/em>, we must first know how they affect the &lt;em>stocks&lt;/em>
-in our portfolio. Or, to be a bit more ambitious, if we knew how style factors
-and prevailing market trends are impacting our &lt;em>universe&lt;/em> of stocks, then we&amp;rsquo;re
-well on the way to knowing how they&amp;rsquo;re impacting our portfolio! The value of
-this kind of portfolio analysis should, of course, be self-evident.&lt;/p>
-&lt;p>So, suppose we have a risk model. How do we get from a &lt;em>stock-level&lt;/em> understanding
-of how market trends are affecting us, to a &lt;em>portfolio-level&lt;/em> understanding of the
-same? The answer to this question is called &lt;em>performance attribution&lt;/em>, and is
-one of the main reasons a risk model is worth having.&lt;/p>
-&lt;p>Instead of prattling on about performance attribution, it&amp;rsquo;d just be easier to
-show you the miracles it can do. Below are some (fake, made up) examples of some
-analysis performance attribution can give us:&lt;/p>
-&lt;p>Date: 08–23–2017&lt;/p>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th style="text-align:left">Factor&lt;/th>
-&lt;th style="text-align:right">PnL ($)&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td style="text-align:left">Total PnL&lt;/td>
-&lt;td style="text-align:right">-1,000&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Technology&lt;/td>
-&lt;td style="text-align:right">70&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Real Estate&lt;/td>
-&lt;td style="text-align:right">-40&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Momentum&lt;/td>
-&lt;td style="text-align:right">-780&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Mean Reversion&lt;/td>
-&lt;td style="text-align:right">100&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Volatility&lt;/td>
-&lt;td style="text-align:right">-110&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Stock-Specific&lt;/td>
-&lt;td style="text-align:right">480&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;p>The table shows that today, our algo suffered a $1000 loss, and the breakdown of
-that loss indicates that the main culprit is momentum. In other words, our poor
-performance today is mostly attributable to the poor performance of the momentum
-factor (hence the name, “performance attribution”). The sector factors account
-for very little PnL, while the other style factors (mean reversion and
-volatility) drive fairly significant profits and losses, but the real smoking
-gun here is the fact that momentum completely tanked today.&lt;/p>
-&lt;p>There are a few more useful summary statistics that performance attribution can
-give us! Traditional computations for the alpha and the Sharpe ratio of a
-strategy usually take into account the performance of the market: i.e., the
-traditional alpha is a measure of how much our strategy &lt;em>outperformed&lt;/em> the
-market, and the traditional Sharpe ratio is a measure of the same, but
-accounting for the volatility of returns. These may be dubbed &lt;em>single-factor
-alphas&lt;/em>, because they only measure performance once one factor has been
-accounted for — namely, the market. In reality, we would like to not only
-account for the market, but also any other common factors, such as style or
-sector. This leads to the concept of the &lt;em>multi-factor alpha and Sharpe ratio&lt;/em>,
-which is exactly the same as the alpha and Sharpe ratio we&amp;rsquo;re familiar with, but
-taking into account a lot more factors. In other words, whereas the returns in
-excess of the market is quantified by the single factor alpha, the returns in
-excess of the market, momentum, mean reversion, volatility etc., is
-quantified by the multi factor alpha. The same goes for the single factor and
-multi factor Sharpe, in the case of risk-adjusted returns.&lt;/p>
-&lt;p>Adding performance attribution capabilities to &lt;code>pyfolio&lt;/code> is an active project! A
-couple of pull requests have already been merged to this effect, so definitely
-stay tuned! A new version of &lt;code>pyfolio&lt;/code> will probably be made once performance
-attribution is up and running. As always, feel free to
-&lt;a href="https://github.com/quantopian/pyfolio">contribute to &lt;code>pyfolio&lt;/code>&lt;/a>, be it by
-making feature requests, issues with bugs, or submitting a pull request!&lt;/p>
-&lt;hr>
-&lt;p>&lt;strong>Update (12–16–2017):&lt;/strong> Quantopian recently launched their risk model for anyone to
-use! This is a great resource that usually only large and deep-pocketed
-financial institutions have access to. Check it out
-&lt;a href="https://www.quantopian.com/risk-model">here&lt;/a>!&lt;/p>
-&lt;p>&lt;strong>Update (05–11–2018):&lt;/strong> Quantopian&amp;rsquo;s now integrated pyfolio analytics into their
-backtest engine! This makes it much easier to see how your algorithm stacks up
-against expectations. Check out the announcement
-&lt;a href="https://www.quantopian.com/posts/improved-backtest-analysis">here&lt;/a>!&lt;/p>
-&lt;p>&lt;strong>Update (05–29–2018):&lt;/strong> Quantopian recently released a white paper on how the risk
-model works! Read all about it &lt;a href="https://www.quantopian.com/papers/risk">here&lt;/a>.&lt;/p></description></item></channel></rss>
+&lt;/ol></description></item></channel></rss>
