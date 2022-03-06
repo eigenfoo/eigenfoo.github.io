@@ -1,3 +1,8 @@
+---
+aliases:
+  - /about/
+---
+
 # Hello! I’m George (a.k.a. `eigenfoo`)
 
 <center>

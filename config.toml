@@ -1,6 +1,6 @@
 # Base URL used when generating links to your pages
 # Set to the URL for your site
-baseURL = "http://www.georgeho.org/georgeho/"
+baseURL = "https://www.georgeho.org"
 
 # The name of this wonderful theme ;-).
 theme = "hugo-bearblog"
@@ -21,7 +21,13 @@ ignoreErrors = ["error-disable-taxonomy"]
   blog = "/:filename/"
   tags = "/blog/:slug"
 
-# Render inline (and potentially dangerous) HTML and JavaScript
+# Rename index.xml to feed.xml for back-compatibility with Jekyll site.
+[outputFormats]
+  [outputFormats.RSS]
+    mediatype = "application/rss"
+    baseName = "feed"
+
+# Render inline (and potentially dangerous) HTML and JavaScript.
 # https://gohugo.io/getting-started/configuration-markup#goldmark
 [markup.goldmark.renderer]
   unsafe = true
