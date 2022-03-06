@@ -7,8 +7,6 @@ tags:
   - deep-learning
 ---
 
-{{< toc >}}
-
 I get confused with tensor computation libraries (or computational graph libraries, or symbolic
 algebra libraries, or whatever they're marketing themselves as these days).
 
@@ -27,6 +25,8 @@ frameworks](https://www.georgeho.org/prob-prog-frameworks/), I’ll first discus
 libraries in general - what they are and how they can differ from one another. Then I'll discuss
 some libraries in detail, and finally offer an observation on the future of Theano in the context of
 contemporary tensor computation libraries.
+
+{{< toc >}}
 
 ## Dissecting Tensor Computation Libraries
 

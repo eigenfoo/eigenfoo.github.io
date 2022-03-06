@@ -81,7 +81,7 @@ because I think they illuminate the history of NLP.
      aspects of this architecture!
 
      <figure class="align-center">
-       <img style="float: middle" src="/asset/images/transformer-block.png" alt="Graphical representation of BERT">
+       <img style="float: middle" src="/assets/images/transformer-block.png" alt="Graphical representation of BERT">
        <figcaption>Graphical representation of BERT. Source: <a href="https://i.pinimg.com/originals/02/95/a3/0295a3be438ae68f604e53fc88c7edb4.png">Pinterest</a>.</figcaption>
      </figure>
 

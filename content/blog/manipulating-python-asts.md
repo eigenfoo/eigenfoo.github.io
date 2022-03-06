@@ -26,13 +26,7 @@ GitHub](https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield).
 
 Originally, PyMC4's proposed model specification API looked something like this:
 
-```python
-def linear_regression(x):
-    scale = yield tfd.HalfCauchy(0, 1)
-    coefs = yield tfd.Normal(tf.zeros(x.shape[1]), 1, )
-    predictions = yield tfd.Normal(tf.linalg.matvec(x, coefs), scale)
-    return predictions
-```
+<script src="https://gist.github.com/eigenfoo/8917e2fd72ea8940d54916c1cfbe1755.js"></script>
 
 The main drawback to this API was that the `yield` keyword was confusing. Many users
 don’t really understand Python generators, and those who do might only understand
@@ -75,44 +69,7 @@ I opine on why this problem is challenging a lot more
 
 First, I wrote a `FunctionToGenerator` class:
 
-```python
-class FunctionToGenerator(ast.NodeTransformer):
-    """
-    This subclass traverses the AST of the user-written, decorated,
-    model specification and transforms it into a generator for the
-    model. Subclassing in this way is the idiomatic way to transform
-    an AST.
-    Specifically:
-    
-    1. Add `yield` keywords to all assignments
-       E.g. `x = tfd.Normal(0, 1)` -> `x = yield tfd.Normal(0, 1)`
-    2. Rename the model specification function to
-       `_pm_compiled_model_generator`. This is done out an abundance
-       of caution more than anything.
-    3. Remove the @Model decorator. Otherwise, we risk running into
-       an infinite recursion.
-    """
-    def visit_Assign(self, node):
-        new_node = node
-        new_node.value = ast.Yield(value=new_node.value)
-
-        # Tie up loose ends in the AST.
-        ast.copy_location(new_node, node)
-        ast.fix_missing_locations(new_node)
-        self.generic_visit(node)
-        return new_node
-
-    def visit_FunctionDef(self, node):
-        new_node = node
-        new_node.name = "_pm_compiled_model_generator"
-        new_node.decorator_list = []
-
-        # Tie up loose ends in the AST.
-        ast.copy_location(new_node, node)
-        ast.fix_missing_locations(new_node)
-        self.generic_visit(node)
-        return new_node
-```
+<script src="https://gist.github.com/eigenfoo/43282c4e69156647d7bb2505f1dbafb2.js"></script>
 
 Subclassing `ast.NodeTransformer` (as `FunctionToGenerator` does) is the [recommended
 way of modifying
@@ -127,33 +84,7 @@ function.
 
 Second, the `Model` class:
 
-```python
-class Model:
-    """ pm.Model decorator. """
-
-    def __init__(self, func):
-        self.func = func
-
-        # Introspect wrapped function, instead of the decorator class.
-        functools.update_wrapper(self, func)
-
-        # Uncompile wrapped function.
-        uncompiled = uncompile(func.__code__)
-
-        # Parse AST and modify it.
-        tree = parse_snippet(*uncompiled)
-        tree = FunctionToGenerator().visit(tree)
-        uncompiled[0] = tree
-
-        # Recompile wrapped function.
-        self.recompiled = recompile(*uncompiled)    
-
-        # Execute recompiled code (defines `_pm_compiled_model_generator`)
-        # in the locals() namespace and assign it to an attribute.
-        # Refer to http://lucumr.pocoo.org/2011/2/1/exec-in-python/
-        exec(self.recompiled, None, locals())
-        self.model_generator = locals()["_pm_compiled_model_generator"]
-```
+<script src="https://gist.github.com/eigenfoo/5e69bba2ab7ec6d6a2f53c13cbfd7b48.js"></script>
 
 This class isn't meant to be instantiated: rather, it's [meant to be used as a Python
 decorator](https://realpython.com/primer-on-python-decorators/#classes-as-decorators).
@@ -168,18 +99,7 @@ new function, accessed via the `locals` variable[^4], is then bound to the class
 
 Finally, the user facing API looks like this:
 
-```python
-@Model
-def linear_regression(x):
-    scale = tfd.HalfCauchy(0, 1)
-    coefs = tfd.Normal(tf.zeros(x.shape[1]), 1)
-    predictions = tfd.Normal(tf.linalg.matvec(x, coefs), scale)
-    return predictions
-
-
-# <generator object _pm_compiled_model_generator at 0x107a5c5c8>
-linear_regression.model_generator(tf.zeros([3, 10]))  # Shape is irrelevant here
-```
+<script src="https://gist.github.com/eigenfoo/0bc4047ea0245a3f5f3c3a6ff8143154.js"></script>
 
 As you can see, the users need not write `yield` while specifying their models, and the
 PyMC inference engine can now simply call the `model_generator` method of

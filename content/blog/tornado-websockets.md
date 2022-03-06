@@ -57,73 +57,7 @@ post](https://en.proft.me/2014/05/16/realtime-web-application-tornado-and-websoc
   attribute. While this is set to a generous 10 MiB, it's important that the
   WebSocket messages don't exceed this limit!
 
-```python
-""" Every 100ms, sample from a Bernoulli and write the value to a WebSocket. """
-
-import random
-import tornado.ioloop
-import tornado.web
-import tornado.websocket
-
-
-class WebSocketServer(tornado.websocket.WebSocketHandler):
-    """Simple WebSocket handler to serve clients."""
-
-    # Note that `clients` is a class variable and `send_message` is a
-    # classmethod.
-    clients = set()
-
-    def open(self):
-        WebSocketServer.clients.add(self)
-
-    def on_close(self):
-        WebSocketServer.clients.remove(self)
-
-    @classmethod
-    def send_message(cls, message: str):
-        print(f"Sending message {message} to {len(cls.clients)} client(s).")
-        for client in cls.clients:
-            client.write_message(message)
-
-
-class RandomBernoulli:
-    def __init__(self):
-        self.p = 0.72
-        print(f"True p = {self.p}")
-
-    def sample(self):
-        return int(random.uniform(0, 1) <= self.p)
-
-
-def main():
-    # Create a web app whose only endpoint is a WebSocket, and start the web
-    # app on port 8888.
-    app = tornado.web.Application(
-        [(r"/websocket/", WebSocketServer)],
-        websocket_ping_interval=10,
-        websocket_ping_timeout=30,
-    )
-    app.listen(8888)
-
-    # Create an event loop (what Tornado calls an IOLoop).
-    io_loop = tornado.ioloop.IOLoop.current()
-
-    # Before starting the event loop, instantiate a RandomBernoulli and
-    # register a periodic callback to write a sampled value to the WebSocket
-    # every 100ms.
-    random_bernoulli = RandomBernoulli()
-    periodic_callback = tornado.ioloop.PeriodicCallback(
-        lambda: WebSocketServer.send_message(str(random_bernoulli.sample())), 100
-    )
-    periodic_callback.start()
-
-    # Start the event loop.
-    io_loop.start()
-
-
-if __name__ == "__main__":
-    main()
-```
+<script src="https://gist.github.com/eigenfoo/22f46166fa6924d684d68ca06e08b055.js"></script>
 
 ## Client
 
@@ -169,75 +103,7 @@ if __name__ == "__main__":
   experiences a brief outage for whatever reason (both of which are probably
   inevitable for long-running apps using WebSockets).
 
-```python
-""" Read from the WebSocket and update the Beta posterior parameters online. """
-
-import tornado.ioloop
-import tornado.websocket
-
-
-class WebSocketClient:
-    def __init__(self, io_loop):
-        self.connection = None
-        self.io_loop = io_loop
-        self.num_successes = 0
-        self.num_trials = 0
-
-    def start(self):
-        self.connect_and_read()
-
-    def stop(self):
-        self.io_loop.stop()
-
-    def connect_and_read(self):
-        print("Reading...")
-        tornado.websocket.websocket_connect(
-            url=f"ws://localhost:8888/websocket/",
-            callback=self.maybe_retry_connection,
-            on_message_callback=self.on_message,
-            ping_interval=10,
-            ping_timeout=30,
-        )
-
-    def maybe_retry_connection(self, future) -> None:
-        try:
-            self.connection = future.result()
-        except:
-            print("Could not reconnect, retrying in 3 seconds...")
-            self.io_loop.call_later(3, self.connect_and_read)
-
-    def on_message(self, message):
-        if message is None:
-            print("Disconnected, reconnecting...")
-            self.connect_and_read()
-
-        message = int(message)
-        self.num_successes += message
-        self.num_trials += 1
-
-        alpha = 2 + self.num_successes
-        beta = 2 + self.num_trials - self.num_successes
-        mean = self.num_successes / self.num_trials
-        print(f"α = {alpha}; β = {beta}; mean = {mean}")
-
-
-def main():
-    # Create an event loop (what Tornado calls an IOLoop).
-    io_loop = tornado.ioloop.IOLoop.current()
-
-    # Before starting the event loop, instantiate a WebSocketClient and add a
-    # callback to the event loop to start it. This way the first thing the
-    # event loop does is to start the client.
-    client = WebSocketClient(io_loop)
-    io_loop.add_callback(client.start)
-
-    # Start the event loop.
-    io_loop.start()
-
-
-if __name__ == "__main__":
-    main()
-```
+<script src="https://gist.github.com/eigenfoo/341f6c6c578d34120bccc4229e434377.js"></script>
 
 ## Why Tornado?
 

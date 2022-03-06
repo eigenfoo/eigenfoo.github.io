@@ -53,7 +53,6 @@ menu: main
     shapes, with counter spaces, defined by a variable number of quadratic
     Bézier curves. At the time, no generative model with vector graphic output
     has previously appeared in literature.
-
 - [Hate Speech on Reddit](https://www.georgeho.org/reddit-clusters/)
   - As part of a project on [Data Science for Social
     Good](http://ee.cooper.edu/~keene/dssg.html), I ran text clustering

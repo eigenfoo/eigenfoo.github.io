@@ -5,8 +5,6 @@ tags:
   - mathematics
 ---
 
-{{< toc >}}
-
 _Linear discriminant analysis_ (commonly abbreviated to LDA, and not to be
 confused with [the other
 LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation)) is a very
@@ -42,6 +40,8 @@ explanation of, LDA. I'll look at LDA in three ways:
 
 This is a lot for one post, but my hope is that there's something in here for
 everyone.
+
+{{< toc >}}
 
 ## LDA as an Algorithm
 

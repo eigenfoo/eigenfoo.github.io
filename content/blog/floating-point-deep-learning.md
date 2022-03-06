@@ -6,8 +6,6 @@ tags:
   - machine-learning
 ---
 
-{{< toc >}}
-
 Floating-point formats are not the most glamorous or (frankly) the important
 consideration when working with deep learning models: if your model isn't working well,
 then your floating-point format certainly isn't going to save you! However, past a
@@ -18,7 +16,7 @@ even performance.
 Here's how the rest of this post is structured:
 
 1. [Why should you, a deep learning practitioner,
-   care](#floating-point-in-my-deep-learning) about what floating-point format your
+   care](#floating-point-in-_my_-deep-learning) about what floating-point format your
    model uses?
 2. [What even _is_ floating-point](#floating-point-formats), especially these new
    floating-point formats made specifically for deep learning?
