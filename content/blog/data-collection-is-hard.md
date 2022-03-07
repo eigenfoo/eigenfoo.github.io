@@ -5,14 +5,11 @@ tags:
   - dataset
 ---
 
-For people who make careers out of data, data scientists don't have *nearly*
-enough experience in data collection, and many data scientists don't even seem
-to feel much cognitive dissonance from this fact.
-
-Puzzlingly, this trend doesn't seem to be true of other forms of unglamorous
-data work like data cleaning (where people generally accept that [data cleaning
-is not grunt
-work](https://counting.substack.com/p/data-cleaning-is-analysis-not-grunt)).
+For people who make careers out of data, data scientists don't have _nearly_
+enough experience in data collection --- and many data scientists don't seem to
+feel much cognitive dissonance from this fact, despite (very persuasive!)
+[overtures by a few valiant data
+professionals](https://counting.substack.com/p/go-collect-some-and-data)[^1].
 
 With this blog post I want to give a defense of data collection — not as an
 activity that's inherently worthwhile pursuing (I assume data professionals
@@ -109,3 +106,8 @@ lot of time and compute, but subsequent incremental ETL jobs could just run off
 of my laptop. These best practice patterns around data collection and
 management are all applicable far beyond my simple side project, and were
 valuable lessons to learn first-hand.
+
+[^1]: Puzzlingly, this trend doesn't seem to be true of other forms of
+  unglamorous data work like data cleaning, where people generally accept that
+  [data cleaning is not grunt
+  work](https://counting.substack.com/p/data-cleaning-is-analysis-not-grunt).
