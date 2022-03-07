@@ -41,7 +41,7 @@ post](https://en.proft.me/2014/05/16/realtime-web-application-tornado-and-websoc
   * Note that `clients` is a class variable, so `send_message` is a class
     method.
   * This class could be extended to also listen to the endpoint, instead of
-    just blindly pushing messages out - after all, WebSockets allow for
+    just blindly pushing messages out --- after all, WebSockets allow for
     bidirectional data flow.
 - The `RandomBernoulli` and `PeriodicCallback` make a pretty crude example, but
   you could write a class that transmits data in real-time to suit your use
@@ -95,7 +95,7 @@ post](https://en.proft.me/2014/05/16/realtime-web-application-tornado-and-websoc
   `WebSocketClientConnection`](https://github.com/tornadoweb/tornado/blob/1db5b45918da8303d2c6958ee03dbbd5dc2709e9/tornado/websocket.py#L1654-L1655).
   `websocket_connect` doesn't actually establish the connection directly, but
   rather returns a future. Hence, we try to get the `future.result()` itself
-  (i.e. the WebSocket client connection) — I don't actually do anything with
+  (i.e. the WebSocket client connection) --- I don't actually do anything with
   the `self.connection`, but you could if you wanted. In the event of an
   exception while doing that, we assume there's a problem with the WebSocket
   connection and retry `connect_and_read` after 3 seconds. This all has the
@@ -111,7 +111,7 @@ Tornado is a Python web framework, but unlike the more popular Python web
 frameworks like [Flask](https://flask.palletsprojects.com/) or
 [Django](https://www.djangoproject.com/), it has strong support for
 [asynchronous networking and non-blocking
-calls](https://www.tornadoweb.org/en/stable/guide/async.html#blocking) -
+calls](https://www.tornadoweb.org/en/stable/guide/async.html#blocking) ---
 essentially, Tornado apps have one (single-threaded) event loop
 (`tornado.ioloop.IOLoop`), which handles all requests asynchronously,
 dispatching incoming requests to the relevant non-blocking function as the

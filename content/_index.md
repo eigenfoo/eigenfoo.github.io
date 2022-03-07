@@ -10,9 +10,9 @@ aliases:
 </center>
 
 I'm a data scientist at [Flatiron Health](https://flatiron.com/), where I use
-machine learning on real-world data to accelerate cancer research. I like
-natural language processing, Bayesian modelling, open source software, donuts
-and coffee.
+machine learning on real-world patient data to accelerate cancer research. I
+like natural language processing, Bayesian modelling, open source software,
+donuts and coffee.
 
 I'm originally from Hong Kong, now based in New York. Previously, I worked for
 [Point72 Asset Management](https://www.point72.com) and

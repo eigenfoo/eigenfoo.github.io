@@ -11,7 +11,7 @@ I get confused with tensor computation libraries (or computational graph librari
 algebra libraries, or whatever they're marketing themselves as these days).
 
 I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
-prototypical examples of tensor computation libraries. Then I learnt about Theano - an older and
+prototypical examples of tensor computation libraries. Then I learnt about Theano --- an older and
 less popular project, but different from PyTorch and TensorFlow and better in some meaningful ways.
 This was followed by JAX, which seemed to be basically NumPy with more bells and whistles (although
 I couldn't articulate what exactly they were). Then came [the announcement by the PyMC developers
@@ -22,7 +22,7 @@ Anyways, this confusion prompted a lot of research and eventually, this blog pos
 
 Similar to [my previous post on the anatomy of probabilistic programming
 frameworks](https://www.georgeho.org/prob-prog-frameworks/), I’ll first discuss tensor computation
-libraries in general - what they are and how they can differ from one another. Then I'll discuss
+libraries in general --- what they are and how they can differ from one another. Then I'll discuss
 some libraries in detail, and finally offer an observation on the future of Theano in the context of
 contemporary tensor computation libraries.
 
@@ -44,7 +44,7 @@ First, a characterization: what do tensor computation libraries even do?
    (just-in-time) compiling it, by utilizing special hardware (GPUs/TPUs), by vectorizing the
    computation, or in any other way.
 
-### "Tensor Computation Library" - Maybe Not The Best Name
+### "Tensor Computation Library" --- Maybe Not The Best Name
 
 As an aside: I realize that the name "tensor computation library" is too broad, and that the
 characterization above precludes some libraries that might also justifiably be called "tensor
@@ -55,9 +55,9 @@ library" or even "symbolic tensor algebra libraries".
 So for the avoidance of doubt, here is a list of libraries that this blog post is _not_ about:
 
 - NumPy and SciPy
-  * These libraries don't have a concept of a computational graph - they’re more like a toolbox of
+  * These libraries don't have a concept of a computational graph --- they’re more like a toolbox of
     functions, called from Python and executed in C or Fortran.
-  * However, this might be a controversial distinction - as we’ll see later, JAX also doesn't build
+  * However, this might be a controversial distinction --- as we’ll see later, JAX also doesn't build
     an explicit computational graph either, and I definitely want to include JAX as a "tensor
     computation library"... ¯\\\_(ツ)\_/¯
 - Numba and Cython
@@ -65,7 +65,7 @@ So for the avoidance of doubt, here is a list of libraries that this blog post i
     such as Theano, make good use them), but like NumPy and SciPy, they do not actually manage the
     computational graph itself.
 - Keras, Trax, Flax and PyTorch-Lightning
-  * These libraries are high-level wrappers around tensor computation libraries - they basically
+  * These libraries are high-level wrappers around tensor computation libraries --- they basically
     provide abstractions and a user-facing API to utilize tensor computation libraries in a
     friendlier way.
 
@@ -87,22 +87,22 @@ even incur a trade-off with!) other goals. Here's a list of common differences a
        PyTorch's dynamic graphs](https://news.ycombinator.com/item?id=13429355).
    - Lazy or eager execution: do we evaluate variables as soon as they are defined, or only when a
      dependent variable is evaluated? Usually, tensor computation libraries either choose to support
-     dynamic graphs with eager execution, or static graphs with lazy execution - for example,
+     dynamic graphs with eager execution, or static graphs with lazy execution --- for example,
      [TensorFlow 2.0 supports both modes](https://www.tensorflow.org/guide/eager).
    - Interestingly, some tensor computation libraries (e.g. [Thinc](https://thinc.ai/)) don't even
      construct an explicit computational graph: they represent it as [chained higher-order
      functions](https://thinc.ai/docs/concept).
 
 1. Tensor computation libraries can also differ in what they want to use the computational graph
-   _for_ - for example, are we aiming to do things that basically amount to running the
+   _for_ --- for example, are we aiming to do things that basically amount to running the
    computational graph in a "different mode", or are we aiming to modify the computational graph
    itself?
    - Almost all tensor computation libraries support autodifferentiation in some capacity (either
      forward-mode, backward-mode, or both).
    - Obviously, how you represent the computational graph and what you want to use it for are very
      related questions! For example, if you want to be able to represent aribtrary computation as a
-     graph, you'll have to handle control flow like if-else statements or for-loops - this leads to
-     common gotchas with [using Python for-loops in
+     graph, you'll have to handle control flow like if-else statements or for-loops --- this leads
+     to common gotchas with [using Python for-loops in
      JAX](https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#%F0%9F%94%AA-Control-Flow)
      or needing to use [`torch.nn.ModuleList` in for-loops with
      PyTorch](https://discuss.pytorch.org/t/can-you-have-for-loops-in-the-forward-prop/68295).
@@ -137,8 +137,8 @@ the relevant documentation where possible.[^1]
      PyTorch](https://jdhao.github.io/2017/11/12/pytorch-computation-graph/).
 1. What is the computational graph used for?
    - To quote the [PyTorch docs](https://pytorch.org/docs/stable/index.html), "PyTorch is an
-     optimized tensor library for deep learning using GPUs and CPUs" - as such, the main focus is on
-     [autodifferentiation](https://pytorch.org/docs/stable/notes/autograd.html).
+     optimized tensor library for deep learning using GPUs and CPUs" --- as such, the main focus is
+     on [autodifferentiation](https://pytorch.org/docs/stable/notes/autograd.html).
 1. How does the library ensure "best execution" for computation?
    - PyTorch has [native GPU support](https://pytorch.org/docs/stable/notes/cuda.html) via CUDA.
    - PyTorch also has support for TPU through projects like
@@ -150,7 +150,7 @@ the relevant documentation where possible.[^1]
 1. How is the computational graph represented and built?
    - Instead of building an explicit computational graph to compute gradients, JAX simply supplies a
      `grad()` that returns the gradient function of any supplied function. As such, there is
-     technically no concept of a computational graph - only pure (i.e. stateless and
+     technically no concept of a computational graph --- only pure (i.e. stateless and
      side-effect-free) functions and their gradients.
    - [Sabrina Mielke summarizes the situation very well](https://sjmielke.com/jax-purify.htm):
 
@@ -216,9 +216,9 @@ There's been a consistent movement in most tensor computation libraries away fro
 more precisely, statically _built_ graphs): PyTorch and TensorFlow 2 both support dynamically
 generated graphs by default, and JAX forgoes an explicit computational graph entirely.
 
-This movement is understandable - building the computational graph dynamically matches people's
+This movement is understandable --- building the computational graph dynamically matches people's
 programming intuition much better. When I write `z = x + y`, I don't mean _"I want to register a sum
-operation with two inputs, which is waiting for data to be injected"_ - I mean _"I want to compute
+operation with two inputs, which is waiting for data to be injected"_ --- I mean _"I want to compute
 the sum of `x` and `y`"._ The extra layer of indirection is not helpful to most users, who just want
 to run their tensor computation at some reasonable speed.
 
@@ -238,8 +238,8 @@ hope that the framework internals are doing the right things, which they might n
 
 This is the niche that Theano (or rather, Theano-PyMC/Aesara) fills that other contemporary tensor
 computation libraries do not: the promise is that if you take the time to specify your computation
-up front and all at once, Theano can optimize the living daylight out of your computation - whether
-by graph manipulation, efficient compilation or something else entirely - and that this is something
+up front and all at once, Theano can optimize the living daylight out of your computation --- whether
+by graph manipulation, efficient compilation or something else entirely --- and that this is something
 you would only need to do once.
 
 [^1]: Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn't out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.
