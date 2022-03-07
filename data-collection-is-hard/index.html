@@ -5,13 +5,11 @@
 <meta name=viewport content="width=device-width,initial-scale=1">
 <link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico>
 <title>Data Collection is Hard. You Should Try It. | George Ho</title><meta name=title content="Data Collection is Hard. You Should Try It.">
-<meta name=description content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection, and many data scientists don&rsquo;t even seem to feel much cognitive dissonance from this fact.
-Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous data work like data cleaning (where people generally accept that data cleaning is not grunt work).
+<meta name=description content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection &mdash; and many data scientists don&rsquo;t seem to feel much cognitive dissonance from this fact, despite (very persuasive!) overtures by a few valiant data professionals1.
 With this blog post I want to give a defense of data collection — not as an activity that&rsquo;s inherently worthwhile pursuing (I assume data professionals don&rsquo;t need to be convinced of that!">
 <meta name=keywords content="dataset,">
 <meta property="og:title" content="Data Collection is Hard. You Should Try It.">
-<meta property="og:description" content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection, and many data scientists don&rsquo;t even seem to feel much cognitive dissonance from this fact.
-Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous data work like data cleaning (where people generally accept that data cleaning is not grunt work).
+<meta property="og:description" content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection &mdash; and many data scientists don&rsquo;t seem to feel much cognitive dissonance from this fact, despite (very persuasive!) overtures by a few valiant data professionals1.
 With this blog post I want to give a defense of data collection — not as an activity that&rsquo;s inherently worthwhile pursuing (I assume data professionals don&rsquo;t need to be convinced of that!">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://www.georgeho.org/data-collection-is-hard/"><meta property="article:section" content="blog">
@@ -19,15 +17,13 @@ With this blog post I want to give a defense of data collection — not as an ac
 <meta property="article:modified_time" content="2022-03-03T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
 <meta name=twitter:card content="summary">
 <meta name=twitter:title content="Data Collection is Hard. You Should Try It.">
-<meta name=twitter:description content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection, and many data scientists don&rsquo;t even seem to feel much cognitive dissonance from this fact.
-Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous data work like data cleaning (where people generally accept that data cleaning is not grunt work).
+<meta name=twitter:description content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection &mdash; and many data scientists don&rsquo;t seem to feel much cognitive dissonance from this fact, despite (very persuasive!) overtures by a few valiant data professionals1.
 With this blog post I want to give a defense of data collection — not as an activity that&rsquo;s inherently worthwhile pursuing (I assume data professionals don&rsquo;t need to be convinced of that!">
 <meta itemprop=name content="Data Collection is Hard. You Should Try It.">
-<meta itemprop=description content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection, and many data scientists don&rsquo;t even seem to feel much cognitive dissonance from this fact.
-Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous data work like data cleaning (where people generally accept that data cleaning is not grunt work).
+<meta itemprop=description content="For people who make careers out of data, data scientists don&rsquo;t have nearly enough experience in data collection &mdash; and many data scientists don&rsquo;t seem to feel much cognitive dissonance from this fact, despite (very persuasive!) overtures by a few valiant data professionals1.
 With this blog post I want to give a defense of data collection — not as an activity that&rsquo;s inherently worthwhile pursuing (I assume data professionals don&rsquo;t need to be convinced of that!"><meta itemprop=datePublished content="2022-03-03T00:00:00+00:00">
 <meta itemprop=dateModified content="2022-03-03T00:00:00+00:00">
-<meta itemprop=wordCount content="886">
+<meta itemprop=wordCount content="896">
 <meta itemprop=keywords content="dataset,">
 <meta name=referrer content="no-referrer-when-downgrade">
 <style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
@@ -53,11 +49,10 @@ With this blog post I want to give a defense of data collection — not as an ac
 </i>
 </p><content>
 <p>For people who make careers out of data, data scientists don&rsquo;t have <em>nearly</em>
-enough experience in data collection, and many data scientists don&rsquo;t even seem
-to feel much cognitive dissonance from this fact.</p><p>Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of unglamorous
-data work like data cleaning (where people generally accept that <a href=https://counting.substack.com/p/data-cleaning-is-analysis-not-grunt>data cleaning
-is not grunt
-work</a>).</p><p>With this blog post I want to give a defense of data collection — not as an
+enough experience in data collection &mdash; and many data scientists don&rsquo;t seem to
+feel much cognitive dissonance from this fact, despite (very persuasive!)
+<a href=https://counting.substack.com/p/go-collect-some-and-data>overtures by a few valiant data
+professionals</a><sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>.</p><p>With this blog post I want to give a defense of data collection — not as an
 activity that&rsquo;s inherently worthwhile pursuing (I assume data professionals
 don&rsquo;t need to be convinced of that!), but as something that is worth doing even
 for <em>selfish</em> reasons. Why should you spend time learning about that data
@@ -127,7 +122,14 @@ warehouse&rdquo;). I also learnt that the historical backfilling ETL job require
 lot of time and compute, but subsequent incremental ETL jobs could just run off
 of my laptop. These best practice patterns around data collection and
 management are all applicable far beyond my simple side project, and were
-valuable lessons to learn first-hand.</p></content>
+valuable lessons to learn first-hand.</p><section class=footnotes role=doc-endnotes>
+<hr>
+<ol>
+<li id=fn:1 role=doc-endnote>
+<p>Puzzlingly, this trend doesn&rsquo;t seem to be true of other forms of
+unglamorous data work like data cleaning, where people generally accept that
+<a href=https://counting.substack.com/p/data-cleaning-is-analysis-not-grunt>data cleaning is not grunt
+work</a>.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content>
 <p>
 <a href=https://www.georgeho.org/blog/dataset/>#dataset</a>
 </p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
