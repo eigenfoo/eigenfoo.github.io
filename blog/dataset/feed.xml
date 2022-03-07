@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>dataset on George Ho</title><link>https://www.georgeho.org/blog/dataset/</link><description>Recent content in dataset on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Thu, 03 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/dataset/feed.xml" rel="self" type="application/rss+xml"/><item><title>Data Collection is Hard. You Should Try It.</title><link>https://www.georgeho.org/data-collection-is-hard/</link><pubDate>Thu, 03 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/data-collection-is-hard/</guid><description>&lt;p>For people who make careers out of data, data scientists don&amp;rsquo;t have &lt;em>nearly&lt;/em>
 enough experience in data collection, and many data scientists don&amp;rsquo;t even seem
-to feel the need to develop experience collecting data.&lt;/p>
+to feel much cognitive dissonance from this fact.&lt;/p>
 &lt;p>Puzzlingly, this trend doesn&amp;rsquo;t seem to be true of other forms of unglamorous
 data work like data cleaning (where people generally accept that &lt;a href="https://counting.substack.com/p/data-cleaning-is-analysis-not-grunt">data cleaning
 is not grunt
 work&lt;/a>).&lt;/p>
 &lt;p>With this blog post I want to give a defense of data collection — not as an
-activity that&amp;rsquo;s inherently worthwhile pursuing (I assume data scientists don&amp;rsquo;t
-need to be convinced of that!), but as something that is worth doing even for
-&lt;em>selfish&lt;/em> reasons. Why should you spend time learning about that data
+activity that&amp;rsquo;s inherently worthwhile pursuing (I assume data professionals
+don&amp;rsquo;t need to be convinced of that!), but as something that is worth doing even
+for &lt;em>selfish&lt;/em> reasons. Why should you spend time learning about that data
 collection system that&amp;rsquo;s being maintained by that other team at work? Why
-should you consider collecting some data for your next side project? &lt;em>What&amp;rsquo;s in
-it for you?&lt;/em>&lt;/p>
+should you consider collecting some data for your next side project? &lt;em>What&amp;rsquo;s
+in it for you?&lt;/em>&lt;/p>
 &lt;p>Throughout this blog post, I’ll be making comparisons to a recent project of
 mine, &lt;a href="https://cryptics.georgeho.org/">&lt;code>cryptics.georgeho.org&lt;/code>&lt;/a>, a dataset of
-cryptic crossword clues.&lt;/p>
+cryptic crossword clues which I created and published last year.&lt;/p>
 &lt;h2 id="learn-data-adjacent-technologies">Learn Data-Adjacent Technologies&lt;/h2>
-&lt;p>The most obvious reason is that &lt;strong>collecting data is a fantastic opportunity to
-learn many staple technologies in data&lt;/strong> - and there aren&amp;rsquo;t that many kinds of
-projects that run the entire data tech stack.&lt;/p>
+&lt;p>The most obvious reason is that &lt;strong>collecting data is a unique opportunity to
+learn many staple technologies in data&lt;/strong> &amp;mdash; and there aren&amp;rsquo;t many projects
+that run the entire data tech stack.&lt;/p>
 &lt;p>To enumerate these technologies:&lt;/p>
 &lt;ol>
 &lt;li>Compute services
 &lt;ul>
-&lt;li>Your data collection pipelines will obviously need to run somewhere. Will
-that be in the cloud, or on your local computer? How do you think about
-trading off cost, compute and convenience?&lt;/li>
+&lt;li>Your data collection pipelines will need to run somewhere. Will that be in
+the cloud, or on your local computer? How do you think about trading off
+cost, compute and convenience?&lt;/li>
 &lt;li>I ran most of my web scraping on DigitalOcean Droplets, but I could just
 as easily have taken the opportunity to learn more about cloud compute
 solutions or serverless functions like AWS EC2 or Lambda. These days, the
@@ -36,23 +36,23 @@ project runs incremental scrapes entirely on my laptop.&lt;/li>
 &lt;ul>
 &lt;li>You’ll need to store your data somewhere, whether it be a relational or
 NoSQL database, or just flat files. Since your data will outlive any code
-you write, careful design of the data storage solution and schema will
-pay dividends in the long run.&lt;/li>
-&lt;li>I used SQLite for its simplicity and performance. However, as the scope
-of the project expanded, I had to redesign the schema multiple times,
-which was painful.&lt;/li>
+you write, careful design of the data storage solution and schema will pay
+dividends in the long run.&lt;/li>
+&lt;li>I used SQLite for its simplicity and performance. However, as the scope of
+the project expanded, I had to redesign the schema multiple times, which
+was painful.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Labeling, annotation or other data transformations
 &lt;ul>
-&lt;li>After collecting your data, you may want to label, annotate or other
-structure or transform your data. For example, perhaps you’ll want to
-pull structured tabular data out of unstructured PDFs or HTML tag soups;
-another example might be to have a human label the data.&lt;/li>
-&lt;li>This is the main “value-add” of your dataset — while the time and effort
-required to collect and store the data constitutes a moat, ultimately
-what will distinguish your dataset to &lt;em>users&lt;/em> will be the transformations
-done here.&lt;/li>
+&lt;li>After collecting your data, you may want to label, annotate, structure or
+otherwise transform your data. For example, perhaps you’ll want to pull
+structured tabular data out of unstructured PDFs or HTML tag soups;
+another example might be to have humans label the data.&lt;/li>
+&lt;li>This is the main “value-add” of your dataset &amp;mdash; while the time and effort
+required to collect and store the data constitutes a moat, ultimately what
+will distinguish your dataset to &lt;em>users&lt;/em> will be the transformations done
+here.&lt;/li>
 &lt;li>For me, this involved a lot of &lt;code>BeautifulSoup&lt;/code> to parse structured data
 out of HTML pages. This required a &lt;a href="https://cryptics.georgeho.org/datasheet#collection-process">significant amount of development and
 engineering
@@ -61,10 +61,10 @@ effort&lt;/a>.&lt;/li>
 &lt;/li>
 &lt;li>Data licensing and copyright
 &lt;ul>
-&lt;li>Once you have your dataset, what is the legality of licensing, sharing or
-even selling your data? The legality of data are a huge grey area
-(especially if there&amp;rsquo;s any web scraping involved), and while navigating
-these waters will be tricky, it&amp;rsquo;s instructive to learn about it.&lt;/li>
+&lt;li>Once you have your dataset, can you license, share or even sell your data?
+The legality of data are a huge grey area (especially if there&amp;rsquo;s web
+scraping involved), and while navigating these waters will be tricky, it&amp;rsquo;s
+instructive to learn about it.&lt;/li>
 &lt;li>I feel like the collection and structuring of cryptic crossword clues for
 academic/archival purposes was fair use, and so didn&amp;rsquo;t worry too much
 about the legality of my project — but it was an educational rabbit hole
@@ -75,11 +75,10 @@ to fall down!&lt;/li>
 &lt;ul>
 &lt;li>The legal nuances of data aside, the technical problem of sharing data is
 pretty tricky!&lt;/li>
-&lt;li>This problem sits at the intersection of MLOps and information design:
-you want to share the data in a standardized way, while having an
-interface that making it easy for users to explore your data. Serving a
-tarball on a web server technically works, but leaves so much on the
-table.&lt;/li>
+&lt;li>This problem sits at the intersection of MLOps and information design: you
+want to share the data in a standardized way, while having an interface
+that making it easy for users to explore your data. Serving a tarball on a
+web server technically works, but leaves so much on the table.&lt;/li>
 &lt;li>&lt;code>cryptics.georgeho.org&lt;/code> uses &lt;a href="https://datasette.io/">Datasette&lt;/a>, which I
 can&amp;rsquo;t recommend highly enough.&lt;/li>
 &lt;/ul>
@@ -89,7 +88,8 @@ can&amp;rsquo;t recommend highly enough.&lt;/li>
 &lt;li>If you think it&amp;rsquo;s hard to write and maintain good documentation for
 software, imagine how difficult it must be to do the same for data, which
 outlives software and is much harder to both create and version control.&lt;/li>
-&lt;li>I&amp;rsquo;ve found &lt;a href="https://arxiv.org/abs/1803.09010">Gebru et al.&amp;rsquo;s &lt;em>Datasheets for Datasets&lt;/em>&lt;/a> to be an excellent template
+&lt;li>I&amp;rsquo;ve found &lt;a href="https://arxiv.org/abs/1803.09010">Gebru et al.&amp;rsquo;s &lt;em>Datasheets for
+Datasets&lt;/em>&lt;/a> to be an excellent template
 for documenting data.&lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -109,8 +109,8 @@ then extract useful and structured data into a separate database (a &amp;ldquo;d
 warehouse&amp;rdquo;). I also learnt that the historical backfilling ETL job required a
 lot of time and compute, but subsequent incremental ETL jobs could just run off
 of my laptop. These best practice patterns around data collection and
-management are all applicable beyond my simple side project, and were valuable
-lessons to learn first-hand.&lt;/p></description></item><item><title>`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues</title><link>https://www.georgeho.org/cryptic-clues/</link><pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/cryptic-clues/</guid><description>&lt;p>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of cryptic crossword clues&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, collected
+management are all applicable far beyond my simple side project, and were
+valuable lessons to learn first-hand.&lt;/p></description></item><item><title>`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues</title><link>https://www.georgeho.org/cryptic-clues/</link><pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/cryptic-clues/</guid><description>&lt;p>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of cryptic crossword clues&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, collected
 from various blogs and publicly available digital archives. I originally
 started this project to practice my web scraping and data engineering skills,
 but as it&amp;rsquo;s evolved I hope it can be a resource to solvers and constructors of

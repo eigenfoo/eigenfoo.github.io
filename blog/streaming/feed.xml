@@ -29,7 +29,7 @@ messages to them when &lt;code>send_message&lt;/code> is called.
 &lt;li>Note that &lt;code>clients&lt;/code> is a class variable, so &lt;code>send_message&lt;/code> is a class
 method.&lt;/li>
 &lt;li>This class could be extended to also listen to the endpoint, instead of
-just blindly pushing messages out - after all, WebSockets allow for
+just blindly pushing messages out &amp;mdash; after all, WebSockets allow for
 bidirectional data flow.&lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -87,7 +87,7 @@ alive and allowing dropped connections to be detected and closed.&lt;/li>
 &lt;code>WebSocketClientConnection&lt;/code>&lt;/a>.
 &lt;code>websocket_connect&lt;/code> doesn&amp;rsquo;t actually establish the connection directly, but
 rather returns a future. Hence, we try to get the &lt;code>future.result()&lt;/code> itself
-(i.e. the WebSocket client connection) — I don&amp;rsquo;t actually do anything with
+(i.e. the WebSocket client connection) &amp;mdash; I don&amp;rsquo;t actually do anything with
 the &lt;code>self.connection&lt;/code>, but you could if you wanted. In the event of an
 exception while doing that, we assume there&amp;rsquo;s a problem with the WebSocket
 connection and retry &lt;code>connect_and_read&lt;/code> after 3 seconds. This all has the
@@ -101,7 +101,7 @@ inevitable for long-running apps using WebSockets).&lt;/li>
 frameworks like &lt;a href="https://flask.palletsprojects.com/">Flask&lt;/a> or
 &lt;a href="https://www.djangoproject.com/">Django&lt;/a>, it has strong support for
 &lt;a href="https://www.tornadoweb.org/en/stable/guide/async.html#blocking">asynchronous networking and non-blocking
-calls&lt;/a> -
+calls&lt;/a> &amp;mdash;
 essentially, Tornado apps have one (single-threaded) event loop
 (&lt;code>tornado.ioloop.IOLoop&lt;/code>), which handles all requests asynchronously,
 dispatching incoming requests to the relevant non-blocking function as the

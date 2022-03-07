@@ -76,7 +76,7 @@ messages to them when <code>send_message</code> is called.
 <ul>
 <li>Note that <code>clients</code> is a class variable, so <code>send_message</code> is a class
 method.</li><li>This class could be extended to also listen to the endpoint, instead of
-just blindly pushing messages out - after all, WebSockets allow for
+just blindly pushing messages out &mdash; after all, WebSockets allow for
 bidirectional data flow.</li></ul></li><li>The <code>RandomBernoulli</code> and <code>PeriodicCallback</code> make a pretty crude example, but
 you could write a class that transmits data in real-time to suit your use
 case. For example, you could watch a file for any modifications using
@@ -118,7 +118,7 @@ alive and allowing dropped connections to be detected and closed.</li><li>The <c
 <code>WebSocketClientConnection</code></a>.
 <code>websocket_connect</code> doesn&rsquo;t actually establish the connection directly, but
 rather returns a future. Hence, we try to get the <code>future.result()</code> itself
-(i.e. the WebSocket client connection) — I don&rsquo;t actually do anything with
+(i.e. the WebSocket client connection) &mdash; I don&rsquo;t actually do anything with
 the <code>self.connection</code>, but you could if you wanted. In the event of an
 exception while doing that, we assume there&rsquo;s a problem with the WebSocket
 connection and retry <code>connect_and_read</code> after 3 seconds. This all has the
@@ -129,7 +129,7 @@ inevitable for long-running apps using WebSockets).</li></ul><script src=https:/
 frameworks like <a href=https://flask.palletsprojects.com/>Flask</a> or
 <a href=https://www.djangoproject.com/>Django</a>, it has strong support for
 <a href=https://www.tornadoweb.org/en/stable/guide/async.html#blocking>asynchronous networking and non-blocking
-calls</a> -
+calls</a> &mdash;
 essentially, Tornado apps have one (single-threaded) event loop
 (<code>tornado.ioloop.IOLoop</code>), which handles all requests asynchronously,
 dispatching incoming requests to the relevant non-blocking function as the
