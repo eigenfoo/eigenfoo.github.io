@@ -23,4 +23,4 @@ Cooper Union](http://cooper.edu/welcome).
 - [Twitter](https://twitter.com/_eigenfoo/)
 - [GitHub](https://github.com/eigenfoo/)
 - [LinkedIn](https://www.linkedin.com/in/eigenfoo/)
-- [Résumé](/assets/documents/resume.pdf)
+- [Résumé](/assets/resume.pdf)
