@@ -1,58 +1,17 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico>
-<title>Streaming Data with Tornado and WebSockets | George Ho</title><meta name=title content="Streaming Data with Tornado and WebSockets">
-<meta name=description content="A lot of data science and machine learning practice assumes a static dataset, maybe with some MLOps tooling for rerunning a model pipeline with the freshest version of the dataset.
+<!doctype html><html lang=en-us><head><meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico><title>Streaming Data with Tornado and WebSockets | George Ho</title><meta name=title content="Streaming Data with Tornado and WebSockets"><meta name=description content="A lot of data science and machine learning practice assumes a static dataset, maybe with some MLOps tooling for rerunning a model pipeline with the freshest version of the dataset.
 Working with streaming data is an entirely different ball game, and it wasn&rsquo;t clear to me what tools a data scientist might reach for when dealing with streaming data1.
-I recently came across a pretty straightforward and robust solution: WebSockets and Tornado.">
-<meta name=keywords content="python,streaming,">
-<meta property="og:title" content="Streaming Data with Tornado and WebSockets">
-<meta property="og:description" content="A lot of data science and machine learning practice assumes a static dataset, maybe with some MLOps tooling for rerunning a model pipeline with the freshest version of the dataset.
+I recently came across a pretty straightforward and robust solution: WebSockets and Tornado."><meta name=keywords content="python,streaming,"><meta property="og:title" content="Streaming Data with Tornado and WebSockets"><meta property="og:description" content="A lot of data science and machine learning practice assumes a static dataset, maybe with some MLOps tooling for rerunning a model pipeline with the freshest version of the dataset.
 Working with streaming data is an entirely different ball game, and it wasn&rsquo;t clear to me what tools a data scientist might reach for when dealing with streaming data1.
-I recently came across a pretty straightforward and robust solution: WebSockets and Tornado.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://www.georgeho.org/tornado-websockets/"><meta property="article:section" content="blog">
-<meta property="article:published_time" content="2021-10-05T00:00:00+00:00">
-<meta property="article:modified_time" content="2021-10-05T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="Streaming Data with Tornado and WebSockets">
-<meta name=twitter:description content="A lot of data science and machine learning practice assumes a static dataset, maybe with some MLOps tooling for rerunning a model pipeline with the freshest version of the dataset.
+I recently came across a pretty straightforward and robust solution: WebSockets and Tornado."><meta property="og:type" content="article"><meta property="og:url" content="https://www.georgeho.org/tornado-websockets/"><meta property="og:image" content="https://www.georgeho.org/static/assets/asterism.png"><meta property="article:section" content="blog"><meta property="article:published_time" content="2021-10-05T00:00:00+00:00"><meta property="article:modified_time" content="2021-10-05T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.georgeho.org/static/assets/asterism.png"><meta name=twitter:title content="Streaming Data with Tornado and WebSockets"><meta name=twitter:description content="A lot of data science and machine learning practice assumes a static dataset, maybe with some MLOps tooling for rerunning a model pipeline with the freshest version of the dataset.
 Working with streaming data is an entirely different ball game, and it wasn&rsquo;t clear to me what tools a data scientist might reach for when dealing with streaming data1.
-I recently came across a pretty straightforward and robust solution: WebSockets and Tornado.">
-<meta itemprop=name content="Streaming Data with Tornado and WebSockets">
-<meta itemprop=description content="A lot of data science and machine learning practice assumes a static dataset, maybe with some MLOps tooling for rerunning a model pipeline with the freshest version of the dataset.
+I recently came across a pretty straightforward and robust solution: WebSockets and Tornado."><meta itemprop=name content="Streaming Data with Tornado and WebSockets"><meta itemprop=description content="A lot of data science and machine learning practice assumes a static dataset, maybe with some MLOps tooling for rerunning a model pipeline with the freshest version of the dataset.
 Working with streaming data is an entirely different ball game, and it wasn&rsquo;t clear to me what tools a data scientist might reach for when dealing with streaming data1.
-I recently came across a pretty straightforward and robust solution: WebSockets and Tornado."><meta itemprop=datePublished content="2021-10-05T00:00:00+00:00">
-<meta itemprop=dateModified content="2021-10-05T00:00:00+00:00">
-<meta itemprop=wordCount content="1139">
-<meta itemprop=keywords content="python,streaming,">
-<meta name=referrer content="no-referrer-when-downgrade">
-<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+I recently came across a pretty straightforward and robust solution: WebSockets and Tornado."><meta itemprop=datePublished content="2021-10-05T00:00:00+00:00"><meta itemprop=dateModified content="2021-10-05T00:00:00+00:00"><meta itemprop=wordCount content="1139"><meta itemprop=image content="https://www.georgeho.org/static/assets/asterism.png"><meta itemprop=keywords content="python,streaming,"><meta name=referrer content="no-referrer-when-downgrade"><style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type=text/x-mathjax-config>
   MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
-</script>
-<script async src=//static.getclicky.com/101349618.js></script>
-<noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css>
-<link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css>
-<script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script>
-<style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body>
-<header><a href=/ class=title>
-<h2>⁂ George Ho</h2></a>
-<nav><a href=/>Home</a>
+</script><script async src=//static.getclicky.com/101349618.js></script><noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css><link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css><script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script><style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body><header><a href=/ class=title><h2>⁂ George Ho</h2></a><nav><a href=/>Home</a>
 <a href=/work/>Work</a>
-<a href=/blog>Blog</a>
-</nav></header><main>
-<h1>Streaming Data with Tornado and WebSockets</h1><p>
-<i>
-<time datetime=2021-10-05 pubdate>
-2021-10-05
-</time>
-</i>
-</p><content>
-<p>A lot of data science and machine learning practice assumes a static dataset,
+<a href=/blog>Blog</a></nav></header><main><h1>Streaming Data with Tornado and WebSockets</h1><p><i><time datetime=2021-10-05 pubdate>2021-10-05</time></i></p><content><p>A lot of data science and machine learning practice assumes a static dataset,
 maybe with some MLOps tooling for rerunning a model pipeline with the freshest
 version of the dataset.</p><p>Working with streaming data is an entirely different ball game, and it wasn&rsquo;t
 clear to me what tools a data scientist might reach for when dealing with
@@ -69,12 +28,9 @@ listening to the WebSocket and keeping track of the posterior distribution for
 a <a href=https://www.georgeho.org/bayesian-bandits/>Beta-Binomial conjugate model</a>.
 After walking through the code, I&rsquo;ll discuss these tools, and why they&rsquo;re good
 choices for working with streaming data.</p><p>For another tutorial on this same topic, you can check out <a href=https://en.proft.me/2014/05/16/realtime-web-application-tornado-and-websocket/><code>proft</code>&rsquo;s blog
-post</a>.</p><h2 id=server>Server</h2><ul>
-<li>When <code>WebSocketServer</code> is registered to a REST endpoint (in <code>main</code>), it keeps
+post</a>.</p><h2 id=server>Server</h2><ul><li>When <code>WebSocketServer</code> is registered to a REST endpoint (in <code>main</code>), it keeps
 track of any processes who are listening to that endpoint, and pushes
-messages to them when <code>send_message</code> is called.
-<ul>
-<li>Note that <code>clients</code> is a class variable, so <code>send_message</code> is a class
+messages to them when <code>send_message</code> is called.<ul><li>Note that <code>clients</code> is a class variable, so <code>send_message</code> is a class
 method.</li><li>This class could be extended to also listen to the endpoint, instead of
 just blindly pushing messages out &mdash; after all, WebSockets allow for
 bidirectional data flow.</li></ul></li><li>The <code>RandomBernoulli</code> and <code>PeriodicCallback</code> make a pretty crude example, but
@@ -87,11 +43,7 @@ configure periodic pings of WebSocket connections, keeping connections alive
 and allowing dropped connections to be detected and closed.</li><li>It&rsquo;s also worth noting that there&rsquo;s a
 <a href="https://www.tornadoweb.org/en/stable/websocket.html?highlight=websocket_max_message_size#tornado.websocket.WebSocketHandler"><code>tornado.websocket.WebSocketHandler.websocket_max_message_size</code></a>
 attribute. While this is set to a generous 10 MiB, it&rsquo;s important that the
-WebSocket messages don&rsquo;t exceed this limit!</li></ul><script src=https://gist.github.com/eigenfoo/22f46166fa6924d684d68ca06e08b055.js></script>
-<h2 id=client>Client</h2><ul>
-<li><code>WebSocketClient</code> is a class that:
-<ol>
-<li>Can be <code>start</code>ed and <code>stop</code>ped to connect/disconnect to the WebSocket and
+WebSocket messages don&rsquo;t exceed this limit!</li></ul><script src=https://gist.github.com/eigenfoo/22f46166fa6924d684d68ca06e08b055.js></script><h2 id=client>Client</h2><ul><li><code>WebSocketClient</code> is a class that:<ol><li>Can be <code>start</code>ed and <code>stop</code>ped to connect/disconnect to the WebSocket and
 start/stop listening to it in a separate thread</li><li>Can process every message (<code>on_message</code>) it hears from the WebSocket: in
 this case it simply maintains <a href=https://www.georgeho.org/bayesian-bandits/#stochastic-aka-stationary-bandits>a count of the number of trials and
 successes</a>,
@@ -124,8 +76,7 @@ exception while doing that, we assume there&rsquo;s a problem with the WebSocket
 connection and retry <code>connect_and_read</code> after 3 seconds. This all has the
 effect of recovering gracefully if the WebSocket is dropped or <code>server.py</code>
 experiences a brief outage for whatever reason (both of which are probably
-inevitable for long-running apps using WebSockets).</li></ul><script src=https://gist.github.com/eigenfoo/341f6c6c578d34120bccc4229e434377.js></script>
-<h2 id=why-tornado>Why Tornado?</h2><p>Tornado is a Python web framework, but unlike the more popular Python web
+inevitable for long-running apps using WebSockets).</li></ul><script src=https://gist.github.com/eigenfoo/341f6c6c578d34120bccc4229e434377.js></script><h2 id=why-tornado>Why Tornado?</h2><p>Tornado is a Python web framework, but unlike the more popular Python web
 frameworks like <a href=https://flask.palletsprojects.com/>Flask</a> or
 <a href=https://www.djangoproject.com/>Django</a>, it has strong support for
 <a href=https://www.tornadoweb.org/en/stable/guide/async.html#blocking>asynchronous networking and non-blocking
@@ -141,8 +92,7 @@ endpoint? After all, both theoretically allow a client to stream data in
 real-time from a server.</p><p><a href=https://stackoverflow.com/a/45464306>A lot can be said</a> when comparing
 WebSockets and RESTful services, but I think the main points are accurately
 summarized by <a href=https://www.baeldung.com/rest-vs-websockets#usage>Kumar Chandrakant on
-Baeldung</a>:</p><blockquote>
-<p>[A] WebSocket is more suitable for cases where a push-based and real-time
+Baeldung</a>:</p><blockquote><p>[A] WebSocket is more suitable for cases where a push-based and real-time
 communication defines the requirement more appropriately. Additionally,
 WebSocket works well for scenarios where a message needs to be pushed to
 multiple clients simultaneously. These are the cases where client and server
@@ -154,20 +104,11 @@ it seems to be a cleaner protocol for unidirectional data flow, which is really
 all that we need.</p><p>Additionally, <a href=https://lucumr.pocoo.org/2012/9/24/websockets-101/>Armin
 Ronacher</a> has a much
 starker view of WebSockets, seeing no value in using WebSockets over TCP/IP
-sockets for this application:</p><blockquote>
-<p>Websockets make you sad. [&mldr;] Websockets are complex, way more complex than I
+sockets for this application:</p><blockquote><p>Websockets make you sad. [&mldr;] Websockets are complex, way more complex than I
 anticipated. I can understand that they work that way but I definitely don&rsquo;t
 see a value in using websockets instead of regular TCP connections if all you
 want is to exchange data between different endpoints and neither is a browser.</p></blockquote><p>My thought after reading these criticisms is that perhaps WebSockets aren&rsquo;t the
 ideal technology for handling streaming data (from a maintainability or
 architectural point of view), but that doesn&rsquo;t mean that they aren&rsquo;t good
-scalable technologies when they do work.</p><section class=footnotes role=doc-endnotes>
-<hr>
-<ol>
-<li id=fn:1 role=doc-endnote>
-<p>There is <a href=https://sqlstream.com/real-time-vs-streaming-a-short-explanation/>technically a difference</a> between &ldquo;real-time&rdquo; and &ldquo;streaming&rdquo;: &ldquo;real-time&rdquo; refers to data that comes in as it is created, whereas &ldquo;streaming&rdquo; refers to a system that processes data continuously. You stream your TV show from Netflix, but since the show was created long before you watched it, you aren&rsquo;t viewing it in real-time.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content>
-<p>
-<a href=https://www.georgeho.org/blog/python/>#python</a>
-<a href=https://www.georgeho.org/blog/streaming/>#streaming</a>
-</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
-</footer></body></html>
+scalable technologies when they do work.</p><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>There is <a href=https://sqlstream.com/real-time-vs-streaming-a-short-explanation/>technically a difference</a> between &ldquo;real-time&rdquo; and &ldquo;streaming&rdquo;: &ldquo;real-time&rdquo; refers to data that comes in as it is created, whereas &ldquo;streaming&rdquo; refers to a system that processes data continuously. You stream your TV show from Netflix, but since the show was created long before you watched it, you aren&rsquo;t viewing it in real-time.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content><p><a href=https://www.georgeho.org/blog/python/>#python</a>
+<a href=https://www.georgeho.org/blog/streaming/>#streaming</a></p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a></footer></body></html>

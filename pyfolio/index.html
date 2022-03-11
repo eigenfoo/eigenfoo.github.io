@@ -1,63 +1,19 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico>
-<title>Portfolio Risk Analytics and Performance Attribution with Pyfolio | George Ho</title><meta name=title content="Portfolio Risk Analytics and Performance Attribution with Pyfolio">
-<meta name=description content="I was lucky enough to have the chance to intern at Quantopian this summer. During that time I contributed some exciting stuff to their open-source portfolio analytics engine, pyfolio, and learnt a truckload of stuff while doing it! In this blog post, I&rsquo;ll describe and walk through two of the new features that I authored: the risk and performance attribution tear sheets.
-  Risk Analytics A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely maximize the returns of your algorithm: you must also do so while minimizing the risk it takes on board.">
-<meta name=keywords content="open-source,quant-finance,">
-<meta property="og:title" content="Portfolio Risk Analytics and Performance Attribution with Pyfolio">
-<meta property="og:description" content="I was lucky enough to have the chance to intern at Quantopian this summer. During that time I contributed some exciting stuff to their open-source portfolio analytics engine, pyfolio, and learnt a truckload of stuff while doing it! In this blog post, I&rsquo;ll describe and walk through two of the new features that I authored: the risk and performance attribution tear sheets.
-  Risk Analytics A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely maximize the returns of your algorithm: you must also do so while minimizing the risk it takes on board.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://www.georgeho.org/pyfolio/"><meta property="article:section" content="blog">
-<meta property="article:published_time" content="2017-12-16T00:00:00+00:00">
-<meta property="article:modified_time" content="2017-12-16T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="Portfolio Risk Analytics and Performance Attribution with Pyfolio">
-<meta name=twitter:description content="I was lucky enough to have the chance to intern at Quantopian this summer. During that time I contributed some exciting stuff to their open-source portfolio analytics engine, pyfolio, and learnt a truckload of stuff while doing it! In this blog post, I&rsquo;ll describe and walk through two of the new features that I authored: the risk and performance attribution tear sheets.
-  Risk Analytics A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely maximize the returns of your algorithm: you must also do so while minimizing the risk it takes on board.">
-<meta itemprop=name content="Portfolio Risk Analytics and Performance Attribution with Pyfolio">
-<meta itemprop=description content="I was lucky enough to have the chance to intern at Quantopian this summer. During that time I contributed some exciting stuff to their open-source portfolio analytics engine, pyfolio, and learnt a truckload of stuff while doing it! In this blog post, I&rsquo;ll describe and walk through two of the new features that I authored: the risk and performance attribution tear sheets.
-  Risk Analytics A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely maximize the returns of your algorithm: you must also do so while minimizing the risk it takes on board."><meta itemprop=datePublished content="2017-12-16T00:00:00+00:00">
-<meta itemprop=dateModified content="2017-12-16T00:00:00+00:00">
-<meta itemprop=wordCount content="2044">
-<meta itemprop=keywords content="open-source,quant-finance,">
-<meta name=referrer content="no-referrer-when-downgrade">
-<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!doctype html><html lang=en-us><head><meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio | George Ho</title><meta name=title content="Portfolio Risk Analytics and Performance Attribution with Pyfolio"><meta name=description content="I was lucky enough to have the chance to intern at Quantopian this summer. During that time I contributed some exciting stuff to their open-source portfolio analytics engine, pyfolio, and learnt a truckload of stuff while doing it! In this blog post, I&rsquo;ll describe and walk through two of the new features that I authored: the risk and performance attribution tear sheets.
+  Risk Analytics A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely maximize the returns of your algorithm: you must also do so while minimizing the risk it takes on board."><meta name=keywords content="open-source,quant-finance,"><meta property="og:title" content="Portfolio Risk Analytics and Performance Attribution with Pyfolio"><meta property="og:description" content="I was lucky enough to have the chance to intern at Quantopian this summer. During that time I contributed some exciting stuff to their open-source portfolio analytics engine, pyfolio, and learnt a truckload of stuff while doing it! In this blog post, I&rsquo;ll describe and walk through two of the new features that I authored: the risk and performance attribution tear sheets.
+  Risk Analytics A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely maximize the returns of your algorithm: you must also do so while minimizing the risk it takes on board."><meta property="og:type" content="article"><meta property="og:url" content="https://www.georgeho.org/pyfolio/"><meta property="og:image" content="https://www.georgeho.org/static/assets/asterism.png"><meta property="article:section" content="blog"><meta property="article:published_time" content="2017-12-16T00:00:00+00:00"><meta property="article:modified_time" content="2017-12-16T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.georgeho.org/static/assets/asterism.png"><meta name=twitter:title content="Portfolio Risk Analytics and Performance Attribution with Pyfolio"><meta name=twitter:description content="I was lucky enough to have the chance to intern at Quantopian this summer. During that time I contributed some exciting stuff to their open-source portfolio analytics engine, pyfolio, and learnt a truckload of stuff while doing it! In this blog post, I&rsquo;ll describe and walk through two of the new features that I authored: the risk and performance attribution tear sheets.
+  Risk Analytics A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely maximize the returns of your algorithm: you must also do so while minimizing the risk it takes on board."><meta itemprop=name content="Portfolio Risk Analytics and Performance Attribution with Pyfolio"><meta itemprop=description content="I was lucky enough to have the chance to intern at Quantopian this summer. During that time I contributed some exciting stuff to their open-source portfolio analytics engine, pyfolio, and learnt a truckload of stuff while doing it! In this blog post, I&rsquo;ll describe and walk through two of the new features that I authored: the risk and performance attribution tear sheets.
+  Risk Analytics A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely maximize the returns of your algorithm: you must also do so while minimizing the risk it takes on board."><meta itemprop=datePublished content="2017-12-16T00:00:00+00:00"><meta itemprop=dateModified content="2017-12-16T00:00:00+00:00"><meta itemprop=wordCount content="2044"><meta itemprop=image content="https://www.georgeho.org/static/assets/asterism.png"><meta itemprop=keywords content="open-source,quant-finance,"><meta name=referrer content="no-referrer-when-downgrade"><style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type=text/x-mathjax-config>
   MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
-</script>
-<script async src=//static.getclicky.com/101349618.js></script>
-<noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css>
-<link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css>
-<script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script>
-<style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body>
-<header><a href=/ class=title>
-<h2>⁂ George Ho</h2></a>
-<nav><a href=/>Home</a>
+</script><script async src=//static.getclicky.com/101349618.js></script><noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css><link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css><script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script><style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body><header><a href=/ class=title><h2>⁂ George Ho</h2></a><nav><a href=/>Home</a>
 <a href=/work/>Work</a>
-<a href=/blog>Blog</a>
-</nav></header><main>
-<h1>Portfolio Risk Analytics and Performance Attribution with Pyfolio</h1><p>
-<i>
-<time datetime=2017-12-16 pubdate>
-2017-12-16
-</time>
-</i>
-</p><content>
-<p>I was lucky enough to have the chance to intern at
+<a href=/blog>Blog</a></nav></header><main><h1>Portfolio Risk Analytics and Performance Attribution with Pyfolio</h1><p><i><time datetime=2017-12-16 pubdate>2017-12-16</time></i></p><content><p>I was lucky enough to have the chance to intern at
 <a href=https://www.quantopian.com/>Quantopian</a> this summer. During that time I
 contributed some exciting stuff to their open-source portfolio analytics engine,
 <a href=https://github.com/quantopian/pyfolio><code>pyfolio</code></a>, and learnt a truckload of
 stuff while doing it! In this blog post, I&rsquo;ll describe and walk through two of
 the new features that I authored: the risk and performance attribution tear
-sheets.</p><center>
-<img src=/assets/images/pyfolio-logo.png alt="Pyfolio logo">
-</center>
-<h2 id=risk-analytics>Risk Analytics</h2><p>A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely
+sheets.</p><center><img src=/assets/images/pyfolio-logo.png alt="Pyfolio logo"></center><h2 id=risk-analytics>Risk Analytics</h2><p>A well-known truth of algorithmic trading is that it&rsquo;s insufficient to merely
 maximize the returns of your algorithm: you must also do so while minimizing the
 risk it takes on board. This idea is probably most famously codified in the
 <a href=https://en.wikipedia.org/wiki/Sharpe_ratio#Definition>Sharpe ratio</a>, which
@@ -138,8 +94,7 @@ are always loved and appreciated. Alternatively, if you just want to find out
 more about the nuts and bolts (i.e. the math and the data) that goes into risk
 tear sheet, you can dig around <a href=https://github.com/quantopian/pyfolio/tree/master/pyfolio>the source code
 itself</a>!</p><h2 id=risk-models-and-performance-attribution>Risk Models and Performance Attribution</h2><p>There are two things in the discussion of the risk tear sheet that are worth
-talking about in further detail:</p><ol>
-<li>I mentioned how the computation of style factor exposures (i.e. the first 4
+talking about in further detail:</p><ol><li>I mentioned how the computation of style factor exposures (i.e. the first 4
 plots) required your own “risk model” (whatever that is), and</li><li>It was nice that we can guess at the inner workings of the algo, just by
 seeing its exposure to common factors. E.g., I guessed that the example algo
 was a sector-neutral mean reversion algo, because it was equally exposed to
@@ -169,18 +124,7 @@ of how market trends are affecting us, to a <em>portfolio-level</em> understandi
 same? The answer to this question is called <em>performance attribution</em>, and is
 one of the main reasons a risk model is worth having.</p><p>Instead of prattling on about performance attribution, it&rsquo;d just be easier to
 show you the miracles it can do. Below are some (fake, made up) examples of some
-analysis performance attribution can give us:</p><p>Date: 08–23–2017</p><table>
-<thead>
-<tr>
-<th style=text-align:left>Factor</th><th style=text-align:right>PnL ($)</th></tr></thead><tbody>
-<tr>
-<td style=text-align:left>Total PnL</td><td style=text-align:right>-1,000</td></tr><tr>
-<td style=text-align:left>Technology</td><td style=text-align:right>70</td></tr><tr>
-<td style=text-align:left>Real Estate</td><td style=text-align:right>-40</td></tr><tr>
-<td style=text-align:left>Momentum</td><td style=text-align:right>-780</td></tr><tr>
-<td style=text-align:left>Mean Reversion</td><td style=text-align:right>100</td></tr><tr>
-<td style=text-align:left>Volatility</td><td style=text-align:right>-110</td></tr><tr>
-<td style=text-align:left>Stock-Specific</td><td style=text-align:right>480</td></tr></tbody></table><p>The table shows that today, our algo suffered a $1000 loss, and the breakdown of
+analysis performance attribution can give us:</p><p>Date: 08–23–2017</p><table><thead><tr><th style=text-align:left>Factor</th><th style=text-align:right>PnL ($)</th></tr></thead><tbody><tr><td style=text-align:left>Total PnL</td><td style=text-align:right>-1,000</td></tr><tr><td style=text-align:left>Technology</td><td style=text-align:right>70</td></tr><tr><td style=text-align:left>Real Estate</td><td style=text-align:right>-40</td></tr><tr><td style=text-align:left>Momentum</td><td style=text-align:right>-780</td></tr><tr><td style=text-align:left>Mean Reversion</td><td style=text-align:right>100</td></tr><tr><td style=text-align:left>Volatility</td><td style=text-align:right>-110</td></tr><tr><td style=text-align:left>Stock-Specific</td><td style=text-align:right>480</td></tr></tbody></table><p>The table shows that today, our algo suffered a $1000 loss, and the breakdown of
 that loss indicates that the main culprit is momentum. In other words, our poor
 performance today is mostly attributable to the poor performance of the momentum
 factor (hence the name, “performance attribution”). The sector factors account
@@ -206,17 +150,12 @@ couple of pull requests have already been merged to this effect, so definitely
 stay tuned! A new version of <code>pyfolio</code> will probably be made once performance
 attribution is up and running. As always, feel free to
 <a href=https://github.com/quantopian/pyfolio>contribute to <code>pyfolio</code></a>, be it by
-making feature requests, issues with bugs, or submitting a pull request!</p><hr>
-<p><strong>Update (12–16–2017):</strong> Quantopian recently launched their risk model for anyone to
+making feature requests, issues with bugs, or submitting a pull request!</p><hr><p><strong>Update (12–16–2017):</strong> Quantopian recently launched their risk model for anyone to
 use! This is a great resource that usually only large and deep-pocketed
 financial institutions have access to. Check it out
 <a href=https://www.quantopian.com/risk-model>here</a>!</p><p><strong>Update (05–11–2018):</strong> Quantopian&rsquo;s now integrated pyfolio analytics into their
 backtest engine! This makes it much easier to see how your algorithm stacks up
 against expectations. Check out the announcement
 <a href=https://www.quantopian.com/posts/improved-backtest-analysis>here</a>!</p><p><strong>Update (05–29–2018):</strong> Quantopian recently released a white paper on how the risk
-model works! Read all about it <a href=https://www.quantopian.com/papers/risk>here</a>.</p></content>
-<p>
-<a href=https://www.georgeho.org/blog/open-source/>#open-source</a>
-<a href=https://www.georgeho.org/blog/quant-finance/>#quant-finance</a>
-</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
-</footer></body></html>
+model works! Read all about it <a href=https://www.quantopian.com/papers/risk>here</a>.</p></content><p><a href=https://www.georgeho.org/blog/open-source/>#open-source</a>
+<a href=https://www.georgeho.org/blog/quant-finance/>#quant-finance</a></p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a></footer></body></html>

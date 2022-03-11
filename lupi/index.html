@@ -1,50 +1,9 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico>
-<title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+ | George Ho</title><meta name=title content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+">
-<meta name=description content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets.">
-<meta name=keywords content="mathematics,machine-learning,">
-<meta property="og:title" content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+">
-<meta property="og:description" content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://www.georgeho.org/lupi/"><meta property="article:section" content="blog">
-<meta property="article:published_time" content="2018-01-30T00:00:00+00:00">
-<meta property="article:modified_time" content="2018-01-30T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+">
-<meta name=twitter:description content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets.">
-<meta itemprop=name content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+">
-<meta itemprop=description content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets."><meta itemprop=datePublished content="2018-01-30T00:00:00+00:00">
-<meta itemprop=dateModified content="2018-01-30T00:00:00+00:00">
-<meta itemprop=wordCount content="1812">
-<meta itemprop=keywords content="mathematics,machine-learning,">
-<meta name=referrer content="no-referrer-when-downgrade">
-<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!doctype html><html lang=en-us><head><meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+ | George Ho</title><meta name=title content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+"><meta name=description content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets."><meta name=keywords content="mathematics,machine-learning,"><meta property="og:title" content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+"><meta property="og:description" content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets."><meta property="og:type" content="article"><meta property="og:url" content="https://www.georgeho.org/lupi/"><meta property="og:image" content="https://www.georgeho.org/static/assets/asterism.png"><meta property="article:section" content="blog"><meta property="article:published_time" content="2018-01-30T00:00:00+00:00"><meta property="article:modified_time" content="2018-01-30T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.georgeho.org/static/assets/asterism.png"><meta name=twitter:title content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+"><meta name=twitter:description content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets."><meta itemprop=name content="~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+"><meta itemprop=description content="Here&rsquo;s a short story you might know: you have a black box, whose name is Machine Learning Algorithm. It&rsquo;s got two modes: training mode and testing mode. You set it to training mode, and throw in a lot (sometimes a lot a lot) of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called the examples and the $y_i$ are called the targets. Then, you set it to testing mode and throw in some more examples, for which you don&rsquo;t have the corresponding targets."><meta itemprop=datePublished content="2018-01-30T00:00:00+00:00"><meta itemprop=dateModified content="2018-01-30T00:00:00+00:00"><meta itemprop=wordCount content="1812"><meta itemprop=image content="https://www.georgeho.org/static/assets/asterism.png"><meta itemprop=keywords content="mathematics,machine-learning,"><meta name=referrer content="no-referrer-when-downgrade"><style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type=text/x-mathjax-config>
   MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
-</script>
-<script async src=//static.getclicky.com/101349618.js></script>
-<noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css>
-<link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css>
-<script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script>
-<style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body>
-<header><a href=/ class=title>
-<h2>⁂ George Ho</h2></a>
-<nav><a href=/>Home</a>
+</script><script async src=//static.getclicky.com/101349618.js></script><noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css><link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css><script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script><style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body><header><a href=/ class=title><h2>⁂ George Ho</h2></a><nav><a href=/>Home</a>
 <a href=/work/>Work</a>
-<a href=/blog>Blog</a>
-</nav></header><main>
-<h1><del>Fruit</del> Loops and Learning - The LUPI Paradigm and SVM+</h1><p>
-<i>
-<time datetime=2018-01-30 pubdate>
-2018-01-30
-</time>
-</i>
-</p><content>
-<p>Here&rsquo;s a short story you might know: you have a black box, whose name is
+<a href=/blog>Blog</a></nav></header><main><h1><del>Fruit</del> Loops and Learning - The LUPI Paradigm and SVM+</h1><p><i><time datetime=2018-01-30 pubdate>2018-01-30</time></i></p><content><p>Here&rsquo;s a short story you might know: you have a black box, whose name is
 <em>Machine Learning Algorithm</em>. It&rsquo;s got two modes: training mode and testing
 mode. You set it to training mode, and throw in a lot (sometimes <em>a lot</em> a lot)
 of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called
@@ -78,16 +37,14 @@ function. In fact, Vapnik&rsquo;s proof-of-concept experiments are so whacky tha
 they actually <a href=https://nautil.us/issue/6/secret-codes/teaching-me-softly>make for an entertaining read
 </a>!</p><h2 id=classical-svms-separable-and-non-separable-case>Classical SVMs (separable and non-separable case)</h2><p>There are many ways of thinking about SVMs, but I think that the one that is
 most instructive here is to think of them as solving the following optimization
-problem:</p><blockquote>
-<p>Minimize $ \frac{1}{2} |w|^2 $</p><p>subject to $y_i [ w \cdot x_i + b ] \geq 1, 1 \leq i \leq l$.</p></blockquote><p>Basically all this is saying is that we want to find the hyperplane that
+problem:</p><blockquote><p>Minimize $ \frac{1}{2} |w|^2 $</p><p>subject to $y_i [ w \cdot x_i + b ] \geq 1, 1 \leq i \leq l$.</p></blockquote><p>Basically all this is saying is that we want to find the hyperplane that
 separates our data by the maximum margin. More technically speaking, this finds
 the parameters ($w$ and $b$) of the maximum margin hyperplane, with $l_2$
 regularization.</p><p>In the non-separable case, we concede that our hyperplane may not classify all
 examples perfectly (or that it may not be desireable to do so: think of
 overfitting), and so we introduce a so-called <em>slack variable</em> $\xi_i \geq 0$
 for each example $i$, which measures the severity of misclassification of that
-example. With that, the optimization becomes:</p><blockquote>
-<p>Minimize $\frac{1}{2} |w|^2 + C\sum_{i=1}^{l}{\xi_i}$</p><p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - \xi_i, \xi_i \geq 0, 1
+example. With that, the optimization becomes:</p><blockquote><p>Minimize $\frac{1}{2} |w|^2 + C\sum_{i=1}^{l}{\xi_i}$</p><p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - \xi_i, \xi_i \geq 0, 1
 \leq i \leq l$.</p></blockquote><p>where $C$ is some regularization parameter.</p><p>This says the same thing as the previous optimization problem, but now allows
 points to be (a) classified properly ($\xi_i = 0$), (b) within the margin but
 still classified properly ($0 &lt; \xi_i &lt; 1$), or (c) misclassified
@@ -113,8 +70,7 @@ y)$, we map $x$ to the feature space $Z$, and $x^{*}$ to a separate feature
 space $Z^{*}$. Then, the decision rule is $\hat{y} = \text{sign}(w \cdot x +
 b)$ and the slack variables are estimated by $\xi = w^{*} \cdot x^{*} +
 b^{*}$.</p><p>In order to find $w$, $b$, $w^{*}$ and $b^{*}$, we solve the following
-optimization problem:</p><blockquote>
-<p>Minimize $\frac{1}{2} (|w|^2 + \gamma |w^{*}|^2) +
+optimization problem:</p><blockquote><p>Minimize $\frac{1}{2} (|w|^2 + \gamma |w^{*}|^2) +
 C \sum_{i=1}^{l}{(w^{*} \cdot x_i^{*} + b^{*})}$</p><p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - (w^{*} \cdot x^{*} + b^{*}),
 (w^{*} \cdot x^{*} + b^{*}) \geq 0, 1 \leq i \leq l$.</p></blockquote><p>where $\gamma$ indicates the extent to which the slack estimation should be
 regularized in comparison to the SVM. Notice how this optimization problem is
@@ -162,8 +118,7 @@ Essentially, instead of using the hinge loss when training SVM+, we will instead
 use the <em>squared</em> hinge loss. It turns out that changing the loss function in
 this way leads to a tiny miracle.</p><p>This (re)formulation of SVM+ becomes <em>identical</em> to that of the standard SVM,
 except we replace the Gram matrix (a.k.a. kernel matrix) $\bf K$ by $\bf K +
-\bf Q_\lambda \odot (\bf y y^t)$, where</p><ul>
-<li>$\bf y$ is the target vector</li><li>$\odot$ denotes the Hadamard product</li><li>$\bf{Q_\lambda}$ is given by $Q_\lambda = \frac{1}{\lambda} (\tilde{K}
+\bf Q_\lambda \odot (\bf y y^t)$, where</p><ul><li>$\bf y$ is the target vector</li><li>$\odot$ denotes the Hadamard product</li><li>$\bf{Q_\lambda}$ is given by $Q_\lambda = \frac{1}{\lambda} (\tilde{K}
 (\frac{\lambda}{C} I_n + \tilde{K})^{-1} \tilde{K})$, and</li><li>$\bf \tilde{K}$ is the Gram matrix formed by the privileged information</li></ul><p>So by replacing the hinge loss with the squared hinge loss, the SVM+ formulation
 can now be solved with existing libraries!</p><h2 id=extensions-to-svm>Extensions to SVM+</h2><p>In his paper, Vapnik makes it clear that LUPI is a very general and abstract
 paradigm, and as such there is plenty of room for creativity and innovation -
@@ -171,17 +126,12 @@ not just in researching and developing new LUPI methods and algorithms, but also
 in implementing and applying them. It is unknown how to best go about supplying
 privileged information so as to get good performance. How should the data be
 feature engineered? How much signal should be in the privileged information?
-These are all open questions.</p><p>Vapnik himself opens up three avenues to extend the SVM+ algorithm:</p><ol>
-<li><em>a mixture model of slacks:</em> when slacks are estimated by a mixture of a
+These are all open questions.</p><p>Vapnik himself opens up three avenues to extend the SVM+ algorithm:</p><ol><li><em>a mixture model of slacks:</em> when slacks are estimated by a mixture of a
 smooth function and some prior</li><li><em>a model where privileged information is available only for a part of the
 training data:</em> where we can only supply privileged information on a small
 subset of the training examples</li><li><em>multiple-space privileged information:</em> where the privileged information we
 can supply do not all share the same features</li></ol><p>Clearly, there&rsquo;s a lot of potential in the LUPI paradigm, as well as a lot of
 reasons to be skeptical. It&rsquo;s very much a nascent perspective of machine
 learning, so I&rsquo;m interested in keeping an eye on it going forward. I&rsquo;m hoping
-to write more posts on LUPI in the future!</p></content>
-<p>
-<a href=https://www.georgeho.org/blog/mathematics/>#mathematics</a>
-<a href=https://www.georgeho.org/blog/machine-learning/>#machine-learning</a>
-</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
-</footer></body></html>
+to write more posts on LUPI in the future!</p></content><p><a href=https://www.georgeho.org/blog/mathematics/>#mathematics</a>
+<a href=https://www.georgeho.org/blog/machine-learning/>#machine-learning</a></p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a></footer></body></html>

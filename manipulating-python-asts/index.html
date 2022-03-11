@@ -1,54 +1,13 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico>
-<title>Adventures in Manipulating Python ASTs | George Ho</title><meta name=title content="Adventures in Manipulating Python ASTs">
-<meta name=description content="A while back, I explored the possibility of simplifying 1 PyMC4&rsquo;s model specification API by manipulating the Python abstract syntax tree (AST) of the model code. The PyMC developers didn&rsquo;t end up pursuing those API changes any further, but not until I had the chance to learn a lot about Python ASTs.
-Enough curious people have asked me about my experience tinkering with ASTs that I figure I&rsquo;d write a short post about the details of my project, in the hope that someone else will find it useful.">
-<meta name=keywords content="pymc,python,">
-<meta property="og:title" content="Adventures in Manipulating Python ASTs">
-<meta property="og:description" content="A while back, I explored the possibility of simplifying 1 PyMC4&rsquo;s model specification API by manipulating the Python abstract syntax tree (AST) of the model code. The PyMC developers didn&rsquo;t end up pursuing those API changes any further, but not until I had the chance to learn a lot about Python ASTs.
-Enough curious people have asked me about my experience tinkering with ASTs that I figure I&rsquo;d write a short post about the details of my project, in the hope that someone else will find it useful.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://www.georgeho.org/manipulating-python-asts/"><meta property="article:section" content="blog">
-<meta property="article:published_time" content="2020-03-27T00:00:00+00:00">
-<meta property="article:modified_time" content="2020-03-27T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="Adventures in Manipulating Python ASTs">
-<meta name=twitter:description content="A while back, I explored the possibility of simplifying 1 PyMC4&rsquo;s model specification API by manipulating the Python abstract syntax tree (AST) of the model code. The PyMC developers didn&rsquo;t end up pursuing those API changes any further, but not until I had the chance to learn a lot about Python ASTs.
-Enough curious people have asked me about my experience tinkering with ASTs that I figure I&rsquo;d write a short post about the details of my project, in the hope that someone else will find it useful.">
-<meta itemprop=name content="Adventures in Manipulating Python ASTs">
-<meta itemprop=description content="A while back, I explored the possibility of simplifying 1 PyMC4&rsquo;s model specification API by manipulating the Python abstract syntax tree (AST) of the model code. The PyMC developers didn&rsquo;t end up pursuing those API changes any further, but not until I had the chance to learn a lot about Python ASTs.
-Enough curious people have asked me about my experience tinkering with ASTs that I figure I&rsquo;d write a short post about the details of my project, in the hope that someone else will find it useful."><meta itemprop=datePublished content="2020-03-27T00:00:00+00:00">
-<meta itemprop=dateModified content="2020-03-27T00:00:00+00:00">
-<meta itemprop=wordCount content="1042">
-<meta itemprop=keywords content="pymc,python,">
-<meta name=referrer content="no-referrer-when-downgrade">
-<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!doctype html><html lang=en-us><head><meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico><title>Adventures in Manipulating Python ASTs | George Ho</title><meta name=title content="Adventures in Manipulating Python ASTs"><meta name=description content="A while back, I explored the possibility of simplifying 1 PyMC4&rsquo;s model specification API by manipulating the Python abstract syntax tree (AST) of the model code. The PyMC developers didn&rsquo;t end up pursuing those API changes any further, but not until I had the chance to learn a lot about Python ASTs.
+Enough curious people have asked me about my experience tinkering with ASTs that I figure I&rsquo;d write a short post about the details of my project, in the hope that someone else will find it useful."><meta name=keywords content="pymc,python,"><meta property="og:title" content="Adventures in Manipulating Python ASTs"><meta property="og:description" content="A while back, I explored the possibility of simplifying 1 PyMC4&rsquo;s model specification API by manipulating the Python abstract syntax tree (AST) of the model code. The PyMC developers didn&rsquo;t end up pursuing those API changes any further, but not until I had the chance to learn a lot about Python ASTs.
+Enough curious people have asked me about my experience tinkering with ASTs that I figure I&rsquo;d write a short post about the details of my project, in the hope that someone else will find it useful."><meta property="og:type" content="article"><meta property="og:url" content="https://www.georgeho.org/manipulating-python-asts/"><meta property="og:image" content="https://www.georgeho.org/static/assets/asterism.png"><meta property="article:section" content="blog"><meta property="article:published_time" content="2020-03-27T00:00:00+00:00"><meta property="article:modified_time" content="2020-03-27T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.georgeho.org/static/assets/asterism.png"><meta name=twitter:title content="Adventures in Manipulating Python ASTs"><meta name=twitter:description content="A while back, I explored the possibility of simplifying 1 PyMC4&rsquo;s model specification API by manipulating the Python abstract syntax tree (AST) of the model code. The PyMC developers didn&rsquo;t end up pursuing those API changes any further, but not until I had the chance to learn a lot about Python ASTs.
+Enough curious people have asked me about my experience tinkering with ASTs that I figure I&rsquo;d write a short post about the details of my project, in the hope that someone else will find it useful."><meta itemprop=name content="Adventures in Manipulating Python ASTs"><meta itemprop=description content="A while back, I explored the possibility of simplifying 1 PyMC4&rsquo;s model specification API by manipulating the Python abstract syntax tree (AST) of the model code. The PyMC developers didn&rsquo;t end up pursuing those API changes any further, but not until I had the chance to learn a lot about Python ASTs.
+Enough curious people have asked me about my experience tinkering with ASTs that I figure I&rsquo;d write a short post about the details of my project, in the hope that someone else will find it useful."><meta itemprop=datePublished content="2020-03-27T00:00:00+00:00"><meta itemprop=dateModified content="2020-03-27T00:00:00+00:00"><meta itemprop=wordCount content="1042"><meta itemprop=image content="https://www.georgeho.org/static/assets/asterism.png"><meta itemprop=keywords content="pymc,python,"><meta name=referrer content="no-referrer-when-downgrade"><style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type=text/x-mathjax-config>
   MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
-</script>
-<script async src=//static.getclicky.com/101349618.js></script>
-<noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css>
-<link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css>
-<script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script>
-<style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body>
-<header><a href=/ class=title>
-<h2>⁂ George Ho</h2></a>
-<nav><a href=/>Home</a>
+</script><script async src=//static.getclicky.com/101349618.js></script><noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css><link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css><script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script><style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body><header><a href=/ class=title><h2>⁂ George Ho</h2></a><nav><a href=/>Home</a>
 <a href=/work/>Work</a>
-<a href=/blog>Blog</a>
-</nav></header><main>
-<h1>Adventures in Manipulating Python ASTs</h1><p>
-<i>
-<time datetime=2020-03-27 pubdate>
-2020-03-27
-</time>
-</i>
-</p><content>
-<p>A while back, I explored the possibility of simplifying <sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup> PyMC4&rsquo;s model specification
+<a href=/blog>Blog</a></nav></header><main><h1>Adventures in Manipulating Python ASTs</h1><p><i><time datetime=2020-03-27 pubdate>2020-03-27</time></i></p><content><p>A while back, I explored the possibility of simplifying <sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup> PyMC4&rsquo;s model specification
 API by manipulating the <a href=https://docs.python.org/3/library/ast.html>Python abstract syntax
 tree</a> (AST) of the model code. The PyMC
 developers didn&rsquo;t end up pursuing those API changes any further, but not until I had the
@@ -58,8 +17,7 @@ else will find it useful.</p><p>You should read this blog post as a quick overvi
 an annotated list of links, and not a comprehensive tutorial on model specification APIs
 or Python ASTs. For a full paper trail of my adventures with Python ASTs, check out <a href=https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield>my
 notebooks on
-GitHub</a>.</p><h2 id=the-problem>The Problem</h2><p>Originally, PyMC4&rsquo;s proposed model specification API looked something like this:</p><script src=https://gist.github.com/eigenfoo/8917e2fd72ea8940d54916c1cfbe1755.js></script>
-<p>The main drawback to this API was that the <code>yield</code> keyword was confusing. Many users
+GitHub</a>.</p><h2 id=the-problem>The Problem</h2><p>Originally, PyMC4&rsquo;s proposed model specification API looked something like this:</p><script src=https://gist.github.com/eigenfoo/8917e2fd72ea8940d54916c1cfbe1755.js></script><p>The main drawback to this API was that the <code>yield</code> keyword was confusing. Many users
 don’t really understand Python generators, and those who do might only understand
 <code>yield</code> as a drop-in replacement for <code>return</code> (that is, they might understand what it
 means for a function to end in <code>yield foo</code>, but would be uncomfortable with <code>bar = yield foo</code>).</p><p>Furthermore, the <code>yield</code> keyword introduces a leaky abstraction<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>: users don’t care
@@ -69,15 +27,12 @@ it: ideally, the only thing users would need to think about would be their data 
 their model. Having to graft several <code>yield</code> keywords into their code is a fairly big
 intrusion in that respect.</p><p>Finally, this model specification API is essentially moving the problem off of our
 plates and onto our users. The entire point of the PyMC project is to provide a friendly
-and easy-to-use interface for Bayesian modelling.</p><p>To enumerate the problem further, we wanted to:</p><ol>
-<li>Hide the <code>yield</code> keyword from the user-facing model specification API.</li><li>Obtain the user-defined model as a generator.</li></ol><p>The main difficulty with the first goal is that as soon as we remove <code>yield</code> from the
+and easy-to-use interface for Bayesian modelling.</p><p>To enumerate the problem further, we wanted to:</p><ol><li>Hide the <code>yield</code> keyword from the user-facing model specification API.</li><li>Obtain the user-defined model as a generator.</li></ol><p>The main difficulty with the first goal is that as soon as we remove <code>yield</code> from the
 model function, it is no longer a generator. However, the PyMC inference engine needs the
 model as a generator, since this allows us to interrupt the control flow of the model at
-various points to do certain things:</p><ul>
-<li>Manage random variable names.</li><li>Perform sampling.</li><li>Other arbitrary PyMC magic that I&rsquo;m truthfully not familiar with.</li></ul><p>In short, the user writes their model as a function, but we require the model as a
+various points to do certain things:</p><ul><li>Manage random variable names.</li><li>Perform sampling.</li><li>Other arbitrary PyMC magic that I&rsquo;m truthfully not familiar with.</li></ul><p>In short, the user writes their model as a function, but we require the model as a
 generator.</p><p>I opine on why this problem is challenging a lot more
-<a href=https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#why-is-this-problem-hard>here</a>.</p><h2 id=the-solution>The Solution</h2><p>First, I wrote a <code>FunctionToGenerator</code> class:</p><script src=https://gist.github.com/eigenfoo/43282c4e69156647d7bb2505f1dbafb2.js></script>
-<p>Subclassing <code>ast.NodeTransformer</code> (as <code>FunctionToGenerator</code> does) is the <a href=https://greentreesnakes.readthedocs.io/en/latest/manipulating.html#modifying-the-tree>recommended
+<a href=https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#why-is-this-problem-hard>here</a>.</p><h2 id=the-solution>The Solution</h2><p>First, I wrote a <code>FunctionToGenerator</code> class:</p><script src=https://gist.github.com/eigenfoo/43282c4e69156647d7bb2505f1dbafb2.js></script><p>Subclassing <code>ast.NodeTransformer</code> (as <code>FunctionToGenerator</code> does) is the <a href=https://greentreesnakes.readthedocs.io/en/latest/manipulating.html#modifying-the-tree>recommended
 way of modifying
 ASTs</a>.
 The functionality of <code>FunctionToGenerator</code> is pretty well described by the docstring:
@@ -86,8 +41,7 @@ visited <code>Assign</code> node within a <code>Yield</code> node. The <code>vis
 decorator and renames the function to <code>_pm_compiled_model_generator</code>. All told, after
 the <code>NodeTransformer</code> is done with the AST, we have one function,
 <code>_pm_compiled_model_generator</code>, which is a modified version of the user-defined
-function.</p><p>Second, the <code>Model</code> class:</p><script src=https://gist.github.com/eigenfoo/5e69bba2ab7ec6d6a2f53c13cbfd7b48.js></script>
-<p>This class isn&rsquo;t meant to be instantiated: rather, it&rsquo;s <a href=https://realpython.com/primer-on-python-decorators/#classes-as-decorators>meant to be used as a Python
+function.</p><p>Second, the <code>Model</code> class:</p><script src=https://gist.github.com/eigenfoo/5e69bba2ab7ec6d6a2f53c13cbfd7b48.js></script><p>This class isn&rsquo;t meant to be instantiated: rather, it&rsquo;s <a href=https://realpython.com/primer-on-python-decorators/#classes-as-decorators>meant to be used as a Python
 decorator</a>.
 Essentially, it &ldquo;uncompiles&rdquo; the function to get the Python source code of the function.
 This source code is then passed to the <code>parse_snippet</code><sup id=fnref:3><a href=#fn:3 class=footnote-ref role=doc-noteref>3</a></sup> function, which returns the
@@ -96,8 +50,7 @@ we defined above. Finally, we recompile this AST and execute it. Recall that exe
 this recompiled AST defines a new function called <code>_pm_compiled_model_generator</code>. This
 new function, accessed via the <code>locals</code> variable<sup id=fnref:4><a href=#fn:4 class=footnote-ref role=doc-noteref>4</a></sup>, is then bound to the class&rsquo;s
 <code>self.model_generator</code>, which explains the confusing-looking
-<code>self.model_generator = locals()["_pm_compiled_model_generator"]</code>.</p><p>Finally, the user facing API looks like this:</p><script src=https://gist.github.com/eigenfoo/0bc4047ea0245a3f5f3c3a6ff8143154.js></script>
-<p>As you can see, the users need not write <code>yield</code> while specifying their models, and the
+<code>self.model_generator = locals()["_pm_compiled_model_generator"]</code>.</p><p>Finally, the user facing API looks like this:</p><script src=https://gist.github.com/eigenfoo/0bc4047ea0245a3f5f3c3a6ff8143154.js></script><p>As you can see, the users need not write <code>yield</code> while specifying their models, and the
 PyMC inference engine can now simply call the <code>model_generator</code> method of
 <code>linear_regression</code> to produce a generator called <code>_pm_compiled_model_generator</code>, as
 desired. Success!</p><h2 id=lessons-learnt>Lessons Learnt</h2><p>Again, PyMC4&rsquo;s model specification API will <em>not</em> be incorporating these changes: the
@@ -111,32 +64,20 @@ of every assignment of a TensorFlow Distribution&rdquo;, as in our case), stop a
 you&rsquo;re attempting to modify the <em>semantics</em> of the written code, and if you&rsquo;re sure that
 that&rsquo;s a good idea (e.g. the <code>yield</code> keywords in the code <em>mean something</em>, and remove
 those keywords changes the apparent semantics of the code).</p><h2 id=further-reading>Further Reading</h2><p>I&rsquo;ve only given a high-level overview of this project here, and a lot of the technical
-details were glossed over. If you&rsquo;re hungry for more, check out the following resources:</p><ul>
-<li>Notebooks and more extensive documentation on this project <a href=https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield>are on
+details were glossed over. If you&rsquo;re hungry for more, check out the following resources:</p><ul><li>Notebooks and more extensive documentation on this project <a href=https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield>are on
 GitHub</a>. In
 particular, it might be helpful to peruse the <a href=https://github.com/eigenfoo/random/tree/master/python/ast-hiding-yield/00-prototype#links-and-references>links and references at the end of the
 READMEs</a>.</li><li>For those looking to programmatically inspect/modify Python ASTs the same way I did
 here, you might find <a href=https://twitter.com/remilouf/status/1213079103156424704>this Twitter
 thread</a> helpful.</li><li>And for those wondering how PyMC4&rsquo;s model specification API ended up, some very smart
 people gave their feedback on this work <a href=https://twitter.com/avibryant/status/1150827954319982592>on
-Twitter</a>.</li></ul><section class=footnotes role=doc-endnotes>
-<hr>
-<ol>
-<li id=fn:1 role=doc-endnote>
-<p>Or should I say, complicating? At any rate, changing!&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
-<p>I was <a href=https://twitter.com/avibryant/status/1150827954319982592>subsequently
+Twitter</a>.</li></ul><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>Or should I say, complicating? At any rate, changing!&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>I was <a href=https://twitter.com/avibryant/status/1150827954319982592>subsequently
 convinced</a> that this
-isn&rsquo;t a leaky abstraction after all.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
-<p>I omitted the implementation of <code>parse_snippet</code> for brevity. If you want
+isn&rsquo;t a leaky abstraction after all.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p>I omitted the implementation of <code>parse_snippet</code> for brevity. If you want
 to see it, check out the &ldquo;AST Helper Functions&rdquo; section of <a href=https://github.com/eigenfoo/random/blob/master/python/ast-hiding-yield/00-prototype/hiding-yield.ipynb>this
-notebook</a>.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4 role=doc-endnote>
-<p>For way more information on <code>exec</code>, <code>eval</code>, <code>locals</code> and <code>globals</code>, check
+notebook</a>.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4 role=doc-endnote><p>For way more information on <code>exec</code>, <code>eval</code>, <code>locals</code> and <code>globals</code>, check
 out <a href=https://lucumr.pocoo.org/2011/2/1/exec-in-python/>Armin Ronacher&rsquo;s blog
 post</a> and <a href=https://stackoverflow.com/questions/2220699/whats-the-difference-between-eval-exec-and-compile>this
 StackOverflow
-answer</a>.&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content>
-<p>
-<a href=https://www.georgeho.org/blog/pymc/>#pymc</a>
-<a href=https://www.georgeho.org/blog/python/>#python</a>
-</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
-</footer></body></html>
+answer</a>.&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content><p><a href=https://www.georgeho.org/blog/pymc/>#pymc</a>
+<a href=https://www.georgeho.org/blog/python/>#python</a></p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a></footer></body></html>

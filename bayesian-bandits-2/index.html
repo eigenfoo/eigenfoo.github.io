@@ -1,73 +1,28 @@
-<!doctype html><html lang=en-us>
-<head>
-<meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett">
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico>
-<title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2) | George Ho</title><meta name=title content="Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)">
-<meta name=description content="This is the second of a two-part series about Bayesian bandit algorithms. Check out the first post here.
+<!doctype html><html lang=en-us><head><meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2) | George Ho</title><meta name=title content="Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)"><meta name=description content="This is the second of a two-part series about Bayesian bandit algorithms. Check out the first post here.
  Previously, I introduced the multi-armed bandit problem, and a Bayesian approach to solving/modelling it (Thompson sampling). We saw that conjugate models made it possible to run the bandit algorithm online: the same is even true for non-conjugate models, so long as the rewards are bounded.
-In this follow-up blog post, we&rsquo;ll take a look at two extensions to the multi-armed bandit.">
-<meta name=keywords content="bayes,reinforcement-learning,machine-learning,">
-<meta property="og:title" content="Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)">
-<meta property="og:description" content="This is the second of a two-part series about Bayesian bandit algorithms. Check out the first post here.
+In this follow-up blog post, we&rsquo;ll take a look at two extensions to the multi-armed bandit."><meta name=keywords content="bayes,reinforcement-learning,machine-learning,"><meta property="og:title" content="Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)"><meta property="og:description" content="This is the second of a two-part series about Bayesian bandit algorithms. Check out the first post here.
  Previously, I introduced the multi-armed bandit problem, and a Bayesian approach to solving/modelling it (Thompson sampling). We saw that conjugate models made it possible to run the bandit algorithm online: the same is even true for non-conjugate models, so long as the rewards are bounded.
-In this follow-up blog post, we&rsquo;ll take a look at two extensions to the multi-armed bandit.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://www.georgeho.org/bayesian-bandits-2/"><meta property="article:section" content="blog">
-<meta property="article:published_time" content="2019-06-02T00:00:00+00:00">
-<meta property="article:modified_time" content="2019-06-02T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho">
-<meta name=twitter:card content="summary">
-<meta name=twitter:title content="Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)">
-<meta name=twitter:description content="This is the second of a two-part series about Bayesian bandit algorithms. Check out the first post here.
+In this follow-up blog post, we&rsquo;ll take a look at two extensions to the multi-armed bandit."><meta property="og:type" content="article"><meta property="og:url" content="https://www.georgeho.org/bayesian-bandits-2/"><meta property="og:image" content="https://www.georgeho.org/static/assets/asterism.png"><meta property="article:section" content="blog"><meta property="article:published_time" content="2019-06-02T00:00:00+00:00"><meta property="article:modified_time" content="2019-06-02T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.georgeho.org/static/assets/asterism.png"><meta name=twitter:title content="Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)"><meta name=twitter:description content="This is the second of a two-part series about Bayesian bandit algorithms. Check out the first post here.
  Previously, I introduced the multi-armed bandit problem, and a Bayesian approach to solving/modelling it (Thompson sampling). We saw that conjugate models made it possible to run the bandit algorithm online: the same is even true for non-conjugate models, so long as the rewards are bounded.
-In this follow-up blog post, we&rsquo;ll take a look at two extensions to the multi-armed bandit.">
-<meta itemprop=name content="Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)">
-<meta itemprop=description content="This is the second of a two-part series about Bayesian bandit algorithms. Check out the first post here.
+In this follow-up blog post, we&rsquo;ll take a look at two extensions to the multi-armed bandit."><meta itemprop=name content="Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)"><meta itemprop=description content="This is the second of a two-part series about Bayesian bandit algorithms. Check out the first post here.
  Previously, I introduced the multi-armed bandit problem, and a Bayesian approach to solving/modelling it (Thompson sampling). We saw that conjugate models made it possible to run the bandit algorithm online: the same is even true for non-conjugate models, so long as the rewards are bounded.
-In this follow-up blog post, we&rsquo;ll take a look at two extensions to the multi-armed bandit."><meta itemprop=datePublished content="2019-06-02T00:00:00+00:00">
-<meta itemprop=dateModified content="2019-06-02T00:00:00+00:00">
-<meta itemprop=wordCount content="1217">
-<meta itemprop=keywords content="bayes,reinforcement-learning,machine-learning,">
-<meta name=referrer content="no-referrer-when-downgrade">
-<style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+In this follow-up blog post, we&rsquo;ll take a look at two extensions to the multi-armed bandit."><meta itemprop=datePublished content="2019-06-02T00:00:00+00:00"><meta itemprop=dateModified content="2019-06-02T00:00:00+00:00"><meta itemprop=wordCount content="1217"><meta itemprop=image content="https://www.georgeho.org/static/assets/asterism.png"><meta itemprop=keywords content="bayes,reinforcement-learning,machine-learning,"><meta name=referrer content="no-referrer-when-downgrade"><style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type=text/x-mathjax-config>
   MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
-</script>
-<script async src=//static.getclicky.com/101349618.js></script>
-<noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css>
-<link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css>
-<script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script>
-<style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body>
-<header><a href=/ class=title>
-<h2>⁂ George Ho</h2></a>
-<nav><a href=/>Home</a>
+</script><script async src=//static.getclicky.com/101349618.js></script><noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css><link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css><script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script><style>body{font-family:Equity,Georgia,serif;font-size:1.25em;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:90%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body><header><a href=/ class=title><h2>⁂ George Ho</h2></a><nav><a href=/>Home</a>
 <a href=/work/>Work</a>
-<a href=/blog>Blog</a>
-</nav></header><main>
-<h1>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</h1><p>
-<i>
-<time datetime=2019-06-02 pubdate>
-2019-06-02
-</time>
-</i>
-</p><content>
-<blockquote>
-<p>This is the second of a two-part series about Bayesian bandit algorithms.
+<a href=/blog>Blog</a></nav></header><main><h1>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</h1><p><i><time datetime=2019-06-02 pubdate>2019-06-02</time></i></p><content><blockquote><p>This is the second of a two-part series about Bayesian bandit algorithms.
 Check out the first post <a href=https://www.georgeho.org/bayesian-bandits/>here</a>.</p></blockquote><p><a href=https://www.georgeho.org/bayesian-bandits/>Previously</a>, I introduced the
 multi-armed bandit problem, and a Bayesian approach to solving/modelling it
 (Thompson sampling). We saw that conjugate models made it possible to run the
 bandit algorithm online: the same is even true for non-conjugate models, so long
 as the rewards are bounded.</p><p>In this follow-up blog post, we&rsquo;ll take a look at two extensions to the
 multi-armed bandit. The first allows the bandit to model nonstationary rewards
-distributions, whereas the second allows the bandit to model context. Jump in!</p><figure>
-<a href=/assets/images/multi-armed-bandit.jpg><img src=/assets/images/multi-armed-bandit.jpg alt="Cartoon of a multi-armed bandit"></a>
-<figcaption>An example of a multi-armed bandit situation. Source: <a href=https://www.inverse.com/article/13762-how-the-multi-armed-bandit-determines-what-ads-and-stories-you-see-online>Inverse</a>.</figcaption></figure><h2 id=nonstationary-bandits>Nonstationary Bandits</h2><p>Up until now, we&rsquo;ve concerned ourselves with stationary bandits: in other words,
+distributions, whereas the second allows the bandit to model context. Jump in!</p><figure><a href=/assets/images/multi-armed-bandit.jpg><img src=/assets/images/multi-armed-bandit.jpg alt="Cartoon of a multi-armed bandit"></a><figcaption>An example of a multi-armed bandit situation. Source: <a href=https://www.inverse.com/article/13762-how-the-multi-armed-bandit-determines-what-ads-and-stories-you-see-online>Inverse</a>.</figcaption></figure><h2 id=nonstationary-bandits>Nonstationary Bandits</h2><p>Up until now, we&rsquo;ve concerned ourselves with stationary bandits: in other words,
 we assumed that the rewards distribution for each arm did not change over time.
 In the real world though, rewards distributions need not be stationary: customer
 preferences change, trading algorithms deteriorate, and news articles rise and
-fall in relevance.</p><p>Nonstationarity could mean one of two things for us:</p><ol>
-<li>either we are lucky enough to know that rewards are similarly distributed
+fall in relevance.</p><p>Nonstationarity could mean one of two things for us:</p><ol><li>either we are lucky enough to know that rewards are similarly distributed
 throughout all time (e.g. the rewards are always normally distributed, or
 always binomially distributed), and that it is merely the parameters of these
 distributions that are liable to change,</li><li>or we aren&rsquo;t so unlucky, and the rewards distributions are not only changing,
@@ -99,14 +54,12 @@ post</a>), using $(\ref{2})$ will decay
 the evidence and posterior, as desired.</p><p>For more information (and a worked example for the Beta-Binomial model!), check
 out <a href=https://austinrochford.com/resources/talks/boston-bayesians-2017-bayes-bandits.slides.html#/3>Austin Rochford&rsquo;s talk for Boston
 Bayesians</a>
-about Bayesian bandit algorithms for e-commerce.</p><h2 id=contextual-bandits>Contextual Bandits</h2><p>We can think of the multi-armed bandit problem as follows<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>:</p><ol>
-<li>A policy chooses an arm $a$ from $k$ arms.</li><li>The world reveals the reward $R_a$ of the chosen arm.</li></ol><p>However, this formulation fails to capture an important phenomenon: there is
+about Bayesian bandit algorithms for e-commerce.</p><h2 id=contextual-bandits>Contextual Bandits</h2><p>We can think of the multi-armed bandit problem as follows<sup id=fnref:2><a href=#fn:2 class=footnote-ref role=doc-noteref>2</a></sup>:</p><ol><li>A policy chooses an arm $a$ from $k$ arms.</li><li>The world reveals the reward $R_a$ of the chosen arm.</li></ol><p>However, this formulation fails to capture an important phenomenon: there is
 almost always extra information that is available when making each decision.
 For instance, online ads occur in the context of the web page in which they
 appear, and online store recommendations are given in the context of the user&rsquo;s
 current cart contents (among other things).</p><p>To take advantage of this information, we might think of a different formulation
-where, on each round:</p><ol>
-<li>The world announces some context information $x$.</li><li>A policy chooses an arm $a$ from $k$ arms.</li><li>The world reveals the reward $R_a$ of the chosen arm.</li></ol><p>In other words, contextual bandits call for some way of taking context as input
+where, on each round:</p><ol><li>The world announces some context information $x$.</li><li>A policy chooses an arm $a$ from $k$ arms.</li><li>The world reveals the reward $R_a$ of the chosen arm.</li></ol><p>In other words, contextual bandits call for some way of taking context as input
 and producing arms/actions as output.</p><p>Alternatively, if you think of regular multi-armed bandits as taking no input
 whatsoever (but still producing outputs, the arms to pull), you can think of
 contextual bandits as algorithms that both take inputs and produce outputs.</p><h3 id=bayesian-contextual-bandits>Bayesian contextual bandits</h3><p>Contextual bandits give us a very general framework for thinking about
@@ -133,8 +86,7 @@ thing to do is to have a neural network learn those features for you. This is
 exactly what is proposed in a <a href=https://arxiv.org/abs/1802.09127>ICLR 2018 paper from Google
 Brain</a>. They find that this model — which they
 call <code>NeuralLinear</code> — performs decently well across a variety of tasks, even
-compared to other bandit algorithms. In the words of the authors:</p><blockquote>
-<p>We believe [<code>NeuralLinear</code>&rsquo;s] main strength is that it is able to
+compared to other bandit algorithms. In the words of the authors:</p><blockquote><p>We believe [<code>NeuralLinear</code>&rsquo;s] main strength is that it is able to
 <em>simultaneously</em> learn a data representation that greatly simplifies the task
 at hand, and to accurately quantify the uncertainty over linear models that
 explain the observed rewards in terms of the proposed representation.</p></blockquote><p>For more information, be sure to check out the <a href=https://arxiv.org/abs/1802.09127>Google Brain
@@ -147,23 +99,12 @@ researched</a> contextual bandit algorithms.
 They&rsquo;ve provided blazingly fast implementations of recent algorithms and written
 good documentation for them.</p><p>For the theory and math behind bandit algorithms, <a href=https://banditalgs.com/>Tor Lattimore and Csaba
 Szepesvári&rsquo;s book</a> covers a breathtaking amount of
-ground.</p><blockquote>
-<p>This is the second of a two-part series about Bayesian bandit algorithms.
-Check out the first post <a href=https://www.georgeho.org/bayesian-bandits/>here</a>.</p></blockquote><section class=footnotes role=doc-endnotes>
-<hr>
-<ol>
-<li id=fn:1 role=doc-endnote>
-<p>Did you know you can make <a href=http://adereth.github.io/blog/2013/11/29/colorful-equations/>colored equations with
+ground.</p><blockquote><p>This is the second of a two-part series about Bayesian bandit algorithms.
+Check out the first post <a href=https://www.georgeho.org/bayesian-bandits/>here</a>.</p></blockquote><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>Did you know you can make <a href=http://adereth.github.io/blog/2013/11/29/colorful-equations/>colored equations with
 MathJax</a>?
-Technology frightens me sometimes.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote>
-<p>This explanation is largely drawn from <a href="http://hunch.net/?p=298">from John Langford&rsquo;s
-<code>hunch.net</code></a>.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote>
-<p>If you don&rsquo;t want to do Bishop&rsquo;s exercises, there&rsquo;s a partially complete
+Technology frightens me sometimes.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>This explanation is largely drawn from <a href="http://hunch.net/?p=298">from John Langford&rsquo;s
+<code>hunch.net</code></a>.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p>If you don&rsquo;t want to do Bishop&rsquo;s exercises, there&rsquo;s a partially complete
 solutions manual <a href=https://github.com/GoldenCheese/PRML-Solution-Manual/>on
-GitHub</a> 😉&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content>
-<p>
-<a href=https://www.georgeho.org/blog/bayes/>#bayes</a>
+GitHub</a> 😉&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></section></content><p><a href=https://www.georgeho.org/blog/bayes/>#bayes</a>
 <a href=https://www.georgeho.org/blog/reinforcement-learning/>#reinforcement-learning</a>
-<a href=https://www.georgeho.org/blog/machine-learning/>#machine-learning</a>
-</p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a>
-</footer></body></html>
+<a href=https://www.georgeho.org/blog/machine-learning/>#machine-learning</a></p></main><footer>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a></footer></body></html>
