@@ -28,8 +28,8 @@ test:  # Test generated HTML files.
 	bundle exec htmlproofer ./_site/ --only-4xx --check-html --url-ignore "/reddit.com\/r\/TheRedPill/,/twitter.com\/[a-zA-Z0-9_]*\/status\/[0-9]*/"
 
 compress:  # Compress images losslessly
-	jpegoptim content/assets/images/*.jpg
-	optipng content/assets/images/*.png
+	jpegoptim static/assets/images/*.jpg
+	optipng static/assets/images/*.png
 
 submodule:
 	( \
