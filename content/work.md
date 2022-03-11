@@ -1,5 +1,4 @@
 ---
-permalink: /work/
 title: Work
 menu: main
 ---

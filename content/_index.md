@@ -1,4 +1,5 @@
 ---
+title: Hello! I’m George (a.k.a. eigenfoo)
 aliases:
   - /about/
 ---
