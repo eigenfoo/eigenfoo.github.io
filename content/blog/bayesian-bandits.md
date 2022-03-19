@@ -84,7 +84,44 @@ distributed (this would be the situation we face when e.g. modelling
 click-through rates). The conjugate prior for the Bernoulli distribution is the
 Beta distribution (this is a special case of the Beta-Binomial model).
 
-<script src="https://gist.github.com/eigenfoo/3d8d318f5bd8fdea24f7b12936de77b5.js"></script>
+```python
+def make_bandits(params):
+    def pull(arm, size=None):
+        while True:
+            # Bernoulli distributed rewards
+            reward = np.random.binomial(n=1, p=params[arm], size=size)
+            yield reward
+
+    return pull, len(params)
+
+
+def bayesian_strategy(pull, num_bandits):
+    num_rewards = np.zeros(num_bandits)
+    num_trials = np.zeros(num_bandits)
+
+    while True:
+        # Sample from the bandits' priors, and choose largest
+        choice = np.argmax(
+            np.random.beta(a=2 + num_rewards, b=2 + num_trials - num_rewards)
+        )
+
+        # Sample the chosen bandit
+        reward = next(pull(choice))
+
+        # Update
+        num_rewards[choice] += reward
+        num_trials[choice] += 1
+
+        yield choice, reward, num_rewards, num_trials
+
+
+if __name__ == "__main__":
+    pull, num_bandits = make_bandits([0.2, 0.5, 0.7])
+    play = bayesian_strategy(pull, num_bandits)
+
+    for _ in range(100):
+        choice, reward, num_rewards, num_trials = next(play)
+```
 
 Here, `pull` returns the result of pulling on the `arm`'th bandit, and
 `make_bandits` is just a factory function for `pull`.
@@ -125,7 +162,42 @@ Here's what we need to change:
 
 Without further ado:
 
-<script src="https://gist.github.com/eigenfoo/e9a9933d94524e6dee717276c6b6f732.js"></script>
+```python
+def make_bandits(params):
+    def pull(arm, size=None):
+        while True:
+            # Poisson distributed rewards
+            reward = np.random.poisson(lam=params[arm], size=size)
+            yield reward
+
+    return pull, len(params)
+
+
+def bayesian_strategy(pull, num_bandits):
+    num_rewards = np.ones(num_bandits)
+    num_trials = np.ones(num_bandits)
+
+    while True:
+        # Sample from the bandits' priors, and choose largest
+        choice = np.argmax(np.random.gamma(num_rewards, scale=1 / num_trials))
+
+        # Sample the chosen bandit
+        reward = next(pull(choice))
+
+        # Update
+        num_rewards[choice] += reward
+        num_trials[choice] += 1
+
+        yield choice, reward, num_rewards, num_trials
+
+
+if __name__ == "__main__":
+    pull, num_bandits = make_bandits([4.0, 4.5, 5.0])
+    play = bayesian_strategy(pull, num_bandits)
+
+    for _ in range(100):
+        choice, reward, num_rewards, num_trials = next(play)
+```
 
 <figure>
   <a href="/assets/images/gamma-poisson.png"><img style="float: middle" src="/assets/images/gamma-poisson.png" alt="Posterior distribution after several pulls for the Gamma-Poisson model"></a>
@@ -166,7 +238,49 @@ Here I do this for the logit-normal distribution (i.e. a random variable whose
 logit is normally distributed). Note that `np.expit` is the inverse of the logit
 function.
 
-<script src="https://gist.github.com/eigenfoo/7a397fef8aaa028c5119c9f86860d72e.js"></script>
+```python
+def make_bandits(params):
+    def pull(arm, size=None):
+        while True:
+            # Logit-normal distributed returns (or any distribution with finite support)
+            # `expit` is the inverse of `logit`
+            reward = expit(np.random.normal(loc=params[arm], scale=1, size=size))
+            yield reward
+
+    return pull, len(params)
+
+
+def bayesian_strategy(pull, num_bandits):
+    num_rewards = np.zeros(num_bandits)
+    num_trials = np.zeros(num_bandits)
+
+    while True:
+        # Sample from the bandits' priors, and choose largest
+        choice = np.argmax(
+            np.random.beta(2 + num_rewards, 2 + num_trials - num_rewards)
+        )
+
+        # Sample the chosen bandit
+        reward = next(pull(choice))
+
+        # Sample a Bernoulli with probability of success = reward
+        # Remember, reward is normalized to be in [0, 1]
+        outcome = np.random.binomial(n=1, p=reward)
+
+        # Update
+        num_rewards[choice] += outcome
+        num_trials[choice] += 1
+
+        yield choice, reward, num_rewards, num_trials
+
+
+if __name__ == "__main__":
+    pull, num_bandits = make_bandits([0.2, 1.8, 2])
+    play = bayesian_strategy(pull, num_bandits)
+
+    for _ in range(100):
+        choice, reward, num_rewards, num_trials = next(play)
+```
 
 <figure>
   <a href="/assets/images/bounded.png"><img style="float: middle" src="/assets/images/bounded.png" alt="Posterior distribution after several pulls with an arbitrary reward distribution (e.g. the logit normal)"></a>
