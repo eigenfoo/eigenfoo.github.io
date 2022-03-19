@@ -106,7 +106,7 @@ even incur a trade-off with!) other goals. Here's a list of common differences a
      JAX](https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#%F0%9F%94%AA-Control-Flow)
      or needing to use [`torch.nn.ModuleList` in for-loops with
      PyTorch](https://discuss.pytorch.org/t/can-you-have-for-loops-in-the-forward-prop/68295).
-   - Some tensor computation libraries (e.g. [Theano](https://github.com/Theano/Theano) and it's
+   - Some tensor computation libraries (e.g. [Theano](https://github.com/Theano/Theano) and its
      fork, [Theano-PyMC](https://theano-pymc.readthedocs.io/en/latest/index.html)) aim to [optimize
      the computational graph
      itself](https://theano-pymc.readthedocs.io/en/latest/extending/optimization.html), for which an
