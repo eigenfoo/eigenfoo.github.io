@@ -127,7 +127,7 @@ to common gotchas with &lt;a href="https://jax.readthedocs.io/en/latest/notebook
 JAX&lt;/a>
 or needing to use &lt;a href="https://discuss.pytorch.org/t/can-you-have-for-loops-in-the-forward-prop/68295">&lt;code>torch.nn.ModuleList&lt;/code> in for-loops with
 PyTorch&lt;/a>.&lt;/li>
-&lt;li>Some tensor computation libraries (e.g. &lt;a href="https://github.com/Theano/Theano">Theano&lt;/a> and it&amp;rsquo;s
+&lt;li>Some tensor computation libraries (e.g. &lt;a href="https://github.com/Theano/Theano">Theano&lt;/a> and its
 fork, &lt;a href="https://theano-pymc.readthedocs.io/en/latest/index.html">Theano-PyMC&lt;/a>) aim to &lt;a href="https://theano-pymc.readthedocs.io/en/latest/extending/optimization.html">optimize
 the computational graph
 itself&lt;/a>, for which an
