@@ -45,14 +45,20 @@
   code {
     font-family: Triplicate, 'Lucida Console', monospace;
     font-size: 85%;
+    background-color: unset;
   }
 
   pre code {
     white-space: pre;
-    overflow-x: scroll;
-    -webkit-overflow-scrolling: touch;
-    font-size: 12px;
+    overflow-x: auto;
+    font-size: 14px;
     font-size: min(max(12px, 2vw), 14px);
+
+    /* https://stackoverflow.com/a/22417120/13372802 */
+    text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
   }
 
   h1, h2, h3, h4, h5, h6 {
