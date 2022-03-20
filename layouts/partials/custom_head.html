@@ -33,13 +33,11 @@
     font-size: min(max(18px, 4vw), 22px);
   }
 
+  content { line-height: 1.5; }
+
   body {
     font-family: Equity, Georgia, serif;
     background-color: #fffff8;
-  }
-
-  content {
-    line-height: 1.5;
   }
 
   code {
@@ -63,11 +61,11 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: NicholsonGothic, Verdana, sans-serif;
+    line-height: 1.25;
   }
 
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-color: #111111;
-    }
-  }
+  h2, h3, h4, h5, h6 { margin-top: 8%; margin-bottom: -1%; }
+  nav { margin-top: 2%; margin-bottom: 5%; }
+
+  @media (prefers-color-scheme: dark) { body { background-color: #111111; } }
 </style>
