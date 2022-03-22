@@ -4145,14 +4145,14 @@ compatriots.&lt;/p>
 &lt;p>Despite being shunned by the world (or perhaps, because of it), &lt;code>/r/TheRedPill&lt;/code>
 has grown into a sizable community and evolved its own slang, language and
 culture. Let me give you an example.&lt;/p>
-&lt;pre tabindex="0">&lt;code>Cluster #14:
-Cluster importance: 0.0489376285127
-shit: 2.433590
-test: 1.069885
-frame: 0.396684
-pass: 0.204953
-bitch: 0.163619
-&lt;/code>&lt;/pre>&lt;p>This is a snippet from a text clustering of &lt;code>/r/TheRedPill&lt;/code> — you don’t really
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>Cluster #14:
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Cluster importance: 0.0489376285127
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>shit: 2.433590
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>test: 1.069885
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>frame: 0.396684
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>pass: 0.204953
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>bitch: 0.163619
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This is a snippet from a text clustering of &lt;code>/r/TheRedPill&lt;/code> — you don’t really
 need to understand the details right now: all you need to know is that each
 cluster is simply a bunch of words that frequently appear together in Reddit
 posts and comments. Following each word is a number indicating its importance in
@@ -4166,7 +4166,7 @@ of the red pill themselves, so I’ll just quote from a post on &lt;code>/r/TheR
 a related blog.&lt;/p>
 &lt;p>The concept of the shit test very broad:&lt;/p>
 &lt;blockquote>
-&lt;p>… when somebody “gives you shit” and fucks around with your head to see how
+&lt;p>&amp;hellip; when somebody “gives you shit” and fucks around with your head to see how
 you will react, what you are experiencing is typically a (series of) shit
 test(s).&lt;/p>
 &lt;/blockquote>
@@ -4174,7 +4174,7 @@ test(s).&lt;/p>
 &lt;em>“determine your frame”&lt;/em>.&lt;/p>
 &lt;blockquote>
 &lt;p>Frame is a concept which essentially means “composure and self-control”.&lt;/p>
-&lt;p>… if you can keep composure/seem unfazed and/or assert your boundaries
+&lt;p>&amp;hellip; if you can keep composure/seem unfazed and/or assert your boundaries
 despite a shit test, generally speaking you will be considered to have passed
 the shit test. If you get upset, offended, doubt yourself or show weakness in
 any discernible way when shit tested, it will be generally considered that you
@@ -4185,7 +4185,7 @@ critical social function:&lt;/p>
 &lt;blockquote>
 &lt;p>When it comes right down to it shit tests are typically women’s way of
 flirting.&lt;/p>
-&lt;p>… Those who “pass” show they can handle the woman’s BS and is “on her
+&lt;p>&amp;hellip; Those who “pass” show they can handle the woman’s BS and is “on her
 level”, so to speak. This is where the evolutionary theory comes into play:
 you’re demonstrating her faux negativity doesn’t phase you [sic] and that
 you’re an emotionally developed person who isn’t going to melt down at the
@@ -4252,7 +4252,6 @@ technique in which we’re given data points, and tasked with grouping them in
 some way. A picture will explain better than words:&lt;/p>
 &lt;figure>
 &lt;a href="https://www.georgeho.org/assets/images/clusters.png">&lt;img src="https://www.georgeho.org/assets/images/clusters.png" alt="Illustration of clustering">&lt;/a>
-&lt;figcaption>Clustering.&lt;/figcaption>
 &lt;/figure>
 &lt;p>The clustering algorithm was hard to decide on. After several dead ends were
 explored, I settled on non-negative matrix factorization of the document-term
@@ -4286,31 +4285,38 @@ first cluster shown below, and comprises around 3% of all text on
 contains comments that expound theories on the role of men, women and feminism
 in today’s society (it isn’t pretty). Personally, the most repugnant views that
 I’ve read are to be found in this cluster.&lt;/p>
-&lt;pre tabindex="0">&lt;code>I feel like the over dramatization of beta qualities in media/pop culture is due
-to the fact that anyone representing these qualities is already Alpha by
-default.
-The actors who play the white knight lead roles, the rock stars that sing about
-pining for some chick… these men/characters are already very Alpha in both looks
-and status, so when beta BS comes from their mouths, it’s seen as attractive
-because it balances out their already alpha state into that &amp;#34;mostly alpha but
-some beta&amp;#34; balance that makes women swoon.
-…
-&lt;/code>&lt;/pre>&lt;figure>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>I feel like the over dramatization of beta qualities in media/pop
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>culture is due to the fact that anyone representing these qualities is
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>already Alpha by default.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>The actors who play the white knight lead roles, the rock stars that
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sing about pining for some chick... these men/characters are already
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>very Alpha in both looks and status, so when beta BS comes from their
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>mouths, it’s seen as attractive because it balances out their already
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>alpha state into that &amp;#34;mostly alpha but some beta&amp;#34; balance that makes
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>women swoon.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
 &lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png" alt="/r/TheRedPill cluster #13">&lt;/a>
 &lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png" alt="/r/TheRedPill cluster #6">&lt;/a>
-&lt;figcaption>Wordclouds from /r/TheRedPill.&lt;/figcaption>
 &lt;/figure>
-&lt;pre tabindex="0">&lt;code>…
-Since the dawn of humanity men were always in control, held all the power and
-women were happy because of it. But now men are forced to lose their masculinity
-and power or else they&amp;#39;ll be killed/punished by other pussy men with big guns
-and laws who believe feminism is the right path for humanity.
-…
-Feminism is really a blessing in disguise because it&amp;#39;s a wake up call for men
-and a hidden cry for help from women for men to regain their masculinity,
-integrity and control over women.
-…
-&lt;/code>&lt;/pre>&lt;h2 id="rthe_donald">&lt;code>/r/The_Donald&lt;/code>&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Since the dawn of humanity men were always in control, held all the
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>power and women were happy because of it. But now men are forced to
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>lose their masculinity and power or else they&amp;#39;ll be killed/punished by
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>other pussy men with big guns and laws who believe feminism is the
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>right path for humanity.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Feminism is really a blessing in disguise because it&amp;#39;s a wake up call
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>for men and a hidden cry for help from women for men to regain their
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>masculinity, integrity and control over women.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="rthe_donald">&lt;code>/r/The_Donald&lt;/code>&lt;/h2>
 &lt;p>You may have already heard of &lt;code>/r/The_Donald&lt;/code> (a.k.a. the “pro-Trump cesspool”),
 famed for their &lt;a href="https://en.wikipedia.org/wiki//r/The_Donald#Conflict_with_Reddit_management">takeover of the Reddit front
 page&lt;/a>,
@@ -4320,7 +4326,7 @@ may therefore be surprising to learn that there is an iota of lucid discussion
 that goes on, although in a jeering, bullying tone.&lt;/p>
 &lt;p>&lt;code>/r/The_Donald&lt;/code> is the subreddit which has developed the most language and inside
 jokes: from “nimble navigators” to “swamp creatures”, “spezzes” to the
-“Trumpire”… Explaining these memes would take too long: reach out, or Google, if
+“Trumpire”&amp;hellip; Explaining these memes would take too long: reach out, or Google, if
 you really want to know.&lt;/p>
 &lt;p>The first cluster accounts for 5% of all text on &lt;code>/r/The_Donald&lt;/code>, and contains
 (relatively) coherent arguments both for and against net neutrality. The second
@@ -4328,29 +4334,32 @@ cluster accounts for 1% of the all text on &lt;code>/r/The_Donald&lt;/code>, and
 the subreddit’s &lt;code>MAGABrickBot&lt;/code>, which is a bot that keeps count of how many times
 the word “brick” has been used in comments, by automatically generating this
 comment.&lt;/p>
-&lt;pre tabindex="0">&lt;code>So much misinformation perpetuated by the Swamp... Abolishing Net Neutrality
-would benefit swamp creatures with corporate payouts but would be most damaging
-to conservatives long term.
-Net Neutrality was NOT created by Obama, it was actually in effect from the very
-beginning...
-&lt;/code>&lt;/pre>&lt;figure>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>So much misinformation perpetuated by the Swamp... Abolishing Net
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Neutrality would benefit swamp creatures with corporate payouts but
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>would be most damaging to conservatives long term.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Net Neutrality was NOT created by Obama, it was actually in effect
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>from the very beginning...
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
 &lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png" alt="/r/The_Donald cluster #0">&lt;/a>
 &lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png" alt="/r/The_Donald cluster #2">&lt;/a>
-&lt;figcaption>Wordclouds from /r/The_Donald.&lt;/figcaption>
 &lt;/figure>
-&lt;pre tabindex="0">&lt;code>**FOR THE LOVE OF GOD GET THIS PATRIOT A BRICK! THAT&amp;#39;S 92278 BRICKS HANDED
-OUT!**
-We are at **14.3173880911%** of our goal to **BUILD THE WALL** starting from Imperial
-Beach, CA to Brownsville, Texas! Lets make sure everyone gets a brick in the
-United States! For every Centipede a brick, for every brick a Centipede!
-At this rate, the wall will be **1071.35224786 MILES WIDE** and **353.552300867 FEET
-HIGH** by tomorrow! **DO YOUR PART!**
-&lt;/code>&lt;/pre>&lt;h2 id="rcringeanarchy">&lt;code>/r/CringeAnarchy&lt;/code>&lt;/h2>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>**FOR THE LOVE OF GOD GET THIS PATRIOT A BRICK! THAT&amp;#39;S 92278 BRICKS
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>HANDED OUT!**
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>We are at **14.3173880911%** of our goal to **BUILD THE WALL**
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>starting from Imperial Beach, CA to Brownsville, Texas! Lets make sure
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>everyone gets a brick in the United States! For every Centipede a
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>brick, for every brick a Centipede!
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>At this rate, the wall will be **1071.35224786 MILES WIDE** and
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>**353.552300867 FEET HIGH** by tomorrow! **DO YOUR PART!**
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="rcringeanarchy">&lt;code>/r/CringeAnarchy&lt;/code>&lt;/h2>
 &lt;p>On the Internet, &lt;em>cringe&lt;/em> is the second-hand embarrassment you feel when someone
 acts extremely awkwardly or uncomfortably. And on &lt;code>/r/CringeAnarchy&lt;/code> you can find
 memes about the &lt;em>real&lt;/em> cringe, which is, um, liberals and anyone else who
 advocates for an inclusionary, equitable ideology. Their morally grey jokes run
-the gamut of delicate topics: gender, race, sexuality, nationality…&lt;/p>
+the gamut of delicate topics: gender, race, sexuality, nationality&amp;hellip;&lt;/p>
 &lt;p>In some respects, the clustering provided very little insight into this
 subreddit: each such delicate topic had one or two clusters, and there’s nothing
 really remarkable about any of them. This speaks to the inherent difficulty of
@@ -4358,19 +4367,20 @@ training a topic model on memes: I rant at greater length about this topic on
 &lt;a href="https://www.georgeho.org/lda-sucks/">one of my blog posts&lt;/a>.&lt;/p>
 &lt;p>Both clusters below comprise around 3% of text on &lt;code>/r/CringeAnarchy&lt;/code>: one is to do
 with race, and the other is to do with homosexuality.&lt;/p>
-&lt;pre tabindex="0">&lt;code>Has anyone here, non-black or otherwise, ever wished someone felt sorry for
-being black? Maybe it&amp;#39;s just where I live... the majority is black. It&amp;#39;s
-whatever.
-&lt;/code>&lt;/pre>&lt;figure>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>Has anyone here, non-black or otherwise, ever wished someone felt
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>sorry for being black? Maybe it&amp;#39;s just where I live... the majority is
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>black. It&amp;#39;s whatever.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;figure>
 &lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png" alt="/r/CringeAnarchy cluster #8">&lt;/a>
 &lt;a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png" alt="/r/CringeAnarchy cluster #8">&lt;/a>
-&lt;figcaption>Wordclouds from /r/CringeAnarchy.&lt;/figcaption>
 &lt;/figure>
-&lt;pre tabindex="0">&lt;code>…
-Also, the distinction between bisexual and gay is academic. If you do a gay
-thing, you have done a gay thing. That&amp;#39;s what &amp;#34;being gay&amp;#34; means to a LOT of
-people. Redefining it is as useful as all the other things SJWs are redefining.
-&lt;/code>&lt;/pre>&lt;hr>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>...
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Also, the distinction between bisexual and gay is academic. If you do
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>a gay thing, you have done a gay thing. That&amp;#39;s what &amp;#34;being gay&amp;#34; means
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>to a LOT of people. Redefining it is as useful as all the other things
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>SJWs are redefining.
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;hr>
 &lt;p>As much information as that might have been, this was just a glimpse into what
 these subreddits are like: I made 20 clusters for each subreddit, and you could
 argue that (for somewhat technical reasons) 20 clusters isn’t even enough!
@@ -4386,17 +4396,9 @@ or look through images of the word clouds
 everything I’ve written to make these clusters, check out &lt;a href="https://github.com/eigenfoo/reddit-clusters">this GitHub
 repository&lt;/a>.&lt;/p>
 &lt;hr>
-&lt;p>&lt;strong>Update (11-08-2018):&lt;/strong> If you&amp;rsquo;re interested in the technical, data science side
+&lt;p>&lt;strong>Update (2018-11-08):&lt;/strong> If you&amp;rsquo;re interested in the technical, data science side
 of the project, check out the slide deck and speaker notes from &lt;a href="https://www.georgeho.org/reddit-slides/">my recent
-talk&lt;/a> on exactly that!&lt;/p>
-&lt;hr>
-&lt;p>&lt;em>This post was originally published on Medium on May 18, 2018: I have since
-&lt;a href="https://medium.com/@nikitonsky/medium-is-a-poor-choice-for-blogging-bb0048d19133">migrated away from
-Medium&lt;/a>
-and &lt;a href="https://bts.nomadgate.com/medium-evergreen-content">deleted my account&lt;/a> and
-&lt;a href="https://www.joshjahans.com/ditching-medium/">all my stories&lt;/a>.&lt;/em>&lt;/p>
-&lt;p>&lt;em>This post was also reprinted in the inaugural issue of The Cooper Union&amp;rsquo;s
-&lt;a href="https://www.facebook.com/theunionjournal/">UNION Journal&lt;/a>.&lt;/em>&lt;/p></description></item><item><title>Why Latent Dirichlet Allocation Sucks</title><link>https://www.georgeho.org/lda-sucks/</link><pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda-sucks/</guid><description>&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
+talk&lt;/a> on exactly that!&lt;/p></description></item><item><title>Why Latent Dirichlet Allocation Sucks</title><link>https://www.georgeho.org/lda-sucks/</link><pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda-sucks/</guid><description>&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
 that a lot of resources out there go something like this:&lt;/p>
 &lt;blockquote>
 &lt;p>Check out this thing! It&amp;rsquo;s great at this task! The important task! The one
@@ -5118,9 +5120,9 @@ there is no easy, free, open-source way to get this sort of analysis.&lt;/p>
 &lt;p>Enter &lt;code>pyfolio&lt;/code>&amp;rsquo;s new risk tear sheet! It addresses all the problems outlined
 above, and more. Let&amp;rsquo;s jump right in with an example.&lt;/p>
 &lt;p>&lt;img src="https://www.georgeho.org/assets/images/pyfolio-risk-tear-sheet.png" alt="Example risk tear sheet">&lt;/p>
-&lt;p>&lt;em>(Note: this example risk tear sheet came from the &lt;a href="https://github.com/quantopian/pyfolio/pull/391">original pull
+&lt;p>(This example risk tear sheet came from the &lt;a href="https://github.com/quantopian/pyfolio/pull/391">original pull
 request&lt;/a>, and may therefore be
-out of date)&lt;/em>&lt;/p>
+out of date)&lt;/p>
 &lt;p>The first 4 plots show the exposure to common style factors: specifically, the
 size of the company (natural log of the market cap), mean reversion (measured
 by the &lt;a href="http://www.investopedia.com/terms/m/macd.asp">MACD Signal&lt;/a>), long-term
@@ -5235,46 +5237,18 @@ one of the main reasons a risk model is worth having.&lt;/p>
 &lt;p>Instead of prattling on about performance attribution, it&amp;rsquo;d just be easier to
 show you the miracles it can do. Below are some (fake, made up) examples of some
 analysis performance attribution can give us:&lt;/p>
-&lt;p>Date: 08–23–2017&lt;/p>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th style="text-align:left">Factor&lt;/th>
-&lt;th style="text-align:right">PnL ($)&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td style="text-align:left">Total PnL&lt;/td>
-&lt;td style="text-align:right">-1,000&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Technology&lt;/td>
-&lt;td style="text-align:right">70&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Real Estate&lt;/td>
-&lt;td style="text-align:right">-40&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Momentum&lt;/td>
-&lt;td style="text-align:right">-780&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Mean Reversion&lt;/td>
-&lt;td style="text-align:right">100&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Volatility&lt;/td>
-&lt;td style="text-align:right">-110&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Stock-Specific&lt;/td>
-&lt;td style="text-align:right">480&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;p>The table shows that today, our algo suffered a $1000 loss, and the breakdown of
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>Date: 08–23–2017
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Factor PnL ($)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>-------------- --------
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Total PnL -1,000
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Technology 70
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Real Estate -40
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Momentum -780
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mean Reversion 100
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Volatility -110
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Stock-Specific 480
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The table shows that today, our algo suffered a $1000 loss, and the breakdown of
 that loss indicates that the main culprit is momentum. In other words, our poor
 performance today is mostly attributable to the poor performance of the momentum
 factor (hence the name, “performance attribution”). The sector factors account
@@ -5304,16 +5278,20 @@ attribution is up and running. As always, feel free to
 &lt;a href="https://github.com/quantopian/pyfolio">contribute to &lt;code>pyfolio&lt;/code>&lt;/a>, be it by
 making feature requests, issues with bugs, or submitting a pull request!&lt;/p>
 &lt;hr>
-&lt;p>&lt;strong>Update (12–16–2017):&lt;/strong> Quantopian recently launched their risk model for anyone to
-use! This is a great resource that usually only large and deep-pocketed
-financial institutions have access to. Check it out
-&lt;a href="https://www.quantopian.com/risk-model">here&lt;/a>!&lt;/p>
-&lt;p>&lt;strong>Update (05–11–2018):&lt;/strong> Quantopian&amp;rsquo;s now integrated pyfolio analytics into their
-backtest engine! This makes it much easier to see how your algorithm stacks up
-against expectations. Check out the announcement
-&lt;a href="https://www.quantopian.com/posts/improved-backtest-analysis">here&lt;/a>!&lt;/p>
-&lt;p>&lt;strong>Update (05–29–2018):&lt;/strong> Quantopian recently released a white paper on how the risk
-model works! Read all about it &lt;a href="https://www.quantopian.com/papers/risk">here&lt;/a>.&lt;/p></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>https://www.georgeho.org/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
+&lt;p>&lt;strong>Update (12–16–2017):&lt;/strong> Quantopian recently launched their risk model for
+anyone to use &amp;mdash; this is a great resource that usually only large and
+deep-pocketed financial institutions have access to. Check it out
+&lt;a href="https://www.quantopian.com/risk-model">here&lt;/a>.&lt;/p>
+&lt;p>&lt;strong>Update (05–11–2018):&lt;/strong> Quantopian&amp;rsquo;s now integrated pyfolio analytics into
+their backtest engine! This makes it much easier to see how your algorithm
+stacks up against expectations. Check out the announcement
+&lt;a href="https://www.quantopian.com/posts/improved-backtest-analysis">here&lt;/a>.&lt;/p>
+&lt;p>&lt;strong>Update (05–29–2018):&lt;/strong> Quantopian recently published a white paper on how the
+risk model works! Read all about it
+&lt;a href="https://www.quantopian.com/papers/risk">here&lt;/a>.&lt;/p>
+&lt;p>&lt;strong>Update (12-16-2020):&lt;/strong> &lt;a href="https://www.bloomberg.com/news/articles/2020-12-16/quant-trading-platform-quantopian-closes-down">Quantopian has been acquired by
+Robinhood.&lt;/a>
+Sorry for all the broken links to &lt;code>www.quantopian.com&lt;/code>.&lt;/p></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>https://www.georgeho.org/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
 speech on Reddit&lt;/a>. If you haven&amp;rsquo;t
 taken a look at my first post, please do!&lt;/p>
 &lt;p>I recently gave a talk on the technical, data science side of the project,

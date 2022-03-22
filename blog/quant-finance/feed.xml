@@ -29,9 +29,9 @@ there is no easy, free, open-source way to get this sort of analysis.&lt;/p>
 &lt;p>Enter &lt;code>pyfolio&lt;/code>&amp;rsquo;s new risk tear sheet! It addresses all the problems outlined
 above, and more. Let&amp;rsquo;s jump right in with an example.&lt;/p>
 &lt;p>&lt;img src="https://www.georgeho.org/assets/images/pyfolio-risk-tear-sheet.png" alt="Example risk tear sheet">&lt;/p>
-&lt;p>&lt;em>(Note: this example risk tear sheet came from the &lt;a href="https://github.com/quantopian/pyfolio/pull/391">original pull
+&lt;p>(This example risk tear sheet came from the &lt;a href="https://github.com/quantopian/pyfolio/pull/391">original pull
 request&lt;/a>, and may therefore be
-out of date)&lt;/em>&lt;/p>
+out of date)&lt;/p>
 &lt;p>The first 4 plots show the exposure to common style factors: specifically, the
 size of the company (natural log of the market cap), mean reversion (measured
 by the &lt;a href="http://www.investopedia.com/terms/m/macd.asp">MACD Signal&lt;/a>), long-term
@@ -146,46 +146,18 @@ one of the main reasons a risk model is worth having.&lt;/p>
 &lt;p>Instead of prattling on about performance attribution, it&amp;rsquo;d just be easier to
 show you the miracles it can do. Below are some (fake, made up) examples of some
 analysis performance attribution can give us:&lt;/p>
-&lt;p>Date: 08–23–2017&lt;/p>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th style="text-align:left">Factor&lt;/th>
-&lt;th style="text-align:right">PnL ($)&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td style="text-align:left">Total PnL&lt;/td>
-&lt;td style="text-align:right">-1,000&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Technology&lt;/td>
-&lt;td style="text-align:right">70&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Real Estate&lt;/td>
-&lt;td style="text-align:right">-40&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Momentum&lt;/td>
-&lt;td style="text-align:right">-780&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Mean Reversion&lt;/td>
-&lt;td style="text-align:right">100&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Volatility&lt;/td>
-&lt;td style="text-align:right">-110&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:left">Stock-Specific&lt;/td>
-&lt;td style="text-align:right">480&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;p>The table shows that today, our algo suffered a $1000 loss, and the breakdown of
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>Date: 08–23–2017
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Factor PnL ($)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>-------------- --------
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Total PnL -1,000
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Technology 70
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Real Estate -40
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Momentum -780
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Mean Reversion 100
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Volatility -110
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Stock-Specific 480
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The table shows that today, our algo suffered a $1000 loss, and the breakdown of
 that loss indicates that the main culprit is momentum. In other words, our poor
 performance today is mostly attributable to the poor performance of the momentum
 factor (hence the name, “performance attribution”). The sector factors account
@@ -215,13 +187,17 @@ attribution is up and running. As always, feel free to
 &lt;a href="https://github.com/quantopian/pyfolio">contribute to &lt;code>pyfolio&lt;/code>&lt;/a>, be it by
 making feature requests, issues with bugs, or submitting a pull request!&lt;/p>
 &lt;hr>
-&lt;p>&lt;strong>Update (12–16–2017):&lt;/strong> Quantopian recently launched their risk model for anyone to
-use! This is a great resource that usually only large and deep-pocketed
-financial institutions have access to. Check it out
-&lt;a href="https://www.quantopian.com/risk-model">here&lt;/a>!&lt;/p>
-&lt;p>&lt;strong>Update (05–11–2018):&lt;/strong> Quantopian&amp;rsquo;s now integrated pyfolio analytics into their
-backtest engine! This makes it much easier to see how your algorithm stacks up
-against expectations. Check out the announcement
-&lt;a href="https://www.quantopian.com/posts/improved-backtest-analysis">here&lt;/a>!&lt;/p>
-&lt;p>&lt;strong>Update (05–29–2018):&lt;/strong> Quantopian recently released a white paper on how the risk
-model works! Read all about it &lt;a href="https://www.quantopian.com/papers/risk">here&lt;/a>.&lt;/p></description></item></channel></rss>
+&lt;p>&lt;strong>Update (12–16–2017):&lt;/strong> Quantopian recently launched their risk model for
+anyone to use &amp;mdash; this is a great resource that usually only large and
+deep-pocketed financial institutions have access to. Check it out
+&lt;a href="https://www.quantopian.com/risk-model">here&lt;/a>.&lt;/p>
+&lt;p>&lt;strong>Update (05–11–2018):&lt;/strong> Quantopian&amp;rsquo;s now integrated pyfolio analytics into
+their backtest engine! This makes it much easier to see how your algorithm
+stacks up against expectations. Check out the announcement
+&lt;a href="https://www.quantopian.com/posts/improved-backtest-analysis">here&lt;/a>.&lt;/p>
+&lt;p>&lt;strong>Update (05–29–2018):&lt;/strong> Quantopian recently published a white paper on how the
+risk model works! Read all about it
+&lt;a href="https://www.quantopian.com/papers/risk">here&lt;/a>.&lt;/p>
+&lt;p>&lt;strong>Update (12-16-2020):&lt;/strong> &lt;a href="https://www.bloomberg.com/news/articles/2020-12-16/quant-trading-platform-quantopian-closes-down">Quantopian has been acquired by
+Robinhood.&lt;/a>
+Sorry for all the broken links to &lt;code>www.quantopian.com&lt;/code>.&lt;/p></description></item></channel></rss>
