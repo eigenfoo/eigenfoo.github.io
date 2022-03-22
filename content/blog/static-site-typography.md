@@ -219,7 +219,7 @@ pre code {
 
 *Sidenotes* are when footnotes are placed in the margins beside the text they
 reference, instead of at the end of the page. They allow readers to instantly
-read them instead of having to constantly click or scroll to and fro.
+read annotations instead of having to constantly click or scroll to and fro.
 **Sidenotes greatly improve footnotes for the web, but are fairly difficult to
 implement despite recent efforts.**
 

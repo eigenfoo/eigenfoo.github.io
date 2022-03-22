@@ -18,8 +18,8 @@ menu: main
   [Alphalens](https://github.com/quantopian/alphalens)
   - Pyfolio and Alphalens are Python libraries for risk analysis and
     performance attribution of financial portfolios, and alpha factor research
-    for algorithmic trading. Both libraries are fully integrated into the
-    [Quantopian platform](http://quantopian.com/).
+    for algorithmic trading. Both libraries were fully integrated into the
+    Quantopian platform.
   - I developed the risk and performance attribution capabilities of Pyfolio
     (read more on [my blog post here](https://www.georgeho.org/pyfolio/)), and
     help maintain the library. I help develop new features, triage bug reports

@@ -46,9 +46,9 @@ above, and more. Let's jump right in with an example.
 
 ![Example risk tear sheet](/assets/images/pyfolio-risk-tear-sheet.png)
 
-_(Note: this example risk tear sheet came from the [original pull
+(This example risk tear sheet came from the [original pull
 request](https://github.com/quantopian/pyfolio/pull/391), and may therefore be
-out of date)_
+out of date)
 
 The first 4 plots show the exposure to common style factors: specifically, the
 size of the company (natural log of the market cap), mean reversion (measured
@@ -177,17 +177,19 @@ Instead of prattling on about performance attribution, it'd just be easier to
 show you the miracles it can do. Below are some (fake, made up) examples of some
 analysis performance attribution can give us:
 
+```txt
 Date: 08–23–2017
 
-| Factor         | PnL ($)       |
-|:-------------- | -------------:|
-| Total PnL      |       -1,000  |
-| Technology     |           70  |
-| Real Estate    |          -40  |
-| Momentum       |         -780  |
-| Mean Reversion |          100  |
-| Volatility     |         -110  |
-| Stock-Specific |          480  |
+Factor            PnL ($)
+--------------   --------
+Total PnL          -1,000
+Technology             70
+Real Estate           -40
+Momentum             -780
+Mean Reversion        100
+Volatility           -110
+Stock-Specific        480
+```
 
 The table shows that today, our algo suffered a $1000 loss, and the breakdown of
 that loss indicates that the main culprit is momentum. In other words, our poor
@@ -223,15 +225,20 @@ making feature requests, issues with bugs, or submitting a pull request!
 
 ---
 
-**Update (12–16–2017):** Quantopian recently launched their risk model for anyone to
-use! This is a great resource that usually only large and deep-pocketed
-financial institutions have access to. Check it out
-[here](https://www.quantopian.com/risk-model)!
+**Update (12–16–2017):** Quantopian recently launched their risk model for
+anyone to use --- this is a great resource that usually only large and
+deep-pocketed financial institutions have access to. Check it out
+[here](https://www.quantopian.com/risk-model).
 
-**Update (05–11–2018):** Quantopian's now integrated pyfolio analytics into their
-backtest engine! This makes it much easier to see how your algorithm stacks up
-against expectations. Check out the announcement
-[here](https://www.quantopian.com/posts/improved-backtest-analysis)!
+**Update (05–11–2018):** Quantopian's now integrated pyfolio analytics into
+their backtest engine! This makes it much easier to see how your algorithm
+stacks up against expectations. Check out the announcement
+[here](https://www.quantopian.com/posts/improved-backtest-analysis).
 
-**Update (05–29–2018):** Quantopian recently released a white paper on how the risk
-model works! Read all about it [here](https://www.quantopian.com/papers/risk).
+**Update (05–29–2018):** Quantopian recently published a white paper on how the
+risk model works! Read all about it
+[here](https://www.quantopian.com/papers/risk).
+
+**Update (12-16-2020):** [Quantopian has been acquired by
+Robinhood.](https://www.bloomberg.com/news/articles/2020-12-16/quant-trading-platform-quantopian-closes-down)
+Sorry for all the broken links to `www.quantopian.com`.

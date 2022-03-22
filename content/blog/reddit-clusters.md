@@ -21,7 +21,7 @@ Despite being shunned by the world (or perhaps, because of it), `/r/TheRedPill`
 has grown into a sizable community and evolved its own slang, language and
 culture. Let me give you an example.
 
-```
+```txt
 Cluster #14:
 Cluster importance: 0.0489376285127
 shit: 2.433590
@@ -48,7 +48,7 @@ a related blog.
 
 The concept of the shit test very broad:
 
-> … when somebody “gives you shit” and fucks around with your head to see how
+> ... when somebody “gives you shit” and fucks around with your head to see how
 > you will react, what you are experiencing is typically a (series of) shit
 > test(s).
 
@@ -57,7 +57,7 @@ _“determine your frame”_.
 
 > Frame is a concept which essentially means “composure and self-control”.
 >
-> … if you can keep composure/seem unfazed and/or assert your boundaries
+> ... if you can keep composure/seem unfazed and/or assert your boundaries
 > despite a shit test, generally speaking you will be considered to have passed
 > the shit test. If you get upset, offended, doubt yourself or show weakness in
 > any discernible way when shit tested, it will be generally considered that you
@@ -69,7 +69,7 @@ critical social function:
 > When it comes right down to it shit tests are typically women’s way of
 > flirting.
 >
-> … Those who “pass” show they can handle the woman’s BS and is “on her
+> ... Those who “pass” show they can handle the woman’s BS and is “on her
 > level”, so to speak. This is where the evolutionary theory comes into play:
 > you’re demonstrating her faux negativity doesn’t phase you [sic] and that
 > you’re an emotionally developed person who isn’t going to melt down at the
@@ -143,7 +143,6 @@ some way. A picture will explain better than words:
 
 <figure>
   <a href="/assets/images/clusters.png"><img src="/assets/images/clusters.png" alt="Illustration of clustering"></a>
-  <figcaption>Clustering.</figcaption>
 </figure>
 
 The clustering algorithm was hard to decide on. After several dead ends were
@@ -185,42 +184,42 @@ contains comments that expound theories on the role of men, women and feminism
 in today’s society (it isn’t pretty). Personally, the most repugnant views that
 I’ve read are to be found in this cluster.
 
-```
-I feel like the over dramatization of beta qualities in media/pop culture is due
-to the fact that anyone representing these qualities is already Alpha by
-default.
+```txt
+I feel like the over dramatization of beta qualities in media/pop
+culture is due to the fact that anyone representing these qualities is
+already Alpha by default.
 
-The actors who play the white knight lead roles, the rock stars that sing about
-pining for some chick… these men/characters are already very Alpha in both looks
-and status, so when beta BS comes from their mouths, it’s seen as attractive
-because it balances out their already alpha state into that "mostly alpha but
-some beta" balance that makes women swoon.
+The actors who play the white knight lead roles, the rock stars that
+sing about pining for some chick... these men/characters are already
+very Alpha in both looks and status, so when beta BS comes from their
+mouths, it’s seen as attractive because it balances out their already
+alpha state into that "mostly alpha but some beta" balance that makes
+women swoon.
 
-…
+...
 ```
 
 <figure>
   <a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png"><img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/13_3.21%25.png" alt="/r/TheRedPill cluster #13"></a>
   <a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png"><img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/TheRedPill/06_6.41%25.png" alt="/r/TheRedPill cluster #6"></a>
-  <figcaption>Wordclouds from /r/TheRedPill.</figcaption>
 </figure>
 
-```
-…
+```txt
+...
 
-Since the dawn of humanity men were always in control, held all the power and
-women were happy because of it. But now men are forced to lose their masculinity
-and power or else they'll be killed/punished by other pussy men with big guns
-and laws who believe feminism is the right path for humanity.
+Since the dawn of humanity men were always in control, held all the
+power and women were happy because of it. But now men are forced to
+lose their masculinity and power or else they'll be killed/punished by
+other pussy men with big guns and laws who believe feminism is the
+right path for humanity.
 
-…
+...
 
-Feminism is really a blessing in disguise because it's a wake up call for men
-and a hidden cry for help from women for men to regain their masculinity,
-integrity and control over women.
+Feminism is really a blessing in disguise because it's a wake up call
+for men and a hidden cry for help from women for men to regain their
+masculinity, integrity and control over women.
 
-…
-
+...
 ```
 
 ## `/r/The_Donald`
@@ -235,7 +234,7 @@ that goes on, although in a jeering, bullying tone.
 
 `/r/The_Donald` is the subreddit which has developed the most language and inside
 jokes: from “nimble navigators” to “swamp creatures”, “spezzes” to the
-“Trumpire”… Explaining these memes would take too long: reach out, or Google, if
+“Trumpire”... Explaining these memes would take too long: reach out, or Google, if
 you really want to know.
 
 The first cluster accounts for 5% of all text on `/r/The_Donald`, and contains
@@ -245,31 +244,31 @@ the subreddit’s `MAGABrickBot`, which is a bot that keeps count of how many ti
 the word “brick” has been used in comments, by automatically generating this
 comment.
 
-```
-So much misinformation perpetuated by the Swamp... Abolishing Net Neutrality
-would benefit swamp creatures with corporate payouts but would be most damaging
-to conservatives long term.
+```txt
+So much misinformation perpetuated by the Swamp... Abolishing Net
+Neutrality would benefit swamp creatures with corporate payouts but
+would be most damaging to conservatives long term.
 
-Net Neutrality was NOT created by Obama, it was actually in effect from the very
-beginning...
+Net Neutrality was NOT created by Obama, it was actually in effect
+from the very beginning...
 ```
 
 <figure>
   <a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png"><img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/00_5.19%25.png" alt="/r/The_Donald cluster #0"></a>
   <a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png"><img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/The_Donald/02_1.26%25.png" alt="/r/The_Donald cluster #2"></a>
-  <figcaption>Wordclouds from /r/The_Donald.</figcaption>
 </figure>
 
-```
-**FOR THE LOVE OF GOD GET THIS PATRIOT A BRICK! THAT'S 92278 BRICKS HANDED
-OUT!**
+```txt
+**FOR THE LOVE OF GOD GET THIS PATRIOT A BRICK! THAT'S 92278 BRICKS
+HANDED OUT!**
 
-We are at **14.3173880911%** of our goal to **BUILD THE WALL** starting from Imperial
-Beach, CA to Brownsville, Texas! Lets make sure everyone gets a brick in the
-United States! For every Centipede a brick, for every brick a Centipede!
+We are at **14.3173880911%** of our goal to **BUILD THE WALL**
+starting from Imperial Beach, CA to Brownsville, Texas! Lets make sure
+everyone gets a brick in the United States! For every Centipede a
+brick, for every brick a Centipede!
 
-At this rate, the wall will be **1071.35224786 MILES WIDE** and **353.552300867 FEET
-HIGH** by tomorrow! **DO YOUR PART!**
+At this rate, the wall will be **1071.35224786 MILES WIDE** and
+**353.552300867 FEET HIGH** by tomorrow! **DO YOUR PART!**
 ```
 
 ## `/r/CringeAnarchy`
@@ -278,7 +277,7 @@ On the Internet, _cringe_ is the second-hand embarrassment you feel when someone
 acts extremely awkwardly or uncomfortably. And on `/r/CringeAnarchy` you can find
 memes about the _real_ cringe, which is, um, liberals and anyone else who
 advocates for an inclusionary, equitable ideology. Their morally grey jokes run
-the gamut of delicate topics: gender, race, sexuality, nationality…
+the gamut of delicate topics: gender, race, sexuality, nationality...
 
 In some respects, the clustering provided very little insight into this
 subreddit: each such delicate topic had one or two clusters, and there’s nothing
@@ -289,24 +288,24 @@ training a topic model on memes: I rant at greater length about this topic on
 Both clusters below comprise around 3% of text on `/r/CringeAnarchy`: one is to do
 with race, and the other is to do with homosexuality.
 
-```
-Has anyone here, non-black or otherwise, ever wished someone felt sorry for
-being black? Maybe it's just where I live... the majority is black. It's
-whatever.
+```txt
+Has anyone here, non-black or otherwise, ever wished someone felt
+sorry for being black? Maybe it's just where I live... the majority is
+black. It's whatever.
 ```
 
 <figure>
   <a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png"><img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/08_3.10%25.png" alt="/r/CringeAnarchy cluster #8"></a>
   <a href="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png"><img src="https://raw.githubusercontent.com/eigenfoo/reddit-clusters/master/wordclouds/images/CringeAnarchy/12_2.92%25.png" alt="/r/CringeAnarchy cluster #8"></a>
-  <figcaption>Wordclouds from /r/CringeAnarchy.</figcaption>
 </figure>
 
-```
-…
+```txt
+...
 
-Also, the distinction between bisexual and gay is academic. If you do a gay
-thing, you have done a gay thing. That's what "being gay" means to a LOT of
-people. Redefining it is as useful as all the other things SJWs are redefining.
+Also, the distinction between bisexual and gay is academic. If you do
+a gay thing, you have done a gay thing. That's what "being gay" means
+to a LOT of people. Redefining it is as useful as all the other things
+SJWs are redefining.
 ```
 
 ---
@@ -330,17 +329,6 @@ repository](https://github.com/eigenfoo/reddit-clusters).
 
 ---
 
-**Update (11-08-2018):** If you're interested in the technical, data science side
+**Update (2018-11-08):** If you're interested in the technical, data science side
 of the project, check out the slide deck and speaker notes from [my recent
 talk](https://www.georgeho.org/reddit-slides/) on exactly that!
-
----
-
-_This post was originally published on Medium on May 18, 2018: I have since
-[migrated away from
-Medium](https://medium.com/@nikitonsky/medium-is-a-poor-choice-for-blogging-bb0048d19133)
-and [deleted my account](https://bts.nomadgate.com/medium-evergreen-content) and
-[all my stories](https://www.joshjahans.com/ditching-medium/)._
-
-_This post was also reprinted in the inaugural issue of The Cooper Union's
-[UNION Journal](https://www.facebook.com/theunionjournal/)._

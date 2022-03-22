@@ -17,7 +17,7 @@ donuts and coffee.
 
 I'm originally from Hong Kong, now based in New York. Previously, I worked for
 [Point72 Asset Management](https://www.point72.com) and
-[Quantopian](https://www.quantopian.com/), and I studied engineering at [The
+[Quantopian](https://en.wikipedia.org/wiki/Quantopian), and I studied engineering at [The
 Cooper Union](http://cooper.edu/welcome).
 
 - [Email](mailto:hello[æ]georgeho.org)
