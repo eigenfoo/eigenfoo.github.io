@@ -25,3 +25,4 @@ Cooper Union](http://cooper.edu/welcome).
 - [GitHub](https://github.com/eigenfoo/)
 - [LinkedIn](https://www.linkedin.com/in/eigenfoo/)
 - [Résumé](/assets/resume.pdf)
+- [RSS Feed](/feed.xml)
