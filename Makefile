@@ -33,9 +33,3 @@ clean:  # Clean generated files
 compress:  # Compress images losslessly
 	jpegoptim static/assets/images/*.jpg
 	optipng static/assets/images/*.png
-
-submodule:  # Update the hugo-bearblog Git submodule
-	( \
-	cd themes/hugo-bearblog; \
-	git submodule update --init --recursive; \
-	)
