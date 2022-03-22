@@ -8,7 +8,7 @@ tags:
 You've heard of Butterick's [_Practical
 Typography_](https://practicaltypography.com/). You've read that [web design is
 95% typography](https://ia.net/topics/the-web-is-all-about-typography-period).
-You have a static website. You've wanted to up your typographic game but have
+You have a static website. You've wanted to improve its typography but have
 never had the time or patience. If this sounds like you, you're in luck!
 
 A foreword: you can achieve almost everything I describe here by adding CSS in
@@ -33,12 +33,12 @@ already installed on readers' devices. This putatively boosts performance
 look, since it can blend in with the fonts of the reader's operating system.
 
 However, many system fonts aren't good, and many others have become hackneyed
-_precisely because they are default fonts_. It's also getting easier and easier
-to use custom webfonts or font hosting services like [Google
+_precisely because they are default fonts_. It's also straightforward to use
+custom webfonts or font hosting services like [Google
 Fonts](https://fonts.google.com/).
 
 Obviously you should do what you think is best for your website, but I'd point
-out that **changing your body font is a fast and effective way to upgrade your
+out that **changing your body font is an easy and effective way to upgrade your
 typography and distinguish your writing from the sea of sans-serif on the
 Internet.** Live a little!
 
@@ -97,30 +97,30 @@ html { font-size: min(max(16px, 4vw), 22px); }
 
 ### Adjust the line height
 
-The goal is to control *how closely consecutive lines sit next to each other*:
-too tight and you get intimidating walls of text; too loose and your text
+The goal is to control *how closely consecutive lines sit next to each other:*
+too tightly and you get intimidating walls of text; too loosely and your text
 becomes a vaporous jumble of lines. **Aim to space lines between 120% to 145%
 of the point size.** (The text in this paragraph has a spacing of 145%. Just
 right!)
 
 <p style="line-height:1.1">
   The goal is to control <i>how closely consecutive lines sit next to each
-  other</i>: too tight and you get intimidating walls of text; too loose and
-  your text becomes a vaporous jumble of lines. <b>Aim to space lines between
-  120% to 145% of the point size.</b> (The text in this paragraph has a spacing
-  of 110%. Too tight.)
+  other:</i> too tightly and you get intimidating walls of text; too loosely
+  and your text becomes a vaporous jumble of lines. <b>Aim to space lines
+  between 120% to 145% of the point size.</b> (The text in this paragraph has a
+  spacing of 110%. Too dense.)
 </p>
 
 <p style="line-height:1.6">
   The goal is to control <i>how closely consecutive lines sit next to each
-  other</i>: too tight and you get intimidating walls of text; too loose and
-  your text becomes a vaporous jumble of lines. <b>Aim to space lines between
-  120% to 145% of the point size.</b> (The text in this paragraph has a spacing
-  of 160%. Too loose.)
+  other:</i> too tightly and you get intimidating walls of text; too loosely
+  and your text becomes a vaporous jumble of lines. <b>Aim to space lines
+  between 120% to 145% of the point size.</b> (The text in this paragraph has a
+  spacing of 160%. Too sparse.)
 </p>
 
 ```css
-body { line-height: 1.4; }
+body { line-height: 1.45; }
 ```
 
 ## Low-Hanging Fruit
