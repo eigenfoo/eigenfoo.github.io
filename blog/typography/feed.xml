@@ -181,7 +181,7 @@ primary is simply its best guess.&lt;/p>
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="support-sidenotes">Support sidenotes&lt;/h3>
 &lt;p>&lt;em>Sidenotes&lt;/em> are when footnotes are placed in the margins beside the text they
 reference, instead of at the end of the page. They allow readers to instantly
-read them instead of having to constantly click or scroll to and fro.
+read annotations instead of having to constantly click or scroll to and fro.
 &lt;strong>Sidenotes greatly improve footnotes for the web, but are fairly difficult to
 implement despite recent efforts.&lt;/strong>&lt;/p>
 &lt;p>Gwern has compiled &lt;a href="https://www.gwern.net/Sidenotes">an exhaustive bibliography of sidenote
