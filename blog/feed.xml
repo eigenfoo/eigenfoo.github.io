@@ -1,4 +1,206 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blogs on George Ho</title><link>https://www.georgeho.org/blog/</link><description>Recent content in Blogs on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 05 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/feed.xml" rel="self" type="application/rss+xml"/><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blogs on George Ho</title><link>https://www.georgeho.org/blog/</link><description>Recent content in Blogs on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Mon, 21 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/feed.xml" rel="self" type="application/rss+xml"/><item><title>How to Improve Your Static Site's Typography</title><link>https://www.georgeho.org/static-site-typography/</link><pubDate>Mon, 21 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/static-site-typography/</guid><description>&lt;p>You&amp;rsquo;ve heard of Butterick&amp;rsquo;s &lt;a href="https://practicaltypography.com/">&lt;em>Practical
+Typography&lt;/em>&lt;/a>. You&amp;rsquo;ve read that &lt;a href="https://ia.net/topics/the-web-is-all-about-typography-period">web design is
+95% typography&lt;/a>.
+You have a static website. You&amp;rsquo;ve wanted to up your typographic game but have
+never had the time or patience. If this sounds like you, you&amp;rsquo;re in luck!&lt;/p>
+&lt;p>A foreword: you can achieve almost everything I describe here by adding CSS in
+a &lt;code>&amp;lt;style&amp;gt;&lt;/code> tag at the end of your webpages&amp;rsquo; &lt;code>&amp;lt;head&amp;gt;&lt;/code>s, but the code snippets
+I include here aren&amp;rsquo;t meant to be copypasta solutions, but illustrative
+examples.&lt;/p>
+&lt;div>
+&lt;h2>Contents&lt;/h2>
+&lt;nav id="TableOfContents">
+&lt;ul>
+&lt;li>&lt;a href="#easy-wins">Easy Wins&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#choose-a-font">Choose a font&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#adjust-the-line-width-and-point-size">Adjust the line width and point size&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#adjust-the-line-height">Adjust the line height&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#low-hanging-fruit">Low-Hanging Fruit&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#adjust-paragraph-and-header-spacing">Adjust paragraph and header spacing&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#choose-a-monospaced-font-and-display-font">Choose a monospaced font and display font&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#set-a-background-color">Set a background color&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;a href="#braver-undertakings">Braver Undertakings&lt;/a>
+&lt;ul>
+&lt;li>&lt;a href="#format-code-blocks">Format code blocks&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#support-sidenotes">Support sidenotes&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul>
+&lt;/nav>
+&lt;/div>
+&lt;h2 id="easy-wins">Easy Wins&lt;/h2>
+&lt;p>Body text &amp;mdash; the text that forms the main content of your website &amp;mdash; is the
+most important part of your website. These three things largely determine how
+your body text looks, and nailing them can immediately improve your website&amp;rsquo;s
+typography.&lt;/p>
+&lt;h3 id="choose-a-font">Choose a font&lt;/h3>
+&lt;p>Many static sites default to system fonts&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>: that is, fonts that are likely
+already installed on readers&amp;rsquo; devices. This putatively boosts performance
+(because readers need not download font files), and can give a more comfortable
+look, since it can blend in with the fonts of the reader&amp;rsquo;s operating system.&lt;/p>
+&lt;p>However, many system fonts aren&amp;rsquo;t good, and many others have become hackneyed
+&lt;em>precisely because they are default fonts&lt;/em>. It&amp;rsquo;s also getting easier and easier
+to use custom webfonts or font hosting services like &lt;a href="https://fonts.google.com/">Google
+Fonts&lt;/a>.&lt;/p>
+&lt;p>Obviously you should do what you think is best for your website, but I&amp;rsquo;d point
+out that &lt;strong>changing your body font is a fast and effective way to upgrade your
+typography and distinguish your writing from the sea of sans-serif on the
+Internet.&lt;/strong> Live a little!&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/* Use your own static font file(s).
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> You should have a font face for regular, bold and italics. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>@&lt;span style="color:#66d9ef">font-face&lt;/span>{
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">font-family&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Fira Sans&amp;#34;&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">src&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">url&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;/assets/fonts/FiraSansRegular.woff2&amp;#34;&lt;/span>&lt;span style="color:#f92672">)&lt;/span> &lt;span style="color:#f92672">format&lt;/span>&lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#e6db74">&amp;#34;woff2&amp;#34;&lt;/span>&lt;span style="color:#f92672">);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">font-style&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">normal&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">font-weight&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">400&lt;/span>&lt;span style="color:#f92672">;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/* Fall back on system fonts. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">body&lt;/span> { &lt;span style="color:#66d9ef">font-family&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Fira Sans&amp;#34;&lt;/span>, Verdana, &lt;span style="color:#66d9ef">sans-serif&lt;/span>; }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/* Alternatively, use a font hosting service like Google Fonts.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"> Again, have a font face for regular, bold and italics. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#f92672">link&lt;/span> &lt;span style="color:#f92672">rel&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;preconnect&amp;#34;&lt;/span> &lt;span style="color:#f92672">href&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;https://fonts.googleapis.com&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#f92672">link&lt;/span> &lt;span style="color:#f92672">rel&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;preconnect&amp;#34;&lt;/span> &lt;span style="color:#f92672">href&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;https://fonts.gstatic.com&amp;#34;&lt;/span> &lt;span style="color:#f92672">crossorigin&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">&amp;lt;&lt;/span>&lt;span style="color:#f92672">link&lt;/span> &lt;span style="color:#f92672">href&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;https://fonts.googleapis.com/css2?family=Fira+Sans&amp;amp;display=swap&amp;#34;&lt;/span> &lt;span style="color:#f92672">rel&lt;/span>&lt;span style="color:#f92672">=&lt;/span>&lt;span style="color:#e6db74">&amp;#34;stylesheet&amp;#34;&lt;/span>&lt;span style="color:#f92672">&amp;gt;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/* Fall back on system fonts. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">body&lt;/span> { &lt;span style="color:#66d9ef">font-family&lt;/span>: &lt;span style="color:#e6db74">&amp;#34;Fira Sans&amp;#34;&lt;/span>, Verdana, &lt;span style="color:#66d9ef">sans-serif&lt;/span>; }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="adjust-the-line-width-and-point-size">Adjust the line width and point size&lt;/h3>
+&lt;p>The ultimate goal is to control the &lt;em>average number of characters per line:&lt;/em>
+too many, and lines run on interminably; too few, and you force readers&amp;rsquo; eyes
+to dart uncomfortably back and forth. &lt;strong>Aim to fit between two and three full
+English alphabets per line.&lt;/strong>&lt;/p>
+&lt;p>The twist is that this has to be done regardless of the screen size &amp;mdash; most
+obviously, it has to work on both desktop and mobile screens. This leads to
+concept of &lt;em>fluid type&lt;/em>, which just means that the font size changes in reponse
+to the screen width.&lt;/p>
+&lt;p>Try adjusting your window size (or rotating your phone) to see how the line
+width and point size adjust to always fit between two and three alphabets in
+the following paragraph:&lt;/p>
+&lt;p>abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz&lt;/p>
+&lt;p>CSS Tricks has an &lt;a href="https://css-tricks.com/simplified-fluid-typography/">excellent
+tutorial&lt;/a> for fluid type
+with CSS, which boils down to clever use of &lt;code>min&lt;/code>, &lt;code>max&lt;/code> and &lt;code>vw&lt;/code>: the font
+sizes goes between 16px on a 320px screen to 22px on a 1000px screen.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">body&lt;/span> { &lt;span style="color:#66d9ef">max-width&lt;/span>: &lt;span style="color:#ae81ff">720&lt;/span>&lt;span style="color:#66d9ef">px&lt;/span>; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">html&lt;/span> { &lt;span style="color:#66d9ef">font-size&lt;/span>: &lt;span style="color:#a6e22e">min&lt;/span>(&lt;span style="color:#a6e22e">max&lt;/span>(&lt;span style="color:#ae81ff">16&lt;/span>&lt;span style="color:#66d9ef">px&lt;/span>, &lt;span style="color:#ae81ff">4&lt;/span>&lt;span style="color:#66d9ef">vw&lt;/span>), &lt;span style="color:#ae81ff">22&lt;/span>&lt;span style="color:#66d9ef">px&lt;/span>); }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="adjust-the-line-height">Adjust the line height&lt;/h3>
+&lt;p>The goal is to control &lt;em>how closely consecutive lines sit next to each other&lt;/em>:
+too tight and you get intimidating walls of text; too loose and your text
+becomes a vaporous jumble of lines. &lt;strong>Aim to space lines between 120% to 145%
+of the point size.&lt;/strong> (The text in this paragraph has a spacing of 145%. Just
+right!)&lt;/p>
+&lt;p style="line-height:1.1">
+The goal is to control &lt;i>how closely consecutive lines sit next to each
+other&lt;/i>: too tight and you get intimidating walls of text; too loose and
+your text becomes a vaporous jumble of lines. &lt;b>Aim to space lines between
+120% to 145% of the point size.&lt;/b> (The text in this paragraph has a spacing
+of 110%. Too tight.)
+&lt;/p>
+&lt;p style="line-height:1.6">
+The goal is to control &lt;i>how closely consecutive lines sit next to each
+other&lt;/i>: too tight and you get intimidating walls of text; too loose and
+your text becomes a vaporous jumble of lines. &lt;b>Aim to space lines between
+120% to 145% of the point size.&lt;/b> (The text in this paragraph has a spacing
+of 160%. Too loose.)
+&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">body&lt;/span> { &lt;span style="color:#66d9ef">line-height&lt;/span>: &lt;span style="color:#ae81ff">1.4&lt;/span>; }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="low-hanging-fruit">Low-Hanging Fruit&lt;/h2>
+&lt;h3 id="adjust-paragraph-and-header-spacing">Adjust paragraph and header spacing&lt;/h3>
+&lt;p>The goal is to &lt;em>enclose related pieces of text (i.e. sections and paragraphs)
+with whitespace.&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>&lt;/em> Done right, readers are presented with a structured and
+scannable hierarchy of sections and paragraphs, instead of a soup of
+equally-spaced lines.&lt;/p>
+&lt;p>&lt;strong>Aim for paragraph spacing that is just large enough to be easily noticed:&lt;/strong> a
+space equal to 50–100% of the body text size usually suffices. &lt;strong>Header spacing
+is more of a judgement call.&lt;/strong> However, to quote &lt;a href="https://practicaltypography.com/space-above-and-below.html">Matthew
+Butterick&lt;/a>:&lt;/p>
+&lt;blockquote>
+&lt;p>Semantically, headings relate to the text that follows, not the text before.
+Thus you’ll probably want the space below to be smaller than the space above
+so the heading is visually closer to the text it introduces.&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">p&lt;/span> { &lt;span style="color:#66d9ef">margin-top&lt;/span>: &lt;span style="color:#ae81ff">20&lt;/span>&lt;span style="color:#66d9ef">px&lt;/span>; &lt;span style="color:#66d9ef">margin-bottom&lt;/span>: &lt;span style="color:#ae81ff">20&lt;/span>&lt;span style="color:#66d9ef">px&lt;/span>; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">h1&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h2&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h3&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h4&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h5&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h6&lt;/span> { &lt;span style="color:#66d9ef">margin-top&lt;/span>: &lt;span style="color:#ae81ff">8&lt;/span>&lt;span style="color:#66d9ef">%&lt;/span>; &lt;span style="color:#66d9ef">margin-bottom&lt;/span>: &lt;span style="color:#ae81ff">-1&lt;/span>&lt;span style="color:#66d9ef">%&lt;/span>; }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="choose-a-monospaced-font-and-display-font">Choose a monospaced font and display font&lt;/h3>
+&lt;p>Body text is the most important part of a website, so spend time making it look
+good (you&amp;rsquo;ll notice that all three &lt;a href="#easy-wins">Easy Wins&lt;/a> were for the body
+text). Once you&amp;rsquo;ve done that though, consider more fonts.&lt;/p>
+&lt;p>Monospaced fonts (for code) lets readers easily distinguish between prose and
+code, and display fonts (for titles and headers) can have much more color and
+character. &lt;strong>Using a monospaced font can make technical, code-heavy text more
+readable, and using a display font can lend your website personality.&lt;/strong>&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">h1&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h2&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h3&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h4&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h5&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h6&lt;/span> { &lt;span style="color:#66d9ef">font-family&lt;/span>: Verdana, &lt;span style="color:#66d9ef">sans-serif&lt;/span>; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">code&lt;/span> { &lt;span style="color:#66d9ef">font-family&lt;/span>: Consolas, &lt;span style="color:#66d9ef">monospace&lt;/span>; }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="set-a-background-color">Set a background color&lt;/h3>
+&lt;p>(This will involve some aesthetic redesign for your website, which is why it
+isn&amp;rsquo;t higher on the list.)&lt;/p>
+&lt;p>High contrast between text and background is good for legibility, but the
+contrast between pure white (&lt;code>#ffffff&lt;/code>) and pure black (&lt;code>#000000&lt;/code>) can look
+harsh and unsettling. &lt;strong>Web pages are better served by off-white and off-black
+backgrounds&lt;/strong>, which are easier on the eyes while still retaining high
+contrast. &lt;a href="https://edwardtufte.github.io/tufte-css/">Tufte CSS&lt;/a> suggests
+&lt;code>#fffff8&lt;/code> and &lt;code>#111111&lt;/code>.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">/* If the reader prefers dark mode, use off-black instead of off-white. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">body&lt;/span> { &lt;span style="color:#66d9ef">background-color&lt;/span>: &lt;span style="color:#ae81ff">#fffff8&lt;/span>; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>@&lt;span style="color:#66d9ef">media&lt;/span> &lt;span style="color:#f92672">(&lt;/span>&lt;span style="color:#f92672">prefers-color-scheme&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#f92672">dark&lt;/span>&lt;span style="color:#f92672">)&lt;/span> { &lt;span style="color:#f92672">body&lt;/span> { &lt;span style="color:#66d9ef">background-color&lt;/span>: &lt;span style="color:#ae81ff">#111111&lt;/span>; } }
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="braver-undertakings">Braver Undertakings&lt;/h2>
+&lt;h3 id="format-code-blocks">Format code blocks&lt;/h3>
+&lt;p>If you&amp;rsquo;re unlucky enough to know something about programming and noisy enough
+to want to blog about it (both of which are unfortunately quite likely, if
+you&amp;rsquo;re reading this), then &lt;strong>you probably want your code blocks to look good.&lt;/strong>&lt;/p>
+&lt;p>CSS Tricks has &lt;a href="https://css-tricks.com/considerations-styling-pre-tag/">a fantastic tutorial on how to style &lt;code>&amp;lt;pre&amp;gt;&amp;lt;code&amp;gt;&lt;/code>
+blocks&lt;/a>, which walks
+through code wrapping, code block auto-expansion, syntax highlighting and space
+control.&lt;/p>
+&lt;p>Frustratingly, there was &lt;a href="https://stackoverflow.com/a/22417120/13372802">one bug that drove me up the
+wall&lt;/a>, in which some lines of
+code had their font size increased for seemingly no reason:&lt;/p>
+&lt;blockquote>
+&lt;p>WebKit has the annoying behavior (for a properly designed responsive site) of
+trying to enlarge the font size for the &amp;ldquo;primary&amp;rdquo; text on the screen, where
+primary is simply its best guess.&lt;/p>
+&lt;/blockquote>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">pre&lt;/span> &lt;span style="color:#f92672">code&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* Don&amp;#39;t wrap long lines, force horizontal scrolling. */&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">white-space&lt;/span>: &lt;span style="color:#66d9ef">pre&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">overflow-x&lt;/span>: &lt;span style="color:#66d9ef">auto&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* https://stackoverflow.com/a/22417120/13372802 */&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> text-size-adjust: &lt;span style="color:#ae81ff">100&lt;/span>&lt;span style="color:#66d9ef">%&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">-ms-&lt;/span>text-size-adjust: &lt;span style="color:#ae81ff">100&lt;/span>&lt;span style="color:#66d9ef">%&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">-moz-&lt;/span>text-size-adjust: &lt;span style="color:#ae81ff">100&lt;/span>&lt;span style="color:#66d9ef">%&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">-webkit-&lt;/span>text-size-adjust: &lt;span style="color:#ae81ff">100&lt;/span>&lt;span style="color:#66d9ef">%&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="support-sidenotes">Support sidenotes&lt;/h3>
+&lt;p>&lt;em>Sidenotes&lt;/em> are when footnotes are placed in the margins beside the text they
+reference, instead of at the end of the page. They allow readers to instantly
+read them instead of having to constantly click or scroll to and fro.
+&lt;strong>Sidenotes greatly improve footnotes for the web, but are fairly difficult to
+implement despite recent efforts.&lt;/strong>&lt;/p>
+&lt;p>Gwern has compiled &lt;a href="https://www.gwern.net/Sidenotes">an exhaustive bibliography of sidenote
+implementations&lt;/a>, which I recommend skimming
+over being turning to &lt;a href="https://edwardtufte.github.io/tufte-css/">Tufte CSS&lt;/a> for
+a simpler implementation.&lt;/p>
+&lt;section class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1" role="doc-endnote">
+&lt;p>Yeah I know, I&amp;rsquo;m interchanging &lt;em>font&lt;/em> and &lt;em>typeface&lt;/em>, but at least I have
+a life.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;li id="fn:2" role="doc-endnote">
+&lt;p>Graphic designers may call this &lt;em>active whitespace:&lt;/em> whitespace
+deliberately added for the sake of emphasis or structure.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/section></description></item><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
 &lt;p>This weekend I migrated my blog to Hugo.&lt;/p>
 &lt;p>My website is now based on the &lt;a href="https://github.com/janraasch/hugo-bearblog/">Hugo Bear Blog
 theme&lt;/a>, generated with
