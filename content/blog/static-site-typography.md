@@ -5,11 +5,12 @@ tags:
   - typography
 ---
 
-You've heard of Butterick's [_Practical
-Typography_](https://practicaltypography.com/). You've read that [web design is
-95% typography](https://ia.net/topics/the-web-is-all-about-typography-period).
-You have a static website. You've wanted to improve its typography but have
-never had the time or patience. If this sounds like you, you're in luck!
+You've read that [web design is 95%
+typography](https://ia.net/topics/the-web-is-all-about-typography-period). You
+have a static website. You've wanted to improve its typography but have never
+had the time or patience. You've might've even heard of Butterick's [_Practical
+Typography_](https://practicaltypography.com/). If this sounds like you, you're
+in luck!
 
 A foreword: you can achieve almost everything I describe here by adding CSS in
 a `<style>` tag at the end of your webpages'  `<head>`s, but the code snippets
