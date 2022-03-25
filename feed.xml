@@ -187,8 +187,8 @@ read annotations instead of having to constantly click or scroll to and fro.
 implement despite recent efforts.&lt;/strong>&lt;/p>
 &lt;p>Gwern has compiled &lt;a href="https://www.gwern.net/Sidenotes">an exhaustive bibliography of sidenote
 implementations&lt;/a>, which I recommend skimming
-over being turning to &lt;a href="https://edwardtufte.github.io/tufte-css/">Tufte CSS&lt;/a> for
-a simpler implementation.&lt;/p>
+over before turning to &lt;a href="https://edwardtufte.github.io/tufte-css/">Tufte CSS&lt;/a>
+for a simpler implementation.&lt;/p>
 &lt;section class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
