@@ -226,8 +226,8 @@ implement despite recent efforts.**
 
 Gwern has compiled [an exhaustive bibliography of sidenote
 implementations](https://www.gwern.net/Sidenotes), which I recommend skimming
-over being turning to [Tufte CSS](https://edwardtufte.github.io/tufte-css/) for
-a simpler implementation.
+over before turning to [Tufte CSS](https://edwardtufte.github.io/tufte-css/)
+for a simpler implementation.
 
 [^1]: Yeah I know, I'm interchanging _font_ and _typeface_, but at least I have
   a life.
