@@ -1042,12 +1042,12 @@ expertise that goes on behind the user-facing Bayesian modelling.&lt;/p>
 &lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Non-Slab Serif Fonts for Coding</title><link>https://www.georgeho.org/fonts-for-coding/</link><pubDate>Thu, 26 Nov 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/fonts-for-coding/</guid><description>&lt;p>Sometimes I get sniped by &lt;a href="https://news.ycombinator.com/item?id=25159038">Hacker News
+&lt;/section></description></item><item><title>Serif Fonts for Coding</title><link>https://www.georgeho.org/fonts-for-coding/</link><pubDate>Thu, 26 Nov 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/fonts-for-coding/</guid><description>&lt;p>Sometimes I get sniped by &lt;a href="https://news.ycombinator.com/item?id=25159038">Hacker News
 posts&lt;/a>, and this one plunged me
 down a rabbit hole for coding fonts.&lt;/p>
-&lt;p>Many coding fonts are monospaced slab serifs: in other words, each glyph takes
+&lt;p>Many coding fonts are lightly stressed, monospaced sans serifs: in other words, each glyph takes
 the same width, and each glyph looks like a stick figure, with constant stroke
-width (a.k.a. &lt;em>weight&lt;/em>) throughout the glyph.&lt;/p>
+width (a.k.a. &lt;a href="https://designshack.net/articles/typography/is-my-type-stressed-a-primer-on-stressed-typography/">&lt;em>stress&lt;/em>&lt;/a>) throughout the glyph.&lt;/p>
 &lt;p>But as &lt;a href="https://news.ycombinator.com/item?id=25167704">the Internet stranger
 &lt;code>uncanneyvalley&lt;/code>&lt;/a> pointed out,
 there&amp;rsquo;s decent overlap between &amp;ldquo;fonts good for coding&amp;rdquo; and &amp;ldquo;fonts good for
@@ -1063,13 +1063,13 @@ font-family: "Source Code Pro", monospace;
 &lt;/style>
 &lt;p>&lt;strong>Proportional (&lt;a href="https://mbtype.com/fonts/equity/">Equity&lt;/a>):&lt;/strong>&lt;/p>
 &lt;center>([{}]) l1i!|I OQo08 rumn ecoa pqdb -- __ == !! "' :; ,.&lt;/center>
-&lt;p>&lt;strong>Slab Serif (&lt;a href="https://fonts.google.com/specimen/Source+Code+Pro">Source Code Pro&lt;/a>):&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>Monospaced Sans Serif (&lt;a href="https://fonts.google.com/specimen/Source+Code+Pro">Source Code Pro&lt;/a>):&lt;/strong>&lt;/p>
 &lt;center>&lt;code class="slab-serif">([{}]) l1i!|I OQo08 rumn ecoa pqdb -- __ == !! "' :; ,.&lt;/code>&lt;/center>
-&lt;p>&lt;strong>Non-Slab Serif (&lt;a href="https://mbtype.com/fonts/triplicate/">Triplicate&lt;/a>):&lt;/strong>&lt;/p>
+&lt;p>&lt;strong>Monospaced Serif (&lt;a href="https://mbtype.com/fonts/triplicate/">Triplicate&lt;/a>):&lt;/strong>&lt;/p>
 &lt;center>&lt;code>([{}]) l1i!|I OQo08 rumn ecoa pqdb -- __ == !! "' :; ,.&lt;/code>&lt;/center>
-&lt;p>I think that non-slab serif fonts (i.e. fonts with serifs that are curved
+&lt;p>I think that stressed monospaced serif fonts (i.e. monospaced fonts with serifs that are curved
 instead of slab-like, and that are visually thinner than the rest of the glyph)
-are generally much better for coding than most default fonts. It turns out
+are generally much better for coding than most default coding typefaces. It turns out
 there are very few such fonts: I&amp;rsquo;ve had to scour the Internet for them, but you
 can have the fruits of my labor for free!&lt;/p>
 &lt;ul>
