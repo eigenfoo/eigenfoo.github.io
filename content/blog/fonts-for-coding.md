@@ -1,5 +1,5 @@
 ---
-title: Non-Slab Serif Fonts for Coding
+title: Serif Fonts for Coding
 date: 2020-11-26
 tags:
   - typography
@@ -9,9 +9,9 @@ Sometimes I get sniped by [Hacker News
 posts](https://news.ycombinator.com/item?id=25159038), and this one plunged me
 down a rabbit hole for coding fonts.
 
-Many coding fonts are monospaced slab serifs: in other words, each glyph takes
+Many coding fonts are lightly stressed, monospaced sans serifs: in other words, each glyph takes
 the same width, and each glyph looks like a stick figure, with constant stroke
-width (a.k.a. _weight_) throughout the glyph.
+width (a.k.a. [_stress_](https://designshack.net/articles/typography/is-my-type-stressed-a-primer-on-stressed-typography/)) throughout the glyph.
 
 But as [the Internet stranger
 `uncanneyvalley`](https://news.ycombinator.com/item?id=25167704) pointed out,
@@ -31,15 +31,15 @@ code.slab-serif {
 **Proportional ([Equity](https://mbtype.com/fonts/equity/)):**
 <center>([{}]) l1i!|I OQo08 rumn ecoa pqdb -- __ == !! "' :; ,.</center>
 
-**Slab Serif ([Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro)):**
+**Monospaced Sans Serif ([Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro)):**
 <center><code class="slab-serif">([{}]) l1i!|I OQo08 rumn ecoa pqdb -- __ == !! "' :; ,.</code></center>
 
-**Non-Slab Serif ([Triplicate](https://mbtype.com/fonts/triplicate/)):**
+**Monospaced Serif ([Triplicate](https://mbtype.com/fonts/triplicate/)):**
 <center><code>([{}]) l1i!|I OQo08 rumn ecoa pqdb -- __ == !! "' :; ,.</code></center>
 
-I think that non-slab serif fonts (i.e. fonts with serifs that are curved
+I think that stressed monospaced serif fonts (i.e. monospaced fonts with serifs that are curved
 instead of slab-like, and that are visually thinner than the rest of the glyph)
-are generally much better for coding than most default fonts. It turns out
+are generally much better for coding than most default coding typefaces. It turns out
 there are very few such fonts: I've had to scour the Internet for them, but you
 can have the fruits of my labor for free!
 
