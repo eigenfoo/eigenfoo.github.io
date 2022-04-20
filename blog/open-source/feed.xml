@@ -51,6 +51,7 @@ contemporary tensor computation libraries.&lt;/p>
 &lt;/ul>
 &lt;/li>
 &lt;li>&lt;a href="#an-observation-on-static-graphs-and-theano">An Observation on Static Graphs and Theano&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#some-follow-ups-a-week-later">Some Follow-Ups, A Week Later&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;/nav>
 &lt;/div>
@@ -317,6 +318,44 @@ computation libraries do not: the promise is that if you take the time to specif
 up front and all at once, Theano can optimize the living daylight out of your computation &amp;mdash; whether
 by graph manipulation, efficient compilation or something else entirely &amp;mdash; and that this is something
 you would only need to do once.&lt;/p>
+&lt;hr>
+&lt;h2 id="some-follow-ups-a-week-later">Some Follow-Ups, A Week Later&lt;/h2>
+&lt;p>&lt;em>2020-12-22&lt;/em>&lt;/p>
+&lt;p>The blog post trended &lt;a href="https://news.ycombinator.com/item?id=25435028">on Hacker
+News&lt;/a> and got some discussion.
+It&amp;rsquo;s stupefying how the most upvoted comments are either unrelated or
+self-promotional, but I suppose that&amp;rsquo;s to be expected with the Internet.&lt;/p>
+&lt;p>However, one nugget of gold in the junk pit is &lt;a href="https://news.ycombinator.com/item?id=25436656">this comment by Albert
+Zeyer&lt;/a> and the &lt;a href="https://news.ycombinator.com/item?id=25439483">response by the
+PyMC developer spearheading the Aesara project, Brandon
+Willard&lt;/a>. I had two takeaways
+from this exchange:&lt;/p>
+&lt;ol>
+&lt;li>Theano is messy, either in a code hygiene sense, or in an API design sense.
+&lt;ul>
+&lt;li>For example, the graph optimization/rewriting process can require entire
+graphs to be copied at multiple points along the way. This obliterates
+performance and was almost entirely due to some design oddities.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>The JAX backend arose as a proof-of-concept of how extensible Theano is,
+both in terms of &amp;ldquo;hackability&amp;rdquo; and how much mileage we can get out of the
+design choices behind Theano (e.g. static graphs). The JAX backend isn&amp;rsquo;t the
+focus of the fork, but it&amp;rsquo;s easily the difference that will stand out most
+at the user level. The focus of the Aesara is &lt;em>resolving the design
+shortcomings of Theano&lt;/em>.&lt;/li>
+&lt;/ol>
+&lt;p>On the one hand, I&amp;rsquo;m glad that I finally understand the &lt;em>real&lt;/em> focus of the
+Aesara fork &amp;mdash; I feel like I have a &lt;em>much&lt;/em> greater appreciation of what Aesara
+really is, and it&amp;rsquo;s place in the ecosystem of tensor computation libraries.&lt;/p>
+&lt;p>On the other hand, I&amp;rsquo;m discomfited by the implication that meaningful
+contributions to Aesara must involve deep expertise on computational graphs and
+graph optimizations - neither of which I have experience in (and I suspect are
+rare even among the open source community). Moreover, meaningful contributions
+to Aesara will probably require deep familiarity with Theano&amp;rsquo;s design and its
+shortcomings. This isn&amp;rsquo;t to discourage me (or anyone else!) from contributing
+to Aesara, but it&amp;rsquo;s good to acknowledge the bottomless pit of technical
+expertise that goes on behind the user-facing Bayesian modelling.&lt;/p>
 &lt;section class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>

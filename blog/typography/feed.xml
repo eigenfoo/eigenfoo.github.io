@@ -262,4 +262,55 @@ Tufte-style two-column blog posts. It actually worked out pretty well (and the
 resulting blog posts looked &lt;em>damn good&lt;/em>), but I couldn&amp;rsquo;t justify maintaining my
 own language specifically for writing blog posts. I&amp;rsquo;d probably recommend using
 Pollen for large, one-off pieces of writing (like a book), instead of small,
-recurring pieces of writing (like a blog).&lt;/p></description></item></channel></rss>
+recurring pieces of writing (like a blog).&lt;/p></description></item><item><title>Non-Slab Serif Fonts for Coding</title><link>https://www.georgeho.org/fonts-for-coding/</link><pubDate>Thu, 26 Nov 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/fonts-for-coding/</guid><description>&lt;p>Sometimes I get sniped by &lt;a href="https://news.ycombinator.com/item?id=25159038">Hacker News
+posts&lt;/a>, and this one plunged me
+down a rabbit hole for coding fonts.&lt;/p>
+&lt;p>Many coding fonts are monospaced slab serifs: in other words, each glyph takes
+the same width, and each glyph looks like a stick figure, with constant stroke
+width (a.k.a. &lt;em>weight&lt;/em>) throughout the glyph.&lt;/p>
+&lt;p>But as &lt;a href="https://news.ycombinator.com/item?id=25167704">the Internet stranger
+&lt;code>uncanneyvalley&lt;/code>&lt;/a> pointed out,
+there&amp;rsquo;s decent overlap between &amp;ldquo;fonts good for coding&amp;rdquo; and &amp;ldquo;fonts good for
+dyslexia&amp;rdquo;: being able to easily distinguish between visually-similar and
+repeated characters.&lt;/p>
+&lt;link rel="preconnect" href="https://fonts.googleapis.com">
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+&lt;link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&amp;display=swap" rel="stylesheet">
+&lt;style>
+code.slab-serif {
+font-family: "Source Code Pro", monospace;
+}
+&lt;/style>
+&lt;p>&lt;strong>Proportional (&lt;a href="https://mbtype.com/fonts/equity/">Equity&lt;/a>):&lt;/strong>&lt;/p>
+&lt;center>([{}]) l1i!|I Oo08 rmn ecoa -- __ == !! "' :; ,.&lt;/center>
+&lt;p>&lt;strong>Slab Serif (&lt;a href="https://fonts.google.com/specimen/Source+Code+Pro">Source Code Pro&lt;/a>):&lt;/strong>&lt;/p>
+&lt;center>&lt;code class="slab-serif">([{}]) l1i!|I Oo08 rmn ecoa -- __ == !! "' :; ,.&lt;/code>&lt;/center>
+&lt;p>&lt;strong>Non-Slab Serif (&lt;a href="https://mbtype.com/fonts/triplicate/">Triplicate&lt;/a>):&lt;/strong>&lt;/p>
+&lt;center>&lt;code>([{}]) l1i!|I Oo08 rmn ecoa -- __ == !! "' :; ,.&lt;/code>&lt;/center>
+&lt;p>I think that non-slab serif fonts (i.e. fonts with serifs that are curved
+instead of slab-like, and that are visually thinner than the rest of the glyph)
+are generally much better for coding than most default fonts. It turns out
+there are very few such fonts: I&amp;rsquo;ve had to scour the Internet for them, but you
+can have the fruits of my labor for free!&lt;/p>
+&lt;ul>
+&lt;li>Libertinus Mono (&lt;a href="https://fontlibrary.org/en/font/libertinus-mono">Font
+Library&lt;/a>,
+&lt;a href="https://github.com/alerque/libertinus">GitHub&lt;/a>)&lt;/li>
+&lt;li>Linux Libertine Mono
+(&lt;a href="https://en.wikipedia.org/wiki/Linux_Libertine">Wikipedia&lt;/a>, &lt;a href="https://www.fontsquirrel.com/fonts/linux-libertine">Font
+Squirrel&lt;/a>, &lt;a href="https://fontlibrary.org/en/font/linux-libertine">Font
+Library&lt;/a>)&lt;/li>
+&lt;li>SimSun
+(&lt;a href="https://docs.microsoft.com/en-us/typography/font-list/simsun">Microsoft&lt;/a>,
+&lt;a href="https://www.dafontfree.io/simsun-font/">Dafont Free&lt;/a>)&lt;/li>
+&lt;li>Sun Gallant Demi
+&lt;ul>
+&lt;li>I can&amp;rsquo;t find any sources for it beyond &lt;a href="https://unix.stackexchange.com/q/307356">this Unix StackExchange
+post&lt;/a>. Maybe if you have a Sun
+computer? &lt;code>¯\_(ツ)_/¯&lt;/code>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Triplicate (&lt;a href="https://mbtype.com/fonts/triplicate/">MB Type&lt;/a>)&lt;/li>
+&lt;li>Xanh Mono (&lt;a href="https://fonts.google.com/specimen/Xanh+Mono">Google Fonts&lt;/a>,
+&lt;a href="https://github.com/yellow-type-foundry/xanhmono">GitHub&lt;/a>)&lt;/li>
+&lt;/ul></description></item></channel></rss>
