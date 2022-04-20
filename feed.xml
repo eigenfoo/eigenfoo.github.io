@@ -1062,11 +1062,11 @@ font-family: "Source Code Pro", monospace;
 }
 &lt;/style>
 &lt;p>&lt;strong>Proportional (&lt;a href="https://mbtype.com/fonts/equity/">Equity&lt;/a>):&lt;/strong>&lt;/p>
-&lt;center>([{}]) l1i!|I Oo08 rmn ecoa -- __ == !! "' :; ,.&lt;/center>
+&lt;center>([{}]) l1i!|I OQo08 rumn ecoa pqdb -- __ == !! "' :; ,.&lt;/center>
 &lt;p>&lt;strong>Slab Serif (&lt;a href="https://fonts.google.com/specimen/Source+Code+Pro">Source Code Pro&lt;/a>):&lt;/strong>&lt;/p>
-&lt;center>&lt;code class="slab-serif">([{}]) l1i!|I Oo08 rmn ecoa -- __ == !! "' :; ,.&lt;/code>&lt;/center>
+&lt;center>&lt;code class="slab-serif">([{}]) l1i!|I OQo08 rumn ecoa pqdb -- __ == !! "' :; ,.&lt;/code>&lt;/center>
 &lt;p>&lt;strong>Non-Slab Serif (&lt;a href="https://mbtype.com/fonts/triplicate/">Triplicate&lt;/a>):&lt;/strong>&lt;/p>
-&lt;center>&lt;code>([{}]) l1i!|I Oo08 rmn ecoa -- __ == !! "' :; ,.&lt;/code>&lt;/center>
+&lt;center>&lt;code>([{}]) l1i!|I OQo08 rumn ecoa pqdb -- __ == !! "' :; ,.&lt;/code>&lt;/center>
 &lt;p>I think that non-slab serif fonts (i.e. fonts with serifs that are curved
 instead of slab-like, and that are visually thinner than the rest of the glyph)
 are generally much better for coding than most default fonts. It turns out
