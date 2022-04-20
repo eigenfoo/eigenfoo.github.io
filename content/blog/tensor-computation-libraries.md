@@ -242,4 +242,45 @@ up front and all at once, Theano can optimize the living daylight out of your co
 by graph manipulation, efficient compilation or something else entirely --- and that this is something
 you would only need to do once.
 
+---
+
+## Some Follow-Ups, A Week Later
+
+*2020-12-22*
+
+The blog post trended [on Hacker
+News](https://news.ycombinator.com/item?id=25435028) and got some discussion.
+It's stupefying how the most upvoted comments are either unrelated or
+self-promotional, but I suppose that's to be expected with the Internet.
+
+However, one nugget of gold in the junk pit is [this comment by Albert
+Zeyer](https://news.ycombinator.com/item?id=25436656) and the [response by the
+PyMC developer spearheading the Aesara project, Brandon
+Willard](https://news.ycombinator.com/item?id=25439483). I had two takeaways
+from this exchange:
+
+1. Theano is messy, either in a code hygiene sense, or in an API design sense.
+   * For example, the graph optimization/rewriting process can require entire
+     graphs to be copied at multiple points along the way. This obliterates
+     performance and was almost entirely due to some design oddities.
+2. The JAX backend arose as a proof-of-concept of how extensible Theano is,
+   both in terms of "hackability" and how much mileage we can get out of the
+   design choices behind Theano (e.g. static graphs). The JAX backend isn't the
+   focus of the fork, but it's easily the difference that will stand out most
+   at the user level. The focus of the Aesara is *resolving the design
+   shortcomings of Theano*.
+
+On the one hand, I'm glad that I finally understand the *real* focus of the
+Aesara fork --- I feel like I have a *much* greater appreciation of what Aesara
+really is, and it's place in the ecosystem of tensor computation libraries.
+
+On the other hand, I'm discomfited by the implication that meaningful
+contributions to Aesara must involve deep expertise on computational graphs and
+graph optimizations - neither of which I have experience in (and I suspect are
+rare even among the open source community). Moreover, meaningful contributions
+to Aesara will probably require deep familiarity with Theano's design and its
+shortcomings. This isn't to discourage me (or anyone else!) from contributing
+to Aesara, but it's good to acknowledge the bottomless pit of technical
+expertise that goes on behind the user-facing Bayesian modelling.
+
 [^1]: Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn't out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.

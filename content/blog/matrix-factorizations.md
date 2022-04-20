@@ -25,8 +25,8 @@ that](https://thegradient.pub/frontiers-of-generalization-in-natural-language-pr
 
 I am confident that I am _very_ bad at making lofty predictions about the
 future. Instead, I'll talk about something I know a bit about: simple solutions
-to concrete problems, with some Bayesianism thrown in for good measure
-:grinning:.
+to concrete problems, with some Bayesianism thrown in for good measure!
+
 
 This blog post summarizes some literature on probabilistic and Bayesian
 matrix factorization methods, keeping an eye out for applications to one
