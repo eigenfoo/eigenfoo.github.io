@@ -697,7 +697,41 @@ years&lt;/strong>, which makes for a rich and peculiar dataset.&lt;/p>
 &lt;p>If you&amp;rsquo;re new to cryptic crosswords, rejoice! A whole new world awaits you! The New Yorker has &lt;a href="https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/reintroducing-the-new-yorkers-cryptic-crossword">an excellent introduction to cryptic crosswords&lt;/a>, and Matt Gritzmacher has &lt;a href="https://crosswordlinks.substack.com/">a daily newsletter with links to crosswords&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>https://www.georgeho.org/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
+&lt;/section></description></item><item><title>Understanding NUTS and HMC</title><link>https://www.georgeho.org/understanding-nuts-hmc/</link><pubDate>Thu, 07 Jan 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/understanding-nuts-hmc/</guid><description>&lt;p>&lt;em>&amp;ldquo;Bayesian modeling is harder than deep learning&amp;rdquo;&lt;/em> is a sentiment I&amp;rsquo;ve been
+hearing a lot lately. While I&amp;rsquo;m skeptical of sweeping statements like that, I
+agree when it comes to the central inference algorithm &amp;mdash; how MCMC samplers
+work (especially the &lt;em>de facto&lt;/em> standard samplers, NUTS and HMC) is one of the
+most difficult concepts I&amp;rsquo;ve tried to learn, and is certainly harder than
+autodifferentiation or backpropagation.&lt;/p>
+&lt;p>So I thought I&amp;rsquo;d share what worked for me when I tried to teach myself NUTS and
+HMC. In chronological order of publication, these are the three resources that
+I’d recommend reading to grok NUTS/HMC:&lt;/p>
+&lt;ol>
+&lt;li>&lt;a href="http://www.mcmchandbook.net/HandbookChapter5.pdf">Radford Neal&amp;rsquo;s chapter in the MCMC
+handbook&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://arxiv.org/abs/1111.4246">Matthew Hoffman’s &lt;em>The No-U-Turn Sampler&lt;/em> (a.k.a. the original NUTS
+paper)&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://arxiv.org/abs/1701.02434">Michael Betancourt’s &lt;em>Conceptual Introduction to Hamiltonian Monte
+Carlo&lt;/em>&lt;/a>&lt;/li>
+&lt;/ol>
+&lt;p>Not only did I find it useful to read these papers several times (as one would
+read any sequence of &amp;ldquo;important&amp;rdquo; papers), but also to read them in both
+chronological and reverse-chronological order. Reading both forwards and
+backwards gave me multiple expositions of important ideas and also let me
+mentally &amp;ldquo;diff&amp;rdquo; the papers to see the progression of ideas over time. For
+example, Neal&amp;rsquo;s chapter was written before NUTS was discovered, which gives you
+a sense of what the MCMC world looked like prior to Hoffman&amp;rsquo;s work: making
+progress in fits and starts, but in need of a real leap forward.&lt;/p>
+&lt;p>In terms of reading code, I&amp;rsquo;d recommend looking through &lt;a href="https://github.com/ColCarroll/minimc">Colin Carroll’s
+&lt;code>minimc&lt;/code>&lt;/a> for a minimal working example
+of NUTS in Python, written for pedagogy rather than actual sampling. For a
+&amp;ldquo;real world&amp;rdquo; implementation of NUTS/HMC, I’d recommend looking through &lt;a href="https://github.com/eigenfoo/littlemcmc">my
+&lt;code>littlemcmc&lt;/code>&lt;/a> for a standalone version
+of PyMC3’s NUTS/HMC samplers.&lt;/p>
+&lt;p>Finally, for anyone who wants to read around computational methods for Bayesian
+inference more generally (i.e. not restricted to HMC, for example), I&amp;rsquo;d
+(unashamedly) point to &lt;a href="https://www.georgeho.org/bayesian-inference-reading/">my blog post on
+this&lt;/a>.&lt;/p></description></item><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>https://www.georgeho.org/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
 algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
 &lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
 prototypical examples of tensor computation libraries. Then I learnt about Theano &amp;mdash; an older and
