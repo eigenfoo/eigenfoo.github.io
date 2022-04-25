@@ -1,3 +1,4 @@
+{{ if ne .Params.subscribeFooter false }}
 <form
   action="https://buttondown.email/api/emails/embed-subscribe/eigenfoo"
   method="post"
@@ -11,5 +12,6 @@
 </form>
 
 <br>
+{{ end }}
 
 {{ if ne .Site.Params.hideMadeWithLine true }}Made with <a href="https://github.com/janraasch/hugo-bearblog/">Hugo ʕ•ᴥ•ʔ Bear</a>{{ end }}

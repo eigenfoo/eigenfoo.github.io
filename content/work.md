@@ -1,6 +1,7 @@
 ---
 title: Work
 menu: main
+subscribeFooter: false
 ---
 
 ## Software
