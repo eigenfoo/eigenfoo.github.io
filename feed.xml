@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hello! I’m George (a.k.a. eigenfoo) on George Ho</title><link>https://www.georgeho.org/</link><description>Recent content in Hello! I’m George (a.k.a. eigenfoo) on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 23 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/feed.xml" rel="self" type="application/rss+xml"/><item><title>Link Bulletin, April 2022</title><link>https://www.georgeho.org/link-bulletin-2022-04/</link><pubDate>Sat, 23 Apr 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/link-bulletin-2022-04/</guid><description>&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Hello! I’m George (a.k.a. eigenfoo) on George Ho</title><link>https://www.georgeho.org/</link><description>Recent content in Hello! I’m George (a.k.a. eigenfoo) on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sun, 24 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/feed.xml" rel="self" type="application/rss+xml"/><item><title>Link Bulletin, April 2022</title><link>https://www.georgeho.org/link-bulletin-2022-04/</link><pubDate>Sat, 23 Apr 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/link-bulletin-2022-04/</guid><description>&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
 that the links I find interesting might also be interesting to others: at most
 once a month, I&amp;rsquo;ll compile and post a handful of links that I&amp;rsquo;ve read and
 thought about, with minimal explanation or commentary. Here we go!&lt;/p>
@@ -5465,92 +5465,4 @@ blogging stack: the only thing I pay for is the custom
 maybe two or three cups of coffee a year.&lt;/p>
 &lt;hr>
 &lt;p>&lt;strong>Update (2022-03-06):&lt;/strong> I&amp;rsquo;ve since made several changes to this blog, which
-you can read about in &lt;a href="https://www.georgeho.org/migrating-to-hugo">a subsequent blog post&lt;/a>.&lt;/p></description></item><item><title>Loplop Cryptics</title><link>https://www.georgeho.org/crosswords/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/crosswords/</guid><description>&lt;h1 id="loplop-cryptics">Loplop Cryptics&lt;/h1>
-&lt;ul>
-&lt;li>Loplop #001 13×
-&lt;ul>
-&lt;li>&lt;a href="https://crosshare.org/crosswords/buAqSjPJdr3CotXi30ud/loplop-cryptic-001-13x">online&lt;/a>
-/ &lt;a href="https://www.georgeho.org/crosswords/loplop-001-13x.puz">puz&lt;/a> /
-&lt;a href="https://www.georgeho.org/crosswords/loplop-001-13x.pdf">pdf&lt;/a> /
-&lt;a href="https://www.georgeho.org/crosswords/loplop-001-13x-solutions.pdf">answers and annotations&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul></description></item><item><title>Work</title><link>https://www.georgeho.org/work/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/work/</guid><description>&lt;h2 id="software">Software&lt;/h2>
-&lt;ul>
-&lt;li>&lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> and
-&lt;a href="https://github.com/pymc-devs/pymc4">PyMC4&lt;/a>
-&lt;ul>
-&lt;li>PyMC3 is a popular Python framework for Bayesian modeling and probabilistic
-machine learning, focusing on Markov chain Monte Carlo (MCMC) and
-variational inference (VI) algorithms.&lt;/li>
-&lt;li>I&amp;rsquo;m a member of the core development team, and contribute to the PyMC3
-internals and documentation. I wrote &lt;a href="https://www.georgeho.org/bayesian-modelling-cookbook/">a blog post on tips and tricks for
-Bayesian modelling using
-PyMC3&lt;/a>.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;a href="https://github.com/quantopian/pyfolio">Pyfolio&lt;/a> and
-&lt;a href="https://github.com/quantopian/alphalens">Alphalens&lt;/a>
-&lt;ul>
-&lt;li>Pyfolio and Alphalens are Python libraries for risk analysis and
-performance attribution of financial portfolios, and alpha factor research
-for algorithmic trading. Both libraries were fully integrated into the
-Quantopian platform.&lt;/li>
-&lt;li>I developed the risk and performance attribution capabilities of Pyfolio
-(read more on &lt;a href="https://www.georgeho.org/pyfolio/">my blog post here&lt;/a>), and
-help maintain the library. I help develop new features, triage bug reports
-and troubleshoot issues for Alphalens.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;a href="https://github.com/font-bakers/knead">Knead&lt;/a> and &lt;a href="https://github.com/font-bakers/glaze">Glaze&lt;/a>
-&lt;ul>
-&lt;li>Knead and Glaze are command line tools and Python libraries for
-preprocessing, manipulating, rendering and visualizing font files and
-algorithmically-generated typefaces.
-Both libraries were written as internal tools for &lt;a href="https://font-bakers.github.io/">The Font
-Bakers&lt;/a>, to support their research and
-development workflow. I developed and maintain both projects.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h2 id="datasets">Datasets&lt;/h2>
-&lt;ul>
-&lt;li>&lt;a href="https://cryptics.georgeho.org/">&lt;code>cryptics.georgeho.org&lt;/code>&lt;/a>
-&lt;ul>
-&lt;li>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of &lt;a href="https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/reintroducing-the-new-yorkers-cryptic-crossword">cryptic
-crossword&lt;/a>
-clues, indicators and charades, collected from various blogs and publicly
-available digital archives. It is the first and only such data set that is
-openly accessible and larger than any in extant literature, and is a
-significant work of crossword archivism.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul>
-&lt;h2 id="projects">Projects&lt;/h2>
-&lt;ul>
-&lt;li>&lt;a href="https://font-bakers.github.io/">Deep Learning for Algorithmic Type Design&lt;/a>
-&lt;ul>
-&lt;li>As a research project pursued in my last year at The Cooper Union, we
-researched a class- and attribute- conditional generative adversarial
-network capable of producing vector graphics, with potential applications
-in algorithmic type design. The generative model was to produce closed
-shapes, with counter spaces, defined by a variable number of quadratic
-Bézier curves. At the time, no generative model with vector graphic output
-has previously appeared in literature.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>&lt;a href="https://www.georgeho.org/reddit-clusters/">Hate Speech on Reddit&lt;/a>
-&lt;ul>
-&lt;li>As part of a project on &lt;a href="http://ee.cooper.edu/~keene/dssg.html">Data Science for Social
-Good&lt;/a>, I ran text clustering
-algorithms on well-known hateful and toxic subreddits, and collaborated
-with a cross-disciplinary team of artists, architects and engineers to
-present the findings at &lt;a href="https://cooper.edu/events-and-exhibitions/exhibitions/2018-student-exhibition">The Cooper Union 2018 End of Year
-Show&lt;/a>.
-I also wrote &lt;a href="https://www.georgeho.org/reddit-clusters/">a blog post on my
-results&lt;/a>, and &lt;a href="https://www.georgeho.org/reddit-slides/">gave a talk on
-the data science that went into the
-project&lt;/a>.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul></description></item></channel></rss>
+you can read about in &lt;a href="https://www.georgeho.org/migrating-to-hugo">a subsequent blog post&lt;/a>.&lt;/p></description></item></channel></rss>
