@@ -2,8 +2,9 @@
 title: "`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues"
 date: 2021-09-11
 tags:
-  - open-source
+  - cryptic-crossword
   - dataset
+  - open-source
 ---
 
 `cryptics.georgeho.org` is a dataset of cryptic crossword clues[^1], collected
