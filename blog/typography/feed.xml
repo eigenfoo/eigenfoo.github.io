@@ -189,19 +189,19 @@ implement despite recent efforts.&lt;/strong>&lt;/p>
 implementations&lt;/a>, which I recommend skimming
 over before turning to &lt;a href="https://edwardtufte.github.io/tufte-css/">Tufte CSS&lt;/a>
 for a simpler implementation.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Yeah I know, I&amp;rsquo;m interchanging &lt;em>font&lt;/em> and &lt;em>typeface&lt;/em>, but at least I have
 a life.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>Graphic designers may call this &lt;em>active whitespace:&lt;/em> whitespace
 deliberately added for the sake of emphasis or structure.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
+&lt;/div></description></item><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
 &lt;p>This weekend I migrated my blog to Hugo.&lt;/p>
 &lt;p>My website is now based on the &lt;a href="https://github.com/janraasch/hugo-bearblog/">Hugo Bear Blog
 theme&lt;/a>, generated with

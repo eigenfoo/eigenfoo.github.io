@@ -143,25 +143,25 @@ ground.&lt;/p>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
 Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Did you know you can make &lt;a href="http://adereth.github.io/blog/2013/11/29/colorful-equations/">colored equations with
 MathJax&lt;/a>?
 Technology frightens me sometimes.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>This explanation is largely drawn from &lt;a href="http://hunch.net/?p=298">from John Langford&amp;rsquo;s
 &lt;code>hunch.net&lt;/code>&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>If you don&amp;rsquo;t want to do Bishop&amp;rsquo;s exercises, there&amp;rsquo;s a partially complete
 solutions manual &lt;a href="https://github.com/GoldenCheese/PRML-Solution-Manual/">on
 GitHub&lt;/a> 😉&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
+&lt;/div></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -222,7 +222,7 @@ one of many algorithms out there. The main difference is that there are other
 ways to go from our current priors to a decision on which bandit to play
 next. E.g. instead of simply sampling from our priors, we could use the
 upper bound of the 90% credible region, or some dynamic quantile of the
-posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
+posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref1:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
 &lt;h3 id="stochastic-aka-stationary-bandits">Stochastic (a.k.a. stationary) bandits&lt;/h3>
 &lt;p>Let&amp;rsquo;s take this algorithm for a spin! Assume we have rewards which are Bernoulli
 distributed (this would be the situation we face when e.g. modelling
@@ -409,7 +409,7 @@ function.&lt;/p>
 &lt;/figure>
 &lt;h2 id="final-remarks">Final Remarks&lt;/h2>
 &lt;p>None of this theory is new: I&amp;rsquo;m just advertising it! See Cam Davidson-Pilon&amp;rsquo;s
-great blog post about Bayesian bandits&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
+great blog post about Bayesian bandits&lt;sup id="fnref2:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
 and of course, read around papers on arXiv if you want to go deeper!&lt;/p>
 &lt;p>Also, if you want to see all the code that went into this blog post, check out
 &lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">the notebook
@@ -418,20 +418,20 @@ here&lt;/a>.&lt;/p>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>I&amp;rsquo;ve hopped on board the functional programming bandwagon, and couldn&amp;rsquo;t
 help but think that to demonstrate this idea, I didn&amp;rsquo;t need a framework, a
 library or even a class. Just two functions!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>Davidson-Pilon, Cameron. “Multi-Armed Bandits.” DataOrigami, 6 Apr. 2013,
-&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref1:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref2:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>&lt;a href="https://arxiv.org/abs/1111.1797">arXiv:1111.1797&lt;/a> [cs.LG]&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item></channel></rss>
+&lt;/div></description></item></channel></rss>

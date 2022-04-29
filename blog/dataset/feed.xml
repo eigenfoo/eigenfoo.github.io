@@ -109,17 +109,17 @@ lot of time and compute, but subsequent incremental ETL jobs could just run off
 of my laptop. These best practice patterns around data collection and
 management are all applicable far beyond my simple side project, and were
 valuable lessons to learn first-hand.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Puzzlingly, this trend doesn&amp;rsquo;t seem to be true of other forms of
 unglamorous data work like data cleaning, where people generally accept that
 &lt;a href="https://counting.substack.com/p/data-cleaning-is-analysis-not-grunt">data cleaning is not grunt
 work&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues</title><link>https://www.georgeho.org/cryptic-clues/</link><pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/cryptic-clues/</guid><description>&lt;p>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of cryptic crossword clues&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, collected
+&lt;/div></description></item><item><title>`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues</title><link>https://www.georgeho.org/cryptic-clues/</link><pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/cryptic-clues/</guid><description>&lt;p>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of cryptic crossword clues&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, collected
 from various blogs and publicly available digital archives. I originally
 started this project to practice my web scraping and data engineering skills,
 but as it&amp;rsquo;s evolved I hope it can be a resource to solvers and constructors of
@@ -132,11 +132,11 @@ little over half a million clues from cryptic crosswords over the past twelve
 years&lt;/strong>, which makes for a rich and peculiar dataset.&lt;/p>
 &lt;p>Without further ado, please check out
 &lt;a href="https://cryptics.georgeho.org/">&lt;code>cryptics.georgeho.org&lt;/code>&lt;/a>!&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>If you&amp;rsquo;re new to cryptic crosswords, rejoice! A whole new world awaits you! The New Yorker has &lt;a href="https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/reintroducing-the-new-yorkers-cryptic-crossword">an excellent introduction to cryptic crosswords&lt;/a>, and Matt Gritzmacher has &lt;a href="https://crosswordlinks.substack.com/">a daily newsletter with links to crosswords&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item></channel></rss>
+&lt;/div></description></item></channel></rss>

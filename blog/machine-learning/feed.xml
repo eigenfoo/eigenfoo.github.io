@@ -336,14 +336,14 @@ to Aesara will probably require deep familiarity with Theano&amp;rsquo;s design 
 shortcomings. This isn&amp;rsquo;t to discourage me (or anyone else!) from contributing
 to Aesara, but it&amp;rsquo;s good to acknowledge the bottomless pit of technical
 expertise that goes on behind the user-facing Bayesian modelling.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>https://www.georgeho.org/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/floating-point-deep-learning/</guid><description>&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
+&lt;/div></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>https://www.georgeho.org/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/floating-point-deep-learning/</guid><description>&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
 consideration when working with deep learning models: if your model isn&amp;rsquo;t working well,
 then your floating-point format certainly isn&amp;rsquo;t going to save you! However, past a
 certain point of model complexity/model size/training time, your choice of
@@ -545,17 +545,17 @@ down on training times.&lt;/p>
 TF32, so &amp;ldquo;do your homework&amp;rdquo; is all I can advise. However, since the NVIDIA A100s only
 just (at the time of writing) dropped into the market, it&amp;rsquo;ll be interesting to see what
 the machine learning community thinks of the various low precision options available.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Technically speaking, there are &lt;a href="https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format">quadruple-&lt;/a> and &lt;a href="https://en.wikipedia.org/wiki/Octuple-precision_floating-point_format">octuple-precision&lt;/a> floating-point formats, but those are pretty rarely used, and certainly unheard of in deep learning.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>A Tensor Core is essentially a mixed-precision FP16/FP32 core, which NVIDIA has optimized for deep learning applications.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+&lt;/div></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
 Transformer-based NLP models.&lt;/p>
 &lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
 models&lt;/a>, this blog post is a write-up
@@ -913,14 +913,14 @@ surprising conclusions!&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ol>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link>https://www.georgeho.org/bayesian-bandits-2/</link><pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits-2/</guid><description>&lt;blockquote>
+&lt;/div></description></item><item><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link>https://www.georgeho.org/bayesian-bandits-2/</link><pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits-2/</guid><description>&lt;blockquote>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
 Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -1065,25 +1065,25 @@ ground.&lt;/p>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
 Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Did you know you can make &lt;a href="http://adereth.github.io/blog/2013/11/29/colorful-equations/">colored equations with
 MathJax&lt;/a>?
 Technology frightens me sometimes.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>This explanation is largely drawn from &lt;a href="http://hunch.net/?p=298">from John Langford&amp;rsquo;s
 &lt;code>hunch.net&lt;/code>&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>If you don&amp;rsquo;t want to do Bishop&amp;rsquo;s exercises, there&amp;rsquo;s a partially complete
 solutions manual &lt;a href="https://github.com/GoldenCheese/PRML-Solution-Manual/">on
 GitHub&lt;/a> 😉&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
+&lt;/div></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -1144,7 +1144,7 @@ one of many algorithms out there. The main difference is that there are other
 ways to go from our current priors to a decision on which bandit to play
 next. E.g. instead of simply sampling from our priors, we could use the
 upper bound of the 90% credible region, or some dynamic quantile of the
-posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
+posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref1:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
 &lt;h3 id="stochastic-aka-stationary-bandits">Stochastic (a.k.a. stationary) bandits&lt;/h3>
 &lt;p>Let&amp;rsquo;s take this algorithm for a spin! Assume we have rewards which are Bernoulli
 distributed (this would be the situation we face when e.g. modelling
@@ -1331,7 +1331,7 @@ function.&lt;/p>
 &lt;/figure>
 &lt;h2 id="final-remarks">Final Remarks&lt;/h2>
 &lt;p>None of this theory is new: I&amp;rsquo;m just advertising it! See Cam Davidson-Pilon&amp;rsquo;s
-great blog post about Bayesian bandits&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
+great blog post about Bayesian bandits&lt;sup id="fnref2:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
 and of course, read around papers on arXiv if you want to go deeper!&lt;/p>
 &lt;p>Also, if you want to see all the code that went into this blog post, check out
 &lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">the notebook
@@ -1340,23 +1340,23 @@ here&lt;/a>.&lt;/p>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>I&amp;rsquo;ve hopped on board the functional programming bandwagon, and couldn&amp;rsquo;t
 help but think that to demonstrate this idea, I didn&amp;rsquo;t need a framework, a
 library or even a class. Just two functions!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>Davidson-Pilon, Cameron. “Multi-Armed Bandits.” DataOrigami, 6 Apr. 2013,
-&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref1:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref2:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>&lt;a href="https://arxiv.org/abs/1111.1797">arXiv:1111.1797&lt;/a> [cs.LG]&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Understanding Hate Speech on Reddit through Text Clustering</title><link>https://www.georgeho.org/reddit-clusters/</link><pubDate>Sun, 18 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-clusters/</guid><description>&lt;blockquote>
+&lt;/div></description></item><item><title>Understanding Hate Speech on Reddit through Text Clustering</title><link>https://www.georgeho.org/reddit-clusters/</link><pubDate>Sun, 18 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-clusters/</guid><description>&lt;blockquote>
 &lt;p>Note: the following article contains several examples of hate speech
 (including but not limited to racist, misogynistic and homophobic views).&lt;/p>
 &lt;/blockquote>
@@ -1705,7 +1705,7 @@ I limited myself to the top 10 most active subreddits in December 2017 (the most
 recent month for which we have data, at the time of writing), and chose 20 to be
 the number of topics to model (any choice is as arbitrary as any other).&lt;/p>
 &lt;p>I ran LDA and t-SNE exactly as Shuai described on &lt;a href="https://web.archive.org/web/20171219104016/https://shuaiw.github.io/2016/12/22/topic-modeling-and-tsne-visualzation.html">this blog
-post&lt;/a>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>,
+post&lt;/a>&lt;sup id="fnref1:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>,
 except using the great &lt;a href="https://radimrehurek.com/gensim/">&lt;code>gensim&lt;/code>&lt;/a> library to
 perform LDA, which was built with large corpora and efficient online algorithms
 in mind. (Specifically, &lt;code>gensim&lt;/code> implements online variational inference with
@@ -1816,15 +1816,15 @@ clusters. In this case, extremely short and context-dependent documents make it
 hard to justify that there are topic clusters in the first place.&lt;/p>
 &lt;blockquote class="twitter-tweet" data-lang="en">&lt;p lang="en" dir="ltr">Algorithms that have to report something will always report something, even if it&amp;#39;s a bad idea. Please do not use these algorithms unless you have principled reasons why there should be something. &lt;a href="https://t.co/kzxZiuBfmm">https://t.co/kzxZiuBfmm&lt;/a>&lt;/p>&amp;mdash; \mathfrak{Michael Betancourt} (@betanalpha) &lt;a href="https://twitter.com/betanalpha/status/1026619046626828288?ref_src=twsrc%5Etfw">August 7, 2018&lt;/a>&lt;/blockquote>
 &lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8">&lt;/script>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>&lt;a href="https://github.com/ShuaiW">&lt;code>ShuaiW&lt;/code>&lt;/a> has since taken down his blog, so I
-am linking to the Internet Archive of his blog post instead.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+am linking to the Internet Archive of his blog post instead.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref1:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>https://www.georgeho.org/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
+&lt;/div></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>https://www.georgeho.org/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
 &lt;em>Machine Learning Algorithm&lt;/em>. It&amp;rsquo;s got two modes: training mode and testing
 mode. You set it to training mode, and throw in a lot (sometimes &lt;em>a lot&lt;/em> a lot)
 of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called

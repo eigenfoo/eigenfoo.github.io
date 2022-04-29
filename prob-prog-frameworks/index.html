@@ -161,22 +161,22 @@ functionality</li></ol><p>Some remarks:</p><ul><li>Pyro includes the Poutine sub
 handlers</a>. While this might sound like recondite
 abstractions, they allow you to implement your own custom inference algorithms and
 otherwise manipulate Pyro probabilistic programs. In fact, all of Pyro&rsquo;s inference
-algorithms use these effect handlers.</li></ul><section class=footnotes role=doc-endnotes><hr><ol><li id=fn:1 role=doc-endnote><p>In case you&rsquo;re testifying under oath and need more reliable sources than
+algorithms use these effect handlers.</li></ul><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>In case you&rsquo;re testifying under oath and need more reliable sources than
 a blog post, I&rsquo;ve kept a <a href=https://www.zotero.org/eigenfoo/items/collectionKey/AE8882GQ>Zotero
 collection</a> for
-this project.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2 role=doc-endnote><p>Universal probabilistic programming is an interesting field of inquiry,
+this project.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:2><p>Universal probabilistic programming is an interesting field of inquiry,
 but has mainly remained in the realm of academic research. For a (much) more
 comprehensive treatment, check out <a href=http://www.robots.ox.ac.uk/~twgr/assets/pdf/rainforth2017thesis.pdf>Tom Rainforth&rsquo;s PhD
-thesis</a>.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3 role=doc-endnote><p>Since publishing this blog post, I have been informed that I am more
+thesis</a>.&#160;<a href=#fnref:2 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:3><p>Since publishing this blog post, I have been informed that I am more
 ignorant than I know: I have forgotten
 <a href=https://github.com/cscherrer/Soss.jl>Soss.jl</a> in Julia and
-<a href=https://github.com/thu-ml/zhusuan>ZhuSuan</a> in Python.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4 role=doc-endnote><p>It turns out that such transformations must be <a href=https://en.wikipedia.org/wiki/Local_diffeomorphism>local
+<a href=https://github.com/thu-ml/zhusuan>ZhuSuan</a> in Python.&#160;<a href=#fnref:3 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:4><p>It turns out that such transformations must be <a href=https://en.wikipedia.org/wiki/Local_diffeomorphism>local
 diffeomorphisms</a>, and the
 derivative information requires computing the log determinant of the Jacobian
 of the transformation, commonly abbreviated to <code>log_det_jac</code> or something
-similar.&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:5 role=doc-endnote><p>As an aside, I&rsquo;ll say that it&rsquo;s mind boggling how Stan does this. To
+similar.&#160;<a href=#fnref:4 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li><li id=fn:5><p>As an aside, I&rsquo;ll say that it&rsquo;s mind boggling how Stan does this. To
 quote a (nameless) PyMC core developer:</p><blockquote><p>I think that maintaining your own autodifferentiation library is the
-path of a crazy person.</p></blockquote>&#160;<a href=#fnref:5 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></li></ol></section></content><p><a href=https://www.georgeho.org/blog/probabilistic-programming/>#probabilistic-programming</a>
+path of a crazy person.</p></blockquote>&#160;<a href=#fnref:5 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></li></ol></div></content><p><a href=https://www.georgeho.org/blog/probabilistic-programming/>#probabilistic-programming</a>
 <a href=https://www.georgeho.org/blog/pymc/>#pymc</a>
 <a href=https://www.georgeho.org/blog/open-source/>#open-source</a></p></main><footer><form action=https://buttondown.email/api/emails/embed-subscribe/eigenfoo method=post target=popupwindow onsubmit='window.open("https://buttondown.email/eigenfoo","popupwindow")' class=embeddable-buttondown-form><label for=bd-email>Get my (monthly?) blog posts over email:</label><br><input type=email name=email id=bd-email placeholder=your@email.com>
 <input type=submit value=Subscribe></form><br>Made with <a href=https://github.com/janraasch/hugo-bearblog/>Hugo ʕ•ᴥ•ʔ Bear</a></footer></body></html>

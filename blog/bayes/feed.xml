@@ -208,25 +208,25 @@ ground.&lt;/p>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
 Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Did you know you can make &lt;a href="http://adereth.github.io/blog/2013/11/29/colorful-equations/">colored equations with
 MathJax&lt;/a>?
 Technology frightens me sometimes.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>This explanation is largely drawn from &lt;a href="http://hunch.net/?p=298">from John Langford&amp;rsquo;s
 &lt;code>hunch.net&lt;/code>&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>If you don&amp;rsquo;t want to do Bishop&amp;rsquo;s exercises, there&amp;rsquo;s a partially complete
 solutions manual &lt;a href="https://github.com/GoldenCheese/PRML-Solution-Manual/">on
 GitHub&lt;/a> 😉&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Modern Computational Methods for Bayesian Inference — A Reading List</title><link>https://www.georgeho.org/bayesian-inference-reading/</link><pubDate>Wed, 02 Jan 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-inference-reading/</guid><description>&lt;p>Lately I&amp;rsquo;ve been troubled by how little I actually knew about how Bayesian
+&lt;/div></description></item><item><title>Modern Computational Methods for Bayesian Inference — A Reading List</title><link>https://www.georgeho.org/bayesian-inference-reading/</link><pubDate>Wed, 02 Jan 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-inference-reading/</guid><description>&lt;p>Lately I&amp;rsquo;ve been troubled by how little I actually knew about how Bayesian
 inference &lt;em>really worked&lt;/em>. I could explain to you &lt;a href="https://maria-antoniak.github.io/2018/11/19/data-science-crash-course.html">many other machine learning
 techniques&lt;/a>,
 but with Bayesian modelling&amp;hellip; well, there&amp;rsquo;s a model (which is basically the
@@ -398,21 +398,21 @@ paper.&lt;/li>
 &lt;p>(I&amp;rsquo;ve tried to include as many relevant and helpful resources as I could find,
 but if you feel like I&amp;rsquo;ve missed something, &lt;a href="https://twitter.com/@_eigenfoo">drop me a
 line&lt;/a>!)&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>&lt;a href="https://twitter.com/year_progress/status/1079889949871300608">Relevant tweet
 here.&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>If that’s what you’re looking for, check out my &lt;a href="https://www.georgeho.org/bayesian-modelling-cookbook">Bayesian modelling
 cookbook&lt;/a> or &lt;a href="https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html">Michael
 Betancourt’s excellent essay on a principles Bayesian
 workflow&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
+&lt;/div></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
 late bloomer (as far as machine learning subfields go), and it&amp;rsquo;s not immediately
 obvious how close the field is to viable, large-scale, production-ready
 techniques (in the same way that, say, &lt;a href="https://clarifai.com/models/">computer vision
@@ -553,15 +553,15 @@ deck below. This talk was delivered to a graduate-level course in frequentist
 machine learning.&lt;/p>
 &lt;blockquote class="embedly-card">&lt;h4>&lt;a href="https://speakerdeck.com/_eigenfoo/probabilistic-and-bayesian-matrix-factorizations-for-text-clustering">Probabilistic and Bayesian Matrix Factorizations for Text Clustering&lt;/a>&lt;/h4>&lt;p> I experimented with using these techniques to cluster subreddits. In a nutshell, nothing seemed to work out very well, and I opine on why I think that’s the case in this slide deck. This talk was delivered to a graduate-level course in frequentist machine learning. &lt;/p>&lt;/blockquote>
 &lt;script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8">&lt;/script>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>which is, by the way, a &lt;a href="http://scikit-learn.org/stable/modules/decomposition.html">severely underappreciated technique in machine
 learning&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
+&lt;/div></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -622,7 +622,7 @@ one of many algorithms out there. The main difference is that there are other
 ways to go from our current priors to a decision on which bandit to play
 next. E.g. instead of simply sampling from our priors, we could use the
 upper bound of the 90% credible region, or some dynamic quantile of the
-posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
+posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref1:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
 &lt;h3 id="stochastic-aka-stationary-bandits">Stochastic (a.k.a. stationary) bandits&lt;/h3>
 &lt;p>Let&amp;rsquo;s take this algorithm for a spin! Assume we have rewards which are Bernoulli
 distributed (this would be the situation we face when e.g. modelling
@@ -809,7 +809,7 @@ function.&lt;/p>
 &lt;/figure>
 &lt;h2 id="final-remarks">Final Remarks&lt;/h2>
 &lt;p>None of this theory is new: I&amp;rsquo;m just advertising it! See Cam Davidson-Pilon&amp;rsquo;s
-great blog post about Bayesian bandits&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
+great blog post about Bayesian bandits&lt;sup id="fnref2:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
 and of course, read around papers on arXiv if you want to go deeper!&lt;/p>
 &lt;p>Also, if you want to see all the code that went into this blog post, check out
 &lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">the notebook
@@ -818,23 +818,23 @@ here&lt;/a>.&lt;/p>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>I&amp;rsquo;ve hopped on board the functional programming bandwagon, and couldn&amp;rsquo;t
 help but think that to demonstrate this idea, I didn&amp;rsquo;t need a framework, a
 library or even a class. Just two functions!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>Davidson-Pilon, Cameron. “Multi-Armed Bandits.” DataOrigami, 6 Apr. 2013,
-&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref1:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref2:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>&lt;a href="https://arxiv.org/abs/1111.1797">arXiv:1111.1797&lt;/a> [cs.LG]&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
+&lt;/div></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
 Bayesian modelling, and it&amp;rsquo;s an amazing piece of software! The API only exposes
 as much of heavy machinery of MCMC as you need — by which I mean, just the
 &lt;code>pm.sample()&lt;/code> method (a.k.a., as &lt;a href="http://twiecki.github.io/blog/2013/08/12/bayesian-glms-1/">Thomas

@@ -336,14 +336,14 @@ to Aesara will probably require deep familiarity with Theano&amp;rsquo;s design 
 shortcomings. This isn&amp;rsquo;t to discourage me (or anyone else!) from contributing
 to Aesara, but it&amp;rsquo;s good to acknowledge the bottomless pit of technical
 expertise that goes on behind the user-facing Bayesian modelling.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>https://www.georgeho.org/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/floating-point-deep-learning/</guid><description>&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
+&lt;/div></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>https://www.georgeho.org/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/floating-point-deep-learning/</guid><description>&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
 consideration when working with deep learning models: if your model isn&amp;rsquo;t working well,
 then your floating-point format certainly isn&amp;rsquo;t going to save you! However, past a
 certain point of model complexity/model size/training time, your choice of
@@ -545,17 +545,17 @@ down on training times.&lt;/p>
 TF32, so &amp;ldquo;do your homework&amp;rdquo; is all I can advise. However, since the NVIDIA A100s only
 just (at the time of writing) dropped into the market, it&amp;rsquo;ll be interesting to see what
 the machine learning community thinks of the various low precision options available.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Technically speaking, there are &lt;a href="https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format">quadruple-&lt;/a> and &lt;a href="https://en.wikipedia.org/wiki/Octuple-precision_floating-point_format">octuple-precision&lt;/a> floating-point formats, but those are pretty rarely used, and certainly unheard of in deep learning.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>A Tensor Core is essentially a mixed-precision FP16/FP32 core, which NVIDIA has optimized for deep learning applications.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+&lt;/div></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
 Transformer-based NLP models.&lt;/p>
 &lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
 models&lt;/a>, this blog post is a write-up
@@ -913,14 +913,14 @@ surprising conclusions!&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ol>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Autoregressive Models in Deep Learning — A Brief Survey</title><link>https://www.georgeho.org/deep-autoregressive-models/</link><pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/deep-autoregressive-models/</guid><description>&lt;p>My current project involves working with deep autoregressive models: a class of
+&lt;/div></description></item><item><title>Autoregressive Models in Deep Learning — A Brief Survey</title><link>https://www.georgeho.org/deep-autoregressive-models/</link><pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/deep-autoregressive-models/</guid><description>&lt;p>My current project involves working with deep autoregressive models: a class of
 remarkable neural networks that aren&amp;rsquo;t usually seen on a first pass through deep
 learning. These notes are a quick write-up of my reading and research: I assume
 basic familiarity with deep learning, and aim to highlight general trends and
@@ -1193,23 +1193,23 @@ long-term memory.&lt;/p>
 &lt;/ul>
 &lt;/li>
 &lt;/ol>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>There&amp;rsquo;s actually a lot more nuance than meets the eye in this animation,
 but all I&amp;rsquo;m trying to illustrate is the feed-forward nature of autoregressive
 models.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>I personally think it&amp;rsquo;s breathtakingly that machines can do this. Imagine
 your phone keyboard&amp;rsquo;s word suggestions (those are autoregressive!) spitting
 out an entire novel. Or imagine weaving a sweater but you had to choose the
 color of every stitch, in order, in advance.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>In case you haven&amp;rsquo;t noticed, Google DeepMind seemed to have had an
 infatuation with autoregressive models back in 2016.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item></channel></rss>
+&lt;/div></description></item></channel></rss>

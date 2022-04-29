@@ -317,35 +317,35 @@ abstractions, they allow you to implement your own custom inference algorithms a
 otherwise manipulate Pyro probabilistic programs. In fact, all of Pyro&amp;rsquo;s inference
 algorithms use these effect handlers.&lt;/li>
 &lt;/ul>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>In case you&amp;rsquo;re testifying under oath and need more reliable sources than
 a blog post, I&amp;rsquo;ve kept a &lt;a href="https://www.zotero.org/eigenfoo/items/collectionKey/AE8882GQ">Zotero
 collection&lt;/a> for
 this project.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>Universal probabilistic programming is an interesting field of inquiry,
 but has mainly remained in the realm of academic research. For a (much) more
 comprehensive treatment, check out &lt;a href="http://www.robots.ox.ac.uk/~twgr/assets/pdf/rainforth2017thesis.pdf">Tom Rainforth&amp;rsquo;s PhD
 thesis&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>Since publishing this blog post, I have been informed that I am more
 ignorant than I know: I have forgotten
 &lt;a href="https://github.com/cscherrer/Soss.jl">Soss.jl&lt;/a> in Julia and
 &lt;a href="https://github.com/thu-ml/zhusuan">ZhuSuan&lt;/a> in Python.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:4" role="doc-endnote">
+&lt;li id="fn:4">
 &lt;p>It turns out that such transformations must be &lt;a href="https://en.wikipedia.org/wiki/Local_diffeomorphism">local
 diffeomorphisms&lt;/a>, and the
 derivative information requires computing the log determinant of the Jacobian
 of the transformation, commonly abbreviated to &lt;code>log_det_jac&lt;/code> or something
 similar.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:5" role="doc-endnote">
+&lt;li id="fn:5">
 &lt;p>As an aside, I&amp;rsquo;ll say that it&amp;rsquo;s mind boggling how Stan does this. To
 quote a (nameless) PyMC core developer:&lt;/p>
 &lt;blockquote>
@@ -354,4 +354,4 @@ path of a crazy person.&lt;/p>
 &lt;/blockquote>
 &amp;#160;&lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/li>
 &lt;/ol>
-&lt;/section></description></item></channel></rss>
+&lt;/div></description></item></channel></rss>

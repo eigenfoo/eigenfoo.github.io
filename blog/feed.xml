@@ -1,4 +1,209 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blogs on George Ho</title><link>https://www.georgeho.org/blog/</link><description>Recent content in Blogs on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 23 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/feed.xml" rel="self" type="application/rss+xml"/><item><title>Link Bulletin, April 2022</title><link>https://www.georgeho.org/link-bulletin-2022-04/</link><pubDate>Sat, 23 Apr 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/link-bulletin-2022-04/</guid><description>&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blogs on George Ho</title><link>https://www.georgeho.org/blog/</link><description>Recent content in Blogs on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Fri, 29 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/feed.xml" rel="self" type="application/rss+xml"/><item><title>How Many Cryptic Crossword Grids Are There?</title><link>https://www.georgeho.org/counting-cryptics/</link><pubDate>Fri, 29 Apr 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/counting-cryptics/</guid><description>&lt;p>Counting the number of valid American-style crossword grids is more or less a
+solved problem. For example, see this &lt;a href="https://fivethirtyeight.com/features/how-many-crossword-puzzles-can-you-make/">FiveThirtyEight
+Riddler&lt;/a>
+and &lt;a href="https://twitter.com/Log3overLog2/status/1092472516571000839">Michael Kleber&amp;rsquo;s answer in a Twitter
+thread&lt;/a>.&lt;/p>
+&lt;p>However, the same doesn&amp;rsquo;t seem to be true for British-style cryptic crosswords.
+Hence this blog post!&lt;/p>
+&lt;p>Now, &lt;em>counting&lt;/em> the number of valid grids is a different task from
+&lt;em>enumerating&lt;/em> them, and it&amp;rsquo;s a bad idea to do the former by doing the latter,
+because the sheer number of grids can be prohibitively expensive to compute.
+However, I&amp;rsquo;m mostly interested in grids smaller than 11×11, and I actually
+&lt;em>wanted&lt;/em> to see all possible grids, so I went ahead and did the inadvisable.&lt;/p>
+&lt;p>So let&amp;rsquo;s jump right in! If you&amp;rsquo;re just interested in the numbers and a list of
+all valid grids, feel free to scroll to the very end.&lt;/p>
+&lt;h2 id="what-makes-a-valid-cryptic-grid">What Makes A Valid Cryptic Grid?&lt;/h2>
+&lt;ol>
+&lt;li>The grid must be &lt;strong>rotationally symmetric&lt;/strong>.&lt;/li>
+&lt;li>The grid length (i.e. the length of one side of the grid) must be an &lt;strong>odd
+number&lt;/strong>.&lt;/li>
+&lt;li>All white squares must be &lt;strong>connected&lt;/strong>: that is, there can be only one
+contiguous island of white squares.&lt;/li>
+&lt;li>All words must have &lt;strong>half their letters checked&lt;/strong>.
+&lt;ul>
+&lt;li>For words of odd length, there&amp;rsquo;s some ambiguity: depending on who you talk
+to, either &amp;ldquo;half rounded up&amp;rdquo; or &amp;ldquo;half rounded up or down&amp;rdquo; must be checked.&lt;/li>
+&lt;li>For the purposes of this blog post, I required &amp;ldquo;half rounded up&amp;rdquo;.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>There &lt;strong>cannot be more than two consecutive unchecked squares&lt;/strong>.&lt;/li>
+&lt;li>Two consecutive unchecked squares &lt;strong>cannot occur at the start or end of a
+word&lt;/strong>.
+&lt;ul>
+&lt;li>I haven&amp;rsquo;t found much explicit mention of this rule other than &lt;a href="https://www.crosswordunclued.com/2009/09/crossword-grid-checking.html">this blog
+post&lt;/a>
+saying that it&amp;rsquo;s a &amp;ldquo;house rule&amp;rdquo; at &lt;em>The Times&lt;/em> of London, but all cryptics
+I&amp;rsquo;ve seen have hewed to this requirement, so I enforced it.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>It&amp;rsquo;s also worth noting that different constructors and publications have
+different &amp;ldquo;house rules&amp;rdquo;. For example:&lt;/p>
+&lt;ul>
+&lt;li>Some publications have upper and/or lower limits on the number of clues. For
+example, &lt;a href="https://www.ft.com/crossword">the &lt;em>Financial Times&lt;/em>&lt;/a> seems to
+always have exactly 32 clues.&lt;/li>
+&lt;li>Some constructors also restrict the size of black islands: for example, there
+cannot be a contiguous black island of more than five squares.&lt;/li>
+&lt;/ul>
+&lt;p>I didn&amp;rsquo;t enforce these rules, more out of laziness and lack of time than
+technical infeasibility.&lt;/p>
+&lt;h2 id="generating-cryptic-grids">Generating Cryptic Grids&lt;/h2>
+&lt;p>Akshay Ravikumar has an &lt;a href="https://akshayr.xyz/blog/articles/counting-crosswords">excellent blog
+post&lt;/a> explaining how he
+generated American crosswords, and if you&amp;rsquo;re interested in diving deeper I
+highly recommend reading his exposition: my algorithm is more or less directly
+lifted from his work, just adapted to cryptic crosswords.&lt;/p>
+&lt;p>Here&amp;rsquo;s the final algorithm that I used:&lt;/p>
+&lt;ol>
+&lt;li>Precompute all &lt;code>valid_rows&lt;/code> and &lt;code>symmetric_rows&lt;/code>: for a cryptic, these are
+rows that don&amp;rsquo;t have words below the minimum word length.&lt;/li>
+&lt;li>Using &lt;code>valid_rows&lt;/code> and &lt;code>symmetric_rows&lt;/code>, find all sets of valid middle three
+rows &amp;mdash; for example, for an 11×11 grid, find all possible fifth, sixth and
+seventh rows.
+&lt;ul>
+&lt;li>Note that the middle row must be symmetric, and the two adjacent rows must
+be mirror images of each other.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>From the middle rows outward, build up a grid in a depth-first search.
+&lt;ul>
+&lt;li>Before adding a new row, make sure that it satisfies the checking
+requirement: that it has the correct number of unchecked squares and has
+at most two consecutive unchecked squares not at the start or end of
+words.&lt;/li>
+&lt;li>There is also a trick we can use to limit the search space: if the
+previous three rows have a column that is black-white-white, then in the
+same column, the next row must be white.&lt;/li>
+&lt;li>This is best explained pictorially:
+&lt;img src="https://www.georgeho.org/assets/images/counting-cryptics-illustration.png" alt="An illustration of the black-black-whitetrick">&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Check that the columns are valid. Specifically:
+&lt;ul>
+&lt;li>Check that the columns are &lt;code>valid_rows&lt;/code> (this ensures that there are no
+words below the minimum word length).&lt;/li>
+&lt;li>And also check that the columns don&amp;rsquo;t have two consecutive unchecked
+squares at the start or end of the word.&lt;/li>
+&lt;li>Note that all other requirements (e.g. the number of checked squares) are
+already taken care up while building up the grid.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Check connectedness of the grid using a &lt;a href="https://www.hackerearth.com/practice/algorithms/graphs/depth-first-search/tutorial/">depth-first
+search&lt;/a>.&lt;/li>
+&lt;/ol>
+&lt;p>This algorithm works well and runs reasonably quickly (i.e. in less than a
+minute) for 5×5 and 7×7 grids, but at 9×9 the search time becomes significant
+(around half an hour on a MacBook Pro). Additionally, some valid grids aren&amp;rsquo;t
+very interesting as &amp;ldquo;real&amp;rdquo; crosswords, such as the one below.&lt;/p>
+&lt;center>&lt;pre>&lt;code>
+⬛⬛⬛⬛⬜⬜⬜
+⬛⬛⬛⬛⬜⬛⬜
+⬛⬛⬛⬛⬜⬛⬜
+⬜⬜⬜⬜⬜⬜⬜
+⬜⬛⬜⬛⬛⬛⬛
+⬜⬛⬜⬛⬛⬛⬛
+⬜⬜⬜⬛⬛⬛⬛
+&lt;/code>&lt;/pre>&lt;/center>
+&lt;p>It&amp;rsquo;s not very interesting because of the sheer number of black squares (and
+correspondingly low number of clues). So to winnow down the grids more, I
+filtered &lt;code>valid_rows&lt;/code> before I start: &lt;code>valid_rows&lt;/code> must have a minimum number
+of white squares: 2 squares for 5×5 and 3 squares for 7×7 through 13×13.
+Anecdotally, this reduces the computation time by a factor of three or four. I
+call the grids produced in this reduced search &lt;em>&amp;ldquo;interesting grids&amp;rdquo;,&lt;/em> as
+opposed to &lt;em>&amp;ldquo;valid grids&amp;rdquo;&lt;/em>.&lt;/p>
+&lt;p>I should note that there are definitely more ways to speed up the search: I
+could&amp;rsquo;ve parallelize the search (i.e. assign each worker a subset of the valid
+middle rows), I could&amp;rsquo;ve written the program in a language faster than Python
+(like Julia), and further algorithmic speedups are possible (e.g. checking
+columns after adding each row would prune more grids earlier, instead of
+deferring the column checks to after the grid is constructed).&lt;/p>
+&lt;p>At any rate, I just ran the program on my laptop, and stopped at 9×9 grids.
+Results below!&lt;/p>
+&lt;h2 id="results">Results&lt;/h2>
+&lt;p>If you&amp;rsquo;ve just scrolled down here, the only thing you need to note is that an
+&lt;em>&amp;ldquo;interesting grid&amp;rdquo;&lt;/em> is one in which every row has at least a certain number of
+white squares: 2 for 5×5 grids and 3 for 7×7 grids onwards.&lt;/p>
+&lt;p>For comparison, I&amp;rsquo;ve added the number of valid American grids, taken from
+&lt;a href="https://twitter.com/Log3overLog2/status/1092795679947264000">Michael Kleber&amp;rsquo;s corrected
+Tweet&lt;/a>.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:center">Grid Size&lt;/th>
+&lt;th style="text-align:right">Valid Grids&lt;/th>
+&lt;th style="text-align:right">Interesting Grids&lt;/th>
+&lt;th style="text-align:right">American Grids&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:center">5×5&lt;/td>
+&lt;td style="text-align:right">17&lt;/td>
+&lt;td style="text-align:right">9&lt;/td>
+&lt;td style="text-align:right">12&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">7×7&lt;/td>
+&lt;td style="text-align:right">346&lt;/td>
+&lt;td style="text-align:right">43&lt;/td>
+&lt;td style="text-align:right">312&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">9×9&lt;/td>
+&lt;td style="text-align:right">9,381&lt;/td>
+&lt;td style="text-align:right">334&lt;/td>
+&lt;td style="text-align:right">31,187&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">11×11&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">17,438,702&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">13×13&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">40,575,832,476&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">15×15&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">404,139,015,237,875&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>There are 346 valid 7×7 cryptics &amp;mdash; interestingly, slightly more than the
+pleasing 6 × 52 = 312 valid American-style crosswords which inspired &lt;a href="https://www.7xwords.com/why.html">Malaika
+Handa&amp;rsquo;s 7xwords&lt;/a>; disappointingly,
+factorizing into a not-at-all-auspicious 2 × 173.&lt;/p>
+&lt;p>For larger grid lengths, there appear to be far fewer valid cryptic grids than
+American grids, probably owing to the more stringent conditions for cryptics.&lt;/p>
+&lt;p>It was infeasible for me to run my program for 11×11 grids onwards &amp;mdash; either I
+need to put a lot more effort in optimizing my program, or (more likely) it&amp;rsquo;s
+simply computationally intractable to enumerate all possible grids, and we can
+only count them. If I&amp;rsquo;m inspired to pick up this line of work again, I&amp;rsquo;ll be
+sure to post a part two!&lt;/p>
+&lt;p>And finally, the code:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/eigenfoo/counting-cryptics">Source code (Python Jupyter Notebook)&lt;/a>&lt;/li>
+&lt;li>Valid grids
+&lt;ul>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/valid_5x5_grids.txt">5×5&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/valid_7x7_grids.txt">7×7&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/valid_9x9_grids.txt">9×9&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Interesting grids
+&lt;ul>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_5x5_grids.txt">5×5&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_7x7_grids.txt">7×7&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_9x9_grids.txt">9×9&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>Link Bulletin, April 2022</title><link>https://www.georgeho.org/link-bulletin-2022-04/</link><pubDate>Sat, 23 Apr 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/link-bulletin-2022-04/</guid><description>&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
 that the links I find interesting might also be interesting to others: at most
 once a month, I&amp;rsquo;ll compile and post a handful of links that I&amp;rsquo;ve read and
 thought about, with minimal explanation or commentary. Here we go!&lt;/p>
@@ -204,19 +409,19 @@ implement despite recent efforts.&lt;/strong>&lt;/p>
 implementations&lt;/a>, which I recommend skimming
 over before turning to &lt;a href="https://edwardtufte.github.io/tufte-css/">Tufte CSS&lt;/a>
 for a simpler implementation.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Yeah I know, I&amp;rsquo;m interchanging &lt;em>font&lt;/em> and &lt;em>typeface&lt;/em>, but at least I have
 a life.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>Graphic designers may call this &lt;em>active whitespace:&lt;/em> whitespace
 deliberately added for the sake of emphasis or structure.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
+&lt;/div></description></item><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
 &lt;p>This weekend I migrated my blog to Hugo.&lt;/p>
 &lt;p>My website is now based on the &lt;a href="https://github.com/janraasch/hugo-bearblog/">Hugo Bear Blog
 theme&lt;/a>, generated with
@@ -388,17 +593,17 @@ lot of time and compute, but subsequent incremental ETL jobs could just run off
 of my laptop. These best practice patterns around data collection and
 management are all applicable far beyond my simple side project, and were
 valuable lessons to learn first-hand.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Puzzlingly, this trend doesn&amp;rsquo;t seem to be true of other forms of
 unglamorous data work like data cleaning, where people generally accept that
 &lt;a href="https://counting.substack.com/p/data-cleaning-is-analysis-not-grunt">data cleaning is not grunt
 work&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Streaming Data with Tornado and WebSockets</title><link>https://www.georgeho.org/tornado-websockets/</link><pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tornado-websockets/</guid><description>&lt;p>A lot of data science and machine learning practice assumes a static dataset,
+&lt;/div></description></item><item><title>Streaming Data with Tornado and WebSockets</title><link>https://www.georgeho.org/tornado-websockets/</link><pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tornado-websockets/</guid><description>&lt;p>A lot of data science and machine learning practice assumes a static dataset,
 maybe with some MLOps tooling for rerunning a model pipeline with the freshest
 version of the dataset.&lt;/p>
 &lt;p>Working with streaming data is an entirely different ball game, and it wasn&amp;rsquo;t
@@ -675,14 +880,14 @@ want is to exchange data between different endpoints and neither is a browser.&l
 ideal technology for handling streaming data (from a maintainability or
 architectural point of view), but that doesn&amp;rsquo;t mean that they aren&amp;rsquo;t good
 scalable technologies when they do work.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>There is &lt;a href="https://sqlstream.com/real-time-vs-streaming-a-short-explanation/">technically a difference&lt;/a> between &amp;ldquo;real-time&amp;rdquo; and &amp;ldquo;streaming&amp;rdquo;: &amp;ldquo;real-time&amp;rdquo; refers to data that comes in as it is created, whereas &amp;ldquo;streaming&amp;rdquo; refers to a system that processes data continuously. You stream your TV show from Netflix, but since the show was created long before you watched it, you aren&amp;rsquo;t viewing it in real-time.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Joining Flatiron Health</title><link>https://www.georgeho.org/joining-flatiron/</link><pubDate>Fri, 24 Sep 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/joining-flatiron/</guid><description>&lt;p>An exciting professional update: today is my last day at
+&lt;/div></description></item><item><title>Joining Flatiron Health</title><link>https://www.georgeho.org/joining-flatiron/</link><pubDate>Fri, 24 Sep 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/joining-flatiron/</guid><description>&lt;p>An exciting professional update: today is my last day at
 &lt;a href="https://www.point72.com/">Point72&lt;/a> and next month I’ll be joining &lt;a href="https://flatiron.com/">Flatiron
 Health&lt;/a> as a data scientist on their machine learning
 team! I&amp;rsquo;ll be working out of their SoHo offices, and will continue to be based
@@ -705,14 +910,14 @@ little over half a million clues from cryptic crosswords over the past twelve
 years&lt;/strong>, which makes for a rich and peculiar dataset.&lt;/p>
 &lt;p>Without further ado, please check out
 &lt;a href="https://cryptics.georgeho.org/">&lt;code>cryptics.georgeho.org&lt;/code>&lt;/a>!&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>If you&amp;rsquo;re new to cryptic crosswords, rejoice! A whole new world awaits you! The New Yorker has &lt;a href="https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/reintroducing-the-new-yorkers-cryptic-crossword">an excellent introduction to cryptic crosswords&lt;/a>, and Matt Gritzmacher has &lt;a href="https://crosswordlinks.substack.com/">a daily newsletter with links to crosswords&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Understanding NUTS and HMC</title><link>https://www.georgeho.org/understanding-nuts-hmc/</link><pubDate>Thu, 07 Jan 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/understanding-nuts-hmc/</guid><description>&lt;p>&lt;em>&amp;ldquo;Bayesian modeling is harder than deep learning&amp;rdquo;&lt;/em> is a sentiment I&amp;rsquo;ve been
+&lt;/div></description></item><item><title>Understanding NUTS and HMC</title><link>https://www.georgeho.org/understanding-nuts-hmc/</link><pubDate>Thu, 07 Jan 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/understanding-nuts-hmc/</guid><description>&lt;p>&lt;em>&amp;ldquo;Bayesian modeling is harder than deep learning&amp;rdquo;&lt;/em> is a sentiment I&amp;rsquo;ve been
 hearing a lot lately. While I&amp;rsquo;m skeptical of sweeping statements like that, I
 agree when it comes to the central inference algorithm &amp;mdash; how MCMC samplers
 work (especially the &lt;em>de facto&lt;/em> standard samplers, NUTS and HMC) is one of the
@@ -1084,14 +1289,14 @@ to Aesara will probably require deep familiarity with Theano&amp;rsquo;s design 
 shortcomings. This isn&amp;rsquo;t to discourage me (or anyone else!) from contributing
 to Aesara, but it&amp;rsquo;s good to acknowledge the bottomless pit of technical
 expertise that goes on behind the user-facing Bayesian modelling.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Serif Fonts for Coding</title><link>https://www.georgeho.org/fonts-for-coding/</link><pubDate>Thu, 26 Nov 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/fonts-for-coding/</guid><description>&lt;p>Sometimes I get sniped by &lt;a href="https://news.ycombinator.com/item?id=25159038">Hacker News
+&lt;/div></description></item><item><title>Serif Fonts for Coding</title><link>https://www.georgeho.org/fonts-for-coding/</link><pubDate>Thu, 26 Nov 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/fonts-for-coding/</guid><description>&lt;p>Sometimes I get sniped by &lt;a href="https://news.ycombinator.com/item?id=25159038">Hacker News
 posts&lt;/a>, and this one plunged me
 down a rabbit hole for coding fonts.&lt;/p>
 &lt;p>Many coding fonts are lightly stressed, monospaced sans serifs: in other words, each glyph takes
@@ -1375,17 +1580,17 @@ down on training times.&lt;/p>
 TF32, so &amp;ldquo;do your homework&amp;rdquo; is all I can advise. However, since the NVIDIA A100s only
 just (at the time of writing) dropped into the market, it&amp;rsquo;ll be interesting to see what
 the machine learning community thinks of the various low precision options available.&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Technically speaking, there are &lt;a href="https://en.wikipedia.org/wiki/Quadruple-precision_floating-point_format">quadruple-&lt;/a> and &lt;a href="https://en.wikipedia.org/wiki/Octuple-precision_floating-point_format">octuple-precision&lt;/a> floating-point formats, but those are pretty rarely used, and certainly unheard of in deep learning.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>A Tensor Core is essentially a mixed-precision FP16/FP32 core, which NVIDIA has optimized for deep learning applications.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+&lt;/div></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
 Transformer-based NLP models.&lt;/p>
 &lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
 models&lt;/a>, this blog post is a write-up
@@ -1743,14 +1948,14 @@ surprising conclusions!&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ol>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>https://www.georgeho.org/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
+&lt;/div></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>https://www.georgeho.org/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
 API by manipulating the &lt;a href="https://docs.python.org/3/library/ast.html">Python abstract syntax
 tree&lt;/a> (AST) of the model code. The PyMC
 developers didn&amp;rsquo;t end up pursuing those API changes any further, but not until I had the
@@ -1931,23 +2136,23 @@ thread&lt;/a> helpful.&lt;/li>
 people gave their feedback on this work &lt;a href="https://twitter.com/avibryant/status/1150827954319982592">on
 Twitter&lt;/a>.&lt;/li>
 &lt;/ul>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Or should I say, complicating? At any rate, changing!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>I was &lt;a href="https://twitter.com/avibryant/status/1150827954319982592">subsequently
 convinced&lt;/a> that this
 isn&amp;rsquo;t a leaky abstraction after all.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>I omitted the implementation of &lt;code>parse_snippet&lt;/code> for brevity. If you want
 to see it, check out the &amp;ldquo;AST Helper Functions&amp;rdquo; section of &lt;a href="https://github.com/eigenfoo/random/blob/master/python/ast-hiding-yield/00-prototype/hiding-yield.ipynb">this
 notebook&lt;/a>.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:4" role="doc-endnote">
+&lt;li id="fn:4">
 &lt;p>For way more information on &lt;code>exec&lt;/code>, &lt;code>eval&lt;/code>, &lt;code>locals&lt;/code> and &lt;code>globals&lt;/code>, check
 out &lt;a href="https://lucumr.pocoo.org/2011/2/1/exec-in-python/">Armin Ronacher&amp;rsquo;s blog
 post&lt;/a> and &lt;a href="https://stackoverflow.com/questions/2220699/whats-the-difference-between-eval-exec-and-compile">this
@@ -1955,7 +2160,7 @@ StackOverflow
 answer&lt;/a>.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>https://www.georgeho.org/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
+&lt;/div></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>https://www.georgeho.org/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
 Retreat&lt;/a> earlier this month. It was an entire week
 on a beautiful island with some amazingly intelligent Bayesians, and no demands
 on my time other than the self-set (and admittedly vague) goal of contributing
@@ -2229,26 +2434,26 @@ extensively on more models that people in The Real World™ use.&lt;/li>
 to fact-check me on my results), the code is &lt;a href="https://github.com/eigenfoo/mass-matrix-benchmarks">sitting in this GitHub
 repository&lt;/a>&lt;sup id="fnref:3">&lt;a href="#fn:3" class="footnote-ref" role="doc-noteref">3&lt;/a>&lt;/sup>.&lt;/li>
 &lt;/ul>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>It&amp;rsquo;s good to point out that mass matrix adaptation is to make sampling
 more efficient, not more valid. Theoretically, any mass matrix would work,
 but a good one (i.e. a good estimate of the covariance matrix of the model
 parameters) could sample orders of magnitudes more efficiently.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>…uh, &lt;em>&lt;em>sweats and looks around nervously for differential geometers&lt;/em>&lt;/em>
 more formally called the &lt;em>metric&lt;/em>…&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>There are some violin plots lying around in the notebook, a relic from a
 time when I thought that I would have the patience to run each model and
 adaptation method multiple times.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Introducing `stan-vim`</title><link>https://www.georgeho.org/stan-vim/</link><pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stan-vim/</guid><description>&lt;center>
+&lt;/div></description></item><item><title>Introducing `stan-vim`</title><link>https://www.georgeho.org/stan-vim/</link><pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stan-vim/</guid><description>&lt;center>
 &lt;img
 src="https://www.georgeho.org/assets/images/stan-logo.png"
 alt="Stan logo">
@@ -2278,16 +2483,16 @@ syntax highlighting and projects links are below.&lt;/p>
 &lt;a href="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot2.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot2.png" alt="Screenshot of another Stan model in stan-vim">&lt;/a>
 &lt;figcaption>Screenshots of &lt;code>stan-vim&lt;/code> syntax highlighting.&lt;/figcaption>
 &lt;/figure>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>As it turns out, &lt;a href="https://www.reddit.com/r/vim/comments/54224o/why_is_there_so_much_hate_for_vimscript/">Vimscript is a very not-good
 language&lt;/a>.
 This is probably the last Vim plugin I write.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>https://www.georgeho.org/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
+&lt;/div></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>https://www.georgeho.org/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
 abstract&lt;/a> to the &lt;a href="https://program-transformations.github.io/">&lt;em>Program Transformations
 for Machine Learning&lt;/em> NeurIPS workshop&lt;/a>. I
 realized that despite knowing a thing or two about Bayesian modelling, I don&amp;rsquo;t
@@ -2575,35 +2780,35 @@ abstractions, they allow you to implement your own custom inference algorithms a
 otherwise manipulate Pyro probabilistic programs. In fact, all of Pyro&amp;rsquo;s inference
 algorithms use these effect handlers.&lt;/li>
 &lt;/ul>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>In case you&amp;rsquo;re testifying under oath and need more reliable sources than
 a blog post, I&amp;rsquo;ve kept a &lt;a href="https://www.zotero.org/eigenfoo/items/collectionKey/AE8882GQ">Zotero
 collection&lt;/a> for
 this project.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>Universal probabilistic programming is an interesting field of inquiry,
 but has mainly remained in the realm of academic research. For a (much) more
 comprehensive treatment, check out &lt;a href="http://www.robots.ox.ac.uk/~twgr/assets/pdf/rainforth2017thesis.pdf">Tom Rainforth&amp;rsquo;s PhD
 thesis&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>Since publishing this blog post, I have been informed that I am more
 ignorant than I know: I have forgotten
 &lt;a href="https://github.com/cscherrer/Soss.jl">Soss.jl&lt;/a> in Julia and
 &lt;a href="https://github.com/thu-ml/zhusuan">ZhuSuan&lt;/a> in Python.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:4" role="doc-endnote">
+&lt;li id="fn:4">
 &lt;p>It turns out that such transformations must be &lt;a href="https://en.wikipedia.org/wiki/Local_diffeomorphism">local
 diffeomorphisms&lt;/a>, and the
 derivative information requires computing the log determinant of the Jacobian
 of the transformation, commonly abbreviated to &lt;code>log_det_jac&lt;/code> or something
 similar.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:5" role="doc-endnote">
+&lt;li id="fn:5">
 &lt;p>As an aside, I&amp;rsquo;ll say that it&amp;rsquo;s mind boggling how Stan does this. To
 quote a (nameless) PyMC core developer:&lt;/p>
 &lt;blockquote>
@@ -2612,7 +2817,7 @@ path of a crazy person.&lt;/p>
 &lt;/blockquote>
 &amp;#160;&lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Graduated Cooper Union, Joining Point72</title><link>https://www.georgeho.org/joining-point72/</link><pubDate>Mon, 22 Jul 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/joining-point72/</guid><description>&lt;p>Some exciting personal news: I&amp;rsquo;ve &lt;em>(finally)&lt;/em> graduated from &lt;a href="http://cooper.edu/welcome">The Cooper
+&lt;/div></description></item><item><title>Graduated Cooper Union, Joining Point72</title><link>https://www.georgeho.org/joining-point72/</link><pubDate>Mon, 22 Jul 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/joining-point72/</guid><description>&lt;p>Some exciting personal news: I&amp;rsquo;ve &lt;em>(finally)&lt;/em> graduated from &lt;a href="http://cooper.edu/welcome">The Cooper
 Union&lt;/a>, and I&amp;rsquo;m joining &lt;a href="https://www.point72.com/">Point72 Asset
 Management&lt;/a> as a data scientist/research analyst!&lt;/p>
 &lt;p>Point72 is an American hedge fund, headquartered in Connecticut. I&amp;rsquo;ll be based
@@ -2781,25 +2986,25 @@ ground.&lt;/p>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
 Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>Did you know you can make &lt;a href="http://adereth.github.io/blog/2013/11/29/colorful-equations/">colored equations with
 MathJax&lt;/a>?
 Technology frightens me sometimes.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>This explanation is largely drawn from &lt;a href="http://hunch.net/?p=298">from John Langford&amp;rsquo;s
 &lt;code>hunch.net&lt;/code>&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>If you don&amp;rsquo;t want to do Bishop&amp;rsquo;s exercises, there&amp;rsquo;s a partially complete
 solutions manual &lt;a href="https://github.com/GoldenCheese/PRML-Solution-Manual/">on
 GitHub&lt;/a> 😉&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Autoregressive Models in Deep Learning — A Brief Survey</title><link>https://www.georgeho.org/deep-autoregressive-models/</link><pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/deep-autoregressive-models/</guid><description>&lt;p>My current project involves working with deep autoregressive models: a class of
+&lt;/div></description></item><item><title>Autoregressive Models in Deep Learning — A Brief Survey</title><link>https://www.georgeho.org/deep-autoregressive-models/</link><pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/deep-autoregressive-models/</guid><description>&lt;p>My current project involves working with deep autoregressive models: a class of
 remarkable neural networks that aren&amp;rsquo;t usually seen on a first pass through deep
 learning. These notes are a quick write-up of my reading and research: I assume
 basic familiarity with deep learning, and aim to highlight general trends and
@@ -3072,26 +3277,26 @@ long-term memory.&lt;/p>
 &lt;/ul>
 &lt;/li>
 &lt;/ol>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>There&amp;rsquo;s actually a lot more nuance than meets the eye in this animation,
 but all I&amp;rsquo;m trying to illustrate is the feed-forward nature of autoregressive
 models.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>I personally think it&amp;rsquo;s breathtakingly that machines can do this. Imagine
 your phone keyboard&amp;rsquo;s word suggestions (those are autoregressive!) spitting
 out an entire novel. Or imagine weaving a sweater but you had to choose the
 color of every stitch, in order, in advance.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>In case you haven&amp;rsquo;t noticed, Google DeepMind seemed to have had an
 infatuation with autoregressive models back in 2016.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Modern Computational Methods for Bayesian Inference — A Reading List</title><link>https://www.georgeho.org/bayesian-inference-reading/</link><pubDate>Wed, 02 Jan 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-inference-reading/</guid><description>&lt;p>Lately I&amp;rsquo;ve been troubled by how little I actually knew about how Bayesian
+&lt;/div></description></item><item><title>Modern Computational Methods for Bayesian Inference — A Reading List</title><link>https://www.georgeho.org/bayesian-inference-reading/</link><pubDate>Wed, 02 Jan 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-inference-reading/</guid><description>&lt;p>Lately I&amp;rsquo;ve been troubled by how little I actually knew about how Bayesian
 inference &lt;em>really worked&lt;/em>. I could explain to you &lt;a href="https://maria-antoniak.github.io/2018/11/19/data-science-crash-course.html">many other machine learning
 techniques&lt;/a>,
 but with Bayesian modelling&amp;hellip; well, there&amp;rsquo;s a model (which is basically the
@@ -3263,21 +3468,21 @@ paper.&lt;/li>
 &lt;p>(I&amp;rsquo;ve tried to include as many relevant and helpful resources as I could find,
 but if you feel like I&amp;rsquo;ve missed something, &lt;a href="https://twitter.com/@_eigenfoo">drop me a
 line&lt;/a>!)&lt;/p>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>&lt;a href="https://twitter.com/year_progress/status/1079889949871300608">Relevant tweet
 here.&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>If that’s what you’re looking for, check out my &lt;a href="https://www.georgeho.org/bayesian-modelling-cookbook">Bayesian modelling
 cookbook&lt;/a> or &lt;a href="https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html">Michael
 Betancourt’s excellent essay on a principles Bayesian
 workflow&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
+&lt;/div></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
 late bloomer (as far as machine learning subfields go), and it&amp;rsquo;s not immediately
 obvious how close the field is to viable, large-scale, production-ready
 techniques (in the same way that, say, &lt;a href="https://clarifai.com/models/">computer vision
@@ -3418,15 +3623,15 @@ deck below. This talk was delivered to a graduate-level course in frequentist
 machine learning.&lt;/p>
 &lt;blockquote class="embedly-card">&lt;h4>&lt;a href="https://speakerdeck.com/_eigenfoo/probabilistic-and-bayesian-matrix-factorizations-for-text-clustering">Probabilistic and Bayesian Matrix Factorizations for Text Clustering&lt;/a>&lt;/h4>&lt;p> I experimented with using these techniques to cluster subreddits. In a nutshell, nothing seemed to work out very well, and I opine on why I think that’s the case in this slide deck. This talk was delivered to a graduate-level course in frequentist machine learning. &lt;/p>&lt;/blockquote>
 &lt;script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8">&lt;/script>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>which is, by the way, a &lt;a href="http://scikit-learn.org/stable/modules/decomposition.html">severely underappreciated technique in machine
 learning&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
+&lt;/div></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -3487,7 +3692,7 @@ one of many algorithms out there. The main difference is that there are other
 ways to go from our current priors to a decision on which bandit to play
 next. E.g. instead of simply sampling from our priors, we could use the
 upper bound of the 90% credible region, or some dynamic quantile of the
-posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
+posterior (as in Bayes UCB). See Data Origami&lt;sup id="fnref1:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for more information.&lt;/p>
 &lt;h3 id="stochastic-aka-stationary-bandits">Stochastic (a.k.a. stationary) bandits&lt;/h3>
 &lt;p>Let&amp;rsquo;s take this algorithm for a spin! Assume we have rewards which are Bernoulli
 distributed (this would be the situation we face when e.g. modelling
@@ -3674,7 +3879,7 @@ function.&lt;/p>
 &lt;/figure>
 &lt;h2 id="final-remarks">Final Remarks&lt;/h2>
 &lt;p>None of this theory is new: I&amp;rsquo;m just advertising it! See Cam Davidson-Pilon&amp;rsquo;s
-great blog post about Bayesian bandits&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
+great blog post about Bayesian bandits&lt;sup id="fnref2:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup> for a much more in-depth treatment,
 and of course, read around papers on arXiv if you want to go deeper!&lt;/p>
 &lt;p>Also, if you want to see all the code that went into this blog post, check out
 &lt;a href="https://github.com/eigenfoo/wanderings/blob/afcf37a8c6c2a2ac38f6708c1f3dd50db2ebe71f/bayes/bayesian-bandits.ipynb">the notebook
@@ -3683,23 +3888,23 @@ here&lt;/a>.&lt;/p>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>I&amp;rsquo;ve hopped on board the functional programming bandwagon, and couldn&amp;rsquo;t
 help but think that to demonstrate this idea, I didn&amp;rsquo;t need a framework, a
 library or even a class. Just two functions!&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:2" role="doc-endnote">
+&lt;li id="fn:2">
 &lt;p>Davidson-Pilon, Cameron. “Multi-Armed Bandits.” DataOrigami, 6 Apr. 2013,
-&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;a href="https://dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits">dataorigami.net/blogs/napkin-folding/79031811-multi-armed-bandits&lt;/a>&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref1:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref2:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
-&lt;li id="fn:3" role="doc-endnote">
+&lt;li id="fn:3">
 &lt;p>&lt;a href="https://arxiv.org/abs/1111.1797">arXiv:1111.1797&lt;/a> [cs.LG]&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
+&lt;/div></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
 Bayesian modelling, and it&amp;rsquo;s an amazing piece of software! The API only exposes
 as much of heavy machinery of MCMC as you need — by which I mean, just the
 &lt;code>pm.sample()&lt;/code> method (a.k.a., as &lt;a href="http://twiecki.github.io/blog/2013/08/12/bayesian-glms-1/">Thomas
@@ -4619,7 +4824,7 @@ I limited myself to the top 10 most active subreddits in December 2017 (the most
 recent month for which we have data, at the time of writing), and chose 20 to be
 the number of topics to model (any choice is as arbitrary as any other).&lt;/p>
 &lt;p>I ran LDA and t-SNE exactly as Shuai described on &lt;a href="https://web.archive.org/web/20171219104016/https://shuaiw.github.io/2016/12/22/topic-modeling-and-tsne-visualzation.html">this blog
-post&lt;/a>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>,
+post&lt;/a>&lt;sup id="fnref1:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>,
 except using the great &lt;a href="https://radimrehurek.com/gensim/">&lt;code>gensim&lt;/code>&lt;/a> library to
 perform LDA, which was built with large corpora and efficient online algorithms
 in mind. (Specifically, &lt;code>gensim&lt;/code> implements online variational inference with
@@ -4730,15 +4935,15 @@ clusters. In this case, extremely short and context-dependent documents make it
 hard to justify that there are topic clusters in the first place.&lt;/p>
 &lt;blockquote class="twitter-tweet" data-lang="en">&lt;p lang="en" dir="ltr">Algorithms that have to report something will always report something, even if it&amp;#39;s a bad idea. Please do not use these algorithms unless you have principled reasons why there should be something. &lt;a href="https://t.co/kzxZiuBfmm">https://t.co/kzxZiuBfmm&lt;/a>&lt;/p>&amp;mdash; \mathfrak{Michael Betancourt} (@betanalpha) &lt;a href="https://twitter.com/betanalpha/status/1026619046626828288?ref_src=twsrc%5Etfw">August 7, 2018&lt;/a>&lt;/blockquote>
 &lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8">&lt;/script>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>&lt;a href="https://github.com/ShuaiW">&lt;code>ShuaiW&lt;/code>&lt;/a> has since taken down his blog, so I
-am linking to the Internet Archive of his blog post instead.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+am linking to the Internet Archive of his blog post instead.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref1:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>https://www.georgeho.org/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
+&lt;/div></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>https://www.georgeho.org/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
 &lt;em>Machine Learning Algorithm&lt;/em>. It&amp;rsquo;s got two modes: training mode and testing
 mode. You set it to training mode, and throw in a lot (sometimes &lt;em>a lot&lt;/em> a lot)
 of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called

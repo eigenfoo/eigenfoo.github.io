@@ -28,13 +28,13 @@ syntax highlighting and projects links are below.&lt;/p>
 &lt;a href="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot2.png">&lt;img src="https://raw.githubusercontent.com/eigenfoo/stan-vim/master/screenshots/screenshot2.png" alt="Screenshot of another Stan model in stan-vim">&lt;/a>
 &lt;figcaption>Screenshots of &lt;code>stan-vim&lt;/code> syntax highlighting.&lt;/figcaption>
 &lt;/figure>
-&lt;section class="footnotes" role="doc-endnotes">
+&lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
-&lt;li id="fn:1" role="doc-endnote">
+&lt;li id="fn:1">
 &lt;p>As it turns out, &lt;a href="https://www.reddit.com/r/vim/comments/54224o/why_is_there_so_much_hate_for_vimscript/">Vimscript is a very not-good
 language&lt;/a>.
 This is probably the last Vim plugin I write.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/section></description></item></channel></rss>
+&lt;/div></description></item></channel></rss>
