@@ -1,209 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blogs on George Ho</title><link>https://www.georgeho.org/blog/</link><description>Recent content in Blogs on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Fri, 29 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/feed.xml" rel="self" type="application/rss+xml"/><item><title>How Many Cryptic Crossword Grids Are There?</title><link>https://www.georgeho.org/counting-cryptics/</link><pubDate>Fri, 29 Apr 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/counting-cryptics/</guid><description>&lt;p>Counting the number of valid American-style crossword grids is more or less a
-solved problem. For example, see this &lt;a href="https://fivethirtyeight.com/features/how-many-crossword-puzzles-can-you-make/">FiveThirtyEight
-Riddler&lt;/a>
-and &lt;a href="https://twitter.com/Log3overLog2/status/1092472516571000839">Michael Kleber&amp;rsquo;s answer in a Twitter
-thread&lt;/a>.&lt;/p>
-&lt;p>However, the same doesn&amp;rsquo;t seem to be true for British-style cryptic crosswords.
-Hence this blog post!&lt;/p>
-&lt;p>Now, &lt;em>counting&lt;/em> the number of valid grids is a different task from
-&lt;em>enumerating&lt;/em> them, and it&amp;rsquo;s a bad idea to do the former by doing the latter,
-because the sheer number of grids can be prohibitively expensive to compute.
-However, I&amp;rsquo;m mostly interested in grids smaller than 11×11, and I actually
-&lt;em>wanted&lt;/em> to see all possible grids, so I went ahead and did the inadvisable.&lt;/p>
-&lt;p>So let&amp;rsquo;s jump right in! If you&amp;rsquo;re just interested in the numbers and a list of
-all valid grids, feel free to scroll to the very end.&lt;/p>
-&lt;h2 id="what-makes-a-valid-cryptic-grid">What Makes A Valid Cryptic Grid?&lt;/h2>
-&lt;ol>
-&lt;li>The grid must be &lt;strong>rotationally symmetric&lt;/strong>.&lt;/li>
-&lt;li>The grid length (i.e. the length of one side of the grid) must be an &lt;strong>odd
-number&lt;/strong>.&lt;/li>
-&lt;li>All white squares must be &lt;strong>connected&lt;/strong>: that is, there can be only one
-contiguous island of white squares.&lt;/li>
-&lt;li>All words must have &lt;strong>half their letters checked&lt;/strong>.
-&lt;ul>
-&lt;li>For words of odd length, there&amp;rsquo;s some ambiguity: depending on who you talk
-to, either &amp;ldquo;half rounded up&amp;rdquo; or &amp;ldquo;half rounded up or down&amp;rdquo; must be checked.&lt;/li>
-&lt;li>For the purposes of this blog post, I required &amp;ldquo;half rounded up&amp;rdquo;.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>There &lt;strong>cannot be more than two consecutive unchecked squares&lt;/strong>.&lt;/li>
-&lt;li>Two consecutive unchecked squares &lt;strong>cannot occur at the start or end of a
-word&lt;/strong>.
-&lt;ul>
-&lt;li>I haven&amp;rsquo;t found much explicit mention of this rule other than &lt;a href="https://www.crosswordunclued.com/2009/09/crossword-grid-checking.html">this blog
-post&lt;/a>
-saying that it&amp;rsquo;s a &amp;ldquo;house rule&amp;rdquo; at &lt;em>The Times&lt;/em> of London, but all cryptics
-I&amp;rsquo;ve seen have hewed to this requirement, so I enforced it.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ol>
-&lt;p>It&amp;rsquo;s also worth noting that different constructors and publications have
-different &amp;ldquo;house rules&amp;rdquo;. For example:&lt;/p>
-&lt;ul>
-&lt;li>Some publications have upper and/or lower limits on the number of clues. For
-example, &lt;a href="https://www.ft.com/crossword">the &lt;em>Financial Times&lt;/em>&lt;/a> seems to
-always have exactly 32 clues.&lt;/li>
-&lt;li>Some constructors also restrict the size of black islands: for example, there
-cannot be a contiguous black island of more than five squares.&lt;/li>
-&lt;/ul>
-&lt;p>I didn&amp;rsquo;t enforce these rules, more out of laziness and lack of time than
-technical infeasibility.&lt;/p>
-&lt;h2 id="generating-cryptic-grids">Generating Cryptic Grids&lt;/h2>
-&lt;p>Akshay Ravikumar has an &lt;a href="https://akshayr.xyz/blog/articles/counting-crosswords">excellent blog
-post&lt;/a> explaining how he
-generated American crosswords, and if you&amp;rsquo;re interested in diving deeper I
-highly recommend reading his exposition: my algorithm is more or less directly
-lifted from his work, just adapted to cryptic crosswords.&lt;/p>
-&lt;p>Here&amp;rsquo;s the final algorithm that I used:&lt;/p>
-&lt;ol>
-&lt;li>Precompute all &lt;code>valid_rows&lt;/code> and &lt;code>symmetric_rows&lt;/code>: for a cryptic, these are
-rows that don&amp;rsquo;t have words below the minimum word length.&lt;/li>
-&lt;li>Using &lt;code>valid_rows&lt;/code> and &lt;code>symmetric_rows&lt;/code>, find all sets of valid middle three
-rows &amp;mdash; for example, for an 11×11 grid, find all possible fifth, sixth and
-seventh rows.
-&lt;ul>
-&lt;li>Note that the middle row must be symmetric, and the two adjacent rows must
-be mirror images of each other.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>From the middle rows outward, build up a grid in a depth-first search.
-&lt;ul>
-&lt;li>Before adding a new row, make sure that it satisfies the checking
-requirement: that it has the correct number of unchecked squares and has
-at most two consecutive unchecked squares not at the start or end of
-words.&lt;/li>
-&lt;li>There is also a trick we can use to limit the search space: if the
-previous three rows have a column that is black-white-white, then in the
-same column, the next row must be white.&lt;/li>
-&lt;li>This is best explained pictorially:
-&lt;img src="https://www.georgeho.org/assets/images/counting-cryptics-illustration.png" alt="An illustration of the black-black-whitetrick">&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>Check that the columns are valid. Specifically:
-&lt;ul>
-&lt;li>Check that the columns are &lt;code>valid_rows&lt;/code> (this ensures that there are no
-words below the minimum word length).&lt;/li>
-&lt;li>And also check that the columns don&amp;rsquo;t have two consecutive unchecked
-squares at the start or end of the word.&lt;/li>
-&lt;li>Note that all other requirements (e.g. the number of checked squares) are
-already taken care up while building up the grid.&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>Check connectedness of the grid using a &lt;a href="https://www.hackerearth.com/practice/algorithms/graphs/depth-first-search/tutorial/">depth-first
-search&lt;/a>.&lt;/li>
-&lt;/ol>
-&lt;p>This algorithm works well and runs reasonably quickly (i.e. in less than a
-minute) for 5×5 and 7×7 grids, but at 9×9 the search time becomes significant
-(around half an hour on a MacBook Pro). Additionally, some valid grids aren&amp;rsquo;t
-very interesting as &amp;ldquo;real&amp;rdquo; crosswords, such as the one below.&lt;/p>
-&lt;center>&lt;pre>&lt;code>
-⬛⬛⬛⬛⬜⬜⬜
-⬛⬛⬛⬛⬜⬛⬜
-⬛⬛⬛⬛⬜⬛⬜
-⬜⬜⬜⬜⬜⬜⬜
-⬜⬛⬜⬛⬛⬛⬛
-⬜⬛⬜⬛⬛⬛⬛
-⬜⬜⬜⬛⬛⬛⬛
-&lt;/code>&lt;/pre>&lt;/center>
-&lt;p>It&amp;rsquo;s not very interesting because of the sheer number of black squares (and
-correspondingly low number of clues). So to winnow down the grids more, I
-filtered &lt;code>valid_rows&lt;/code> before I start: &lt;code>valid_rows&lt;/code> must have a minimum number
-of white squares: 2 squares for 5×5 and 3 squares for 7×7 through 13×13.
-Anecdotally, this reduces the computation time by a factor of three or four. I
-call the grids produced in this reduced search &lt;em>&amp;ldquo;interesting grids&amp;rdquo;,&lt;/em> as
-opposed to &lt;em>&amp;ldquo;valid grids&amp;rdquo;&lt;/em>.&lt;/p>
-&lt;p>I should note that there are definitely more ways to speed up the search: I
-could&amp;rsquo;ve parallelize the search (i.e. assign each worker a subset of the valid
-middle rows), I could&amp;rsquo;ve written the program in a language faster than Python
-(like Julia), and further algorithmic speedups are possible (e.g. checking
-columns after adding each row would prune more grids earlier, instead of
-deferring the column checks to after the grid is constructed).&lt;/p>
-&lt;p>At any rate, I just ran the program on my laptop, and stopped at 9×9 grids.
-Results below!&lt;/p>
-&lt;h2 id="results">Results&lt;/h2>
-&lt;p>If you&amp;rsquo;ve just scrolled down here, the only thing you need to note is that an
-&lt;em>&amp;ldquo;interesting grid&amp;rdquo;&lt;/em> is one in which every row has at least a certain number of
-white squares: 2 for 5×5 grids and 3 for 7×7 grids onwards.&lt;/p>
-&lt;p>For comparison, I&amp;rsquo;ve added the number of valid American grids, taken from
-&lt;a href="https://twitter.com/Log3overLog2/status/1092795679947264000">Michael Kleber&amp;rsquo;s corrected
-Tweet&lt;/a>.&lt;/p>
-&lt;table>
-&lt;thead>
-&lt;tr>
-&lt;th style="text-align:center">Grid Size&lt;/th>
-&lt;th style="text-align:right">Valid Grids&lt;/th>
-&lt;th style="text-align:right">Interesting Grids&lt;/th>
-&lt;th style="text-align:right">American Grids&lt;/th>
-&lt;/tr>
-&lt;/thead>
-&lt;tbody>
-&lt;tr>
-&lt;td style="text-align:center">5×5&lt;/td>
-&lt;td style="text-align:right">17&lt;/td>
-&lt;td style="text-align:right">9&lt;/td>
-&lt;td style="text-align:right">12&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:center">7×7&lt;/td>
-&lt;td style="text-align:right">346&lt;/td>
-&lt;td style="text-align:right">43&lt;/td>
-&lt;td style="text-align:right">312&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:center">9×9&lt;/td>
-&lt;td style="text-align:right">9,381&lt;/td>
-&lt;td style="text-align:right">334&lt;/td>
-&lt;td style="text-align:right">31,187&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:center">11×11&lt;/td>
-&lt;td style="text-align:right">N/A&lt;/td>
-&lt;td style="text-align:right">N/A&lt;/td>
-&lt;td style="text-align:right">17,438,702&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:center">13×13&lt;/td>
-&lt;td style="text-align:right">N/A&lt;/td>
-&lt;td style="text-align:right">N/A&lt;/td>
-&lt;td style="text-align:right">40,575,832,476&lt;/td>
-&lt;/tr>
-&lt;tr>
-&lt;td style="text-align:center">15×15&lt;/td>
-&lt;td style="text-align:right">N/A&lt;/td>
-&lt;td style="text-align:right">N/A&lt;/td>
-&lt;td style="text-align:right">404,139,015,237,875&lt;/td>
-&lt;/tr>
-&lt;/tbody>
-&lt;/table>
-&lt;p>There are 346 valid 7×7 cryptics &amp;mdash; interestingly, slightly more than the
-pleasing 6 × 52 = 312 valid American-style crosswords which inspired &lt;a href="https://www.7xwords.com/why.html">Malaika
-Handa&amp;rsquo;s 7xwords&lt;/a>; disappointingly,
-factorizing into a not-at-all-auspicious 2 × 173.&lt;/p>
-&lt;p>For larger grid lengths, there appear to be far fewer valid cryptic grids than
-American grids, probably owing to the more stringent conditions for cryptics.&lt;/p>
-&lt;p>It was infeasible for me to run my program for 11×11 grids onwards &amp;mdash; either I
-need to put a lot more effort in optimizing my program, or (more likely) it&amp;rsquo;s
-simply computationally intractable to enumerate all possible grids, and we can
-only count them. If I&amp;rsquo;m inspired to pick up this line of work again, I&amp;rsquo;ll be
-sure to post a part two!&lt;/p>
-&lt;p>And finally, the code:&lt;/p>
-&lt;ul>
-&lt;li>&lt;a href="https://github.com/eigenfoo/counting-cryptics">Source code (Python Jupyter Notebook)&lt;/a>&lt;/li>
-&lt;li>Valid grids
-&lt;ul>
-&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/valid_5x5_grids.txt">5×5&lt;/a>&lt;/li>
-&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/valid_7x7_grids.txt">7×7&lt;/a>&lt;/li>
-&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/valid_9x9_grids.txt">9×9&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;li>Interesting grids
-&lt;ul>
-&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_5x5_grids.txt">5×5&lt;/a>&lt;/li>
-&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_7x7_grids.txt">7×7&lt;/a>&lt;/li>
-&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_9x9_grids.txt">9×9&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;/li>
-&lt;/ul></description></item><item><title>Link Bulletin, April 2022</title><link>https://www.georgeho.org/link-bulletin-2022-04/</link><pubDate>Sat, 23 Apr 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/link-bulletin-2022-04/</guid><description>&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blogs on George Ho</title><link>https://www.georgeho.org/blog/</link><description>Recent content in Blogs on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 23 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/feed.xml" rel="self" type="application/rss+xml"/><item><title>Link Bulletin, April 2022</title><link>https://www.georgeho.org/link-bulletin-2022-04/</link><pubDate>Sat, 23 Apr 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/link-bulletin-2022-04/</guid><description>&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
 that the links I find interesting might also be interesting to others: at most
 once a month, I&amp;rsquo;ll compile and post a handful of links that I&amp;rsquo;ve read and
 thought about, with minimal explanation or commentary. Here we go!&lt;/p>
@@ -917,7 +712,212 @@ years&lt;/strong>, which makes for a rich and peculiar dataset.&lt;/p>
 &lt;p>If you&amp;rsquo;re new to cryptic crosswords, rejoice! A whole new world awaits you! The New Yorker has &lt;a href="https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/reintroducing-the-new-yorkers-cryptic-crossword">an excellent introduction to cryptic crosswords&lt;/a>, and Matt Gritzmacher has &lt;a href="https://crosswordlinks.substack.com/">a daily newsletter with links to crosswords&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Understanding NUTS and HMC</title><link>https://www.georgeho.org/understanding-nuts-hmc/</link><pubDate>Thu, 07 Jan 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/understanding-nuts-hmc/</guid><description>&lt;p>&lt;em>&amp;ldquo;Bayesian modeling is harder than deep learning&amp;rdquo;&lt;/em> is a sentiment I&amp;rsquo;ve been
+&lt;/div></description></item><item><title>How Many Cryptic Crossword Grids Are There?</title><link>https://www.georgeho.org/counting-cryptics/</link><pubDate>Mon, 17 May 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/counting-cryptics/</guid><description>&lt;p>Counting the number of valid American-style crossword grids is more or less a
+solved problem. For example, see this &lt;a href="https://fivethirtyeight.com/features/how-many-crossword-puzzles-can-you-make/">FiveThirtyEight
+Riddler&lt;/a>
+and &lt;a href="https://twitter.com/Log3overLog2/status/1092472516571000839">Michael Kleber&amp;rsquo;s answer in a Twitter
+thread&lt;/a>.&lt;/p>
+&lt;p>However, the same doesn&amp;rsquo;t seem to be true for British-style cryptic crosswords.
+Hence this blog post!&lt;/p>
+&lt;p>Now, &lt;em>counting&lt;/em> the number of valid grids is a different task from
+&lt;em>enumerating&lt;/em> them, and it&amp;rsquo;s a bad idea to do the former by doing the latter,
+because the sheer number of grids can be prohibitively expensive to compute.
+However, I&amp;rsquo;m mostly interested in grids smaller than 11×11, and I actually
+&lt;em>wanted&lt;/em> to see all possible grids, so I went ahead and did the inadvisable.&lt;/p>
+&lt;p>So let&amp;rsquo;s jump right in! If you&amp;rsquo;re just interested in the numbers and a list of
+all valid grids, feel free to scroll to the very end.&lt;/p>
+&lt;h2 id="what-makes-a-valid-cryptic-grid">What Makes A Valid Cryptic Grid?&lt;/h2>
+&lt;ol>
+&lt;li>The grid must be &lt;strong>rotationally symmetric&lt;/strong>.&lt;/li>
+&lt;li>The grid length (i.e. the length of one side of the grid) must be an &lt;strong>odd
+number&lt;/strong>.&lt;/li>
+&lt;li>All white squares must be &lt;strong>connected&lt;/strong>: that is, there can be only one
+contiguous island of white squares.&lt;/li>
+&lt;li>All words must have &lt;strong>half their letters checked&lt;/strong>.
+&lt;ul>
+&lt;li>For words of odd length, there&amp;rsquo;s some ambiguity: depending on who you talk
+to, either &amp;ldquo;half rounded up&amp;rdquo; or &amp;ldquo;half rounded up or down&amp;rdquo; must be checked.&lt;/li>
+&lt;li>For the purposes of this blog post, I required &amp;ldquo;half rounded up&amp;rdquo;.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>There &lt;strong>cannot be more than two consecutive unchecked squares&lt;/strong>.&lt;/li>
+&lt;li>Two consecutive unchecked squares &lt;strong>cannot occur at the start or end of a
+word&lt;/strong>.
+&lt;ul>
+&lt;li>I haven&amp;rsquo;t found much explicit mention of this rule other than &lt;a href="https://www.crosswordunclued.com/2009/09/crossword-grid-checking.html">this blog
+post&lt;/a>
+saying that it&amp;rsquo;s a &amp;ldquo;house rule&amp;rdquo; at &lt;em>The Times&lt;/em> of London, but all cryptics
+I&amp;rsquo;ve seen have hewed to this requirement, so I enforced it.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ol>
+&lt;p>It&amp;rsquo;s also worth noting that different constructors and publications have
+different &amp;ldquo;house rules&amp;rdquo;. For example:&lt;/p>
+&lt;ul>
+&lt;li>Some publications have upper and/or lower limits on the number of clues. For
+example, &lt;a href="https://www.ft.com/crossword">the &lt;em>Financial Times&lt;/em>&lt;/a> seems to
+always have exactly 32 clues.&lt;/li>
+&lt;li>Some constructors also restrict the size of black islands: for example, there
+cannot be a contiguous black island of more than five squares.&lt;/li>
+&lt;/ul>
+&lt;p>I didn&amp;rsquo;t enforce these rules, more out of laziness and lack of time than
+technical infeasibility.&lt;/p>
+&lt;h2 id="generating-cryptic-grids">Generating Cryptic Grids&lt;/h2>
+&lt;p>Akshay Ravikumar has an &lt;a href="https://akshayr.xyz/blog/articles/counting-crosswords">excellent blog
+post&lt;/a> explaining how he
+generated American crosswords, and if you&amp;rsquo;re interested in diving deeper I
+highly recommend reading his exposition: my algorithm is more or less directly
+lifted from his work, just adapted to cryptic crosswords.&lt;/p>
+&lt;p>Here&amp;rsquo;s the final algorithm that I used:&lt;/p>
+&lt;ol>
+&lt;li>Precompute all &lt;code>valid_rows&lt;/code> and &lt;code>symmetric_rows&lt;/code>: for a cryptic, these are
+rows that don&amp;rsquo;t have words below the minimum word length.&lt;/li>
+&lt;li>Using &lt;code>valid_rows&lt;/code> and &lt;code>symmetric_rows&lt;/code>, find all sets of valid middle three
+rows &amp;mdash; for example, for an 11×11 grid, find all possible fifth, sixth and
+seventh rows.
+&lt;ul>
+&lt;li>Note that the middle row must be symmetric, and the two adjacent rows must
+be mirror images of each other.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>From the middle rows outward, build up a grid in a depth-first search.
+&lt;ul>
+&lt;li>Before adding a new row, make sure that it satisfies the checking
+requirement: that it has the correct number of unchecked squares and has
+at most two consecutive unchecked squares not at the start or end of
+words.&lt;/li>
+&lt;li>There is also a trick we can use to limit the search space: if the
+previous three rows have a column that is black-white-white, then in the
+same column, the next row must be white.&lt;/li>
+&lt;li>This is best explained pictorially:
+&lt;img src="https://www.georgeho.org/assets/images/counting-cryptics-illustration.png" alt="An illustration of the black-black-whitetrick">&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Check that the columns are valid. Specifically:
+&lt;ul>
+&lt;li>Check that the columns are &lt;code>valid_rows&lt;/code> (this ensures that there are no
+words below the minimum word length).&lt;/li>
+&lt;li>And also check that the columns don&amp;rsquo;t have two consecutive unchecked
+squares at the start or end of the word.&lt;/li>
+&lt;li>Note that all other requirements (e.g. the number of checked squares) are
+already taken care up while building up the grid.&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Check connectedness of the grid using a &lt;a href="https://www.hackerearth.com/practice/algorithms/graphs/depth-first-search/tutorial/">depth-first
+search&lt;/a>.&lt;/li>
+&lt;/ol>
+&lt;p>This algorithm works well and runs reasonably quickly (i.e. in less than a
+minute) for 5×5 and 7×7 grids, but at 9×9 the search time becomes significant
+(around half an hour on a MacBook Pro). Additionally, some valid grids aren&amp;rsquo;t
+very interesting as &amp;ldquo;real&amp;rdquo; crosswords, such as the one below.&lt;/p>
+&lt;center>&lt;pre>&lt;code>
+⬛⬛⬛⬛⬜⬜⬜
+⬛⬛⬛⬛⬜⬛⬜
+⬛⬛⬛⬛⬜⬛⬜
+⬜⬜⬜⬜⬜⬜⬜
+⬜⬛⬜⬛⬛⬛⬛
+⬜⬛⬜⬛⬛⬛⬛
+⬜⬜⬜⬛⬛⬛⬛
+&lt;/code>&lt;/pre>&lt;/center>
+&lt;p>It&amp;rsquo;s not very interesting because of the sheer number of black squares (and
+correspondingly low number of clues). So to winnow down the grids more, I
+filtered &lt;code>valid_rows&lt;/code> before I start: &lt;code>valid_rows&lt;/code> must have a minimum number
+of white squares: 2 squares for 5×5 and 3 squares for 7×7 through 13×13.
+Anecdotally, this reduces the computation time by a factor of three or four. I
+call the grids produced in this reduced search &lt;em>&amp;ldquo;interesting grids&amp;rdquo;,&lt;/em> as
+opposed to &lt;em>&amp;ldquo;valid grids&amp;rdquo;&lt;/em>.&lt;/p>
+&lt;p>I should note that there are definitely more ways to speed up the search: I
+could&amp;rsquo;ve parallelize the search (i.e. assign each worker a subset of the valid
+middle rows), I could&amp;rsquo;ve written the program in a language faster than Python
+(like Julia), and further algorithmic speedups are possible (e.g. checking
+columns after adding each row would prune more grids earlier, instead of
+deferring the column checks to after the grid is constructed).&lt;/p>
+&lt;p>At any rate, I just ran the program on my laptop, and stopped at 9×9 grids.
+Results below!&lt;/p>
+&lt;h2 id="results">Results&lt;/h2>
+&lt;p>If you&amp;rsquo;ve just scrolled down here, the only thing you need to note is that an
+&lt;em>&amp;ldquo;interesting grid&amp;rdquo;&lt;/em> is one in which every row has at least a certain number of
+white squares: 2 for 5×5 grids and 3 for 7×7 grids onwards.&lt;/p>
+&lt;p>For comparison, I&amp;rsquo;ve added the number of valid American grids, taken from
+&lt;a href="https://twitter.com/Log3overLog2/status/1092795679947264000">Michael Kleber&amp;rsquo;s corrected
+Tweet&lt;/a>.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:center">Grid Size&lt;/th>
+&lt;th style="text-align:right">Valid Grids&lt;/th>
+&lt;th style="text-align:right">Interesting Grids&lt;/th>
+&lt;th style="text-align:right">American Grids&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:center">5×5&lt;/td>
+&lt;td style="text-align:right">17&lt;/td>
+&lt;td style="text-align:right">9&lt;/td>
+&lt;td style="text-align:right">12&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">7×7&lt;/td>
+&lt;td style="text-align:right">346&lt;/td>
+&lt;td style="text-align:right">43&lt;/td>
+&lt;td style="text-align:right">312&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">9×9&lt;/td>
+&lt;td style="text-align:right">9,381&lt;/td>
+&lt;td style="text-align:right">334&lt;/td>
+&lt;td style="text-align:right">31,187&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">11×11&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">17,438,702&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">13×13&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">40,575,832,476&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:center">15×15&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">N/A&lt;/td>
+&lt;td style="text-align:right">404,139,015,237,875&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>There are 346 valid 7×7 cryptics &amp;mdash; interestingly, slightly more than the
+pleasing 6 × 52 = 312 valid American-style crosswords which inspired &lt;a href="https://www.7xwords.com/why.html">Malaika
+Handa&amp;rsquo;s 7xwords&lt;/a>; disappointingly,
+factorizing into a not-at-all-auspicious 2 × 173.&lt;/p>
+&lt;p>For larger grid lengths, there appear to be far fewer valid cryptic grids than
+American grids, probably owing to the more stringent conditions for cryptics.&lt;/p>
+&lt;p>It was infeasible for me to run my program for 11×11 grids onwards &amp;mdash; either I
+need to put a lot more effort in optimizing my program, or (more likely) it&amp;rsquo;s
+simply computationally intractable to enumerate all possible grids, and we can
+only count them. If I&amp;rsquo;m inspired to pick up this line of work again, I&amp;rsquo;ll be
+sure to post a part two!&lt;/p>
+&lt;p>And finally, the code:&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://github.com/eigenfoo/counting-cryptics">Source code (Python Jupyter Notebook)&lt;/a>&lt;/li>
+&lt;li>Valid grids
+&lt;ul>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/valid_5x5_grids.txt">5×5&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/valid_7x7_grids.txt">7×7&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/valid_9x9_grids.txt">9×9&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>Interesting grids
+&lt;ul>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_5x5_grids.txt">5×5&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_7x7_grids.txt">7×7&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_9x9_grids.txt">9×9&lt;/a>&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;/ul></description></item><item><title>Understanding NUTS and HMC</title><link>https://www.georgeho.org/understanding-nuts-hmc/</link><pubDate>Thu, 07 Jan 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/understanding-nuts-hmc/</guid><description>&lt;p>&lt;em>&amp;ldquo;Bayesian modeling is harder than deep learning&amp;rdquo;&lt;/em> is a sentiment I&amp;rsquo;ve been
 hearing a lot lately. While I&amp;rsquo;m skeptical of sweeping statements like that, I
 agree when it comes to the central inference algorithm &amp;mdash; how MCMC samplers
 work (especially the &lt;em>de facto&lt;/em> standard samplers, NUTS and HMC) is one of the
