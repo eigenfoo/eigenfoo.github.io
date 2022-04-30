@@ -394,7 +394,76 @@ the PyMC3 community.&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
-&lt;/ul></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>https://www.georgeho.org/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
+&lt;/ul></description></item><item><title>Thoughts on _Working in Public_</title><link>https://www.georgeho.org/making-and-maintenance-of-oss/</link><pubDate>Thu, 13 Aug 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/making-and-maintenance-of-oss/</guid><description>&lt;p>&lt;a href="https://www.amazon.com/dp/0578675862/">&lt;em>Working in Public: The Making and Maintenance of Open Source Sofware&lt;/em> by
+Nadia Eghbal&lt;/a> was a delight to read. I
+had initially come across Eghbal&amp;rsquo;s work through her &lt;a href="https://www.fordfoundation.org/work/learning/research-reports/roads-and-bridges-the-unseen-labor-behind-our-digital-infrastructure/">research report for the
+Ford
+Foundation&lt;/a>,
+but that piece seemed to be more geared towards raising awareness of open
+source in boardrooms, whereas her latest book was a much more nuanced
+discussion of open source.&lt;/p>
+&lt;p>The first half was basically describing the open source software, how it works,
+and how it&amp;rsquo;s maintained (with a healthy focus on GitHub). Despite being an open
+source contributor for a while, I was surprised at some particularly lucid
+thoughts here. Here are just two of them:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>This table classifying the &amp;ldquo;kinds&amp;rdquo; of open source projects:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;/th>
+&lt;th>High User Growth&lt;/th>
+&lt;th>Low User Growth&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>High Contributor Growth&lt;/td>
+&lt;td>Federations (e.g. Rust)&lt;/td>
+&lt;td>Clubs (e.g. Astropy)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Low Contributor Growth&lt;/td>
+&lt;td>Stadiums (e.g. Babel)&lt;/td>
+&lt;td>Toys (e.g. ssh-chat)&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;/li>
+&lt;li>
+&lt;p>The idea of there being &lt;em>two&lt;/em> economic goods in open source: the code itself
+(which is what is consumed), and developer attention (which is how the code
+is produced), the first of which is a positive externality of the latter.
+These two goods have &lt;em>very&lt;/em> different properties: the open source code is a
+public good, whereas developer attention is a commons (of &lt;em>tragedy of the
+commons&lt;/em> fame).&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>The second half of the book was much more enlightening to me: having discussed
+why open source software gets created (&amp;ldquo;for fun and street cred&amp;rdquo; is basically
+the short answer), Eghbal delves into how it is maintained - including thorny
+topics like developer chemistry, governance structure, funding sources&amp;hellip; all
+issues that I feel the open source community is getting a better and better
+grip on.&lt;/p>
+&lt;p>Now, what struck me was an interesting disconnect between the first and second
+halves of the book.&lt;/p>
+&lt;p>The problems of &lt;em>making&lt;/em> open source seem to be not so grievous: Eghbal even
+acknowledges this, citing developer&amp;rsquo;s &amp;ldquo;intrinsic motivation&amp;rdquo;, and pointing to
+several examples of developers making open-source software just for fun. These
+problems are generally solved because of the nature of open source software
+itself.&lt;/p>
+&lt;p>However, the problems of &lt;em>maintaining&lt;/em> open source seem startlingly similar to
+those of almost any other kind of public good on the internet information
+economy: I&amp;rsquo;m thinking of things like Wikipedia, Sci-Hub, Hacker News &amp;mdash; any
+website or app that satisfies (2) above (e.g. in the case of Sci-Hub the
+academic articles are offered to anyone for free, but the entire project is
+held together by the PHP skills of &lt;a href="https://sci-hub.tw/alexandra">one Kazakh
+woman&lt;/a>).&lt;/p>
+&lt;p>I think Eghbal realizes that these problems aren&amp;rsquo;t specific to just open
+source, but rather are endemic to the internet information economy &amp;mdash; she
+concludes the book by meditating on the similarities of open source software
+and online content more generally. Food for thought!&lt;/p></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>https://www.georgeho.org/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
 Retreat&lt;/a> earlier this month. It was an entire week
 on a beautiful island with some amazingly intelligent Bayesians, and no demands
 on my time other than the self-set (and admittedly vague) goal of contributing
