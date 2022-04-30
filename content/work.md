@@ -1,7 +1,8 @@
 ---
 title: Work
 menu: main
-subscribeFooter: false
+blogSubscribeFooter: false
+crosswordSubscribeFooter: false
 ---
 
 ## Software

@@ -34,7 +34,7 @@ title: "${puzzle_title}"
 date: $(date +%Y-%m-%d)
 images:
   - ${ogimage_url}
-subscribeFooter: false
+blogSubscribeFooter: false
 ---
 
 [web](${crosshare_link})

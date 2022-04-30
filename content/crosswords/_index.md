@@ -1,6 +1,7 @@
 ---
 title: Crosswords
-subscribeFooter: false
+blogSubscribeFooter: false
+crosswordSubscribeFooter: false
 showTags: false
 images:
   - /assets/images/loplop-profile-pic.png
