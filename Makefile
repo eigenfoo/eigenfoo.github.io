@@ -20,7 +20,7 @@ draft:  # Start a draft blog post
 	)
 
 serve:  # Serve site locally
-	hugo serve --buildDrafts
+	hugo serve --buildDrafts --buildFuture
 
 test:  # Test generated HTML files.
 	hugo
