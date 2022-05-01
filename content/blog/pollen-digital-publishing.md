@@ -25,18 +25,18 @@ your own domain-specific markup language that you build with Racket.
 After playing around with Pollen for a bit, I think I'm sold. Two big reasons:
 
 1. Write your own markup
-   * You can write your own "HTML tags" --- so for example, if you're writing a technical
-     document and want to emphasize certain jargon upon first mention, you can write a
-     `firstmention` tag, and have it italicize the tagged text and append it to
-     a glossary with a link to its first mention in your document. The cool
-     thing is that tags are just functions in Racket, which allow you to
-     transform the input text arbitrarily.
+   * You can write your own "HTML tags" --- so for example, if you're writing a
+     technical document and want to emphasize certain jargon upon first
+     mention, you can write a `firstmention` tag, and have it italicize the
+     tagged text and append it to a glossary with a link to its first mention
+     in your document. The cool thing is that tags are just functions in
+     Racket, which allow you to transform the input text arbitrarily.
    * As you can imagine, the ability to write your own markup really lets you
      tailor it to the content at hand.
 2. Multi-format publishing
-   * This lets you write in one input format, and output to multiple formats - so once I
-     make changes to the source files, I can immediately have an HTML, LaTeX, PDF, and
-     plain text format of my writing.
+   * This lets you write in one input format, and output to multiple formats -
+     so once I make changes to the source files, I can immediately have an
+     HTML, LaTeX, PDF, and plain text format of my writing.
 
 _But what about Markdown or LaTeX or ReStructured Text or ---_ none of them
 give you flexibility or extensibility that Pollen does. In the case of Markdown
