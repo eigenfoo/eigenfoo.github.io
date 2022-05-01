@@ -17,15 +17,15 @@ with a tool written specifically for the book &mdash;
 least for those in the data science and engineering world) is that it’s like R
 Markdown (in that it’s a markup language that allows arbitrary R code to be
 embedded in it), but instead of R, it’s Racket, and instead of Markdown, it’s
-your own domain-specific markup language that you build with Racket.</p><p>After playing around with Pollen for a bit, I think I&rsquo;m sold. Two big reasons:</p><ol><li>Write your own markup<ul><li>You can write your own &ldquo;HTML tags&rdquo; &mdash; so for example, if you&rsquo;re writing a technical
-document and want to emphasize certain jargon upon first mention, you can write a
-<code>firstmention</code> tag, and have it italicize the tagged text and append it to
-a glossary with a link to its first mention in your document. The cool
-thing is that tags are just functions in Racket, which allow you to
-transform the input text arbitrarily.</li><li>As you can imagine, the ability to write your own markup really lets you
-tailor it to the content at hand.</li></ul></li><li>Multi-format publishing<ul><li>This lets you write in one input format, and output to multiple formats - so once I
-make changes to the source files, I can immediately have an HTML, LaTeX, PDF, and
-plain text format of my writing.</li></ul></li></ol><p><em>But what about Markdown or LaTeX or ReStructured Text or &mdash;</em> none of them
+your own domain-specific markup language that you build with Racket.</p><p>After playing around with Pollen for a bit, I think I&rsquo;m sold. Two big reasons:</p><ol><li>Write your own markup<ul><li>You can write your own &ldquo;HTML tags&rdquo; &mdash; so for example, if you&rsquo;re writing a
+technical document and want to emphasize certain jargon upon first
+mention, you can write a <code>firstmention</code> tag, and have it italicize the
+tagged text and append it to a glossary with a link to its first mention
+in your document. The cool thing is that tags are just functions in
+Racket, which allow you to transform the input text arbitrarily.</li><li>As you can imagine, the ability to write your own markup really lets you
+tailor it to the content at hand.</li></ul></li><li>Multi-format publishing<ul><li>This lets you write in one input format, and output to multiple formats -
+so once I make changes to the source files, I can immediately have an
+HTML, LaTeX, PDF, and plain text format of my writing.</li></ul></li></ol><p><em>But what about Markdown or LaTeX or ReStructured Text or &mdash;</em> none of them
 give you flexibility or extensibility that Pollen does. In the case of Markdown
 or ReStructured Text, you just get a subset of HTML features in a way that
 looks more palatable to the average developer. If this suffices for your

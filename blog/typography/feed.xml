@@ -332,21 +332,21 @@ your own domain-specific markup language that you build with Racket.&lt;/p>
 &lt;ol>
 &lt;li>Write your own markup
 &lt;ul>
-&lt;li>You can write your own &amp;ldquo;HTML tags&amp;rdquo; &amp;mdash; so for example, if you&amp;rsquo;re writing a technical
-document and want to emphasize certain jargon upon first mention, you can write a
-&lt;code>firstmention&lt;/code> tag, and have it italicize the tagged text and append it to
-a glossary with a link to its first mention in your document. The cool
-thing is that tags are just functions in Racket, which allow you to
-transform the input text arbitrarily.&lt;/li>
+&lt;li>You can write your own &amp;ldquo;HTML tags&amp;rdquo; &amp;mdash; so for example, if you&amp;rsquo;re writing a
+technical document and want to emphasize certain jargon upon first
+mention, you can write a &lt;code>firstmention&lt;/code> tag, and have it italicize the
+tagged text and append it to a glossary with a link to its first mention
+in your document. The cool thing is that tags are just functions in
+Racket, which allow you to transform the input text arbitrarily.&lt;/li>
 &lt;li>As you can imagine, the ability to write your own markup really lets you
 tailor it to the content at hand.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>Multi-format publishing
 &lt;ul>
-&lt;li>This lets you write in one input format, and output to multiple formats - so once I
-make changes to the source files, I can immediately have an HTML, LaTeX, PDF, and
-plain text format of my writing.&lt;/li>
+&lt;li>This lets you write in one input format, and output to multiple formats -
+so once I make changes to the source files, I can immediately have an
+HTML, LaTeX, PDF, and plain text format of my writing.&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;/ol>
@@ -378,123 +378,4 @@ managed to put together with it in one or two spare weekends &amp;mdash;
 &lt;a href="https://cooper.georgeho.org/">&lt;code>cooper.georgeho.org&lt;/code>&lt;/a>. I was hunting around for
 dummy text that I could use to play around with &amp;mdash; Lorem Ipsum seemed trite,
 and the U.S. Constitution seemed overdone, so I reached for some historical
-documents of my alma mater. Hope you like it!&lt;/p></description></item><item><title>Best Practice Patterns in Smalltalk</title><link>https://www.georgeho.org/smalltalk/</link><pubDate>Thu, 09 Apr 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/smalltalk/</guid><description>&lt;ul>
-&lt;li>&lt;a href="https://read.amazon.com/kp/embed?asin=B00BBDLIME">Book Preview (Amazon)&lt;/a>&lt;/li>
-&lt;/ul>
-&lt;p>At &lt;a href="https://twitter.com/avibryant/status/1231677904943058944">Avi Bryant&amp;rsquo;s
-recommendation&lt;/a>, I
-decided to pick up &lt;em>Smalltalk: Best Practice Patterns&lt;/em> by Kent Beck. I
-initially was pretty skeptical of the book: it sounded like a book on Smalltalk
-&amp;mdash; not exactly something I know much about (in either sense of the word :P).
-But people seemed to be giving it rave reviews on Twitter (just click around
-the replies on Avi&amp;rsquo;s quoted tweet!), so I decided to give it a shot.&lt;/p>
-&lt;p>First, let&amp;rsquo;s talk about Smalltalk. Smalltalk is an &lt;em>extremely&lt;/em> influential
-language with a &lt;a href="https://hackernoon.com/back-to-the-future-with-smalltalk-57c68fab583a">storied
-history&lt;/a>.
-It was the progenitor of so many ideas that we now take for granted. IDEs.
-Test-driven development. The
-&lt;a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">model-view-controller&lt;/a>
-architecture pattern. Language virtual machines. JIT compilation. I can&amp;rsquo;t
-possibly do its legacy justice here, so I&amp;rsquo;ll just focus on one thing.&lt;/p>
-&lt;p>Smalltalk was the first &lt;em>purely objected oriented&lt;/em> language: the phrase
-&amp;ldquo;everything is an object&amp;rdquo; started with Smalltalk. Objects can have &lt;em>methods&lt;/em>,
-and communicate to each other via &lt;em>messages&lt;/em>. This fastidiousness makes it
-difficult to translate the book&amp;rsquo;s lessons into Python: most popular languages
-today aren&amp;rsquo;t as strict as Smalltalk (i.e. not everything has to be
-encapsulated in a object), so I mentally substituted &amp;ldquo;message&amp;rdquo; with &amp;ldquo;function&amp;rdquo;,
-and most of the best practice patterns still seemed to make a lot of sense.
-However, I&amp;rsquo;m not totally sure that this is the best way to translate it.
-Smalltalkers please chime in!&lt;/p>
-&lt;p>Despite what the book&amp;rsquo;s title might suggest, I would say that this book is
-about &lt;em>best practice patterns&lt;/em> &amp;mdash; design decisions that are made repeatedly by
-experienced developers and are generally (but not universally!) helpful &amp;mdash;
-that happen to be &lt;em>illustrated&lt;/em> in Smalltalk. In other words, the most
-important lessons of the book are language-agnostic.&lt;/p>
-&lt;p>At first, I was actually a bit underwhelmed by this book, since it seemed to be
-explaining a lot of patterns that I already seemed to know, and I was hoping to
-learn more patterns: perhaps my code sucked because I was just shooting myself
-in the foot by structuring it wrong!&lt;/p>
-&lt;p>Instead, the book focussed on a lot of patterns that I had already seen in
-various Python libraries/APIs. It devoted a lot of time to explaining what
-problems these patterns solved, what kind of trade-offs they made, and when not
-to use these patterns. It forced me to think critically about the patterns I
-had already seen (instead of teaching me new patterns) and convinced me to
-double down on following these best practices patterns in my code.&lt;/p>
-&lt;p>Here are some best practice patterns that I found interesting and
-well-explained:&lt;/p>
-&lt;ol>
-&lt;li>
-&lt;p>The pattern of &lt;strong>using classes as functions&lt;/strong>.&lt;/p>
-&lt;blockquote>
-&lt;p>How do you code a method where many lines of code share many arguments
-and temporary variables?&lt;/p>
-&lt;p>&lt;em>Create a class named after the method. Give it an instance variable for
-[&amp;hellip;] each argument and each temporary variable [&amp;hellip;] Give it once instance
-method, &lt;code>compute&lt;/code>, implemented by copying the body of the original method.
-Replace the method with one which creates an instance of the new class and
-sends it &lt;code>compute&lt;/code>.&lt;/em>&lt;/p>
-&lt;/blockquote>
-&lt;p>This practice pattern immediately reminded me of &lt;code>scikit-learn&lt;/code>&amp;rsquo;s API,
-which exposes machine learning algorithms as classes with a &lt;code>.fit()&lt;/code> and
-&lt;code>.predict()&lt;/code> methods. This design made sense to me (there is generally some
-state that needs to be saved after training, and a class is the right way
-to encapsulate that state), but struck me as a bit unsettling. Most classes
-are nouns, and it feels weird to have a class that is a verb. However, Beck
-emphasized that the organization and clarity are worth the strange nature
-of these objects.&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>The idea that &lt;strong>the behavior of programs is more important to get right than
-its state or representation&lt;/strong>.&lt;/p>
-&lt;p>This is best explained with a quote from the book:&lt;/p>
-&lt;blockquote>
-&lt;p>Objects model the world through behavior and state. Behavior is the
-dynamic, active, computational part of the model. State is what is left
-after behavior is done, how the model is represented before, after and
-during a computation.&lt;/p>
-&lt;p>Of the two, behavior is the more important to get right. The primacy of
-behavior is one of the odd truths of objects; odd because it flies in the
-face of so much accumulated experience. Back in the bad old days, you
-wanted to get the representation right as quickly as possible because
-every change to the representation bred changes in many different
-computations.&lt;/p>
-&lt;p>Objects (done right) change all that. No longer is your system a slave of
-its representation. Because objects can hide their representation behind
-a wall of messages, you are free to change representation and only affect
-one object.&lt;/p>
-&lt;/blockquote>
-&lt;p>I&amp;rsquo;ve anecdotally found this to be true in my own writing, but I only have a
-fairly half-baked reason why this should be true in general. For one, state
-is the &lt;em>permanent&lt;/em> part of your program and so is much harder to change: it
-persists between script executions, program invocations, and function
-calls. Secondly, it is incredibly easy to code in implicit assumptions
-about state into other parts of the program: when the state representation
-changes, all these assumptions must then be weeded out of your code and
-modified appropriately.&lt;/p>
-&lt;p>The meatiest example I can give is the one below, so let&amp;rsquo;s move along!&lt;/p>
-&lt;/li>
-&lt;li>
-&lt;p>The pattern of &lt;strong>refining protocols between two programs&lt;/strong>.&lt;/p>
-&lt;blockquote>
-&lt;p>How do you code the interaction between two objects that need to remain
-independent?&lt;/p>
-&lt;p>Refine the protocol between the objects so the words used are consistent.&lt;/p>
-&lt;/blockquote>
-&lt;p>I actually talked about this best practice pattern in my &lt;a href="https://buttondown.email/eigenfoo/archive/tfp-joint-dists/">last
-newsletter&lt;/a>,
-where I discussed the design of TFP. The somewhat more concrete problem is
-this: if program A constructs some object that program B consumes, then it
-is crucially important to get the representation of that object kosher. Any
-changes to that object will require significant (and probably painful!)
-changes to both programs A and B.&lt;/p>
-&lt;p>The best practice pattern here is to refine the protocol between the two
-programs and specify a contract for these intermediate objects: all objects
-must have such and such properties, so that programs A and B can do whatever
-they want, so long as they fulfill the contract. This was exactly the
-situation with specifying and constructing joint distributions before
-passing them off to inference algorithms: by refining and specifying a
-contract for &lt;code>tfp.JointDistribution&lt;/code>s, the TFP team was able to maintain the
-independence of the model specification programs and the inference
-algorithms.&lt;/p>
-&lt;/li>
-&lt;/ol></description></item></channel></rss>
+documents of my alma mater. Hope you like it!&lt;/p></description></item></channel></rss>
