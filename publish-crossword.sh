@@ -23,6 +23,7 @@ cp ~/Downloads/loplop-${next_puzzle_number}-solutions.pdf static/crosswords/ \
 read -p "Puzzle title: " puzzle_title
 read -p "Crosshare link: " crosshare_link
 read -p "Crosshare embed code: " crosshare_embed_code
+echo
 
 # Get OpenGraph image URL from Crosshare
 ogimage_url=$(curl -s ${crosshare_link} | rg -o "https?://crosshare.org/api/ogimage/.*?(\"|')/>")
@@ -45,4 +46,13 @@ blogSubscribeFooter: false
 ${crosshare_embed_code}
 EOT
 
-git add content/crosswords/ static/crosswords/
+echo "Successfully created blog post template! Press Enter to begin editing blog post."
+read
+
+vim "content/crosswords/${next_puzzle_number}.md"
+
+git add "content/crosswords/${next_puzzle_number}.md" \
+    "static/crosswords/loplop-${next_puzzle_number}.puz" \
+    "static/crosswords/loplop-${next_puzzle_number}.pdf" \
+    "static/crosswords/loplop-${next_puzzle_number}-solutions.pdf"
+git status
