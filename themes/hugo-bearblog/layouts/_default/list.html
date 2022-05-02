@@ -1,5 +1,8 @@
 {{ define "main" }}
 <content>
+  {{ if (eq .RelPermalink "/crosswords/") }}
+    {{- partial "crosswords_head.html" . -}}
+  {{ end }}
   {{ if .Data.Singular }}
   <h3 style="margin-bottom:0">Filtering for "{{ .Title }}"</h3>
   <small>
@@ -24,8 +27,8 @@
     </li>
     {{ end }}
   </ul>
-  {{ if .Data.Singular }}
-  {{else}}
+  {{ if or (.Data.Singular) (eq .Params.showTags false) }}
+  {{ else }}
     <small>
       <div>
         {{ range .Site.Taxonomies.tags }}
@@ -33,6 +36,6 @@
         {{ end }}
       </div>
     </small>
-    {{ end }}
+  {{ end }}
 </content>
 {{ end }}
