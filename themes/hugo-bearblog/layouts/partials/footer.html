@@ -10,22 +10,19 @@
     <input type="email" name="email" id="bd-email" placeholder="your@email.com" />
     <input type="submit" value="Subscribe" />
   </form>
-
-  <br>
 {{ else if ne .Params.crosswordSubscribeFooter false }}
-  <form
-    action="https://buttondown.email/api/emails/embed-subscribe/loplop"
-    method="post"
-    target="popupwindow"
-    onsubmit="window.open('https://buttondown.email/loplop', 'popupwindow')"
-    class="embeddable-buttondown-form"
-  >
-  <label for="bd-email">Get my crosswords over email:</label><br>
-    <input type="email" name="email" id="bd-email" />
+  <form style="border:1px solid #ccc;padding:3px;text-align:center;"
+        action="https://tinyletter.com/loplop"
+        method="post"
+        target="popupwindow"
+        onsubmit="window.open('https://tinyletter.com/loplop', 'popupwindow', 'scrollbars=yes, width=800, height=600'); return true">
+  <p><label for="tlemail">Get my crosswords over email:</label></p>
+  <p>
+    <input type="text" name="email" id="tlemail" placeholder="email@example.com" />
+    <input type="hidden" value="1" name="embed"/>
     <input type="submit" value="Subscribe" />
+  </p>
   </form>
-
-  <br>
 {{ end }}
 
 {{ if ne .Site.Params.hideMadeWithLine true }}Made with <a href="https://github.com/janraasch/hugo-bearblog/">Hugo ʕ•ᴥ•ʔ Bear</a>{{ end }}
