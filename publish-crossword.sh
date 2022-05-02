@@ -21,6 +21,7 @@ cp ~/Downloads/loplop-${next_puzzle_number}-solutions.pdf static/crosswords/ \
     || cp ~/loplop-${next_puzzle_number}-solutions.pdf static/crosswords/
 
 read -p "Puzzle title: " puzzle_title
+read -p "Favorite clue: " description
 read -p "Crosshare link: " crosshare_link
 read -p "Crosshare embed code: " crosshare_embed_code
 echo
@@ -33,6 +34,7 @@ cat << EOT > "content/crosswords/${next_puzzle_number}.md"
 ---
 title: "${puzzle_title}"
 date: $(date +%Y-%m-%d)
+description: ${description}
 images:
   - ${ogimage_url}
 blogSubscribeFooter: false
