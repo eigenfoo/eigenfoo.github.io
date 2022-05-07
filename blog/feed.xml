@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Blogs on George Ho</title><link>https://www.georgeho.org/blog/</link><description>Recent content in Blogs on George Ho</description><generator>Hugo -- gohugo.io</generator><language>en-US</language><copyright>Copyright © 2022, George Ho.</copyright><lastBuildDate>Sat, 23 Apr 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.georgeho.org/blog/feed.xml" rel="self" type="application/rss+xml"/><item><title>Link Bulletin, April 2022</title><link>https://www.georgeho.org/link-bulletin-2022-04/</link><pubDate>Sat, 23 Apr 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/link-bulletin-2022-04/</guid><description>&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-05-07T19:50:17Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/" hreflang="en-US"/><entry><title>Link Bulletin, April 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/link-bulletin-2022-04/"/><id>https://www.georgeho.org/link-bulletin-2022-04/</id><updated>2022-04-23T00:00:00Z</updated><published>2022-04-23T00:00:00Z</published><content type="html">&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
 that the links I find interesting might also be interesting to others: at most
 once a month, I&amp;rsquo;ll compile and post a handful of links that I&amp;rsquo;ve read and
 thought about, with minimal explanation or commentary. Here we go!&lt;/p>
@@ -13,7 +13,7 @@ websites&lt;/a>&lt;/li>
 news homepages&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://crosshare.org/">Crosshare: a free, ad-free, and open-source place to create, share and solve
 crossword puzzles&lt;/a>&lt;/li>
-&lt;/ul></description></item><item><title>How to Improve Your Static Site's Typography</title><link>https://www.georgeho.org/static-site-typography/</link><pubDate>Mon, 21 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/static-site-typography/</guid><description>&lt;p>You&amp;rsquo;ve read that &lt;a href="https://ia.net/topics/the-web-is-all-about-typography-period">web design is 95%
+&lt;/ul></content></entry><entry><title>How to Improve Your Static Site's Typography</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/static-site-typography/"/><id>https://www.georgeho.org/static-site-typography/</id><updated>2022-03-21T00:00:00Z</updated><published>2022-03-21T00:00:00Z</published><content type="html">&lt;p>You&amp;rsquo;ve read that &lt;a href="https://ia.net/topics/the-web-is-all-about-typography-period">web design is 95%
 typography&lt;/a>. You
 have a static website. You&amp;rsquo;ve wanted to improve its typography but have never
 had the time or patience. You&amp;rsquo;ve might&amp;rsquo;ve even heard of Butterick&amp;rsquo;s &lt;a href="https://practicaltypography.com/">&lt;em>Practical
@@ -216,7 +216,7 @@ a life.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backli
 deliberately added for the sake of emphasis or structure.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Migrating to Hugo</title><link>https://www.georgeho.org/migrating-to-hugo/</link><pubDate>Sat, 05 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/migrating-to-hugo/</guid><description>&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
+&lt;/div></content></entry><entry><title>Migrating to Hugo</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/migrating-to-hugo/"/><id>https://www.georgeho.org/migrating-to-hugo/</id><updated>2022-03-05T00:00:00Z</updated><published>2022-03-05T00:00:00Z</published><content type="html">&lt;center>&lt;img src="https://www.georgeho.org/assets/images/blog-rewrite-meme.png">&lt;/center>
 &lt;p>This weekend I migrated my blog to Hugo.&lt;/p>
 &lt;p>My website is now based on the &lt;a href="https://github.com/janraasch/hugo-bearblog/">Hugo Bear Blog
 theme&lt;/a>, generated with
@@ -277,7 +277,7 @@ Tufte-style two-column blog posts. It actually worked out pretty well (and the
 resulting blog posts looked &lt;em>damn good&lt;/em>), but I couldn&amp;rsquo;t justify maintaining my
 own language specifically for writing blog posts. I&amp;rsquo;d probably recommend using
 Pollen for large, one-off pieces of writing (like a book), instead of small,
-recurring pieces of writing (like a blog).&lt;/p></description></item><item><title>Data Collection is Hard. You Should Try It.</title><link>https://www.georgeho.org/data-collection-is-hard/</link><pubDate>Thu, 03 Mar 2022 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/data-collection-is-hard/</guid><description>&lt;p>For people who make careers out of data, data scientists don&amp;rsquo;t have &lt;em>nearly&lt;/em>
+recurring pieces of writing (like a blog).&lt;/p></content></entry><entry><title>Data Collection is Hard. You Should Try It.</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/data-collection-is-hard/"/><id>https://www.georgeho.org/data-collection-is-hard/</id><updated>2022-03-03T00:00:00Z</updated><published>2022-03-03T00:00:00Z</published><content type="html">&lt;p>For people who make careers out of data, data scientists don&amp;rsquo;t have &lt;em>nearly&lt;/em>
 enough experience in data collection &amp;mdash; and many data scientists don&amp;rsquo;t seem to
 feel much cognitive dissonance from this fact, despite (very persuasive!)
 &lt;a href="https://counting.substack.com/p/go-collect-some-and-data">overtures by a few valiant data
@@ -398,7 +398,7 @@ unglamorous data work like data cleaning, where people generally accept that
 work&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Streaming Data with Tornado and WebSockets</title><link>https://www.georgeho.org/tornado-websockets/</link><pubDate>Tue, 05 Oct 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tornado-websockets/</guid><description>&lt;p>A lot of data science and machine learning practice assumes a static dataset,
+&lt;/div></content></entry><entry><title>Streaming Data with Tornado and WebSockets</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/tornado-websockets/"/><id>https://www.georgeho.org/tornado-websockets/</id><updated>2021-10-05T00:00:00Z</updated><published>2021-10-05T00:00:00Z</published><content type="html">&lt;p>A lot of data science and machine learning practice assumes a static dataset,
 maybe with some MLOps tooling for rerunning a model pipeline with the freshest
 version of the dataset.&lt;/p>
 &lt;p>Working with streaming data is an entirely different ball game, and it wasn&amp;rsquo;t
@@ -682,7 +682,7 @@ scalable technologies when they do work.&lt;/p>
 &lt;p>There is &lt;a href="https://sqlstream.com/real-time-vs-streaming-a-short-explanation/">technically a difference&lt;/a> between &amp;ldquo;real-time&amp;rdquo; and &amp;ldquo;streaming&amp;rdquo;: &amp;ldquo;real-time&amp;rdquo; refers to data that comes in as it is created, whereas &amp;ldquo;streaming&amp;rdquo; refers to a system that processes data continuously. You stream your TV show from Netflix, but since the show was created long before you watched it, you aren&amp;rsquo;t viewing it in real-time.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Joining Flatiron Health</title><link>https://www.georgeho.org/joining-flatiron/</link><pubDate>Fri, 24 Sep 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/joining-flatiron/</guid><description>&lt;p>An exciting professional update: today is my last day at
+&lt;/div></content></entry><entry><title>Joining Flatiron Health</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/joining-flatiron/"/><id>https://www.georgeho.org/joining-flatiron/</id><updated>2021-09-24T00:00:00Z</updated><published>2021-09-24T00:00:00Z</published><content type="html">&lt;p>An exciting professional update: today is my last day at
 &lt;a href="https://www.point72.com/">Point72&lt;/a> and next month I’ll be joining &lt;a href="https://flatiron.com/">Flatiron
 Health&lt;/a> as a data scientist on their machine learning
 team! I&amp;rsquo;ll be working out of their SoHo offices, and will continue to be based
@@ -692,7 +692,7 @@ in New York.&lt;/p>
 accelerate oncology research and improve quality of cancer care through data
 analytics.&lt;/p>
 &lt;p>The past two years have been terrific, but needless to say, I&amp;rsquo;m looking forward
-to adventures ahead! ⛵&lt;/p></description></item><item><title>`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues</title><link>https://www.georgeho.org/cryptic-clues/</link><pubDate>Sat, 11 Sep 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/cryptic-clues/</guid><description>&lt;p>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of cryptic crossword clues&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, collected
+to adventures ahead! ⛵&lt;/p></content></entry><entry><title>`cryptics.georgeho.org` — A Dataset of Cryptic Crossword Clues</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/cryptic-clues/"/><id>https://www.georgeho.org/cryptic-clues/</id><updated>2021-09-11T00:00:00Z</updated><published>2021-09-11T00:00:00Z</published><content type="html">&lt;p>&lt;code>cryptics.georgeho.org&lt;/code> is a dataset of cryptic crossword clues&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>, collected
 from various blogs and publicly available digital archives. I originally
 started this project to practice my web scraping and data engineering skills,
 but as it&amp;rsquo;s evolved I hope it can be a resource to solvers and constructors of
@@ -712,7 +712,7 @@ years&lt;/strong>, which makes for a rich and peculiar dataset.&lt;/p>
 &lt;p>If you&amp;rsquo;re new to cryptic crosswords, rejoice! A whole new world awaits you! The New Yorker has &lt;a href="https://www.newyorker.com/puzzles-and-games-dept/cryptic-crossword/reintroducing-the-new-yorkers-cryptic-crossword">an excellent introduction to cryptic crosswords&lt;/a>, and Matt Gritzmacher has &lt;a href="https://crosswordlinks.substack.com/">a daily newsletter with links to crosswords&lt;/a>.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>How Many Cryptic Crossword Grids Are There?</title><link>https://www.georgeho.org/counting-cryptics/</link><pubDate>Mon, 17 May 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/counting-cryptics/</guid><description>&lt;p>Counting the number of valid American-style crossword grids is more or less a
+&lt;/div></content></entry><entry><title>How Many Cryptic Crossword Grids Are There?</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/counting-cryptics/"/><id>https://www.georgeho.org/counting-cryptics/</id><updated>2021-05-17T00:00:00Z</updated><published>2021-05-17T00:00:00Z</published><content type="html">&lt;p>Counting the number of valid American-style crossword grids is more or less a
 solved problem. For example, see this &lt;a href="https://fivethirtyeight.com/features/how-many-crossword-puzzles-can-you-make/">FiveThirtyEight
 Riddler&lt;/a>
 and &lt;a href="https://twitter.com/Log3overLog2/status/1092472516571000839">Michael Kleber&amp;rsquo;s answer in a Twitter
@@ -917,7 +917,7 @@ sure to post a part two!&lt;/p>
 &lt;li>&lt;a href="https://raw.githubusercontent.com/eigenfoo/counting-cryptics/main/interesting_9x9_grids.txt">9×9&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ul></description></item><item><title>Understanding NUTS and HMC</title><link>https://www.georgeho.org/understanding-nuts-hmc/</link><pubDate>Thu, 07 Jan 2021 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/understanding-nuts-hmc/</guid><description>&lt;p>&lt;em>&amp;ldquo;Bayesian modeling is harder than deep learning&amp;rdquo;&lt;/em> is a sentiment I&amp;rsquo;ve been
+&lt;/ul></content></entry><entry><title>Understanding NUTS and HMC</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/understanding-nuts-hmc/"/><id>https://www.georgeho.org/understanding-nuts-hmc/</id><updated>2021-01-07T00:00:00Z</updated><published>2021-01-07T00:00:00Z</published><content type="html">&lt;p>&lt;em>&amp;ldquo;Bayesian modeling is harder than deep learning&amp;rdquo;&lt;/em> is a sentiment I&amp;rsquo;ve been
 hearing a lot lately. While I&amp;rsquo;m skeptical of sweeping statements like that, I
 agree when it comes to the central inference algorithm &amp;mdash; how MCMC samplers
 work (especially the &lt;em>de facto&lt;/em> standard samplers, NUTS and HMC) is one of the
@@ -951,7 +951,7 @@ of PyMC3’s NUTS/HMC samplers.&lt;/p>
 &lt;p>Finally, for anyone who wants to read around computational methods for Bayesian
 inference more generally (i.e. not restricted to HMC, for example), I&amp;rsquo;d
 (unashamedly) point to &lt;a href="https://www.georgeho.org/bayesian-inference-reading/">my blog post on
-this&lt;/a>.&lt;/p></description></item><item><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link>https://www.georgeho.org/tensor-computation-libraries/</link><pubDate>Tue, 15 Dec 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/tensor-computation-libraries/</guid><description>&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
+this&lt;/a>.&lt;/p></content></entry><entry><title>What I Wish Someone Had Told Me About Tensor Computation Libraries</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/tensor-computation-libraries/"/><id>https://www.georgeho.org/tensor-computation-libraries/</id><updated>2020-12-15T00:00:00Z</updated><published>2020-12-15T00:00:00Z</published><content type="html">&lt;p>I get confused with tensor computation libraries (or computational graph libraries, or symbolic
 algebra libraries, or whatever they&amp;rsquo;re marketing themselves as these days).&lt;/p>
 &lt;p>I was first introduced to PyTorch and TensorFlow and, having no other reference, thought they were
 prototypical examples of tensor computation libraries. Then I learnt about Theano &amp;mdash; an older and
@@ -1296,7 +1296,7 @@ expertise that goes on behind the user-facing Bayesian modelling.&lt;/p>
 &lt;p>Some readers will notice the conspicuous lack of TensorFlow from this list - its exclusion isn&amp;rsquo;t out of malice, merely a lack of time and effort to do the necessary research to do it justice. Sorry.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Serif Fonts for Coding</title><link>https://www.georgeho.org/fonts-for-coding/</link><pubDate>Thu, 26 Nov 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/fonts-for-coding/</guid><description>&lt;p>Sometimes I get sniped by &lt;a href="https://news.ycombinator.com/item?id=25159038">Hacker News
+&lt;/div></content></entry><entry><title>Serif Fonts for Coding</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/fonts-for-coding/"/><id>https://www.georgeho.org/fonts-for-coding/</id><updated>2020-11-26T00:00:00Z</updated><published>2020-11-26T00:00:00Z</published><content type="html">&lt;p>Sometimes I get sniped by &lt;a href="https://news.ycombinator.com/item?id=25159038">Hacker News
 posts&lt;/a>, and this one plunged me
 down a rabbit hole for coding fonts.&lt;/p>
 &lt;p>Many coding fonts are lightly stressed, monospaced sans serifs: in other words, each glyph takes
@@ -1347,7 +1347,7 @@ computer? &lt;code>¯\_(ツ)_/¯&lt;/code>&lt;/li>
 &lt;li>Triplicate (&lt;a href="https://mbtype.com/fonts/triplicate/">MB Type&lt;/a>)&lt;/li>
 &lt;li>Xanh Mono (&lt;a href="https://fonts.google.com/specimen/Xanh+Mono">Google Fonts&lt;/a>,
 &lt;a href="https://github.com/yellow-type-foundry/xanhmono">GitHub&lt;/a>)&lt;/li>
-&lt;/ul></description></item><item><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link>https://www.georgeho.org/littlemcmc/</link><pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/littlemcmc/</guid><description>&lt;center>
+&lt;/ul></content></entry><entry><title>`littlemcmc` — A Standalone HMC and NUTS Sampler in Python</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/littlemcmc/"/><id>https://www.georgeho.org/littlemcmc/</id><updated>2020-10-06T00:00:00Z</updated><published>2020-10-06T00:00:00Z</published><content type="html">&lt;center>
 &lt;img
 src="https://raw.githubusercontent.com/eigenfoo/littlemcmc/master/docs/_static/logo/default-cropped.png"
 alt="LittleMCMC logo">
@@ -1378,7 +1378,7 @@ the PyMC3 community.&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="https://github.com/eigenfoo/littlemcmc">GitHub&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://littlemcmc.readthedocs.io/en/latest/">Read the Docs&lt;/a>&lt;/li>
-&lt;/ul></description></item><item><title>Pollen and Digital Publishing (a.k.a. _The Book is a Program_)</title><link>https://www.georgeho.org/pollen-digital-publishing/</link><pubDate>Thu, 10 Sep 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/pollen-digital-publishing/</guid><description>&lt;p>I&amp;rsquo;ve picked up a new hobby (or perhaps just another fleeting fascination) &amp;mdash;
+&lt;/ul></content></entry><entry><title>Pollen and Digital Publishing (a.k.a. _The Book is a Program_)</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/pollen-digital-publishing/"/><id>https://www.georgeho.org/pollen-digital-publishing/</id><updated>2020-09-10T00:00:00Z</updated><published>2020-09-10T00:00:00Z</published><content type="html">&lt;p>I&amp;rsquo;ve picked up a new hobby (or perhaps just another fleeting fascination) &amp;mdash;
 digital publishing. The catalyst was the book &lt;a href="https://practicaltypography.com/">&lt;em>Practical Typography&lt;/em> by
 Matthew Butterick&lt;/a>. There were so many
 interesting things about it: it is gorgeous, it expounds well-argued (if
@@ -1443,7 +1443,7 @@ managed to put together with it in one or two spare weekends &amp;mdash;
 &lt;a href="https://cooper.georgeho.org/">&lt;code>cooper.georgeho.org&lt;/code>&lt;/a>. I was hunting around for
 dummy text that I could use to play around with &amp;mdash; Lorem Ipsum seemed trite,
 and the U.S. Constitution seemed overdone, so I reached for some historical
-documents of my alma mater. Hope you like it!&lt;/p></description></item><item><title>Floating-Point Formats and Deep Learning</title><link>https://www.georgeho.org/floating-point-deep-learning/</link><pubDate>Sun, 26 Jul 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/floating-point-deep-learning/</guid><description>&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
+documents of my alma mater. Hope you like it!&lt;/p></content></entry><entry><title>Floating-Point Formats and Deep Learning</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/floating-point-deep-learning/"/><id>https://www.georgeho.org/floating-point-deep-learning/</id><updated>2020-07-26T00:00:00Z</updated><published>2020-07-26T00:00:00Z</published><content type="html">&lt;p>Floating-point formats are not the most glamorous or (frankly) the important
 consideration when working with deep learning models: if your model isn&amp;rsquo;t working well,
 then your floating-point format certainly isn&amp;rsquo;t going to save you! However, past a
 certain point of model complexity/model size/training time, your choice of
@@ -1655,7 +1655,7 @@ the machine learning community thinks of the various low precision options avail
 &lt;p>A Tensor Core is essentially a mixed-precision FP16/FP32 core, which NVIDIA has optimized for deep learning applications.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Transformers in Natural Language Processing — A Brief Survey</title><link>https://www.georgeho.org/transformers-in-nlp/</link><pubDate>Sat, 23 May 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/transformers-in-nlp/</guid><description>&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
+&lt;/div></content></entry><entry><title>Transformers in Natural Language Processing — A Brief Survey</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/transformers-in-nlp/"/><id>https://www.georgeho.org/transformers-in-nlp/</id><updated>2020-05-23T00:00:00Z</updated><published>2020-05-23T00:00:00Z</published><content type="html">&lt;p>I&amp;rsquo;ve recently had to learn a lot about natural language processing (NLP), specifically
 Transformer-based NLP models.&lt;/p>
 &lt;p>Similar to my previous blog post on &lt;a href="https://www.georgeho.org/deep-autoregressive-models/">deep autoregressive
 models&lt;/a>, this blog post is a write-up
@@ -2020,7 +2020,7 @@ surprising conclusions!&lt;/li>
 &lt;p>Since writing this blog post, there have been several more Transformer-based NLP models published, such as the &lt;a href="https://ai.googleblog.com/2020/01/reformer-efficient-transformer.html">Reformer&lt;/a> from Google and &lt;a href="https://arxiv.org/abs/2005.14165">GPT-3&lt;/a> from OpenAI. Because I can&amp;rsquo;t possibly keep up with &lt;em>all&lt;/em> new Transformer-based models, I won&amp;rsquo;t be writing about them.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Adventures in Manipulating Python ASTs</title><link>https://www.georgeho.org/manipulating-python-asts/</link><pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/manipulating-python-asts/</guid><description>&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
+&lt;/div></content></entry><entry><title>Adventures in Manipulating Python ASTs</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/manipulating-python-asts/"/><id>https://www.georgeho.org/manipulating-python-asts/</id><updated>2020-03-27T00:00:00Z</updated><published>2020-03-27T00:00:00Z</published><content type="html">&lt;p>A while back, I explored the possibility of simplifying &lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> PyMC4&amp;rsquo;s model specification
 API by manipulating the &lt;a href="https://docs.python.org/3/library/ast.html">Python abstract syntax
 tree&lt;/a> (AST) of the model code. The PyMC
 developers didn&amp;rsquo;t end up pursuing those API changes any further, but not until I had the
@@ -2225,7 +2225,7 @@ StackOverflow
 answer&lt;/a>.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Benchmarks for Mass Matrix Adaptation</title><link>https://www.georgeho.org/mass-matrix-benchmarks/</link><pubDate>Sat, 14 Dec 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/mass-matrix-benchmarks/</guid><description>&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
+&lt;/div></content></entry><entry><title>Benchmarks for Mass Matrix Adaptation</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/mass-matrix-benchmarks/"/><id>https://www.georgeho.org/mass-matrix-benchmarks/</id><updated>2019-12-14T00:00:00Z</updated><published>2019-12-14T00:00:00Z</published><content type="html">&lt;p>I was lucky enough to be invited to attend the &lt;a href="https://gradientretreat.com/">Gradient
 Retreat&lt;/a> earlier this month. It was an entire week
 on a beautiful island with some amazingly intelligent Bayesians, and no demands
 on my time other than the self-set (and admittedly vague) goal of contributing
@@ -2518,7 +2518,7 @@ time when I thought that I would have the patience to run each model and
 adaptation method multiple times.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Introducing `stan-vim`</title><link>https://www.georgeho.org/stan-vim/</link><pubDate>Mon, 11 Nov 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stan-vim/</guid><description>&lt;center>
+&lt;/div></content></entry><entry><title>Introducing `stan-vim`</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/stan-vim/"/><id>https://www.georgeho.org/stan-vim/</id><updated>2019-11-11T00:00:00Z</updated><published>2019-11-11T00:00:00Z</published><content type="html">&lt;center>
 &lt;img
 src="https://www.georgeho.org/assets/images/stan-logo.png"
 alt="Stan logo">
@@ -2557,7 +2557,7 @@ language&lt;/a>.
 This is probably the last Vim plugin I write.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Anatomy of a Probabilistic Programming Framework</title><link>https://www.georgeho.org/prob-prog-frameworks/</link><pubDate>Mon, 30 Sep 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/prob-prog-frameworks/</guid><description>&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
+&lt;/div></content></entry><entry><title>Anatomy of a Probabilistic Programming Framework</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/prob-prog-frameworks/"/><id>https://www.georgeho.org/prob-prog-frameworks/</id><updated>2019-09-30T00:00:00Z</updated><published>2019-09-30T00:00:00Z</published><content type="html">&lt;p>Recently, the PyMC4 developers &lt;a href="https://openreview.net/forum?id=rkgzj5Za8H">submitted an
 abstract&lt;/a> to the &lt;a href="https://program-transformations.github.io/">&lt;em>Program Transformations
 for Machine Learning&lt;/em> NeurIPS workshop&lt;/a>. I
 realized that despite knowing a thing or two about Bayesian modelling, I don&amp;rsquo;t
@@ -2882,7 +2882,7 @@ path of a crazy person.&lt;/p>
 &lt;/blockquote>
 &amp;#160;&lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Graduated Cooper Union, Joining Point72</title><link>https://www.georgeho.org/joining-point72/</link><pubDate>Mon, 22 Jul 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/joining-point72/</guid><description>&lt;p>Some exciting personal news: I&amp;rsquo;ve &lt;em>(finally)&lt;/em> graduated from &lt;a href="http://cooper.edu/welcome">The Cooper
+&lt;/div></content></entry><entry><title>Graduated Cooper Union, Joining Point72</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/joining-point72/"/><id>https://www.georgeho.org/joining-point72/</id><updated>2019-07-22T00:00:00Z</updated><published>2019-07-22T00:00:00Z</published><content type="html">&lt;p>Some exciting personal news: I&amp;rsquo;ve &lt;em>(finally)&lt;/em> graduated from &lt;a href="http://cooper.edu/welcome">The Cooper
 Union&lt;/a>, and I&amp;rsquo;m joining &lt;a href="https://www.point72.com/">Point72 Asset
 Management&lt;/a> as a data scientist/research analyst!&lt;/p>
 &lt;p>Point72 is an American hedge fund, headquartered in Connecticut. I&amp;rsquo;ll be based
@@ -2901,12 +2901,12 @@ alt="Point72 logo">
 PyMC project: I hope to keep contributing!&lt;/li>
 &lt;/ol>
 &lt;p>My four years of college were incredibly rewarding, but I&amp;rsquo;m excited to enter the
-real world. Stay tuned!&lt;/p></description></item><item><title>Python Port of _Common Statistical Tests are Linear Models_</title><link>https://www.georgeho.org/stat-tests-are-linear-model/</link><pubDate>Fri, 28 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/stat-tests-are-linear-model/</guid><description>&lt;p>I ported &lt;a href="https://lindeloev.net">Jonas Lindeløv&lt;/a>&amp;rsquo;s essay, &lt;a href="https://lindeloev.github.io/tests-as-linear/">&lt;em>Common Statistical
+real world. Stay tuned!&lt;/p></content></entry><entry><title>Python Port of _Common Statistical Tests are Linear Models_</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/stat-tests-are-linear-model/"/><id>https://www.georgeho.org/stat-tests-are-linear-model/</id><updated>2019-06-28T00:00:00Z</updated><published>2019-06-28T00:00:00Z</published><content type="html">&lt;p>I ported &lt;a href="https://lindeloev.net">Jonas Lindeløv&lt;/a>&amp;rsquo;s essay, &lt;a href="https://lindeloev.github.io/tests-as-linear/">&lt;em>Common Statistical
 Tests are Linear Models&lt;/em>&lt;/a> from R
 to Python. Check it out on &lt;a href="https://www.georgeho.org/tests-as-linear/">my
 blog&lt;/a>,
 &lt;a href="https://github.com/eigenfoo/tests-as-linear">GitHub&lt;/a>, or
-&lt;a href="https://gke.mybinder.org/v2/gh/eigenfoo/tests-as-linear/master?filepath=tests-as-linear.ipynb">Binder&lt;/a>!&lt;/p></description></item><item><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link>https://www.georgeho.org/bayesian-bandits-2/</link><pubDate>Sun, 02 Jun 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits-2/</guid><description>&lt;blockquote>
+&lt;a href="https://gke.mybinder.org/v2/gh/eigenfoo/tests-as-linear/master?filepath=tests-as-linear.ipynb">Binder&lt;/a>!&lt;/p></content></entry><entry><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/bayesian-bandits-2/"/><id>https://www.georgeho.org/bayesian-bandits-2/</id><updated>2019-06-02T00:00:00Z</updated><published>2019-06-02T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
 Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -3069,7 +3069,7 @@ solutions manual &lt;a href="https://github.com/GoldenCheese/PRML-Solution-Manua
 GitHub&lt;/a> 😉&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Autoregressive Models in Deep Learning — A Brief Survey</title><link>https://www.georgeho.org/deep-autoregressive-models/</link><pubDate>Sat, 09 Mar 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/deep-autoregressive-models/</guid><description>&lt;p>My current project involves working with deep autoregressive models: a class of
+&lt;/div></content></entry><entry><title>Autoregressive Models in Deep Learning — A Brief Survey</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/deep-autoregressive-models/"/><id>https://www.georgeho.org/deep-autoregressive-models/</id><updated>2019-03-09T00:00:00Z</updated><published>2019-03-09T00:00:00Z</published><content type="html">&lt;p>My current project involves working with deep autoregressive models: a class of
 remarkable neural networks that aren&amp;rsquo;t usually seen on a first pass through deep
 learning. These notes are a quick write-up of my reading and research: I assume
 basic familiarity with deep learning, and aim to highlight general trends and
@@ -3361,7 +3361,7 @@ color of every stitch, in order, in advance.&amp;#160;&lt;a href="#fnref:2" clas
 infatuation with autoregressive models back in 2016.&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Modern Computational Methods for Bayesian Inference — A Reading List</title><link>https://www.georgeho.org/bayesian-inference-reading/</link><pubDate>Wed, 02 Jan 2019 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-inference-reading/</guid><description>&lt;p>Lately I&amp;rsquo;ve been troubled by how little I actually knew about how Bayesian
+&lt;/div></content></entry><entry><title>Modern Computational Methods for Bayesian Inference — A Reading List</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/bayesian-inference-reading/"/><id>https://www.georgeho.org/bayesian-inference-reading/</id><updated>2019-01-02T00:00:00Z</updated><published>2019-01-02T00:00:00Z</published><content type="html">&lt;p>Lately I&amp;rsquo;ve been troubled by how little I actually knew about how Bayesian
 inference &lt;em>really worked&lt;/em>. I could explain to you &lt;a href="https://maria-antoniak.github.io/2018/11/19/data-science-crash-course.html">many other machine learning
 techniques&lt;/a>,
 but with Bayesian modelling&amp;hellip; well, there&amp;rsquo;s a model (which is basically the
@@ -3547,7 +3547,7 @@ Betancourt’s excellent essay on a principles Bayesian
 workflow&lt;/a>.&amp;#160;&lt;a href="#fnref:2" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link>https://www.georgeho.org/matrix-factorizations/</link><pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/matrix-factorizations/</guid><description>&lt;p>Natural language processing is in a curious place right now. It was always a
+&lt;/div></content></entry><entry><title>Probabilistic and Bayesian Matrix Factorizations for Text Clustering</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/matrix-factorizations/"/><id>https://www.georgeho.org/matrix-factorizations/</id><updated>2018-10-13T00:00:00Z</updated><published>2018-10-13T00:00:00Z</published><content type="html">&lt;p>Natural language processing is in a curious place right now. It was always a
 late bloomer (as far as machine learning subfields go), and it&amp;rsquo;s not immediately
 obvious how close the field is to viable, large-scale, production-ready
 techniques (in the same way that, say, &lt;a href="https://clarifai.com/models/">computer vision
@@ -3696,7 +3696,7 @@ machine learning.&lt;/p>
 learning&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link>https://www.georgeho.org/bayesian-bandits/</link><pubDate>Fri, 31 Aug 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-bandits/</guid><description>&lt;blockquote>
+&lt;/div></content></entry><entry><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/bayesian-bandits/"/><id>https://www.georgeho.org/bayesian-bandits/</id><updated>2018-08-31T00:00:00Z</updated><published>2018-08-31T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
 out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
 &lt;/blockquote>
@@ -3969,7 +3969,7 @@ library or even a class. Just two functions!&amp;#160;&lt;a href="#fnref:1" clas
 &lt;p>&lt;a href="https://arxiv.org/abs/1111.1797">arXiv:1111.1797&lt;/a> [cs.LG]&amp;#160;&lt;a href="#fnref:3" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>Cookbook — Bayesian Modelling with PyMC3</title><link>https://www.georgeho.org/bayesian-modelling-cookbook/</link><pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/bayesian-modelling-cookbook/</guid><description>&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
+&lt;/div></content></entry><entry><title>Cookbook — Bayesian Modelling with PyMC3</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/bayesian-modelling-cookbook/"/><id>https://www.georgeho.org/bayesian-modelling-cookbook/</id><updated>2018-06-24T00:00:00Z</updated><published>2018-06-24T00:00:00Z</published><content type="html">&lt;p>Recently I&amp;rsquo;ve started using &lt;a href="https://github.com/pymc-devs/pymc3">PyMC3&lt;/a> for
 Bayesian modelling, and it&amp;rsquo;s an amazing piece of software! The API only exposes
 as much of heavy machinery of MCMC as you need — by which I mean, just the
 &lt;code>pm.sample()&lt;/code> method (a.k.a., as &lt;a href="http://twiecki.github.io/blog/2013/08/12/bayesian-glms-1/">Thomas
@@ -4540,7 +4540,7 @@ As such, it&amp;rsquo;s informed by your prior as well as your data, and it&amp;
 job to adequately fit your data!&lt;/li>
 &lt;/ul>
 &lt;/li>
-&lt;/ol></description></item><item><title>Understanding Hate Speech on Reddit through Text Clustering</title><link>https://www.georgeho.org/reddit-clusters/</link><pubDate>Sun, 18 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-clusters/</guid><description>&lt;blockquote>
+&lt;/ol></content></entry><entry><title>Understanding Hate Speech on Reddit through Text Clustering</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/reddit-clusters/"/><id>https://www.georgeho.org/reddit-clusters/</id><updated>2018-03-18T00:00:00Z</updated><published>2018-03-18T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>Note: the following article contains several examples of hate speech
 (including but not limited to racist, misogynistic and homophobic views).&lt;/p>
 &lt;/blockquote>
@@ -4807,7 +4807,7 @@ repository&lt;/a>.&lt;/p>
 &lt;hr>
 &lt;p>&lt;strong>Update (2018-11-08):&lt;/strong> If you&amp;rsquo;re interested in the technical, data science side
 of the project, check out the slide deck and speaker notes from &lt;a href="https://www.georgeho.org/reddit-slides/">my recent
-talk&lt;/a> on exactly that!&lt;/p></description></item><item><title>Why Latent Dirichlet Allocation Sucks</title><link>https://www.georgeho.org/lda-sucks/</link><pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda-sucks/</guid><description>&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
+talk&lt;/a> on exactly that!&lt;/p></content></entry><entry><title>Why Latent Dirichlet Allocation Sucks</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/lda-sucks/"/><id>https://www.georgeho.org/lda-sucks/</id><updated>2018-03-06T00:00:00Z</updated><published>2018-03-06T00:00:00Z</published><content type="html">&lt;p>As I learn more and more about data science and machine learning, I&amp;rsquo;ve noticed
 that a lot of resources out there go something like this:&lt;/p>
 &lt;blockquote>
 &lt;p>Check out this thing! It&amp;rsquo;s great at this task! The important task! The one
@@ -5008,7 +5008,7 @@ hard to justify that there are topic clusters in the first place.&lt;/p>
 am linking to the Internet Archive of his blog post instead.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&amp;#160;&lt;a href="#fnref1:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
-&lt;/div></description></item><item><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link>https://www.georgeho.org/lupi/</link><pubDate>Tue, 30 Jan 2018 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lupi/</guid><description>&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
+&lt;/div></content></entry><entry><title>~~Fruit~~ Loops and Learning - The LUPI Paradigm and SVM+</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/lupi/"/><id>https://www.georgeho.org/lupi/</id><updated>2018-01-30T00:00:00Z</updated><published>2018-01-30T00:00:00Z</published><content type="html">&lt;p>Here&amp;rsquo;s a short story you might know: you have a black box, whose name is
 &lt;em>Machine Learning Algorithm&lt;/em>. It&amp;rsquo;s got two modes: training mode and testing
 mode. You set it to training mode, and throw in a lot (sometimes &lt;em>a lot&lt;/em> a lot)
 of ordered pairs $(x_i, y_i), 1 \leq i \leq l$. Here, the $x_i$ are called
@@ -5198,7 +5198,7 @@ can supply do not all share the same features&lt;/li>
 &lt;p>Clearly, there&amp;rsquo;s a lot of potential in the LUPI paradigm, as well as a lot of
 reasons to be skeptical. It&amp;rsquo;s very much a nascent perspective of machine
 learning, so I&amp;rsquo;m interested in keeping an eye on it going forward. I&amp;rsquo;m hoping
-to write more posts on LUPI in the future!&lt;/p></description></item><item><title>Linear Discriminant Analysis for Starters</title><link>https://www.georgeho.org/lda/</link><pubDate>Sat, 30 Dec 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/lda/</guid><description>&lt;p>&lt;em>Linear discriminant analysis&lt;/em> (commonly abbreviated to LDA, and not to be
+to write more posts on LUPI in the future!&lt;/p></content></entry><entry><title>Linear Discriminant Analysis for Starters</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/lda/"/><id>https://www.georgeho.org/lda/</id><updated>2017-12-30T00:00:00Z</updated><published>2017-12-30T00:00:00Z</published><content type="html">&lt;p>&lt;em>Linear discriminant analysis&lt;/em> (commonly abbreviated to LDA, and not to be
 confused with &lt;a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">the other
 LDA&lt;/a>) is a very
 common dimensionality reduction technique for classification problems. However,
@@ -5498,7 +5498,7 @@ combination of other features or measurements. However, ANOVA uses
 &lt;strong>categorical&lt;/strong> independent variables and a &lt;strong>continuous&lt;/strong> dependent variable,
 whereas discriminant analysis has &lt;strong>continuous&lt;/strong> independent variables and a
 &lt;strong>categorical&lt;/strong> dependent variable (i.e. the class label).&lt;/p>
-&lt;/blockquote></description></item><item><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio</title><link>https://www.georgeho.org/pyfolio/</link><pubDate>Sat, 16 Dec 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/pyfolio/</guid><description>&lt;p>I was lucky enough to have the chance to intern at
+&lt;/blockquote></content></entry><entry><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/pyfolio/"/><id>https://www.georgeho.org/pyfolio/</id><updated>2017-12-16T00:00:00Z</updated><published>2017-12-16T00:00:00Z</published><content type="html">&lt;p>I was lucky enough to have the chance to intern at
 &lt;a href="https://www.quantopian.com/">Quantopian&lt;/a> this summer. During that time I
 contributed some exciting stuff to their open-source portfolio analytics engine,
 &lt;a href="https://github.com/quantopian/pyfolio">&lt;code>pyfolio&lt;/code>&lt;/a>, and learnt a truckload of
@@ -5700,7 +5700,7 @@ risk model works! Read all about it
 &lt;a href="https://www.quantopian.com/papers/risk">here&lt;/a>.&lt;/p>
 &lt;p>&lt;strong>Update (12-16-2020):&lt;/strong> &lt;a href="https://www.bloomberg.com/news/articles/2020-12-16/quant-trading-platform-quantopian-closes-down">Quantopian has been acquired by
 Robinhood.&lt;/a>
-Sorry for all the broken links to &lt;code>www.quantopian.com&lt;/code>.&lt;/p></description></item><item><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link>https://www.georgeho.org/reddit-slides/</link><pubDate>Wed, 08 Nov 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/reddit-slides/</guid><description>&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
+Sorry for all the broken links to &lt;code>www.quantopian.com&lt;/code>.&lt;/p></content></entry><entry><title>Modelling Hate Speech on Reddit — A Three-Act Play (Slide Deck)</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/reddit-slides/"/><id>https://www.georgeho.org/reddit-slides/</id><updated>2017-11-08T00:00:00Z</updated><published>2017-11-08T00:00:00Z</published><content type="html">&lt;p>This is a follow-up post to my first post on a recent project to &lt;a href="https://www.georgeho.org/reddit-clusters/">model hate
 speech on Reddit&lt;/a>. If you haven&amp;rsquo;t
 taken a look at my first post, please do!&lt;/p>
 &lt;p>I recently gave a talk on the technical, data science side of the project,
@@ -5720,7 +5720,7 @@ assured that both the talk and the slides have been scrubbed to be safe for
 work!&lt;/p>
 &lt;h2 id="slides">Slides&lt;/h2>
 &lt;blockquote class="embedly-card">&lt;h4>&lt;a href="https://speakerdeck.com/_eigenfoo/modelling-hate-speech-on-reddit-a-three-act-play">Modelling Hate Speech on Reddit - A Three-Act Play&lt;/a>&lt;/h4>&lt;p>Reddit is the one of the most popular discussion websites today, and is famously broad-minded in what it allows to be said on its forums: however, where there is free speech, there are invariably pockets of hate speech. In this talk, I present a recent project to model hate speech on Reddit.&lt;/p>&lt;/blockquote>
-&lt;script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8">&lt;/script></description></item><item><title>Hello World!</title><link>https://www.georgeho.org/hello/</link><pubDate>Sat, 29 Jul 2017 00:00:00 +0000</pubDate><guid>https://www.georgeho.org/hello/</guid><description>&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Utah_teapot">The Utah teapot!&lt;/a> (Basically the
+&lt;script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8">&lt;/script></content></entry><entry><title>Hello World!</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/hello/"/><id>https://www.georgeho.org/hello/</id><updated>2017-07-29T00:00:00Z</updated><published>2017-07-29T00:00:00Z</published><content type="html">&lt;p>&lt;a href="https://en.wikipedia.org/wiki/Utah_teapot">The Utah teapot!&lt;/a> (Basically the
 “hello world” of computer graphics).&lt;/p>
 &lt;p>&lt;img src="https://www.georgeho.org/assets/images/utah-teapot.png" alt="The Utah teapot">&lt;/p>
 &lt;p>This is the first post of what will (hopefully) be a cool and interesting blog.
@@ -5735,4 +5735,4 @@ blogging stack: the only thing I pay for is the custom
 maybe two or three cups of coffee a year.&lt;/p>
 &lt;hr>
 &lt;p>&lt;strong>Update (2022-03-06):&lt;/strong> I&amp;rsquo;ve since made several changes to this blog, which
-you can read about in &lt;a href="https://www.georgeho.org/migrating-to-hugo">a subsequent blog post&lt;/a>.&lt;/p></description></item></channel></rss>
+you can read about in &lt;a href="https://www.georgeho.org/migrating-to-hugo">a subsequent blog post&lt;/a>.&lt;/p></content></entry></feed>
