@@ -5,14 +5,14 @@
 {{- end -}}
 {{ printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="{{ .Site.LanguageCode }}">
-  <title>{{ .Site.Title }}</title>
+  <title>Loplop Crosswords by {{ .Site.Title }}</title>
   {{- with .Site.Params.brand.tagline }}
   <subtitle>{{ . }}</subtitle>
   {{- end }}
-  <id>{{ "/" | absLangURL }}</id>
+  <id>{{ "/crosswords" | absLangURL }}</id>
   <author>
     <name>{{ .Site.Title }}</name>
-    <uri>{{ "/" | absLangURL }}</uri>
+    <uri>{{ "/crosswords" | absLangURL }}</uri>
   </author>
   <generator>Hugo gohugo.io</generator>
   {{- with .Site.Copyright }}
