@@ -6,9 +6,9 @@ aliases:
 
 # Hello! I’m George (a.k.a. eigenfoo)
 
-<center>
-  <img src="/assets/images/profile-pic.jpg" alt="A photo of George in front of the Great Gum Wall of Seattle."> 
-</center>
+<div style="text-align:center"><a href="/assets/images/profile-pic.jpg">
+  <img width="50%" height="auto" src="/assets/images/profile-pic.jpg" alt="A photo of George in front of the Great Gum Wall of Seattle."> 
+</a></div>
 
 I'm a data scientist at [Flatiron Health](https://flatiron.com/), where I use
 machine learning on real-world patient data to accelerate cancer research. I
