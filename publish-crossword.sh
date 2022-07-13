@@ -3,7 +3,7 @@
 set -euf -o pipefail
 
 last_puzzle_number=$(find content/crosswords/ -name "*.md" | rg -o "[0-9]{3}" | sort | tail -n 1)
-next_puzzle_number=$((${last_puzzle_number} + 1))
+next_puzzle_number=$((10#${last_puzzle_number} + 1))
 next_puzzle_number=`printf %03d ${next_puzzle_number}`
 
 echo "Creating puzzle #${next_puzzle_number}..."
@@ -39,6 +39,28 @@ images:
   - ${ogimage_url}
 blogSubscribeFooter: false
 ---
+
+
+
+## Clue Workshop
+
+
+
+<p style="text-align:center">
+
+</p>
+
+<details>
+<summary>Click here for solution and discussion</summary>
+
+<ul>
+<li><b>Answer:</b> </li>
+<li><b>Definition:</b> </li>
+<li><b>Wordplay:</b> </li>
+</ul>
+
+</details>
+
 
 [web](${crosshare_link})
 / [puz](/crosswords/loplop-${next_puzzle_number}.puz)
