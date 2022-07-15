@@ -11,18 +11,28 @@
     <input type="submit" value="Subscribe" />
   </form>
 {{ else if ne .Params.crosswordSubscribeFooter false }}
-  <form style="border:1px solid #ccc;padding:3px;text-align:center;"
-        action="https://tinyletter.com/loplop"
+  <div id="revue-embed" style="border:1px solid #E6E6E6;padding:30px;text-align:center;">
+  <form action="https://www.getrevue.co/profile/loplop/add_subscriber"
         method="post"
-        target="popupwindow"
-        onsubmit="window.open('https://tinyletter.com/loplop', 'popupwindow', 'scrollbars=yes, width=800, height=600'); return true">
-  <p><label for="tlemail">Get my crosswords over email:</label></p>
-  <p>
-    <input type="text" name="email" id="tlemail" placeholder="email@example.com" />
-    <input type="hidden" value="1" name="embed"/>
-    <input type="submit" value="Subscribe" />
-  </p>
+        id="revue-form"
+        name="revue-form"
+        target="_blank">
+    <div class="revue-form-group">
+      <label for="member_email">Get my puzzles over email: </label>
+      <input class="revue-form-field" placeholder="hello@example.com" type="email" name="member[email]" id="member_email">
+    </div>
+
+    <div class="revue-form-actions">
+      <input type="submit" value="Subscribe" name="member[subscribe]" id="member_submit">
+    </div>
+
+    <div class="revue-form-footer">
+      <div style="font-size:65%; opacity:0.7;">
+        By subscribing, you agree with Revue’s <a target="_blank" href="https://www.getrevue.co/terms">Terms of Service</a> and <a target="_blank" href="https://www.getrevue.co/privacy">Privacy Policy</a>.
+      </div>
+    </div>
   </form>
+  </div>
 {{ end }}
 
 {{ if ne .Site.Params.hideMadeWithLine true }}Made with <a href="https://github.com/janraasch/hugo-bearblog/">Hugo ʕ•ᴥ•ʔ Bear</a>{{ end }}
