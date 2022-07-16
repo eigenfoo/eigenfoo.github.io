@@ -5,7 +5,7 @@ on:
     branches:
       - main  # Set a branch to deploy
   schedule:
-      - cron: "42 21 * * *"  # Every 21:42 UTC, 16:42 EST, 17:42 EDT
+      - cron: "34 7 * * *"  # Every 07:34 UTC, 02:34 EST, 03:34 EDT
 
 jobs:
   deploy:
