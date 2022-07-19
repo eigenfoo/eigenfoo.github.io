@@ -1,0 +1,369 @@
+{
+  "version": "http://ipuz.org/v2",
+  "kind": [
+    "http://ipuz.org/crossword#1"
+  ],
+  "copyright": "2022 My First LLC, George Ho",
+  "title": "In One Basket",
+  "intro": "In this puzzle’s grid, we found 10 eggs, which was very fortunate since we did not find any clue numbers. The only help we have in arranging these answers (presented alphabetically, sorted by across and down) is that the letter O, when it appears in clue answers, is placed in a square with an egg. <b>Note that the clues appear to be correlated to specific entries in the grid — they are not correlated and the placement of every answer must be determined.</B>",
+  "notes": "In this puzzle’s grid, we found 10 eggs, which was very fortunate since we did not find any clue numbers. The only help we have in arranging these answers (presented alphabetically, sorted by across and down) is that the letter O, when it appears in clue answers, is placed in a square with an egg. <b>Note that in Puzzazz, the clues appear to be correlated to specific entries in the grid — they are not correlated and the placement of every answer must be determine.</B>",
+  "explanation": "<b>Across</b><br>A. BEMUSE, BE(SUM)&lt;E<br>B. BOCCE, B[owling] O[utside] C[ompetitive] C[ourt-based] E[ntertainment] <i>(&amp;lit)</i><br>C. CLIMB, CL(IM)[u]B<br>D. CONTRAVENE, CON + (VETERAN)*<br>E. DIPS, (SP. + ID)&lt;<br>F. ENROBING, ENRO[n] + BING<br>G. GLYCERINE, G[ore] + ([s]INCERELY)*<br>H. HOWLER, HO + W[eitner] + R[asmus] around LE[tters]<br>I. ORLY, O RLY 2x def<br>J. PLAUSIBLY, (BUYS A PILL)*<br>K. SACRILEGE, (CLERGIES)* around A <i>(&amp;lit)</i></i><br>L. SALOONS, SA(LOO)NS<br>M. SCHEDULES, SCH’S around (ELUDE)&lt;<br>N. STYLE, mu<b>STY LE</b>derhosen <i>(&amp;lit)</i><br>O. SUBTITLE, (SUIT + BELT)*<br>P. TYROS, (SORT)&lt; around [nunner]Y<br><b>Down</b><br>Q. BEDIM, BED + I’M<br>R. BRAVENESS, BRAS around (SEVEN)* <br>S. CALL IN, CA(ILL)&lt;N<br>T. CCCP, CCC + P<br>U. CLOONEY, C(LO)ONEY <br>V. DELI, DELI[very]<br>W. DRESS, [ad]DRESS<br>X. ENTITY, [id]ENTITY<br>Y. EPEE, [t]EPEE<br>Z. ESSES, ES letter bank<br>AA. HUEY, HUE-Y 2x def<br>AB. INCA, INC. + A[mazon]<br>AC. LEMUR, unintelligibLE MURmur<br>AD. OUGHT, [t]OUGH(T)<br>AE. PROBING, P(ROB)ING<br>AF. SLAYER, S[pring] + LAYER<br>AG. SLOWLY, S + LOWLY<br>AH. VIRUS, VI + RUS[sians]",
+  "author": "loplop, dadgumituh and jmsr525",
+  "dimensions": {
+    "width": 10,
+    "height": 10
+  },
+  "puzzle": [
+    [
+      "                              ",
+      {"cell": 0, "style": {"barred": "B"}},
+      "              ",
+      {"cell": 0, "style": {"barred": "B"}},
+      {"cell": "             ", "style": {"barred": "R"}},
+      "                             ",
+      {"cell": 0, "style": {"shapebg": "circle", "barred": "B"}},
+      "           ",
+      "          ",
+      "         "
+    ],
+    [
+      "                            ",
+      {"cell": "0", "style": {"shapebg": "circle", "barred": "B"}},
+      0,
+      {"cell": 0, "style": {"barred": "B"}},
+      {"cell": "0", "style": {"shapebg": "circle"}},
+      {"cell": 0, "style": {"barred": "R"}},
+      {"cell": "                           ", "style": {"barred": "B"}},
+      0,
+      {"cell": "0", "style": {"shapebg": "circle"}},
+      0
+    ],
+    [
+      {"cell": 0, "style": {"barred": "R"}},
+      {"cell": "                          ", "style": {"barred": "B"}},
+      0,
+      "        ",
+      0,
+      0,
+      {"cell": 0, "style": {"barred": "B"}},
+      0,
+      0,
+      0
+    ],
+    [
+      {"cell": "                         ", "style": {"barred": "B"}},
+      "       ",
+      {"cell": 0, "style": {"barred": "B"}},
+      0,
+      0,
+      0,
+      {"cell": 0, "style": {"barred": "B"}},
+      0,
+      {"cell": 0, "style": {"barred": "RB"}},
+      0
+    ],
+    [
+      {"cell": "                        ", "style": {"barred": "B"}},
+      {"cell": 0, "style": {"shapebg": "circle"}},
+      "      ",
+      {"cell": 0, "style": {"barred": "R"}},
+      {"cell": 0, "style": {"barred": "RB"}},
+      {"cell": 0, "style": {"barred": "RB"}},
+      "                       ",
+      0,
+      "     ",
+      {"cell": 0, "style": {"barred": "B"}}
+    ],
+    [
+      {"cell": "                      ", "style": {"shapebg": "circle"}},
+      {"cell": 0, "style": {"barred": "B"}},
+      0,
+      {"cell": 0, "style": {"barred": "RB"}},
+      {"cell": "    ", "style": {"barred": "R"}},
+      {"cell": "   ", "style": {"barred": "R"}},
+      "                     ",
+      {"cell": 0, "style": {"barred": "B"}},
+      {"cell": 0, "style": {"shapebg": "circle"}},
+      {"cell": 0, "style": {"barred": "B"}}
+    ],
+    [
+      {"cell": 0, "style": {"barred": "R"}},
+      "                    ",
+      0,
+      {"cell": 0, "style": {"barred": "B"}},
+      0,
+      0,
+      0,
+      "  ",
+      {"cell": 0, "style": {"barred": "B"}},
+      " "
+    ],
+    [
+      "                   ",
+      0,
+      0,
+      {"cell": 0, "style": {"barred": "B"}},
+      0,
+      0,
+      {"cell": 0, "style": {"barred": "B"}},
+      0,
+      {"cell": 0, "style": {"barred": "RB"}},
+      0
+    ],
+    [
+      "                  ",
+      {"cell": "0", "style": {"shapebg": "circle"}},
+      0,
+      {"cell": 0, "style": {"barred": "RB"}},
+      "                 ",
+      0,
+      {"cell": 0, "style": {"barred": "B"}},
+      {"cell": "0", "style": {"shapebg": "circle"}},
+      {"cell": 0, "style": {"barred": "B"}},
+      0
+    ],
+    [
+      "                ",
+      0,
+      0,
+      {"cell": "0", "style": {"shapebg": "circle"}},
+      {"cell": 0, "style": {"barred": "R"}},
+      "               ",
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "solution": [
+    [
+      "C",
+      "L",
+      "I",
+      "M",
+      "B",
+      "B",
+      "O",
+      "C",
+      "C",
+      "E"
+    ],
+    [
+      "C",
+      "O",
+      "N",
+      "T",
+      "RAVEN",
+      "E",
+      "S",
+      "A",
+      "LOON",
+      "S"
+    ],
+    [
+      "C",
+      "S",
+      "C",
+      "H",
+      "E",
+      "D",
+      "U",
+      "L",
+      "E",
+      "S"
+    ],
+    [
+      "P",
+      "L",
+      "A",
+      "U",
+      "S",
+      "I",
+      "B",
+      "L",
+      "Y",
+      "E"
+    ],
+    [
+      "B",
+      "EMU",
+      "S",
+      "E",
+      "S",
+      "M",
+      "D",
+      "I",
+      "P",
+      "S"
+    ],
+    [
+      "O",
+      "R",
+      "L",
+      "Y",
+      "D",
+      "V",
+      "E",
+      "N",
+      "ROBIN",
+      "G"
+    ],
+    [
+      "U",
+      "S",
+      "A",
+      "C",
+      "R",
+      "I",
+      "L",
+      "E",
+      "G",
+      "E"
+    ],
+    [
+      "G",
+      "L",
+      "Y",
+      "C",
+      "E",
+      "R",
+      "I",
+      "N",
+      "E",
+      "P"
+    ],
+    [
+      "H",
+      "OWL",
+      "E",
+      "R",
+      "S",
+      "U",
+      "B",
+      "TIT",
+      "L",
+      "E"
+    ],
+    [
+      "T",
+      "Y",
+      "R",
+      "O",
+      "S",
+      "S",
+      "T",
+      "Y",
+      "L",
+      "E"
+    ]
+  ],
+
+  "clues": {
+		"Across": [
+      [
+        "                              ", "A. Puzzle competition includes wrap-up round (6)"
+      ],
+      [
+        "                             ", "B. It’s the tops in bowling outdoors — competitive court-based entertainment! (5)"
+      ],
+      [
+        "                            ", "C. “IM4U”, “In the Club” go up the charts (5)"
+      ],
+      [
+        "                           ", "D. Prisoner involved veteran in break (10)"
+      ],
+      [
+        "                          ", "E. Recalled Spanish name for salsa and queso (4)"
+      ],
+      [
+        "                         ", "F. Notorious company suppressing right wing Google competitor and performing cover-up (8)"
+      ],
+      [
+        "                        ", "G. In the ’90s, Bush hit Gore initially and sincerely — lacking leadership, in need of reform (9)"
+      ],
+      [
+        "                       ", "H. Ho, Weitner and Rasmus (in their debuts) circling a couple of letters as a comical goof (6)"
+      ],
+      [
+        "                      ", "I. Where you can land in Paris? That’s obvious if you ask internet forum dwellers (4)"
+      ],
+      [
+        "                     ", "J. Doctor buys a pill in a way that I can buy (9)"
+      ],
+      [
+        "                    ", "K. Clergies may be riled up about one! (9)"
+      ],
+      [
+        "                   ", "L. Bars without bathroom inside (7)"
+      ],
+      [
+        "                  ", "M. Avoid returning boarding school’s books (9)"
+      ],
+      [
+        "                 ", "N. You’d be lucky to find it in musty lederhosen! (5)"
+      ],
+      [
+        "                ", "O. Inferior type of tailored suit & belt (8)"
+      ],
+      [
+        "               ", "P. Order about to induct nunnery’s last novices (5)"
+      ]],
+
+		"Down": [
+      [
+        "                              ", "Q. Turn down the lights, I’m under the bed (5)"
+      ],
+      [
+        "              ", "R. Audacity of seven cavorting in underwear (9)"
+      ],
+      [
+        "             ", "S. Having turned sick, can notify of work absence (4,2)"
+      ],
+      [
+        "                             ", "T. 300-page Russian abridgment of “The Communist Experiment: 1922–1991” (4, init.)"
+      ],
+      [
+        "           ", "U. “Gotham island that isn’t an island?” cracked by — behold! — Batman in <i>Batman & Robin</i> (7)"
+      ],
+      [
+        "          ", "V. First half of shipment for sandwich shop (4)"
+      ],
+      [
+        "         ", "W. Formal speech won’t have paid promotion (5)"
+      ],
+      [
+        "        ", "X. If you disregard the part of the mind that has hidden desires, individuality becomes a generic thing (6)"
+      ],
+      [
+        "       ", "Y. It’s not technically a foil tent if you cut the top off (4)"
+      ],
+      [
+        "      ", "Z. Make a word with just Es and some consonants (5)"
+      ],
+      [
+        "                       ", "AA. Cartoon duck is shady? (4)"
+      ],
+      [
+        "     ", "AB. The end of many businesses: the beginning of Amazon’s American empire (4)"
+      ],
+      [
+        "                      ", "AC. Nocturnal islander’s snippet of unintelligible murmur (5)"
+      ],
+      [
+        "    ", "AD. Have an obligation that’s tough? Start at the bottom (5)"
+      ],
+      [
+        "   ", "AE. Hold up … interrupting connection check … searching … (7)"
+      ],
+      [
+        "                    ", "AF. Butcher hen following first sign of spring (6)"
+      ],
+      [
+        "  ", "AG. Deliberately coming from second base (6)"
+      ],
+      [
+        " ", "AH. After ’06, trio of Russians makes malware (5)"
+      ]
+    ]
+  }
+}
