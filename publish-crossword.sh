@@ -53,14 +53,11 @@ blogSubscribeFooter: false
 <details>
 <summary>Click here for solution and discussion</summary>
 
-<ul>
-<li><b>Answer:</b> </li>
-<li><b>Definition:</b> </li>
-<li><b>Wordplay:</b> </li>
-</ul>
+- **Answer:** 
+- **Definition:** 
+- **Wordplay:** 
 
 </details>
-
 
 [web](${crosshare_link})
 / [puz](/crosswords/loplop-${next_puzzle_number}.puz)
