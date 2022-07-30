@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-07-30T19:51:13Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/crossword/" hreflang="en-US"/><entry><title>Datasets and Dictionaries for Crosswords</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/crosswords-datasets-dictionaries/"/><id>https://www.georgeho.org/crosswords-datasets-dictionaries/</id><updated>2022-07-30T00:00:00Z</updated><published>2022-07-30T00:00:00Z</published><content type="html">&lt;p>Lately, I&amp;rsquo;ve become worryingly knowledgeable in datasets for crosswords&amp;hellip; so
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-07-30T19:54:26Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/crossword/" hreflang="en-US"/><entry><title>Datasets and Dictionaries for Crosswords</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/crosswords-datasets-dictionaries/"/><id>https://www.georgeho.org/crosswords-datasets-dictionaries/</id><updated>2022-07-30T00:00:00Z</updated><published>2022-07-30T00:00:00Z</published><content type="html">&lt;p>Lately, I&amp;rsquo;ve become worryingly knowledgeable in datasets for crosswords&amp;hellip; so
 I&amp;rsquo;ve written up basically everything I know that might be helpful to crossword
 constructors (and makers of other word puzzles, too). However, in writing this,
 I realized that this may be helpful to just about anybody who works with words
@@ -46,9 +46,9 @@ pronunciations, splitting words up into phonemes. This may seem silly
 &lt;em>(&amp;ldquo;can&amp;rsquo;t you just Google to learn the pronounciation of words?&amp;rdquo;),&lt;/em> but with a
 bit of work, this dataset lets you look up homophones and Spoonerisms, as
 some crossword construction software &amp;mdash; such as &lt;a href="https://exet.app">Exet&lt;/a> &amp;mdash; do!&lt;/li>
-&lt;li>&lt;a href="https://rhymezone.com/">RhymeZone&lt;/a> and its Spanish cousin,
-&lt;a href="https://rimar.io/">Rimar.io&lt;/a> lets you look up homophones, rhymes or near
-rhymes (it actually uses the CMU Pronouncing Dictionary, among other
+&lt;li>&lt;a href="https://rhymezone.com/">RhymeZone&lt;/a> and its Spanish cousin
+&lt;a href="https://rimar.io/">Rimar.io&lt;/a> let you look up homophones, rhymes or near
+rhymes (RhymeZone actually uses the CMU Pronouncing Dictionary, among other
 datasets!)&lt;/li>
 &lt;li>&lt;a href="https://onelook.com/spruce/">Spruce&lt;/a> looks up &amp;ldquo;inspiring sentences&amp;rdquo; &amp;mdash;
 quotes, lyrics, proverbs and jokes, which are indexed from
@@ -77,12 +77,12 @@ synonyms, hypernyms, hyponyms and other related words.&lt;/p>
 rather &lt;em>curate&lt;/em> them: their usefulness comes not just in what you &lt;em>can&lt;/em> find in
 them, but equally in what you &lt;em>can&amp;rsquo;t&lt;/em> find in them.&lt;/p>
 &lt;p>The most prevalent examples are wordlists and their less comprehensive but
-equally useful cousins, seedlists. As far as I can tell, these seem to be more
-useful for American-style crosswords, where there is a hard requirement for
-fully interlocking grids (and consequently filling the grid becomes a much more
+equally useful cousins, seedlists. As far as I can tell, these are more useful
+for American-style crosswords, where there is a hard requirement for fully
+interlocking grids (and consequently filling the grid becomes a much more
 difficult and automatable task). Wordlists tend to be personalized by each
 puzzle constructor, but there are several freely-accessible ones such as
-&lt;a href="https://www.spreadthewordlist.com/">Spread the Wordlist&lt;/a> and &lt;a href="https://github.com/Crossword-Nexus/collaborative-word-list">The
+&lt;a href="https://www.spreadthewordlist.com/">spread the word(list)&lt;/a> and &lt;a href="https://github.com/Crossword-Nexus/collaborative-word-list">The
 Collaborative Word
 List&lt;/a>.&lt;/p>
 &lt;p>Other examples of curated dictionaries would be just be lists of specific
