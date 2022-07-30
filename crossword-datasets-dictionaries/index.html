@@ -1,0 +1,107 @@
+<!doctype html><html lang=en-us><head><meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico><title>Datasets and Dictionaries for Crosswords | George Ho</title><meta name=title content="Datasets and Dictionaries for Crosswords"><meta name=description content="Lately, I&rsquo;ve become worryingly knowledgeable in datasets for crosswords&mldr; so I&rsquo;ve written up basically everything I know that might be helpful to crossword constructors (and makers of other word puzzles, too). However, in writing this, I realized that this may be helpful to just about anybody who works with words &mdash; lyricists, poets, marketers, scholars, etc. Hopefully there&rsquo;s something for everybody! So without further ado,
+Dictionaries I&rsquo;ll assume you know what a dictionary is &mdash; if you&rsquo;re reading this you may even have a favorite dictionary (or a favorite dictionary edition!"><meta name=keywords content="crossword,dataset,natural-language-processing,"><meta property="og:title" content="Datasets and Dictionaries for Crosswords"><meta property="og:description" content="Lately, I&rsquo;ve become worryingly knowledgeable in datasets for crosswords&mldr; so I&rsquo;ve written up basically everything I know that might be helpful to crossword constructors (and makers of other word puzzles, too). However, in writing this, I realized that this may be helpful to just about anybody who works with words &mdash; lyricists, poets, marketers, scholars, etc. Hopefully there&rsquo;s something for everybody! So without further ado,
+Dictionaries I&rsquo;ll assume you know what a dictionary is &mdash; if you&rsquo;re reading this you may even have a favorite dictionary (or a favorite dictionary edition!"><meta property="og:type" content="article"><meta property="og:url" content="https://www.georgeho.org/crossword-datasets-dictionaries/"><meta property="og:image" content="https://www.georgeho.org/assets/images/asterism.png"><meta property="article:section" content="blog"><meta property="article:published_time" content="2022-07-30T00:00:00+00:00"><meta property="article:modified_time" content="2022-07-30T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.georgeho.org/assets/images/asterism.png"><meta name=twitter:title content="Datasets and Dictionaries for Crosswords"><meta name=twitter:description content="Lately, I&rsquo;ve become worryingly knowledgeable in datasets for crosswords&mldr; so I&rsquo;ve written up basically everything I know that might be helpful to crossword constructors (and makers of other word puzzles, too). However, in writing this, I realized that this may be helpful to just about anybody who works with words &mdash; lyricists, poets, marketers, scholars, etc. Hopefully there&rsquo;s something for everybody! So without further ado,
+Dictionaries I&rsquo;ll assume you know what a dictionary is &mdash; if you&rsquo;re reading this you may even have a favorite dictionary (or a favorite dictionary edition!"><meta itemprop=name content="Datasets and Dictionaries for Crosswords"><meta itemprop=description content="Lately, I&rsquo;ve become worryingly knowledgeable in datasets for crosswords&mldr; so I&rsquo;ve written up basically everything I know that might be helpful to crossword constructors (and makers of other word puzzles, too). However, in writing this, I realized that this may be helpful to just about anybody who works with words &mdash; lyricists, poets, marketers, scholars, etc. Hopefully there&rsquo;s something for everybody! So without further ado,
+Dictionaries I&rsquo;ll assume you know what a dictionary is &mdash; if you&rsquo;re reading this you may even have a favorite dictionary (or a favorite dictionary edition!"><meta itemprop=datePublished content="2022-07-30T00:00:00+00:00"><meta itemprop=dateModified content="2022-07-30T00:00:00+00:00"><meta itemprop=wordCount content="979"><meta itemprop=image content="https://www.georgeho.org/assets/images/asterism.png"><meta itemprop=keywords content="crossword,dataset,natural-language-processing,"><meta name=referrer content="no-referrer-when-downgrade"><style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script><script async src=//static.getclicky.com/101349618.js></script><noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css><link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css><script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script><style>html{font-size:18px;font-size:min(max(18px,4vw),26px)}content{line-height:1.45}body{max-width:800px;font-family:Equity,times new roman,Palatino,serif;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:85%;background-color:unset}pre code{white-space:pre;overflow-x:auto;font-size:14px;font-size:min(max(12px,2vw),16px);text-size-adjust:100%;-ms-text-size-adjust:100%;-moz-text-size-adjust:100%;-webkit-text-size-adjust:100%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif;line-height:1.25}h2,h3,h4,h5,h6{margin-top:8%;margin-bottom:-1%}nav{margin-top:3%;margin-bottom:5%}ul.blog-posts li span{flex:0 0 140px}.revue-form-group,.revue-form-actions{display:inline-block}input[type=email]{font-family:Triplicate,lucida console,monospace;font-size:80%}input[type=submit]{font-family:Equity,times new roman,Palatino,serif;font-size:80%}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body><header><a href=/ class=title><h2>⁂ George Ho</h2></a><nav><a href=/>Home</a>
+<a href=/blog>Blog</a>
+<a href=/crosswords/>Crosswords</a>
+<a href=/work/>Work</a></nav></header><main><h1>Datasets and Dictionaries for Crosswords</h1><p><i><time datetime=2022-07-30 pubdate>2022-07-30</time></i></p><content><p>Lately, I&rsquo;ve become worryingly knowledgeable in datasets for crosswords&mldr; so
+I&rsquo;ve written up basically everything I know that might be helpful to crossword
+constructors (and makers of other word puzzles, too). However, in writing this,
+I realized that this may be helpful to just about anybody who works with words
+&mdash; lyricists, poets, marketers, scholars, etc. Hopefully there&rsquo;s something for
+everybody! So without further ado,</p><h2 id=dictionaries>Dictionaries</h2><p>I&rsquo;ll assume you know what a dictionary is &mdash; if you&rsquo;re reading this you may
+even have a <em>favorite</em> dictionary (or a favorite dictionary <em>edition!</em>),
+whether it&rsquo;s <a href=https://chambers.co.uk>Chambers</a>,
+<a href=https://www.merriam-webster.com>Merriam-Webster</a> or <a href=https://en.wikipedia.org/wiki/Google_Dictionary>Google
+Dictionary</a> (which, <a href=https://support.google.com/websearch/answer/10106608>fun
+fact</a>, is mostly sourced
+from <a href=https://languages.oup.com/google-dictionary-en/>Oxford Languages</a>).</p><p>More interesting are dictionaries that allow you to search or query them in
+more sophisticated ways: the most popular are <a href=https://onelook.com>OneLook</a>
+and <a href=https://www.onelook.com/thesaurus>OneLook Thesaurus</a>, where a user can,
+for example, search <code>bl????rd</code> to find words that start with <em>bl</em>, end with
+<em>rd</em>, and have four letters in between &mdash; so <code>bluebird</code> would be a result.</p><p>The main asset with these dictionaries is the <em>expressiveness</em> of the query
+language, and in that regard <a href=https://www.quinapalus.com/qat.html>Qat</a> handily
+beats OneLook: it can match vowels and consonants (<code>bl@@#@rd</code>) and ranges of
+letters and lengths (<code>8-10:bl*rd</code>). Qat is also able to solve &ldquo;word
+equations&rdquo; (e.g.
+<a href="https://www.quinapalus.com/cgi-bin/qat?pat=ABCDE%3D.....%3B!%3DA%3CB%3CC%3CD%3CE"><code>ABCDE=.....;!=A&lt;B&lt;C&lt;D&lt;E</code></a>
+finds five-letter words whose letters are in strictly alphabetical order, such
+as <code>abhor</code> and <code>first</code>), and even <em>simultaneous</em> word equations (e.g.
+<a href="https://www.quinapalus.com/cgi-bin/qat?pat=ACB%3BADB%3BAEB%3B%7CACB%7C%3D5%3B%7CE%7C%3D1%3B!%3DC%3CD%3CE"><code>ACB;ADB;AEB;|ACB|=5;|E|=1;!=C&lt;D&lt;E</code></a>
+finds sets of three five-letter words that are all one letter apart, such as
+<code>beats, boats, brats</code> &mdash; useful for finding crossing words!).</p><h2 id=augmented-dictionaries>Augmented Dictionaries</h2><p>Many tools supplement dictionaries with other data, such as etymology,
+pronunciation or sets of related words. You might think that your favorite
+dictionary would already give you all of those things, but the strength here is
+in the ability to easily write very sophisticated queries, such as <a href="https://api.datamuse.com/words?rel_com=car&sp=t*"><em>&ldquo;what
+comprises a car that starts with the letter
+T?&rdquo;</em></a>, to give you phrases
+like <code>trunk, throttle, tailfin, third gear</code>.</p><ul><li>The <a href=https://www.etymonline.com/>Online Etymology Dictionary</a> looks up word
+etymologies, which is helpful for avoiding <em>&ldquo;shared roots&rdquo;</em> in cryptic
+crosswords.</li><li>The <a href=http://www.speech.cs.cmu.edu/cgi-bin/cmudict>Carnegie Mellon University Pronouncing
+Dictionary</a> looks up word
+pronunciations, splitting words up into phonemes. This may seem silly
+<em>(&ldquo;can&rsquo;t you just Google to learn the pronounciation of words?&rdquo;),</em> but with a
+bit of work, this dataset lets you look up homophones and Spoonerisms, as
+some crossword construction software &mdash; such as <a href=exet.app>Exet</a> &mdash; do!</li><li><a href=https://rhymezone.com/>RhymeZone</a> and its Spanish cousin,
+<a href=https://rimar.io/>Rimar.io</a> lets you look up homophones, rhymes or near
+rhymes (it actually makes use CMU Pronouncing Dictionary, among other
+datasets!)</li><li><a href=https://onelook.com/spruce/>Spruce</a> looks up &ldquo;inspiring sentences&rdquo; &mdash;
+quotes, lyrics, proverbs and jokes, which are indexed from
+<a href=https://en.wikiquote.org/wiki/Main_Page>WikiQuote</a> and <a href=https://commoncrawl.org/>Common
+Crawl</a>.</li><li><a href=https://nutrimatic.org/>Nutrimatic</a> looks up words or phrases mined from
+Wikipedia. This allows you to, for example, find anagrams that form
+natural-sounding phrases (e.g. <code>&lt;dictionaries></code> finds anagrams like <code>is a direction</code> or <code>i consider it a</code>, instead of anagrams that technically work
+but are not natural-sounding, such as <code>ratio incised</code> or <code>tonic dairies</code>).</li><li>The <a href=https://www.datamuse.com/api/>Datamuse API</a> is a very expressive search
+engine that sits on top of OneLook and RhymeZone. Unfortunately, there isn&rsquo;t
+a user-friendly frontend, so it&rsquo;s effectively restricted to people who are
+able to make use of programmatic access.</li></ul><p>Here, another shoutout goes to <a href=https://www.onelook.com/thesaurus/>OneLook
+Thesaurus</a> and
+<a href=https://www.quinapalus.com/qat.html>Qat</a>, which use several datasets (such as
+the <a href=https://wordnet.princeton.edu/>Princeton WordNet</a> and Wikipedia category
+lists) to search words based on their meaning. For example, in OneLook,
+<code>process by which plants eat</code> gives you <code>photosynthesis</code> as the top result; in
+Qat, <code>{hypo:color}</code> gives you words that mean &ldquo;color&rdquo;, such as <code>acrylic apricot blacken blueing</code>; also in Qat, <code>{hyper:agate}</code> gives you words that &ldquo;agate&rdquo;
+means, such as <code>entity matter quartz</code>. These searches make it easy to find
+synonyms, hypernyms, hyponyms and other related words.</p><h2 id=curated-dictionaries>Curated Dictionaries</h2><p>In the other direction are datasets that don&rsquo;t <em>augment</em> dictionaries, but
+rather <em>curate</em> them: their usefulness comes not just in what you <em>can</em> find in
+them, but equally in what you <em>can&rsquo;t</em> find in them.</p><p>The most prevalent examples are wordlists and their less comprehensive but
+equally useful cousins, seedlists. As far as I can tell, these seem to be more
+useful for American-style crosswords, where there is a hard requirement for
+fully interlocking grids (and consequently filling the grid becomes a much more
+difficult and automatable task). Wordlists tend to be personalized by each
+puzzle constructor, but there are several freely-accessible ones such as
+<a href=https://www.spreadthewordlist.com/>Spread the Wordlist</a> and <a href=https://github.com/Crossword-Nexus/collaborative-word-list>The
+Collaborative Word
+List</a>.</p><p>Other examples of curated dictionaries would be just be lists of specific
+things. One amazing example is the <a href=https://sites.google.com/view/expandedcrosswordnamedatabase/home>Expanded Crossword Name
+Database</a>,
+which contains the names of notable women and non-binary people, with an eye to
+increasing their representation in crosswords. Aside from that, I&rsquo;ve found
+Wikipedia&rsquo;s &ldquo;listicles&rdquo; to be very helpful (e.g. here&rsquo;s a list of <a href=https://en.wikipedia.org/wiki/List_of_Native_Americans_of_the_United_States>notable
+Native Americans of the United
+States</a>).</p><h2 id=datasets-of-crosswords>Datasets of Crosswords</h2><p>Finally, let&rsquo;s not neglect the most obvious thing: literal datasets of
+crosswords! These datasets are are significant works of crossword archivism,
+since acquiring crosswords in bulk and structuring their contents requires
+effort and cleaning that few are willing to do for such trivial data. (Fun
+fact: according to <a href=https://cryptics.georgeho.org/static/documents/Selection_AppendixE_v2.pdf>this 2004 selection
+guide</a>,
+the Library of Congress explicitly does not collect crossword puzzles,
+suggesting that they&rsquo;re too trivial for the national library!)</p><ul><li><a href=https://www.xwordinfo.com/>XWord Info</a> is probably the dataset with largest
+following, as it covers the <em>The New York Times&rsquo;</em> crossword and is actively
+maintained.</li><li>Among constructors of American-style crosswords, <a href=https://tiwwdty.com/clue/>Matt Ginsberg&rsquo;s clue
+dataset</a> is the go-to dataset (since it&rsquo;s free and
+accessible to download), but it&rsquo;s unfortunately no longer actively
+maintained.</li><li><a href=https://xd.saul.pw/><code>xd.saul.pw</code></a> is an excellent dataset of American-style
+crossword and clues from various publications that is also free and
+accessible to download.</li><li>The <a href=https://www.cruciverb.com/data.php>Cruciverb database</a> is also a
+dataset of American-style crossword and clues, but unfortunately requires a
+membership to access.</li><li>Finally, to plug my own dataset,
+<a href=https://cryptics.georgeho.org/><code>cryptics.georgeho.org</code></a> is a dataset of
+cryptic clues, with auxiliary datasets of cryptic indicators and charades.</li></ul></content><p><a href=https://www.georgeho.org/blog/crossword/>#crossword</a>
+<a href=https://www.georgeho.org/blog/dataset/>#dataset</a>
+<a href=https://www.georgeho.org/blog/natural-language-processing/>#natural-language-processing</a></p></main><footer><form action=https://buttondown.email/api/emails/embed-subscribe/eigenfoo method=post target=popupwindow onsubmit='window.open("https://buttondown.email/eigenfoo","popupwindow")' class=embeddable-buttondown-form><label for=bd-email>Get my (monthly?) blog posts over email:</label><br><input type=email name=email id=bd-email placeholder=your@email.com>
+<input type=submit value=Subscribe></form></footer></body></html>

@@ -1,4 +1,125 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-07-30T07:39:58Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/stan/" hreflang="en-US"/><entry><title>Link Bulletin, April 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/link-bulletin-2022-04/"/><id>https://www.georgeho.org/link-bulletin-2022-04/</id><updated>2022-04-23T00:00:00Z</updated><published>2022-04-23T00:00:00Z</published><content type="html">&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-07-30T19:25:52Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/stan/" hreflang="en-US"/><entry><title>Datasets and Dictionaries for Crosswords</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/crossword-datasets-dictionaries/"/><id>https://www.georgeho.org/crossword-datasets-dictionaries/</id><updated>2022-07-30T00:00:00Z</updated><published>2022-07-30T00:00:00Z</published><content type="html">&lt;p>Lately, I&amp;rsquo;ve become worryingly knowledgeable in datasets for crosswords&amp;hellip; so
+I&amp;rsquo;ve written up basically everything I know that might be helpful to crossword
+constructors (and makers of other word puzzles, too). However, in writing this,
+I realized that this may be helpful to just about anybody who works with words
+&amp;mdash; lyricists, poets, marketers, scholars, etc. Hopefully there&amp;rsquo;s something for
+everybody! So without further ado,&lt;/p>
+&lt;h2 id="dictionaries">Dictionaries&lt;/h2>
+&lt;p>I&amp;rsquo;ll assume you know what a dictionary is &amp;mdash; if you&amp;rsquo;re reading this you may
+even have a &lt;em>favorite&lt;/em> dictionary (or a favorite dictionary &lt;em>edition!&lt;/em>),
+whether it&amp;rsquo;s &lt;a href="https://chambers.co.uk">Chambers&lt;/a>,
+&lt;a href="https://www.merriam-webster.com">Merriam-Webster&lt;/a> or &lt;a href="https://en.wikipedia.org/wiki/Google_Dictionary">Google
+Dictionary&lt;/a> (which, &lt;a href="https://support.google.com/websearch/answer/10106608">fun
+fact&lt;/a>, is mostly sourced
+from &lt;a href="https://languages.oup.com/google-dictionary-en/">Oxford Languages&lt;/a>).&lt;/p>
+&lt;p>More interesting are dictionaries that allow you to search or query them in
+more sophisticated ways: the most popular are &lt;a href="https://onelook.com">OneLook&lt;/a>
+and &lt;a href="https://www.onelook.com/thesaurus">OneLook Thesaurus&lt;/a>, where a user can,
+for example, search &lt;code>bl????rd&lt;/code> to find words that start with &lt;em>bl&lt;/em>, end with
+&lt;em>rd&lt;/em>, and have four letters in between &amp;mdash; so &lt;code>bluebird&lt;/code> would be a result.&lt;/p>
+&lt;p>The main asset with these dictionaries is the &lt;em>expressiveness&lt;/em> of the query
+language, and in that regard &lt;a href="https://www.quinapalus.com/qat.html">Qat&lt;/a> handily
+beats OneLook: it can match vowels and consonants (&lt;code>bl@@#@rd&lt;/code>) and ranges of
+letters and lengths (&lt;code>8-10:bl*rd&lt;/code>). Qat is also able to solve &amp;ldquo;word
+equations&amp;rdquo; (e.g.
+&lt;a href="https://www.quinapalus.com/cgi-bin/qat?pat=ABCDE%3D.....%3B!%3DA%3CB%3CC%3CD%3CE">&lt;code>ABCDE=.....;!=A&amp;lt;B&amp;lt;C&amp;lt;D&amp;lt;E&lt;/code>&lt;/a>
+finds five-letter words whose letters are in strictly alphabetical order, such
+as &lt;code>abhor&lt;/code> and &lt;code>first&lt;/code>), and even &lt;em>simultaneous&lt;/em> word equations (e.g.
+&lt;a href="https://www.quinapalus.com/cgi-bin/qat?pat=ACB%3BADB%3BAEB%3B%7CACB%7C%3D5%3B%7CE%7C%3D1%3B!%3DC%3CD%3CE">&lt;code>ACB;ADB;AEB;|ACB|=5;|E|=1;!=C&amp;lt;D&amp;lt;E&lt;/code>&lt;/a>
+finds sets of three five-letter words that are all one letter apart, such as
+&lt;code>beats, boats, brats&lt;/code> &amp;mdash; useful for finding crossing words!).&lt;/p>
+&lt;h2 id="augmented-dictionaries">Augmented Dictionaries&lt;/h2>
+&lt;p>Many tools supplement dictionaries with other data, such as etymology,
+pronunciation or sets of related words. You might think that your favorite
+dictionary would already give you all of those things, but the strength here is
+in the ability to easily write very sophisticated queries, such as &lt;a href="https://api.datamuse.com/words?rel_com=car&amp;amp;sp=t*">&lt;em>&amp;ldquo;what
+comprises a car that starts with the letter
+T?&amp;rdquo;&lt;/em>&lt;/a>, to give you phrases
+like &lt;code>trunk, throttle, tailfin, third gear&lt;/code>.&lt;/p>
+&lt;ul>
+&lt;li>The &lt;a href="https://www.etymonline.com/">Online Etymology Dictionary&lt;/a> looks up word
+etymologies, which is helpful for avoiding &lt;em>&amp;ldquo;shared roots&amp;rdquo;&lt;/em> in cryptic
+crosswords.&lt;/li>
+&lt;li>The &lt;a href="http://www.speech.cs.cmu.edu/cgi-bin/cmudict">Carnegie Mellon University Pronouncing
+Dictionary&lt;/a> looks up word
+pronunciations, splitting words up into phonemes. This may seem silly
+&lt;em>(&amp;ldquo;can&amp;rsquo;t you just Google to learn the pronounciation of words?&amp;rdquo;),&lt;/em> but with a
+bit of work, this dataset lets you look up homophones and Spoonerisms, as
+some crossword construction software &amp;mdash; such as &lt;a href="exet.app">Exet&lt;/a> &amp;mdash; do!&lt;/li>
+&lt;li>&lt;a href="https://rhymezone.com/">RhymeZone&lt;/a> and its Spanish cousin,
+&lt;a href="https://rimar.io/">Rimar.io&lt;/a> lets you look up homophones, rhymes or near
+rhymes (it actually makes use CMU Pronouncing Dictionary, among other
+datasets!)&lt;/li>
+&lt;li>&lt;a href="https://onelook.com/spruce/">Spruce&lt;/a> looks up &amp;ldquo;inspiring sentences&amp;rdquo; &amp;mdash;
+quotes, lyrics, proverbs and jokes, which are indexed from
+&lt;a href="https://en.wikiquote.org/wiki/Main_Page">WikiQuote&lt;/a> and &lt;a href="https://commoncrawl.org/">Common
+Crawl&lt;/a>.&lt;/li>
+&lt;li>&lt;a href="https://nutrimatic.org/">Nutrimatic&lt;/a> looks up words or phrases mined from
+Wikipedia. This allows you to, for example, find anagrams that form
+natural-sounding phrases (e.g. &lt;code>&amp;lt;dictionaries&amp;gt;&lt;/code> finds anagrams like &lt;code>is a direction&lt;/code> or &lt;code>i consider it a&lt;/code>, instead of anagrams that technically work
+but are not natural-sounding, such as &lt;code>ratio incised&lt;/code> or &lt;code>tonic dairies&lt;/code>).&lt;/li>
+&lt;li>The &lt;a href="https://www.datamuse.com/api/">Datamuse API&lt;/a> is a very expressive search
+engine that sits on top of OneLook and RhymeZone. Unfortunately, there isn&amp;rsquo;t
+a user-friendly frontend, so it&amp;rsquo;s effectively restricted to people who are
+able to make use of programmatic access.&lt;/li>
+&lt;/ul>
+&lt;p>Here, another shoutout goes to &lt;a href="https://www.onelook.com/thesaurus/">OneLook
+Thesaurus&lt;/a> and
+&lt;a href="https://www.quinapalus.com/qat.html">Qat&lt;/a>, which use several datasets (such as
+the &lt;a href="https://wordnet.princeton.edu/">Princeton WordNet&lt;/a> and Wikipedia category
+lists) to search words based on their meaning. For example, in OneLook,
+&lt;code>process by which plants eat&lt;/code> gives you &lt;code>photosynthesis&lt;/code> as the top result; in
+Qat, &lt;code>{hypo:color}&lt;/code> gives you words that mean &amp;ldquo;color&amp;rdquo;, such as &lt;code>acrylic apricot blacken blueing&lt;/code>; also in Qat, &lt;code>{hyper:agate}&lt;/code> gives you words that &amp;ldquo;agate&amp;rdquo;
+means, such as &lt;code>entity matter quartz&lt;/code>. These searches make it easy to find
+synonyms, hypernyms, hyponyms and other related words.&lt;/p>
+&lt;h2 id="curated-dictionaries">Curated Dictionaries&lt;/h2>
+&lt;p>In the other direction are datasets that don&amp;rsquo;t &lt;em>augment&lt;/em> dictionaries, but
+rather &lt;em>curate&lt;/em> them: their usefulness comes not just in what you &lt;em>can&lt;/em> find in
+them, but equally in what you &lt;em>can&amp;rsquo;t&lt;/em> find in them.&lt;/p>
+&lt;p>The most prevalent examples are wordlists and their less comprehensive but
+equally useful cousins, seedlists. As far as I can tell, these seem to be more
+useful for American-style crosswords, where there is a hard requirement for
+fully interlocking grids (and consequently filling the grid becomes a much more
+difficult and automatable task). Wordlists tend to be personalized by each
+puzzle constructor, but there are several freely-accessible ones such as
+&lt;a href="https://www.spreadthewordlist.com/">Spread the Wordlist&lt;/a> and &lt;a href="https://github.com/Crossword-Nexus/collaborative-word-list">The
+Collaborative Word
+List&lt;/a>.&lt;/p>
+&lt;p>Other examples of curated dictionaries would be just be lists of specific
+things. One amazing example is the &lt;a href="https://sites.google.com/view/expandedcrosswordnamedatabase/home">Expanded Crossword Name
+Database&lt;/a>,
+which contains the names of notable women and non-binary people, with an eye to
+increasing their representation in crosswords. Aside from that, I&amp;rsquo;ve found
+Wikipedia&amp;rsquo;s &amp;ldquo;listicles&amp;rdquo; to be very helpful (e.g. here&amp;rsquo;s a list of &lt;a href="https://en.wikipedia.org/wiki/List_of_Native_Americans_of_the_United_States">notable
+Native Americans of the United
+States&lt;/a>).&lt;/p>
+&lt;h2 id="datasets-of-crosswords">Datasets of Crosswords&lt;/h2>
+&lt;p>Finally, let&amp;rsquo;s not neglect the most obvious thing: literal datasets of
+crosswords! These datasets are are significant works of crossword archivism,
+since acquiring crosswords in bulk and structuring their contents requires
+effort and cleaning that few are willing to do for such trivial data. (Fun
+fact: according to &lt;a href="https://cryptics.georgeho.org/static/documents/Selection_AppendixE_v2.pdf">this 2004 selection
+guide&lt;/a>,
+the Library of Congress explicitly does not collect crossword puzzles,
+suggesting that they&amp;rsquo;re too trivial for the national library!)&lt;/p>
+&lt;ul>
+&lt;li>&lt;a href="https://www.xwordinfo.com/">XWord Info&lt;/a> is probably the dataset with largest
+following, as it covers the &lt;em>The New York Times&amp;rsquo;&lt;/em> crossword and is actively
+maintained.&lt;/li>
+&lt;li>Among constructors of American-style crosswords, &lt;a href="https://tiwwdty.com/clue/">Matt Ginsberg&amp;rsquo;s clue
+dataset&lt;/a> is the go-to dataset (since it&amp;rsquo;s free and
+accessible to download), but it&amp;rsquo;s unfortunately no longer actively
+maintained.&lt;/li>
+&lt;li>&lt;a href="https://xd.saul.pw/">&lt;code>xd.saul.pw&lt;/code>&lt;/a> is an excellent dataset of American-style
+crossword and clues from various publications that is also free and
+accessible to download.&lt;/li>
+&lt;li>The &lt;a href="https://www.cruciverb.com/data.php">Cruciverb database&lt;/a> is also a
+dataset of American-style crossword and clues, but unfortunately requires a
+membership to access.&lt;/li>
+&lt;li>Finally, to plug my own dataset,
+&lt;a href="https://cryptics.georgeho.org/">&lt;code>cryptics.georgeho.org&lt;/code>&lt;/a> is a dataset of
+cryptic clues, with auxiliary datasets of cryptic indicators and charades.&lt;/li>
+&lt;/ul></content></entry><entry><title>Link Bulletin, April 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/link-bulletin-2022-04/"/><id>https://www.georgeho.org/link-bulletin-2022-04/</id><updated>2022-04-23T00:00:00Z</updated><published>2022-04-23T00:00:00Z</published><content type="html">&lt;p>This is the first of a new kind of blog post that I&amp;rsquo;m trying, on the theory
 that the links I find interesting might also be interesting to others: at most
 once a month, I&amp;rsquo;ll compile and post a handful of links that I&amp;rsquo;ve read and
 thought about, with minimal explanation or commentary. Here we go!&lt;/p>
