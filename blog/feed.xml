@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-07-31T00:08:08Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/" hreflang="en-US"/><entry><title>Datasets and Dictionaries for Crosswords</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/crosswords-datasets-dictionaries/"/><id>https://www.georgeho.org/crosswords-datasets-dictionaries/</id><updated>2022-07-30T00:00:00Z</updated><published>2022-07-30T00:00:00Z</published><content type="html">&lt;p>Lately, I&amp;rsquo;ve become worryingly knowledgeable in datasets for crosswords&amp;hellip; so
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-07-31T03:28:22Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/" hreflang="en-US"/><entry><title>Datasets and Dictionaries for Crosswords</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/crosswords-datasets-dictionaries/"/><id>https://www.georgeho.org/crosswords-datasets-dictionaries/</id><updated>2022-07-30T00:00:00Z</updated><published>2022-07-30T00:00:00Z</published><content type="html">&lt;p>Lately, I&amp;rsquo;ve become worryingly knowledgeable in datasets for crosswords&amp;hellip; so
 I&amp;rsquo;ve written up basically everything I know that might be helpful to crossword
 constructors (and makers of other word puzzles, too). However, in writing this,
 I realized that this may be helpful to just about anybody who works with words
@@ -75,16 +75,18 @@ synonyms, hypernyms, hyponyms and other related words.&lt;/p>
 &lt;h2 id="curated-dictionaries">Curated Dictionaries&lt;/h2>
 &lt;p>In the other direction are datasets that don&amp;rsquo;t &lt;em>augment&lt;/em> dictionaries, but
 rather &lt;em>curate&lt;/em> them: their usefulness comes not just in what you &lt;em>can&lt;/em> find in
-them, but equally in what you &lt;em>can&amp;rsquo;t&lt;/em> find in them.&lt;/p>
-&lt;p>The most prevalent examples are wordlists and their less comprehensive but
-equally useful cousins, seedlists. As far as I can tell, these are more useful
-for American-style crosswords, where there is a hard requirement for fully
-interlocking grids (and consequently filling the grid becomes a much more
-difficult and automatable task). Wordlists tend to be personalized by each
-puzzle constructor, but there are several freely-accessible ones such as
-&lt;a href="https://www.spreadthewordlist.com/">spread the word(list)&lt;/a>, &lt;a href="https://github.com/Crossword-Nexus/collaborative-word-list">The Collaborative
-Word List&lt;/a>, and
-&lt;a href="https://peterbroda.me/crosswords/wordlist/">Peter Broda&amp;rsquo;s wordlist&lt;/a>.&lt;/p>
+them, but equally in what you &lt;em>can&amp;rsquo;t&lt;/em>.&lt;/p>
+&lt;p>The most prevalent examples are wordlists and their cousins, seedlists. As far
+as I can tell, these are more useful for American-style crosswords, where there
+is a hard requirement for fully interlocking grids (and grid-filling
+consequently is a more difficult and computer-assisted task).&lt;/p>
+&lt;p>Wordlists tend to be personalized by puzzle constructors, and you can find some
+wordlists for sale, most notably &lt;a href="https://www.xwordinfo.com/WordList">Jeff Chen&amp;rsquo;s Personal
+List&lt;/a>. There are also several
+freely-accessible ones such as &lt;a href="https://www.spreadthewordlist.com/">spread the
+word(list)&lt;/a>, &lt;a href="https://github.com/Crossword-Nexus/collaborative-word-list">The Collaborative Word
+List&lt;/a>, and &lt;a href="https://peterbroda.me/crosswords/wordlist/">Peter
+Broda&amp;rsquo;s wordlist&lt;/a>.&lt;/p>
 &lt;p>Other examples of curated dictionaries would just be lists of specific things.
 One amazing example is the &lt;a href="https://sites.google.com/view/expandedcrosswordnamedatabase/home">Expanded Crossword Name
 Database&lt;/a>,
