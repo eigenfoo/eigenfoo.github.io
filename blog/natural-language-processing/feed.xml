@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-07-31T07:39:49Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/natural-language-processing/" hreflang="en-US"/><entry><title>Datasets and Dictionaries for Crosswords</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/crosswords-datasets-dictionaries/"/><id>https://www.georgeho.org/crosswords-datasets-dictionaries/</id><updated>2022-07-30T00:00:00Z</updated><published>2022-07-30T00:00:00Z</published><content type="html">&lt;p>Lately, I&amp;rsquo;ve become worryingly knowledgeable in datasets for crosswords&amp;hellip; so
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-07-31T13:45:46Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/natural-language-processing/" hreflang="en-US"/><entry><title>Datasets and Dictionaries for Crosswords</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/crosswords-datasets-dictionaries/"/><id>https://www.georgeho.org/crosswords-datasets-dictionaries/</id><updated>2022-07-30T00:00:00Z</updated><published>2022-07-30T00:00:00Z</published><content type="html">&lt;p>Lately, I&amp;rsquo;ve become worryingly knowledgeable in datasets for crosswords&amp;hellip; so
 I&amp;rsquo;ve written up basically everything I know that might be helpful to crossword
 constructors (and makers of other word puzzles, too). However, in writing this,
 I realized that this may be helpful to just about anybody who works with words
@@ -18,10 +18,10 @@ and &lt;a href="https://www.onelook.com/thesaurus">OneLook Thesaurus&lt;/a>, whe
 for example, search &lt;code>bl????rd&lt;/code> to find words that start with &lt;em>bl&lt;/em>, end with
 &lt;em>rd&lt;/em>, and have four letters in between &amp;mdash; so &lt;code>bluebird&lt;/code> would be a result.&lt;/p>
 &lt;p>The main asset with these dictionaries is the &lt;em>expressiveness&lt;/em> of the query
-language, and in that regard &lt;a href="https://www.quinapalus.com/qat.html">Qat&lt;/a> handily
-beats OneLook: it can match vowels and consonants (&lt;code>bl@@#@rd&lt;/code>) and ranges of
-letters and lengths (&lt;code>8-10:bl*rd&lt;/code>). Qat is also able to solve &amp;ldquo;word
-equations&amp;rdquo; (e.g.
+language, and in that regard &lt;a href="https://www.quinapalus.com/qat.html">Qat&lt;/a> (which
+is also available in French) handily beats OneLook: it can match vowels and
+consonants (&lt;code>bl@@#@rd&lt;/code>) and ranges of letters and lengths (&lt;code>8-10:bl*rd&lt;/code>). Qat
+is also able to solve &amp;ldquo;word equations&amp;rdquo; (e.g.
 &lt;a href="https://www.quinapalus.com/cgi-bin/qat?pat=ABCDE%3D.....%3B!%3DA%3CB%3CC%3CD%3CE">&lt;code>ABCDE=.....;!=A&amp;lt;B&amp;lt;C&amp;lt;D&amp;lt;E&lt;/code>&lt;/a>
 finds five-letter words whose letters are in strictly alphabetical order, such
 as &lt;code>abhor&lt;/code> and &lt;code>first&lt;/code>), and even &lt;em>simultaneous&lt;/em> word equations (e.g.
