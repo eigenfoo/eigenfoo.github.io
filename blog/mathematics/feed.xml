@@ -1,4 +1,23 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-08-03T07:41:05Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/mathematics/" hreflang="en-US"/><entry><title>Datasets and Dictionaries for Crosswords</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/crosswords-datasets-dictionaries/"/><id>https://www.georgeho.org/crosswords-datasets-dictionaries/</id><updated>2022-07-30T00:00:00Z</updated><published>2022-07-30T00:00:00Z</published><content type="html">&lt;p>Lately, I&amp;rsquo;ve become worryingly knowledgeable in datasets for crosswords&amp;hellip; so
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-08-04T07:41:09Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/mathematics/" hreflang="en-US"/><entry><title>Link Bulletin, August 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/link-bulletin-2022-08/"/><id>https://www.georgeho.org/link-bulletin-2022-08/</id><updated>2022-08-04T00:00:00Z</updated><published>2022-08-04T00:00:00Z</published><content type="html">&lt;blockquote>
+&lt;p>This is an at-most-monthly link bulletin, where I compile and post a handful
+of links that I&amp;rsquo;ve read and thought about with minimal explanation and
+commentary, on the theory that the links I find interesting might also be
+interesting to others.&lt;/p>
+&lt;/blockquote>
+&lt;ul>
+&lt;li>&lt;a href="https://blog.ceejbot.com/posts/reduce-friction/">Reduce Friction&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://twitter.com/sh_reya/status/1521903041003225088">&lt;em>&amp;ldquo;Some MLOps principles I think every ML platform should
+have&amp;rdquo;&lt;/em>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://twitter.com/seanjtaylor/status/1523096896532664320">&lt;em>&amp;ldquo;It&amp;rsquo;s not uncommon for tech companies to have more employees than people
+expect. What’s your best explanation for this
+phenomenon?&amp;rdquo;&lt;/em>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://www.jsvine.com/consulting/pdf-data-extraction/">PDF Data Extraction
+Consulting&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://joeldueck.com/wiki?name=A+lightweight+Pollen+replacement">A Lightweight Pollen
+Replacement&lt;/a>&lt;/li>
+&lt;li>&lt;a href="https://begriffs.com/posts/2019-07-19-history-use-vim.html">History and Effective Use of
+Vim&lt;/a>&lt;/li>
+&lt;/ul></content></entry><entry><title>Datasets and Dictionaries for Crosswords</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/crosswords-datasets-dictionaries/"/><id>https://www.georgeho.org/crosswords-datasets-dictionaries/</id><updated>2022-07-30T00:00:00Z</updated><published>2022-07-30T00:00:00Z</published><content type="html">&lt;p>Lately, I&amp;rsquo;ve become worryingly knowledgeable in datasets for crosswords&amp;hellip; so
 I&amp;rsquo;ve written up basically everything I know that might be helpful to crossword
 constructors (and makers of other word puzzles, too). However, in writing this,
 I realized that this may be helpful to just about anybody who works with words
