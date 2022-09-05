@@ -17,4 +17,9 @@
   <a href="{{ .Permalink }}">#{{ .LinkTitle }}</a>
   {{ end }}
 </p>
+{{ if .Params.embed }}
+  <p class="wide-embeds">
+    {{ .Params.embed | safeHTML }}
+  </p>
+{{ end }}
 {{ end }}

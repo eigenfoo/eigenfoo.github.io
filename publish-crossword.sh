@@ -37,6 +37,7 @@ date: $(date +%Y-%m-%d)
 description: ${description}
 images:
   - ${ogimage_url}
+embed: '${crosshare_embed_code}'
 blogSubscribeFooter: false
 ---
 
@@ -63,8 +64,6 @@ blogSubscribeFooter: false
 / [puz](/crosswords/loplop-${next_puzzle_number}.puz)
 / [pdf](/crosswords/loplop-${next_puzzle_number}.pdf)
 / [solutions and annotations](/crosswords/loplop-${next_puzzle_number}-solutions.pdf)
-
-${crosshare_embed_code}
 EOT
 
 echo "Successfully created blog post template! Press Enter to begin editing blog post."
