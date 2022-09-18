@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-09-18T07:43:33Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/natural-language-processing/" hreflang="en-US"/><entry><title>Merriam-Webster and Unstructured Data Processing</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/webster-unstructured-data/"/><id>https://www.georgeho.org/webster-unstructured-data/</id><updated>2022-09-18T00:00:00Z</updated><published>2022-09-18T00:00:00Z</published><content type="html">&lt;p>I recently finished reading &lt;a href="https://bookshop.org/books/word-by-word-the-secret-life-of-dictionaries/9781101970263">&lt;em>Word by Word: The Secret Life of Dictionaries&lt;/em> by
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-09-18T14:14:22Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/natural-language-processing/" hreflang="en-US"/><entry><title>Merriam-Webster and Unstructured Data Processing</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/webster-unstructured-data/"/><id>https://www.georgeho.org/webster-unstructured-data/</id><updated>2022-09-18T00:00:00Z</updated><published>2022-09-18T00:00:00Z</published><content type="html">&lt;p>I recently finished reading &lt;a href="https://bookshop.org/books/word-by-word-the-secret-life-of-dictionaries/9781101970263">&lt;em>Word by Word: The Secret Life of Dictionaries&lt;/em> by
 Kory
 Stamper&lt;/a>,
 which was an unexpected page-turner. What intrigued me most was (perhaps
 unsurprisingly) Stamper&amp;rsquo;s description of how Merriam-Webster get written, and
 what a striking resemblance that process has to many successful unstructured
-data projects in the wild, and I want to use this blog post to ruminate on
-this.&lt;/p>
+data projects in the wild. I want to use this blog post to ruminate on this.&lt;/p>
 &lt;hr>
 &lt;p>&lt;strong>First&lt;/strong> it begins with collection and curation of raw, unstructured data.
 Stamper describes a fascinating process called &lt;em>&amp;ldquo;reading and marking&amp;rdquo;&lt;/em>, whereby
@@ -19,10 +18,9 @@ imply that &lt;em>bored&lt;/em> is picking up a new meaning, but rather that &lt
 which as you can imagine, can get lexicographers very excited.)&lt;/p>
 &lt;p>Stamper also describes the use of corpora, which are basically large structured
 datasets of English being used in the wild &amp;mdash; a dataset of tweets, say, or
-transcripts of popular TV shows.&lt;/p>
-&lt;p>As data gets increasingly commoditized, data projects will increasingly have
-the luxury of starting with structured data (or at least, supplementing their
-raw unstructured data with structured data).&lt;/p>
+transcripts of popular TV shows. As data gets increasingly commoditized, data
+projects will increasingly have the luxury of starting with structured data (or
+at least, supplementing their raw unstructured data with structured data).&lt;/p>
 &lt;p>&lt;strong>Second&lt;/strong> is the actual structuring of the data. This entails a small army of
 editors dividing the entire dictionary amongst themselves, and defining (or
 revising definitions of) each word by hand. In practice, that means opening up
