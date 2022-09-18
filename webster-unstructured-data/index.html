@@ -1,0 +1,72 @@
+<!doctype html><html lang=en-us><head><meta http-equiv=x-clacks-overhead content="GNU Terry Pratchett"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" href=https://www.georgeho.org/favicon.ico><title>Merriam-Webster and Unstructured Data Processing | George Ho</title><meta name=title content="Merriam-Webster and Unstructured Data Processing"><meta name=description content="I recently finished reading Word by Word: The Secret Life of Dictionaries by Kory Stamper, which was an unexpected page-turner. What intrigued me most was (perhaps unsurprisingly) Stamper&rsquo;s description of how Merriam-Webster get written, and what a striking resemblance that process has to many successful unstructured data projects in the wild, and I want to use this blog post to ruminate on this.
+First it begins with collection and curation of raw, unstructured data."><meta name=keywords content="dataset,"><meta property="og:title" content="Merriam-Webster and Unstructured Data Processing"><meta property="og:description" content="I recently finished reading Word by Word: The Secret Life of Dictionaries by Kory Stamper, which was an unexpected page-turner. What intrigued me most was (perhaps unsurprisingly) Stamper&rsquo;s description of how Merriam-Webster get written, and what a striking resemblance that process has to many successful unstructured data projects in the wild, and I want to use this blog post to ruminate on this.
+First it begins with collection and curation of raw, unstructured data."><meta property="og:type" content="article"><meta property="og:url" content="https://www.georgeho.org/webster-unstructured-data/"><meta property="og:image" content="https://www.georgeho.org/assets/images/asterism.png"><meta property="article:section" content="blog"><meta property="article:published_time" content="2022-09-18T00:00:00+00:00"><meta property="article:modified_time" content="2022-09-18T00:00:00+00:00"><meta property="og:site_name" content="⁂ George Ho"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://www.georgeho.org/assets/images/asterism.png"><meta name=twitter:title content="Merriam-Webster and Unstructured Data Processing"><meta name=twitter:description content="I recently finished reading Word by Word: The Secret Life of Dictionaries by Kory Stamper, which was an unexpected page-turner. What intrigued me most was (perhaps unsurprisingly) Stamper&rsquo;s description of how Merriam-Webster get written, and what a striking resemblance that process has to many successful unstructured data projects in the wild, and I want to use this blog post to ruminate on this.
+First it begins with collection and curation of raw, unstructured data."><meta itemprop=name content="Merriam-Webster and Unstructured Data Processing"><meta itemprop=description content="I recently finished reading Word by Word: The Secret Life of Dictionaries by Kory Stamper, which was an unexpected page-turner. What intrigued me most was (perhaps unsurprisingly) Stamper&rsquo;s description of how Merriam-Webster get written, and what a striking resemblance that process has to many successful unstructured data projects in the wild, and I want to use this blog post to ruminate on this.
+First it begins with collection and curation of raw, unstructured data."><meta itemprop=datePublished content="2022-09-18T00:00:00+00:00"><meta itemprop=dateModified content="2022-09-18T00:00:00+00:00"><meta itemprop=wordCount content="765"><meta itemprop=image content="https://www.georgeho.org/assets/images/asterism.png"><meta itemprop=keywords content="dataset,"><meta name=referrer content="no-referrer-when-downgrade"><style>body{font-family:Verdana,sans-serif;margin:auto;padding:20px;max-width:720px;text-align:left;background-color:#fff;word-wrap:break-word;overflow-wrap:break-word;line-height:1.5;color:#444}h1,h2,h3,h4,h5,h6,strong,b{color:#222}a{color:#3273dc}.title{text-decoration:none;border:0}.title span{font-weight:400}nav a{margin-right:10px}textarea{width:100%;font-size:16px}input{font-size:16px}content{line-height:1.6}table{width:100%}img{max-width:100%}code{padding:2px 5px;background-color:#f2f2f2}pre code{color:#222;display:block;padding:20px;white-space:pre-wrap;font-size:14px}div.highlight pre{background-color:initial;color:initial}div.highlight code{background-color:unset;color:unset}blockquote{border-left:1px solid #999;color:#222;padding-left:20px;font-style:italic}footer{padding:25px;text-align:center}.helptext{color:#777;font-size:small}.errorlist{color:#eba613;font-size:small}ul.blog-posts{list-style-type:none;padding:unset}ul.blog-posts li{display:flex}ul.blog-posts li span{flex:0 0 130px}ul.blog-posts li a:visited{color:#8b6fcb}@media(prefers-color-scheme:dark){body{background-color:#333;color:#ddd}h1,h2,h3,h4,h5,h6,strong,b{color:#eee}a{color:#8cc2dd}code{background-color:#777}pre code{color:#ddd}blockquote{color:#ccc}textarea,input{background-color:#252525;color:#ddd}.helptext{color:#aaa}}</style><script type=text/javascript src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type=text/x-mathjax-config>
+  MathJax.Hub.Config({ tex2jax: {inlineMath: [["$", "$"]]} })
+</script><script async src=//static.getclicky.com/101349618.js></script><noscript><p><img alt=Clicky width=1 height=1 src=//in.getclicky.com/101349618ns.gif></p></noscript><link rel=stylesheet media=all href=/assets/fonts/nicholson-gothic.css type=text/css><link rel=stylesheet media=all href=/assets/fonts/triplicate-a.css type=text/css><script type=text/javascript>navigator.appVersion.indexOf("Win")!=-1?document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>'):navigator.appVersion.indexOf("Mac")!=-1?navigator.userAgent.match(/iPad/i)!=null?(document.write('<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="/assets/fonts/equity-b.css" type="text/css"/>'),document.write('<link rel="stylesheet" media="only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 2)" type="text/css" href="/assets/fonts/equity-a.css"/>')):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-b.css"/>'):document.write('<link rel="stylesheet" type="text/css" media="all" href="/assets/fonts/equity-a.css"/>')</script><style>html{font-size:18px;font-size:min(max(18px,4vw),26px)}content{line-height:1.45}body{max-width:800px;font-family:Equity,times new roman,Palatino,serif;background-color:#fffff8}code{font-family:Triplicate,lucida console,monospace;font-size:85%;background-color:unset}pre code{white-space:pre;overflow-x:auto;font-size:14px;font-size:min(max(12px,2vw),16px);text-size-adjust:100%;-ms-text-size-adjust:100%;-moz-text-size-adjust:100%;-webkit-text-size-adjust:100%}h1,h2,h3,h4,h5,h6{font-family:NicholsonGothic,Verdana,sans-serif;line-height:1.25}h2,h3,h4,h5,h6{margin-top:8%;margin-bottom:-1%}nav{margin-top:3%;margin-bottom:5%}p.wide-embeds{position:relative;left:50%;transform:translate(-50%,0);width:90vw}ul.blog-posts li span{flex:0 0 140px}.revue-form-group,.revue-form-actions{display:inline-block}input[type=email]{font-family:Triplicate,lucida console,monospace;font-size:80%}input[type=submit]{font-family:Equity,times new roman,Palatino,serif;font-size:80%}@media(prefers-color-scheme:dark){body{background-color:#111}}</style></head><body><header><a href=/ class=title><h2>⁂ George Ho</h2></a><nav><a href=/>Home</a>
+<a href=/blog>Blog</a>
+<a href=/crosswords/>Crosswords</a>
+<a href=/work/>Work</a></nav></header><main><h1>Merriam-Webster and Unstructured Data Processing</h1><p><i><time datetime=2022-09-18 pubdate>2022-09-18</time></i></p><content><p>I recently finished reading <a href=https://bookshop.org/books/word-by-word-the-secret-life-of-dictionaries/9781101970263><em>Word by Word: The Secret Life of Dictionaries</em> by
+Kory
+Stamper</a>,
+which was an unexpected page-turner. What intrigued me most was (perhaps
+unsurprisingly) Stamper&rsquo;s description of how Merriam-Webster get written, and
+what a striking resemblance that process has to many successful unstructured
+data projects in the wild, and I want to use this blog post to ruminate on
+this.</p><hr><p><strong>First</strong> it begins with collection and curation of raw, unstructured data.
+Stamper describes a fascinating process called <em>&ldquo;reading and marking&rdquo;</em>, whereby
+editors are assigned reading of current magazines, periodicals, blogs &mdash;
+almost anything written in English, it seems &mdash; and read and underline any
+words that catch their eye: new words, or words that get used in new ways.
+(This is, contrary to first impressions, a non-trivial task for which requires
+training: good readers-and-markers will pick up on the recent trend of <em>&ldquo;bored
+of&rdquo;</em>, instead of the more historically common <em>&ldquo;bored with&rdquo;</em> &mdash; this doesn&rsquo;t
+imply that <em>bored</em> is picking up a new meaning, but rather that <em>of</em> is&mldr;
+which as you can imagine, can get lexicographers very excited.)</p><p>Stamper also describes the use of corpora, which are basically large structured
+datasets of English being used in the wild &mdash; a dataset of tweets, say, or
+transcripts of popular TV shows.</p><p>As data gets increasingly commoditized, data projects will increasingly have
+the luxury of starting with structured data (or at least, supplementing their
+raw unstructured data with structured data).</p><p><strong>Second</strong> is the actual structuring of the data. This entails a small army of
+editors dividing the entire dictionary amongst themselves, and defining (or
+revising definitions of) each word by hand. In practice, that means opening up
+the database of read-and-marked words (and maybe also the structured corpora),
+seeing if the current definition needs to be revised to accommodate new senses
+or usage of the word, and potentially writing or rewriting a definition for new
+words&mldr; all in the span of maybe 15 minutes per word, on average.</p><p>This seems to be the most labor-intensive step in the &ldquo;Merriam-Webster data
+pipeline&rdquo;, but of course is also the one that adds the most value. There&rsquo;s no
+reason to think that this phase (or any of these three phases, really!) needs
+to be technologically sophisticated &mdash; the dictionary-maker still makes use of
+index cards and filing cabinets today. Lucrative products <a href=https://vicki.substack.com/p/neural-nets-are-just-people-all-the>being underpinned by
+vast amounts of manual human labor is unfortunately nothing
+new</a>, but
+it&rsquo;s good to be reminded of it. The fact that product value and technological
+sophistication are unrelated is underappreciated: you don&rsquo;t unlock more value
+from your data by writing better code or training better machine learning
+models.</p><p><strong>Finally</strong> comes any ancillary features or datasets that Merriam-Webster
+offers on top of their existing data (a.k.a. the dictionary), simply because
+they are best positioned to deliver them. Think of things like etymology,
+pronunciations and dates<sup id=fnref:1><a href=#fn:1 class=footnote-ref role=doc-noteref>1</a></sup>.</p><p>It can seem funny that a dataset&rsquo;s true value to users (or, if you like, the
+dataset&rsquo;s &ldquo;product-market fit&rdquo;) might come from one of these subsidiary
+datasets or features, instead of &ldquo;the real thing&rdquo;. This makes sense though:
+just as companies pivot products and business models to stay relevant, so too
+can unstructured datasets &mdash; after all, it&rsquo;s not a huge stretch to think of
+unstructured datasets as products in their own right.</p><hr><p>So here we have a recipe for a successful data project:</p><ol><li>Collect and curate raw, unstructured data,</li><li>Structure it (ideally also adding some value to the data in the process, but
+structuring the data is value enough), and</li><li>Offer subsidiary datasets that you are best positioned to offer</li></ol><p>What other data projects have followed this recipe?</p><ol><li><p><strong>Google Search</strong>: Google <a href=https://developers.google.com/search/docs/advanced/crawling/googlebot>crawled the
+internet</a>,
+and continues to do so on an ongoing basis; they invented
+<a href=https://en.wikipedia.org/wiki/PageRank>PageRank</a> and other methods
+algorithms to make searching (a weak form of &ldquo;structuring&rdquo;, I suppose) the
+internet possible; and their question-answering and
+<a href=https://developers.google.com/search/docs/advanced/structured-data/carousel>carousels</a>
+are good examples of ancillary features on top of their core offering.</p></li><li><p><strong><code>cryptics.georgeho.org</code></strong>: my <a href=/cryptic-clues/>dataset of cryptic crossword
+clues</a> started by indexing several blogs for cryptic
+crosswords; I then wrote a ton of <code>BeautifulSoup</code> to parse structured clue
+information out of the blog post HTML; finally, I ran some simple searches
+and regular expressions to produce more valuable resources for constructors
+of cryptic crosswords.</p></li></ol><p>I wouldn&rsquo;t be convinced that this is the <em>only</em> way for data projects succeed,
+but it does seem like a helpful pattern to keep in mind!</p><div class=footnotes role=doc-endnotes><hr><ol><li id=fn:1><p>I was surprised to learn that words with multiple definitions are defined
+in chronological order of first usage, and not, as I imagined, some kind of
+&ldquo;importance&rdquo; of definitions.&#160;<a href=#fnref:1 class=footnote-backref role=doc-backlink>&#8617;&#xfe0e;</a></p></li></ol></div></content><p><a href=https://www.georgeho.org/blog/dataset/>#dataset</a></p></main><footer><form action=https://buttondown.email/api/emails/embed-subscribe/eigenfoo method=post target=popupwindow onsubmit='window.open("https://buttondown.email/eigenfoo","popupwindow")' class=embeddable-buttondown-form><label for=bd-email>Get my (monthly?) blog posts over email:</label><br><input type=email name=email id=bd-email placeholder=your@email.com>
+<input type=submit value=Subscribe></form></footer></body></html>

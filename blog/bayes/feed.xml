@@ -1,4 +1,97 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-09-17T13:18:01Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/bayes/" hreflang="en-US"/><entry><title>Link Bulletin, August 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/link-bulletin-2022-08/"/><id>https://www.georgeho.org/link-bulletin-2022-08/</id><updated>2022-08-04T00:00:00Z</updated><published>2022-08-04T00:00:00Z</published><content type="html">&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-09-18T04:55:49Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/bayes/" hreflang="en-US"/><entry><title>Merriam-Webster and Unstructured Data Processing</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/webster-unstructured-data/"/><id>https://www.georgeho.org/webster-unstructured-data/</id><updated>2022-09-18T00:00:00Z</updated><published>2022-09-18T00:00:00Z</published><content type="html">&lt;p>I recently finished reading &lt;a href="https://bookshop.org/books/word-by-word-the-secret-life-of-dictionaries/9781101970263">&lt;em>Word by Word: The Secret Life of Dictionaries&lt;/em> by
+Kory
+Stamper&lt;/a>,
+which was an unexpected page-turner. What intrigued me most was (perhaps
+unsurprisingly) Stamper&amp;rsquo;s description of how Merriam-Webster get written, and
+what a striking resemblance that process has to many successful unstructured
+data projects in the wild, and I want to use this blog post to ruminate on
+this.&lt;/p>
+&lt;hr>
+&lt;p>&lt;strong>First&lt;/strong> it begins with collection and curation of raw, unstructured data.
+Stamper describes a fascinating process called &lt;em>&amp;ldquo;reading and marking&amp;rdquo;&lt;/em>, whereby
+editors are assigned reading of current magazines, periodicals, blogs &amp;mdash;
+almost anything written in English, it seems &amp;mdash; and read and underline any
+words that catch their eye: new words, or words that get used in new ways.
+(This is, contrary to first impressions, a non-trivial task for which requires
+training: good readers-and-markers will pick up on the recent trend of &lt;em>&amp;ldquo;bored
+of&amp;rdquo;&lt;/em>, instead of the more historically common &lt;em>&amp;ldquo;bored with&amp;rdquo;&lt;/em> &amp;mdash; this doesn&amp;rsquo;t
+imply that &lt;em>bored&lt;/em> is picking up a new meaning, but rather that &lt;em>of&lt;/em> is&amp;hellip;
+which as you can imagine, can get lexicographers very excited.)&lt;/p>
+&lt;p>Stamper also describes the use of corpora, which are basically large structured
+datasets of English being used in the wild &amp;mdash; a dataset of tweets, say, or
+transcripts of popular TV shows.&lt;/p>
+&lt;p>As data gets increasingly commoditized, data projects will increasingly have
+the luxury of starting with structured data (or at least, supplementing their
+raw unstructured data with structured data).&lt;/p>
+&lt;p>&lt;strong>Second&lt;/strong> is the actual structuring of the data. This entails a small army of
+editors dividing the entire dictionary amongst themselves, and defining (or
+revising definitions of) each word by hand. In practice, that means opening up
+the database of read-and-marked words (and maybe also the structured corpora),
+seeing if the current definition needs to be revised to accommodate new senses
+or usage of the word, and potentially writing or rewriting a definition for new
+words&amp;hellip; all in the span of maybe 15 minutes per word, on average.&lt;/p>
+&lt;p>This seems to be the most labor-intensive step in the &amp;ldquo;Merriam-Webster data
+pipeline&amp;rdquo;, but of course is also the one that adds the most value. There&amp;rsquo;s no
+reason to think that this phase (or any of these three phases, really!) needs
+to be technologically sophisticated &amp;mdash; the dictionary-maker still makes use of
+index cards and filing cabinets today. Lucrative products &lt;a href="https://vicki.substack.com/p/neural-nets-are-just-people-all-the">being underpinned by
+vast amounts of manual human labor is unfortunately nothing
+new&lt;/a>, but
+it&amp;rsquo;s good to be reminded of it. The fact that product value and technological
+sophistication are unrelated is underappreciated: you don&amp;rsquo;t unlock more value
+from your data by writing better code or training better machine learning
+models.&lt;/p>
+&lt;p>&lt;strong>Finally&lt;/strong> comes any ancillary features or datasets that Merriam-Webster
+offers on top of their existing data (a.k.a. the dictionary), simply because
+they are best positioned to deliver them. Think of things like etymology,
+pronunciations and dates&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>.&lt;/p>
+&lt;p>It can seem funny that a dataset&amp;rsquo;s true value to users (or, if you like, the
+dataset&amp;rsquo;s &amp;ldquo;product-market fit&amp;rdquo;) might come from one of these subsidiary
+datasets or features, instead of &amp;ldquo;the real thing&amp;rdquo;. This makes sense though:
+just as companies pivot products and business models to stay relevant, so too
+can unstructured datasets &amp;mdash; after all, it&amp;rsquo;s not a huge stretch to think of
+unstructured datasets as products in their own right.&lt;/p>
+&lt;hr>
+&lt;p>So here we have a recipe for a successful data project:&lt;/p>
+&lt;ol>
+&lt;li>Collect and curate raw, unstructured data,&lt;/li>
+&lt;li>Structure it (ideally also adding some value to the data in the process, but
+structuring the data is value enough), and&lt;/li>
+&lt;li>Offer subsidiary datasets that you are best positioned to offer&lt;/li>
+&lt;/ol>
+&lt;p>What other data projects have followed this recipe?&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>&lt;strong>Google Search&lt;/strong>: Google &lt;a href="https://developers.google.com/search/docs/advanced/crawling/googlebot">crawled the
+internet&lt;/a>,
+and continues to do so on an ongoing basis; they invented
+&lt;a href="https://en.wikipedia.org/wiki/PageRank">PageRank&lt;/a> and other methods
+algorithms to make searching (a weak form of &amp;ldquo;structuring&amp;rdquo;, I suppose) the
+internet possible; and their question-answering and
+&lt;a href="https://developers.google.com/search/docs/advanced/structured-data/carousel">carousels&lt;/a>
+are good examples of ancillary features on top of their core offering.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>&lt;code>cryptics.georgeho.org&lt;/code>&lt;/strong>: my &lt;a href="https://www.georgeho.org/cryptic-clues/">dataset of cryptic crossword
+clues&lt;/a> started by indexing several blogs for cryptic
+crosswords; I then wrote a ton of &lt;code>BeautifulSoup&lt;/code> to parse structured clue
+information out of the blog post HTML; finally, I ran some simple searches
+and regular expressions to produce more valuable resources for constructors
+of cryptic crosswords.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;p>I wouldn&amp;rsquo;t be convinced that this is the &lt;em>only&lt;/em> way for data projects succeed,
+but it does seem like a helpful pattern to keep in mind!&lt;/p>
+&lt;div class="footnotes" role="doc-endnotes">
+&lt;hr>
+&lt;ol>
+&lt;li id="fn:1">
+&lt;p>I was surprised to learn that words with multiple definitions are defined
+in chronological order of first usage, and not, as I imagined, some kind of
+&amp;ldquo;importance&amp;rdquo; of definitions.&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;/div></content></entry><entry><title>Link Bulletin, August 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/link-bulletin-2022-08/"/><id>https://www.georgeho.org/link-bulletin-2022-08/</id><updated>2022-08-04T00:00:00Z</updated><published>2022-08-04T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>This is an at-most-monthly link bulletin, where I compile and post a handful
 of links that I&amp;rsquo;ve read and thought about with minimal explanation and
 commentary, on the theory that the links I find interesting might also be
