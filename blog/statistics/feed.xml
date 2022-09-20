@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-09-19T07:59:40Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/statistics/" hreflang="en-US"/><entry><title>Merriam-Webster and Unstructured Data Processing</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/webster-unstructured-data/"/><id>https://www.georgeho.org/webster-unstructured-data/</id><updated>2022-09-18T00:00:00Z</updated><published>2022-09-18T00:00:00Z</published><content type="html">&lt;p>I recently finished reading &lt;a href="https://bookshop.org/books/word-by-word-the-secret-life-of-dictionaries/9781101970263">&lt;em>Word by Word: The Secret Life of Dictionaries&lt;/em> by
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-09-20T02:52:30Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/statistics/" hreflang="en-US"/><entry><title>Merriam-Webster and Unstructured Data Processing</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/webster-unstructured-data/"/><id>https://www.georgeho.org/webster-unstructured-data/</id><updated>2022-09-18T00:00:00Z</updated><published>2022-09-18T00:00:00Z</published><content type="html">&lt;p>I recently finished reading &lt;a href="https://bookshop.org/books/word-by-word-the-secret-life-of-dictionaries/9781101970263">&lt;em>Word by Word: The Secret Life of Dictionaries&lt;/em> by
 Kory
 Stamper&lt;/a>,
 which was an unexpected page-turner. What intrigued me most was (perhaps
-unsurprisingly) Stamper&amp;rsquo;s description of how Merriam-Webster get written, and
+unsurprisingly) Stamper&amp;rsquo;s description of how Merriam-Webster gets written, and
 what a striking resemblance that process has to many successful unstructured
 data projects in the wild. I want to use this blog post to ruminate on this.&lt;/p>
 &lt;hr>
@@ -70,12 +70,12 @@ internet possible; and their question-answering and
 are good examples of ancillary features on top of their core offering.&lt;/p>
 &lt;/li>
 &lt;li>
-&lt;p>&lt;strong>&lt;code>cryptics.georgeho.org&lt;/code>&lt;/strong>: my &lt;a href="https://www.georgeho.org/cryptic-clues/">dataset of cryptic crossword
-clues&lt;/a> started by indexing several blogs for cryptic
-crosswords; I then wrote a ton of &lt;code>BeautifulSoup&lt;/code> to parse structured clue
-information out of the blog post HTML; finally, I ran some simple searches
-and regular expressions to produce more valuable resources for constructors
-of cryptic crosswords.&lt;/p>
+&lt;p>&lt;strong>&lt;a href="https://cryptics.georgeho.org/">&lt;code>cryptics.georgeho.org&lt;/code>&lt;/a>&lt;/strong>: my &lt;a href="https://www.georgeho.org/cryptic-clues/">dataset
+of cryptic crossword clues&lt;/a> started by indexing several
+blogs for cryptic crosswords; I then wrote a ton of &lt;code>BeautifulSoup&lt;/code> to parse
+structured clue information out of the blog post HTML; finally, I ran some
+simple searches and regular expressions to produce more valuable resources
+for constructors of cryptic crosswords.&lt;/p>
 &lt;/li>
 &lt;/ol>
 &lt;p>I wouldn&amp;rsquo;t be convinced that this is the &lt;em>only&lt;/em> way for data projects succeed,
