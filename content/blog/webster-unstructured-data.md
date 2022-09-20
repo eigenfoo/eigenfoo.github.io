@@ -3,13 +3,15 @@ title: Merriam-Webster and Unstructured Data Processing
 date: 2022-09-18
 tags:
   - dataset
+comments:
+  - Hello!
 ---
 
 I recently finished reading [_Word by Word: The Secret Life of Dictionaries_ by
 Kory
 Stamper](https://bookshop.org/books/word-by-word-the-secret-life-of-dictionaries/9781101970263),
 which was an unexpected page-turner. What intrigued me most was (perhaps
-unsurprisingly) Stamper's description of how Merriam-Webster get written, and
+unsurprisingly) Stamper's description of how Merriam-Webster gets written, and
 what a striking resemblance that process has to many successful unstructured
 data projects in the wild. I want to use this blog post to ruminate on this.
 
@@ -86,14 +88,14 @@ What other data projects have followed this recipe?
    algorithms to make searching (a weak form of "structuring", I suppose) the
    internet possible; and their question-answering and
    [carousels](https://developers.google.com/search/docs/advanced/structured-data/carousel)
-   are good examples of ancillary features on top of their core offering. 
+   are good examples of ancillary features on top of their core offering.
 
-2. **`cryptics.georgeho.org`**: my [dataset of cryptic crossword
-   clues](/cryptic-clues/) started by indexing several blogs for cryptic
-   crosswords; I then wrote a ton of `BeautifulSoup` to parse structured clue
-   information out of the blog post HTML; finally, I ran some simple searches
-   and regular expressions to produce more valuable resources for constructors
-   of cryptic crosswords. 
+2. **[`cryptics.georgeho.org`](https://cryptics.georgeho.org/)**: my [dataset
+   of cryptic crossword clues](/cryptic-clues/) started by indexing several
+   blogs for cryptic crosswords; I then wrote a ton of `BeautifulSoup` to parse
+   structured clue information out of the blog post HTML; finally, I ran some
+   simple searches and regular expressions to produce more valuable resources
+   for constructors of cryptic crosswords.
 
 I wouldn't be convinced that this is the _only_ way for data projects succeed,
 but it does seem like a helpful pattern to keep in mind!
