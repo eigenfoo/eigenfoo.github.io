@@ -12,12 +12,15 @@ echo
 # Look for .puz and .pdf files in downloads, the desktop and the home directory
 cp ~/Downloads/loplop-${next_puzzle_number}.puz static/crosswords/ \
     || cp ~/Desktop/loplop-${next_puzzle_number}.puz static/crosswords/ \
+    || cp ~/Documents/loplop-${next_puzzle_number}.puz static/crosswords/ \
     || cp ~/loplop-${next_puzzle_number}.puz static/crosswords/
 cp ~/Downloads/loplop-${next_puzzle_number}.pdf static/crosswords/ \
     || cp ~/Desktop/loplop-${next_puzzle_number}.pdf static/crosswords/ \
+    || cp ~/Documents/loplop-${next_puzzle_number}.pdf static/crosswords/ \
     || cp ~/loplop-${next_puzzle_number}.pdf static/crosswords/
 cp ~/Downloads/loplop-${next_puzzle_number}-solutions.pdf static/crosswords/ \
     || cp ~/Desktop/loplop-${next_puzzle_number}-solutions.pdf static/crosswords/ \
+    || cp ~/Documents/loplop-${next_puzzle_number}-solutions.pdf static/crosswords/ \
     || cp ~/loplop-${next_puzzle_number}-solutions.pdf static/crosswords/
 
 read -p "Puzzle title: " puzzle_title
