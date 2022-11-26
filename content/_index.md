@@ -26,7 +26,7 @@ engineering at [The Cooper Union](http://cooper.edu/welcome).
 
 - [Email](mailto:hello[æ]georgeho.org)
 - [Twitter](https://twitter.com/_eigenfoo/)
-- <a rel="me" href="https://mastodon.social/@eigenfoo">Mastodon</a>
+- <a rel="me" href="https://bright.rosy-colored.space/@george">Mastodon</a>
 - [GitHub](https://github.com/eigenfoo/)
 - [LinkedIn](https://www.linkedin.com/in/eigenfoo/)
 - [Résumé](/assets/resume.pdf)
