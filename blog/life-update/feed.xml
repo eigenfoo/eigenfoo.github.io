@@ -1,4 +1,127 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-12-26T05:03:27Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/life-update/" hreflang="en-US"/><entry><title>Use Your Computer Faster By Reading Less</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/computer-faster-reading-less/"/><id>https://www.georgeho.org/computer-faster-reading-less/</id><updated>2022-11-06T00:00:00Z</updated><published>2022-11-06T00:00:00Z</published><content type="html">&lt;p>Suppose you want your computer to take some action (whether it&amp;rsquo;s showing you information about something, navigating to a particular file, etc.). You&amp;rsquo;re not reading through a menu and thinking through what to do: you already know what you want to do, and you just have to execute.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-12-26T06:15:21Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/life-update/" hreflang="en-US"/><entry><title>Thoughts on Hanukkah of Data 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/hanukkah-of-data-2022/"/><id>https://www.georgeho.org/hanukkah-of-data-2022/</id><updated>2022-12-26T00:00:00Z</updated><published>2022-12-26T00:00:00Z</published><content type="html">&lt;blockquote>
+&lt;p>This blog post contains spoilers for Hanukkah of Data 2022.&lt;/p>
+&lt;/blockquote>
+&lt;p>This holiday season I&amp;rsquo;ve been doing the &lt;a href="https://hanukkah.bluebird.sh/">Hanukkah of
+Data&lt;/a>, which is a puzzle suite by a group of
+hackers called &lt;a href="https://bluebird.sh/">the Devottys&lt;/a>. It&amp;rsquo;s a sequence of
+programming puzzles, with one puzzle dropping for every day of Hanukkah. If
+you&amp;rsquo;re familiar with &lt;a href="https://adventofcode.com/">Advent of Code&lt;/a>, it&amp;rsquo;s very
+similar to that, except (a) it only lasts 8 days instead of 25, and (b) it&amp;rsquo;s
+more data-oriented, instead of coding or algorithms-oriented.&lt;/p>
+&lt;p>I did it in &lt;a href="https://www.visidata.org/">VisiData&lt;/a>, which is a tool I&amp;rsquo;ve been
+using a lot recently (both at work and for my side projects) that I really
+wanted to develop expert proficiency with.&lt;/p>
+&lt;p>Here were my solve statistics:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-text" data-lang="text">&lt;span style="display:flex;">&lt;span> Puzzle | Solve Time | # Attempts ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 0 | 3 minutes | 2 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 1 | 82 minutes | 2 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 2 | 20 minutes | 1 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 3 | 20 minutes | 5 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 4 | 37 minutes | 1 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 5 | 7 minutes | 1 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 6 | 6 minutes | 1 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 7 | 24 minutes | 1 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 8 | 5 minutes | 1 ║
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="overall-impressions">Overall Impressions&lt;/h2>
+&lt;p>&lt;strong>It&amp;rsquo;s much shorter than Advent of Code&lt;/strong>, which I think is a hugely underrated
+benefit &amp;mdash; in previous years, Advent of Code sometimes felt more like homework
+than a puzzle suite.&lt;/p>
+&lt;p>Hanukkah of Data is also &lt;strong>more of a puzzle than Advent of Code&lt;/strong> &amp;mdash; for
+example, Puzzle 2 required very non-trivial reading comprehension and logical
+inference to realize that you were looking for (a) a customer with the initials
+JD (b) who had, in the same order, bought coffee and bagels at Noah&amp;rsquo;s market
+(c) in 2017. I found this much more enjoyable than Advent of Code, where the
+solution is usually straightforward, and the implementation is the meat of the
+challenge.&lt;/p>
+&lt;p>On VisiData: for those comfortable with command line interfaces, Vim-style key
+bindings, or simply willing to put in the time to learn a mini-language of
+keyboard shortcuts, I think &lt;strong>VisiData is the best tool for doing well-scoped,
+one-off data explorations or analyses.&lt;/strong>&lt;/p>
+&lt;p>Towards the end of Hanukkah, the puzzles became less conceptually ambiguous and
+more technically difficult (in terms of the sophistication of the data
+wrangling required). As someone already experienced with querying data, I was
+pleased to finish these puzzles in single-digit minutes &amp;mdash; an achievement that
+I credit almost entirely to VisiData, which makes visualizing, filtering and
+aggregating data seamlessly interactive.&lt;/p>
+&lt;p>I only see two downsides of VisiData: the sparse documentation of advanced
+features (more on that below) and performance. Performance is most obviously an
+issue when you&amp;rsquo;re doing joins &amp;mdash; joining two tables with a few thousand rows
+each takes a noticeably long time. I&amp;rsquo;m looking forward to
+&lt;a href="https://github.com/visidata/vdsql">&lt;code>vdsql&lt;/code>&lt;/a>, which is VisiData&amp;rsquo;s sibling
+project that skins various databases with a VisiData interface (via
+&lt;a href="https://ibis-project.org/">Ibis&lt;/a>), and should therefore be as performant as
+the underlying database.&lt;/p>
+&lt;h2 id="some-miscellaneous-thoughts">Some Miscellaneous Thoughts&lt;/h2>
+&lt;ul>
+&lt;li>
+&lt;p>One of the puzzles required a pretty non-trivial function (basically a
+&amp;ldquo;phonespell&amp;rdquo; to convert a name into a phone number). I struggled a lot with
+making this custom function available to me in VisiData &amp;mdash; I spent around an
+hour figuring out how to make &lt;a href="https://www.visidata.org/docs/plugins/">a custom
+plugin&lt;/a> (this is what really blew up
+my solve time for Puzzle 1). I later learnt that adding a Python function to
+your &lt;code>.visidatarc&lt;/code> is a much simpler and&lt;/p>
+&lt;p>While I think the basics of VisiData are &lt;a href="https://jsvine.github.io/intro-to-visidata/">exceptionally well
+documented&lt;/a>, the advanced
+features are not &amp;mdash; I still don&amp;rsquo;t really understand how to extend VisiData
+with its API. Nevertheless, this won&amp;rsquo;t be an issue for most users, since 90%
+of VisiData&amp;rsquo;s value is in its interactivity and interoperability, not in its
+extensibility.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>For me, the most challenging puzzle was Puzzle 4, which asked to find someone
+who buys pastries. When you have a dataset with over a thousand products, how
+do find all the pastries?&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>sku | desc | wholesale_cost ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>DLI0002 | Smoked Whitefish Sandwich | 9.33 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PET0005 | Vegan Cat Food, Turkey &amp;amp; Chicken | 4.35 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>HOM0018 | Power Radio (red) | 21.81 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>KIT0034 | Azure Ladle | 2.81 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PET0041 | Gluten-free Cat Food, Pumpkin &amp;amp; Pumpkin | 4.60 ║
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>What I ended up doing was to split out the &amp;ldquo;suffix&amp;rdquo; of each product
+&lt;code>desc&lt;/code>ription (with some special handling for parenthetical modifiers), like
+so:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-txt" data-lang="txt">&lt;span style="display:flex;">&lt;span>sku | desc | descsuffix | wholesale_cost ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>DLI0002 | Smoked Whitefish Sandwich | Sandwich | 9.33 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PET0005 | Vegan Cat Food, Turkey &amp;amp; Chicken | Chicken | 4.35 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>HOM0018 | Power Radio (red) | Radio | 21.81 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>KIT0034 | Azure Ladle | Ladle | 2.81 ║
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>PET0041 | Gluten-free Cat Food, Pumpkin &amp;amp; Pumpkin | Pumpkin | 4.60 ║
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>This number of &lt;em>kinds&lt;/em> of products is drastically fewer than the number of
+products, to the point where it&amp;rsquo;s feasible to look through them all manually
+and pick out the pastries.&lt;/p>
+&lt;p>This obviously won&amp;rsquo;t work in general: for example, &lt;code>Vegan Cat Food, Turkey &amp;amp; Chicken&lt;/code> isn&amp;rsquo;t a kind of &lt;code>Chicken&lt;/code>, and you could imagine that this would
+really let you down for a product called &lt;code>Rugelach, Raspberry&lt;/code> instead of
+&lt;code>Raspberry Rugelach&lt;/code>. Still, I thought this was a neat trick, and I managed
+to eke out the correct solution.&lt;/p>
+&lt;p>Later in the week I realized that all pastries had an &lt;code>sku&lt;/code> that started with
+&lt;code>BKY&lt;/code>, which would&amp;rsquo;ve helped considerably &amp;mdash; similarly, cat foods start with
+&lt;code>PET&lt;/code> and collectibles start with &lt;code>COL&lt;/code>. Sometimes it pays actually read
+random-looking alphanumeric codes!&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>I was surprised that the puzzles didn&amp;rsquo;t seem to be monotonically increasing
+in difficulty (as you&amp;rsquo;ll see from my times, and as you might expect from
+Advent of Code). &lt;a href="https://www.saul.pw/">Saul Pwanson&lt;/a> (the creator of
+Hanukkah of Data) had this to say:&lt;/p>
+&lt;blockquote>
+&lt;p>There is a ramp (in difficulty), but it is not very steep, and for people
+who are already familiar with data queries, it might feel like not much has
+been added between puzzles. But if you look at each puzzle compared with
+the previous one, there is always something new. Sometimes it&amp;rsquo;s structural
+(e.g. now you need to do a join), sometimes it&amp;rsquo;s worldly (what is a
+pastry?), and sometimes it&amp;rsquo;s technical (it&amp;rsquo;s surprisingly difficult in most
+tools to filter based on a date range that doesn&amp;rsquo;t include the year).&lt;/p>
+&lt;/blockquote>
+&lt;p>It&amp;rsquo;s a really good observation &amp;mdash; I suppose I shouldn&amp;rsquo;t be surprised that
+Saul&amp;rsquo;s thought about the puzzle design a lot more than I have! 😅&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>The text art is just stunning! Each solved puzzle reveals a new animal, until
+the whole tapestry is illuminated:&lt;/p>
+&lt;p>&lt;a href="https://www.georgeho.org/assets/images/hanukkah-of-data.png">&lt;img src="https://www.georgeho.org/assets/images/hanukkah-of-data.png" alt="The whole tapestry for Hanukkah of Data2022">&lt;/a>&lt;/p>
+&lt;/li>
+&lt;/ul></content></entry><entry><title>Use Your Computer Faster By Reading Less</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/computer-faster-reading-less/"/><id>https://www.georgeho.org/computer-faster-reading-less/</id><updated>2022-11-06T00:00:00Z</updated><published>2022-11-06T00:00:00Z</published><content type="html">&lt;p>Suppose you want your computer to take some action (whether it&amp;rsquo;s showing you information about something, navigating to a particular file, etc.). You&amp;rsquo;re not reading through a menu and thinking through what to do: you already know what you want to do, and you just have to execute.&lt;/p>
 &lt;p>In these instances, &lt;strong>the slowest thing you could possibly do is read.&lt;/strong>&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup> The more you can make your computer do what you want &lt;em>with your eyes literally closed&lt;/em>, the faster and more efficient you will be at the computer.&lt;sup id="fnref:2">&lt;a href="#fn:2" class="footnote-ref" role="doc-noteref">2&lt;/a>&lt;/sup>&lt;/p>
 &lt;h2 id="coding-environment">Coding Environment&lt;/h2>
 &lt;p>I spend a lot of my time writing code, and I experienced a real step change in my programming quality of life once I configured my coding environment to be able to do all of the below without looking at the screen. (For those &lt;del>un&lt;/del>lucky enough to code in Vim, I&amp;rsquo;ve briefly outlined my setup.)&lt;/p>
