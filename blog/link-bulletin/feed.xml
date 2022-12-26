@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-12-26T07:38:53Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/link-bulletin/" hreflang="en-US"/><entry><title>Thoughts on Hanukkah of Data 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/hanukkah-of-data-2022/"/><id>https://www.georgeho.org/hanukkah-of-data-2022/</id><updated>2022-12-26T00:00:00Z</updated><published>2022-12-26T00:00:00Z</published><content type="html">&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-12-26T17:10:55Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/link-bulletin/" hreflang="en-US"/><entry><title>Thoughts on Hanukkah of Data 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/hanukkah-of-data-2022/"/><id>https://www.georgeho.org/hanukkah-of-data-2022/</id><updated>2022-12-26T00:00:00Z</updated><published>2022-12-26T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>This blog post contains spoilers for Hanukkah of Data 2022.&lt;/p>
 &lt;/blockquote>
 &lt;p>This holiday season I&amp;rsquo;ve been doing the &lt;a href="https://hanukkah.bluebird.sh/">Hanukkah of
@@ -23,16 +23,15 @@ wanted to develop expert proficiency with.&lt;/p>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 7 | 24 minutes | 1 ║
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> 8 | 5 minutes | 1 ║
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="overall-impressions">Overall Impressions&lt;/h2>
-&lt;p>&lt;strong>It&amp;rsquo;s much shorter than Advent of Code&lt;/strong>, which I think is a hugely underrated
-benefit &amp;mdash; in previous years, Advent of Code sometimes felt more like homework
-than a puzzle suite.&lt;/p>
-&lt;p>Hanukkah of Data is also &lt;strong>more of a puzzle than Advent of Code&lt;/strong> &amp;mdash; for
-example, Puzzle 2 required very non-trivial reading comprehension and logical
-inference to realize that you were looking for (a) a customer with the initials
-JD (b) who had, in the same order, bought coffee and bagels at Noah&amp;rsquo;s market
-(c) in 2017. I found this much more enjoyable than Advent of Code, where the
-solution is usually straightforward, and the implementation is the meat of the
-challenge.&lt;/p>
+&lt;p>&lt;strong>Hanukkah of Data is much shorter than Advent of Code&lt;/strong>, which I think is a
+hugely underrated benefit &amp;mdash; in previous years, Advent of Code sometimes felt
+more like homework than a puzzle suite.&lt;/p>
+&lt;p>It&amp;rsquo;s also &lt;strong>more of a puzzle than Advent of Code&lt;/strong> &amp;mdash; for example, Puzzle 2
+required very non-trivial reading comprehension and logical inference to
+realize that you were looking for (a) a customer with the initials JD (b) who
+had, in the same order, bought coffee and bagels at Noah&amp;rsquo;s market (c) in 2017.
+I found this much more enjoyable than Advent of Code, where the solution is
+usually straightforward, and the implementation is the meat of the challenge.&lt;/p>
 &lt;p>On VisiData: for those comfortable with command line interfaces, Vim-style key
 bindings, or simply willing to put in the time to learn a mini-language of
 keyboard shortcuts, I think &lt;strong>VisiData is the best tool for doing well-scoped,
@@ -54,13 +53,13 @@ the underlying database.&lt;/p>
 &lt;h2 id="some-miscellaneous-thoughts">Some Miscellaneous Thoughts&lt;/h2>
 &lt;ul>
 &lt;li>
-&lt;p>One of the puzzles required a pretty non-trivial function (basically a
-&amp;ldquo;phonespell&amp;rdquo; to convert a name into a phone number). I struggled a lot with
+&lt;p>Puzzle 1 required a non-trivial function (basically a &amp;ldquo;phonespell&amp;rdquo; to convert
+words to numbers, as if you were dialling on a phone). I struggled a lot with
 making this custom function available to me in VisiData &amp;mdash; I spent around an
 hour figuring out how to make &lt;a href="https://www.visidata.org/docs/plugins/">a custom
 plugin&lt;/a> (this is what really blew up
-my solve time for Puzzle 1). I later learnt that adding a Python function to
-your &lt;code>.visidatarc&lt;/code> is a much simpler and&lt;/p>
+my solve time on the first day). I later learnt that adding a Python function
+to your &lt;code>.visidatarc&lt;/code> is a much simpler way to achieve the same thing.&lt;/p>
 &lt;p>While I think the basics of VisiData are &lt;a href="https://jsvine.github.io/intro-to-visidata/">exceptionally well
 documented&lt;/a>, the advanced
 features are not &amp;mdash; I still don&amp;rsquo;t really understand how to extend VisiData
