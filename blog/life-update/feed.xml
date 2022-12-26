@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-12-26T17:10:55Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/life-update/" hreflang="en-US"/><entry><title>Thoughts on Hanukkah of Data 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/hanukkah-of-data-2022/"/><id>https://www.georgeho.org/hanukkah-of-data-2022/</id><updated>2022-12-26T00:00:00Z</updated><published>2022-12-26T00:00:00Z</published><content type="html">&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2022-12-26T17:31:57Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/life-update/" hreflang="en-US"/><entry><title>Thoughts on Hanukkah of Data 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/hanukkah-of-data-2022/"/><id>https://www.georgeho.org/hanukkah-of-data-2022/</id><updated>2022-12-26T00:00:00Z</updated><published>2022-12-26T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>This blog post contains spoilers for Hanukkah of Data 2022.&lt;/p>
 &lt;/blockquote>
 &lt;p>This holiday season I&amp;rsquo;ve been doing the &lt;a href="https://hanukkah.bluebird.sh/">Hanukkah of
@@ -95,22 +95,22 @@ really let you down for a product called &lt;code>Rugelach, Raspberry&lt;/code> 
 to eke out the correct solution.&lt;/p>
 &lt;p>Later in the week I realized that all pastries had an &lt;code>sku&lt;/code> that started with
 &lt;code>BKY&lt;/code>, which would&amp;rsquo;ve helped considerably &amp;mdash; similarly, cat foods start with
-&lt;code>PET&lt;/code> and collectibles start with &lt;code>COL&lt;/code>. Sometimes it pays actually read
+&lt;code>PET&lt;/code> and collectibles start with &lt;code>COL&lt;/code>. Sometimes it pays to actually read
 random-looking alphanumeric codes!&lt;/p>
 &lt;/li>
 &lt;li>
 &lt;p>I was surprised that the puzzles didn&amp;rsquo;t seem to be monotonically increasing
-in difficulty (as you&amp;rsquo;ll see from my times, and as you might expect from
-Advent of Code). &lt;a href="https://www.saul.pw/">Saul Pwanson&lt;/a> (the creator of
-Hanukkah of Data) had this to say:&lt;/p>
+in difficulty &amp;mdash; as you&amp;rsquo;ll see from my times, and as you might expect from
+Advent of Code. &lt;a href="https://www.saul.pw/">Saul Pwanson&lt;/a> (the creator of Hanukkah
+of Data) had this to say:&lt;/p>
 &lt;blockquote>
-&lt;p>There is a ramp (in difficulty), but it is not very steep, and for people
-who are already familiar with data queries, it might feel like not much has
+&lt;p>There is a ramp in difficulty, but it is not very steep, and for people who
+are already familiar with data queries, it might feel like not much has
 been added between puzzles. But if you look at each puzzle compared with
 the previous one, there is always something new. Sometimes it&amp;rsquo;s structural
-(e.g. now you need to do a join), sometimes it&amp;rsquo;s worldly (what is a
-pastry?), and sometimes it&amp;rsquo;s technical (it&amp;rsquo;s surprisingly difficult in most
-tools to filter based on a date range that doesn&amp;rsquo;t include the year).&lt;/p>
+(now you need to do a join), sometimes it&amp;rsquo;s worldly (what is a pastry?),
+and sometimes it&amp;rsquo;s technical (it&amp;rsquo;s surprisingly difficult in most tools to
+filter based on a date range that doesn&amp;rsquo;t include the year).&lt;/p>
 &lt;/blockquote>
 &lt;p>It&amp;rsquo;s a really good observation &amp;mdash; I suppose I shouldn&amp;rsquo;t be surprised that
 Saul&amp;rsquo;s thought about the puzzle design a lot more than I have! 😅&lt;/p>
