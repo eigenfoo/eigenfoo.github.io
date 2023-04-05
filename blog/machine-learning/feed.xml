@@ -1,4 +1,20 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2023-04-04T07:38:56Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/machine-learning/" hreflang="en-US"/><entry><title>Thoughts on Hanukkah of Data 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/hanukkah-of-data-2022/"/><id>https://www.georgeho.org/hanukkah-of-data-2022/</id><updated>2022-12-26T00:00:00Z</updated><published>2022-12-26T00:00:00Z</published><content type="html">&lt;blockquote>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2023-04-05T01:40:21Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/machine-learning/" hreflang="en-US"/><entry><title>“So What Is Your Job, Exactly?”</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/ml-for-ehr-rwd-extraction/"/><id>https://www.georgeho.org/ml-for-ehr-rwd-extraction/</id><updated>2023-04-04T00:00:00Z</updated><published>2023-04-04T00:00:00Z</published><content type="html">&lt;p>My team at &lt;a href="https://flatiron.com/">Flatiron Health&lt;/a> (but especially the
+inimitable &lt;a href="https://www.blytheadamson.com/">Blythe Adamson&lt;/a>) recently wrote an
+excellent overview of how we use machine learning to build research-ready
+oncology datasets from patient medical records &amp;mdash; in a paper called &lt;em>Approach
+to Machine Learning for Extraction of Real-World Data Variables from Electronic
+Health Records.&lt;/em>&lt;/p>
+&lt;p>This is a refreshingly simple and concise articulation of what I do at my day
+job! You can read the paper on
+&lt;a href="https://www.medrxiv.org/content/10.1101/2023.03.02.23286522v1">medRxiv&lt;/a> or
+check out &lt;a href="https://flatiron.com/resources/approach-to-machine-learning-for-extraction-of-real-world-data-variables-from-electronic-health-records">a brief overview on the Flatiron
+website&lt;/a>.&lt;/p>
+&lt;p>To spare you a few clicks, here&amp;rsquo;s what I think is the most enlightening figure
+in the paper:&lt;/p>
+&lt;figure>
+&lt;a href="https://www.georgeho.org/assets/images/ehr-variable-snippets.jpg">&lt;img src="https://www.georgeho.org/assets/images/ehr-variable-snippets.jpg" alt="EHR">&lt;/a>
+&lt;figcaption>&lt;i>Snippets of text (fictional examples here) from electronic health records are inputs to deep learning models that produce a value for each patient as an output. Source: &lt;a href="https://www.medrxiv.org/content/10.1101/2023.03.02.23286522v1">Figure 5 in the paper.&lt;/a>&lt;/i>&lt;/figcaption>
+&lt;/figure></content></entry><entry><title>Thoughts on Hanukkah of Data 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/hanukkah-of-data-2022/"/><id>https://www.georgeho.org/hanukkah-of-data-2022/</id><updated>2022-12-26T00:00:00Z</updated><published>2022-12-26T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>This blog post contains spoilers for Hanukkah of Data 2022.&lt;/p>
 &lt;/blockquote>
 &lt;p>This holiday season I&amp;rsquo;ve been doing the &lt;a href="https://hanukkah.bluebird.sh/">Hanukkah of
