@@ -11,26 +11,17 @@
     <input type="submit" value="Subscribe" />
   </form>
 {{ else if ne .Params.crosswordSubscribeFooter false }}
-  <div id="revue-embed" style="border:1px solid #E6E6E6;padding:30px;text-align:center;">
-  <form action="https://www.getrevue.co/profile/loplop/add_subscriber"
-        method="post"
-        id="revue-form"
-        name="revue-form"
-        target="_blank">
-    <div class="revue-form-group">
-      <label for="member_email">Get my puzzles over email: </label>
-      <input class="revue-form-field" placeholder="hello@example.com" type="email" name="member[email]" id="member_email">
-    </div>
-
-    <div class="revue-form-actions">
-      <input type="submit" value="Subscribe" name="member[subscribe]" id="member_submit">
-    </div>
-
-    <div class="revue-form-footer">
-      <div style="font-size:65%; opacity:0.7;">
-        By subscribing, you agree with Revue’s <a target="_blank" href="https://www.getrevue.co/terms">Terms of Service</a> and <a target="_blank" href="https://www.getrevue.co/privacy">Privacy Policy</a>.
-      </div>
-    </div>
+  <div id="buttondown-embed" style="border:1px solid #E6E6E6;padding:30px;text-align:center;">
+  <form
+    action="https://buttondown.email/api/emails/embed-subscribe/loplop"
+    method="post"
+    target="popupwindow"
+    onsubmit="window.open('https://buttondown.email/loplop', 'popupwindow')"
+    class="embeddable-buttondown-form"
+  >
+    <label for="bd-email">Get my crosswords over email:</label>
+    <input type="email" name="email" id="bd-email" />
+    <input type="submit" value="Subscribe" />
   </form>
   </div>
 {{ end }}
