@@ -2,6 +2,8 @@
 <content>
   {{ if (eq .RelPermalink "/crosswords/") }}
     {{- partial "crosswords_head.html" . -}}
+  {{ else if (eq .RelPermalink "/recipes/") }}
+    {{- partial "recipes_head.html" . -}}
   {{ end }}
   {{ if .Data.Singular }}
   <h3 style="margin-bottom:0">Filtering for "{{ .Title }}"</h3>

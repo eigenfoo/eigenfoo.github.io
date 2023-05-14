@@ -1,5 +1,5 @@
 {{ define "main" }}
-{{ if or (eq .Section "blog") (eq .Section "crosswords") }}{{ if not .Params.menu }}
+{{ if or (eq .Section "blog") (eq .Section "crosswords") (eq .Section "recipes") }}{{ if not .Params.menu }}
 <h1>{{ .Title | markdownify }}</h1>
 <p>
   <i>
