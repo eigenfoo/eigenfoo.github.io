@@ -1,0 +1,88 @@
+{
+  "version": "http://ipuz.org/v2",
+  "kind": ["http://ipuz.org/crossword"],
+  "copyright": "2023 George Ho",
+  "title": "Hot Spots",
+  "intro": "It’s a wild night out — you and your friends are going to 15a! Everybody’s trying to get to one of the four highlighted entries because their clues just aren’t like the others… but you know that this puzzle is about having a good time no matter where you are.",
+  "notes": "It’s a wild night out — you and your friends are going to 15a! Everybody’s trying to get to one of the four highlighted entries because their clues just aren’t like the others… but you know that this puzzle is about having a good time no matter where you are.",
+  "explanation": "",
+  "author": "George Ho",
+  "dimensions": {"width": 15, "height": 15},
+  "puzzle": [
+    [1, "#", 2, "#", 3, "#", 4, "#", 5, "#", "#", "#", 6, "#", 7],
+    [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, "#", {"cell": 9, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}],
+    [0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 10, "#", 0, "#", 0],
+    [{"cell": 11, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, "#", 12, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 0],
+    [13, 0, 0, 0, 0, "#", 14, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, "#", "#", "#", "#", "#", 0, "#", "#", "#", 0, "#", 0, "#", "#"],
+    [15, 0, 16, 0, 17, 0, 0, 0, 18, 0, 0, 0, 0, 0, 19],
+    ["#", "#", 0, "#", 0, "#", "#", "#", 0, "#", "#", "#", "#", "#", 0],
+    [20, 0, 0, 0, 0, 0, 21, 0, 0, "#", 22, 0, 23, 0, 0],
+    [0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 0],
+    [24, 0, 0, 0, 0, 0, 0, 0, 0, "#", {"cell": 25, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}],
+    [0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 0, "#", 0],
+    [{"cell": 26, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, {"cell": 0, "style": {"color": "ee4b2b"}}, "#", 27, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, "#", 0, "#", "#", "#", 0, "#", 0, "#", 0, "#", 0, "#", 0]
+  ],
+  "solution": [
+    ["T", "#", "U", "#", "S", "#", "S", "#", "T", "#", "#", "#", "C", "#", "P"],
+    ["H", "A", "V", "E", "A", "B", "L", "A", "S", "T", "#", "C", "A", "B", "O"],
+    ["U", "#", "L", "#", "T", "#", "A", "#", "T", "#", "B", "#", "R", "#", "U"],
+    ["M", "I", "A", "M", "I", "#", "P", "A", "R", "T", "Y", "D", "O", "W", "N"],
+    ["B", "#", "M", "#", "V", "#", "D", "#", "A", "#", "E", "#", "U", "#", "D"],
+    ["S", "E", "P", "I", "A", "#", "A", "L", "P", "I", "N", "I", "S", "T", "S"],
+    ["U", "#", "#", "#", "#", "#", "S", "#", "#", "#", "O", "#", "E", "#", "#"],
+    ["P", "A", "I", "N", "T", "T", "H", "E", "T", "O", "W", "N", "R", "E", "D"],
+    ["#", "#", "N", "#", "E", "#", "#", "#", "E", "#", "#", "#", "#", "#", "E"],
+    ["M", "E", "D", "I", "A", "T", "I", "O", "N", "#", "S", "T", "A", "R", "S"],
+    ["A", "#", "I", "#", "C", "#", "T", "#", "D", "#", "P", "#", "M", "#", "P"],
+    ["T", "E", "A", "R", "U", "P", "T", "H", "E", "#", "I", "B", "I", "Z", "A"],
+    ["C", "#", "N", "#", "P", "#", "E", "#", "N", "#", "F", "#", "G", "#", "I"],
+    ["H", "V", "A", "R", "#", "D", "A", "N", "C", "E", "F", "L", "O", "O", "R"],
+    ["A", "#", "N", "#", "#", "#", "M", "#", "Y", "#", "Y", "#", "S", "#", "S"]
+  ],
+  "clues": {
+    "Across": [
+      [8, "Aha! Valet’s shot to acquire BMW’s starter and enjoy a good time (4,1,5)"],
+      [9, "Love found after red wine (4)"],
+      [11, "Those at the forefront of music industry are magnetic influencers (5)"],
+      [12, "Section next to yard to hold rave (5,4)"],
+      [13, "Pigment sounds likelier to ooze in Boston (5)"],
+      [14, "Ones getting high? Celebs inhaling fix, closer to bliss (9)"],
+      [15, "Have a wild night out… or a hint to what’s happened to four entries? (5,3,4,3)"],
+      [20, "Prescribed treatment prohibiting bit of clubbing: it might restore harmony (9)"],
+      [22, "Features of steamship including black goo (5)"],
+      {
+        "numbers": [24, 27],
+        "clue": "Really revel in how you might get condo/flat here? (4,2,3,5,5)",
+        "references": {"direction": "Across", "number": 27}
+      },
+      [25, "Commerce commonly found in Iowa (5)"],
+      [26, "Selection from outlandish variety (4)"],
+      {
+        "number": 27,
+        "clue": "See 24a",
+        "references": {"direction": "Across", "number": 24}
+      }
+    ],
+    "Down": [
+      [1, "Pub shut to remodel upon receiving Michelin’s initial approval (6,2)"],
+      [2, "Arranged plum AV — it’s a common fixture at clubs (2,4)"],
+      [3, "Chose not to stand stand one Virginia weed (6)"],
+      [4, "Hastily assembled band entertaining SoCal squad (8)"],
+      [5, "Leave saint stood up with kind of sandal (1-5)"],
+      [6, "Partygoer to wake up inside taxi, perhaps (8)"],
+      [7, "Money for bashes (6)"],
+      [10, "“See you soon!” by head-over-heels single fellow, at last (3,3)"],
+      [16, "Vonnegut or Letterman lamented princess staying in hotel (8)"],
+      [17, "Coach, almost finished, leaves place (6)"],
+      [18, "Decent NY partying trend (8)"],
+      [19, "Loses hope in some French couples (8)"],
+      [20, "Click romantically over a drink (6)"],
+      [21, "Tech support group into the way my bits regularly drop (2,4)"],
+      [22, "Smart tops for stag parties of dubious quality (6)"],
+      [23, "In the morning, Instagram post’s content is the homies (6)"]
+    ]
+  }
+}
