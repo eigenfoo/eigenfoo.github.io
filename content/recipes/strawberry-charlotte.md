@@ -1,5 +1,5 @@
 ---
-title: Strawberry Charlotte
+title: Strawberry Charlotte with Strawberry Compote
 date: 2023-06-11
 blogSubscribeFooter: false
 crosswordSubscribeFooter: false
@@ -26,13 +26,6 @@ crosswordSubscribeFooter: false
 
 ## Directions
 
-**For the sauce:**
-
-1. In a saucepan over medium heat, add the ¼ cup sugar, quartered strawberries,
-   and 1 tablespoon lemon juice. Simmer until the mixture is a thick sauce,
-   about 20 minutes. Crush the strawberries with a wooden spoon, if desired.
-   Let cool and add sour liqueur to taste. Refrigerate until ready to serve.
-
 **For the charlotte:**
 
 1. Soften the gelatin in the cold water in a bowl, about 5 minutes. Add the
@@ -42,8 +35,14 @@ crosswordSubscribeFooter: false
 2. Whip the gelatin mixture until somewhat fluffy. Fold in the egg whites and
    then the cream. Add sour liqueur to taste. Pour into serving containers and
    refrigerate until firm, about 2 hours.
-3. Decorate with a few whole berries. Serve with the sweetened crushed
-   strawberries as a sauce.
+3. Garnish with a few whole berries. Serve with the strawberry compote.
+
+**For the compote:**
+
+1. In a saucepan over medium heat, add the ¼ cup sugar, quartered strawberries,
+   and 1 tablespoon lemon juice. Simmer until the mixture is a thick sauce,
+   about 20 minutes. Crush the strawberries with a wooden spoon, if desired.
+   Let cool and add sour liqueur to taste. Refrigerate until ready to serve.
 
 - **Yield:** 8 servings.
 - **Time:** 1½ hour preparation; 1 hour cooking; 1 hour refrigeration.
