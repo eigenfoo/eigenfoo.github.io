@@ -66,8 +66,9 @@ crosswordSubscribeFooter: false
 
 ## Cooking Notes
 
-- Under no circumstances let the cream mixture boil: this will lead to a grainy
-  or curdled texture or separation of ingredients (like fats and liquids).
+- Under no circumstances let the cream mixture steam: boiling off water will
+  concentrate fats and proteins, which will lead to a grainy or curdled texture
+  or separation of ingredients (like fats and liquids).
 - Transferring the cream mixture from a saucepan to a pouring container is
   irksome and adds to the dishes, but it makes dividing the mixture *much*
   simpler and cleaner.
