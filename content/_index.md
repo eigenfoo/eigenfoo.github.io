@@ -15,9 +15,9 @@ technical stuff) and `loplop` (for crosswords and other games).
 
 I work at [Flatiron Health](https://flatiron.com/), where I use machine
 learning on real-world patient data to accelerate cancer research. I like
-natural language processing, Bayesian modelling, open source software,
-crosswords, donuts and coffee. (I construct cryptic crosswords, which you can
-check out [here](/crosswords/)).
+natural language processing, Bayesian modelling, crosswords and food. (I
+construct cryptic crosswords [here](/crosswords/), and write down my recipes
+[here](/recipes/)).
 
 I'm originally from Hong Kong but now based in New York. Previously, I worked for
 [Point72 Asset Management](https://www.point72.com) and
