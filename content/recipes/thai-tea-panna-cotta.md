@@ -23,11 +23,11 @@ crosswordSubscribeFooter: false
 - ½ cup granulated sugar
 - 1 teaspoon vanilla extract
 - ⅛ teaspoon kosher salt
-- 30 grams Thai tea (~2 pouches)
+- 12 grams Thai tea (~3 large tea bags)
 
 **For the mango coulis:**
 
-- 1 mango, roughly chopped
+- 1 mango, preferably ripe, roughly chopped
 - 2 tablespoons granulated sugar
 - 1 small lime
 
@@ -39,15 +39,15 @@ crosswordSubscribeFooter: false
    extract and kosher salt over low heat. Add the Thai tea to a tea filter bag
    and steep at ~50°C for 30 minutes, or more to taste. Remove from or return
    to heat as needed.
-1. Meanwhile, pour the remaining 3 tablespoons whole milk into a small bowl.
+2. Meanwhile, pour the remaining 3 tablespoons whole milk into a small bowl.
    Sprinkle the gelatin onto the milk in an even layer and set aside for 10
    minutes for the gelatin to "bloom". The surface of the milk will turn dry
    and wrinkly.
-1. Remove the tea bag. If tea has leaked into the cream mixture, strain the
+3. Remove the tea bag. If tea has leaked into the cream mixture, strain the
    cream mixture through a nut milk bag to remove any tea leaves.
-1. Add the bloomed gelatin to the cream mixture, and stir until the gelatin is
+4. Add the bloomed gelatin to the cream mixture, and stir until the gelatin is
    completely dissolved, returning to heat if needed.
-1. Transfer the mixture to a large glass measuring cup or other heat-proof
+5. Transfer the mixture to a large glass measuring cup or other heat-proof
    container with a pouring spout. Divide the mixture among ramekins. Cover and
    refrigerate until set, at least 4 hours, preferably overnight.
 
