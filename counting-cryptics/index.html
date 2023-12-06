@@ -48,7 +48,8 @@ at most two consecutive unchecked squares not at the start or end of
 words.</li><li>There is also a trick we can use to limit the search space: if the
 previous three rows have a column that is black-white-white, then in the
 same column, the next row must be white.</li><li>This is best explained pictorially:
-<img src=/assets/images/counting-cryptics-illustration.png alt="An illustration of the black-black-whitetrick"></li></ul></li><li>Check that the columns are valid. Specifically:<ul><li>Check that the columns are <code>valid_rows</code> (this ensures that there are no
+<img src=/assets/images/counting-cryptics-illustration.png alt="An illustration of the black-black-white
+trick"></li></ul></li><li>Check that the columns are valid. Specifically:<ul><li>Check that the columns are <code>valid_rows</code> (this ensures that there are no
 words below the minimum word length).</li><li>And also check that the columns don&rsquo;t have two consecutive unchecked
 squares at the start or end of the word.</li><li>Note that all other requirements (e.g. the number of checked squares) are
 already taken care up while building up the grid.</li></ul></li><li>Check connectedness of the grid using a <a href=https://www.hackerearth.com/practice/algorithms/graphs/depth-first-search/tutorial/>depth-first

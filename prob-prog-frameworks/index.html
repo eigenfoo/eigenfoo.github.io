@@ -17,7 +17,8 @@ unsure, you can <a href=https://www.georgeho.org/bayesian-inference-reading/>rea
 density</li><li>At least one inference algorithm, which either draws samples from the posterior (in
 the case of Markov Chain Monte Carlo, MCMC) or computes some approximation of it (in
 the case of variational inference, VI)</li><li>At least one optimizer, which can compute the mode of the posterior density</li><li>An autodifferentiation library to compute gradients required by the inference
-algorithm and optimizer</li><li>A suite of diagnostics to monitor and analyze the quality of inference</li></ol><p>These six pieces come together like so:</p><p><img src=/assets/images/prob-prog-flowchart.png alt="Flowchart illustrating the structure of a probabilistic programmingframeworks"></p><p>Let&rsquo;s break this down one by one.</p><h3 id=specifying-the-model-languageapi>Specifying the model: language/API</h3><p>This is what users will use to specify their models. Most frameworks will let users
+algorithm and optimizer</li><li>A suite of diagnostics to monitor and analyze the quality of inference</li></ol><p>These six pieces come together like so:</p><p><img src=/assets/images/prob-prog-flowchart.png alt="Flowchart illustrating the structure of a probabilistic programming
+frameworks"></p><p>Let&rsquo;s break this down one by one.</p><h3 id=specifying-the-model-languageapi>Specifying the model: language/API</h3><p>This is what users will use to specify their models. Most frameworks will let users
 write in some existing programming language and call the framework&rsquo;s functions and
 classes, but <del>some others</del> — why don&rsquo;t I just say it — Stan rolls their own
 domain-specific language.</p><p>The main question here is what language you think is best for users to specify models
