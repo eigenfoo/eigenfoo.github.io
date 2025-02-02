@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2025-02-01T07:39:20Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/stan/" hreflang="en-US"/><entry><title>Data is Plural Podcast — Crossword Data</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/data-is-plural-podcast/"/><id>https://www.georgeho.org/data-is-plural-podcast/</id><updated>2023-12-20T00:00:00Z</updated><published>2023-12-20T00:00:00Z</published><content type="html">&lt;p>I was on a podcast!&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2025-02-02T07:38:58Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/stan/" hreflang="en-US"/><entry><title>Data is Plural Podcast — Crossword Data</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/data-is-plural-podcast/"/><id>https://www.georgeho.org/data-is-plural-podcast/</id><updated>2023-12-20T00:00:00Z</updated><published>2023-12-20T00:00:00Z</published><content type="html">&lt;p>I was on a podcast!&lt;/p>
 &lt;p>Check out &lt;a href="https://podcast.data-is-plural.com/2159594/14179132-s2e5-crosswords">the latest episode of the Data Is Plural
 postcast&lt;/a>
 to hear me and fellow crossword archivist &lt;a href="http://saul.pw/">Saul Pwanson&lt;/a> talk
@@ -18,8 +18,7 @@ code.&lt;/a>&lt;/p>
 &lt;p>[Pactiv Evergreen, a milk carton supplier,] has &amp;hellip; resurrected a defunct
 generic brand and will use its design for all cartons, rather than
 interrupting the line to change logos. This should speed [milk]
-production and increase capacity by 10%.&lt;/p>
-&lt;/blockquote>
+production and increase capacity by 10%.&lt;/p>&lt;/blockquote>
 &lt;p>Wouldn&amp;rsquo;t that be cool to see in a dataset?&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/p>
 &lt;/li>
 &lt;/ol>
@@ -41,8 +40,7 @@ in the paper:&lt;/p>
 &lt;a href="https://www.georgeho.org/assets/images/ehr-variable-snippets.jpg">&lt;img src="https://www.georgeho.org/assets/images/ehr-variable-snippets.jpg" alt="EHR">&lt;/a>
 &lt;figcaption>&lt;i>Snippets of text from electronic health records are inputs to deep learning models that produce a variable value for each patient as an output. Source: &lt;a href="https://www.medrxiv.org/content/10.1101/2023.03.02.23286522v1">Figure 5 in the paper.&lt;/a>&lt;/i>&lt;/figcaption>
 &lt;/figure></content></entry><entry><title>Thoughts on Hanukkah of Data 2022</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/hanukkah-of-data-2022/"/><id>https://www.georgeho.org/hanukkah-of-data-2022/</id><updated>2022-12-26T00:00:00Z</updated><published>2022-12-26T00:00:00Z</published><content type="html">&lt;blockquote>
-&lt;p>This blog post contains spoilers for Hanukkah of Data 2022.&lt;/p>
-&lt;/blockquote>
+&lt;p>This blog post contains spoilers for Hanukkah of Data 2022.&lt;/p>&lt;/blockquote>
 &lt;p>This holiday season I&amp;rsquo;ve been doing the &lt;a href="https://hanukkah.bluebird.sh/">Hanukkah of
 Data&lt;/a>, which is a puzzle suite by a group of
 hackers called &lt;a href="https://bluebird.sh/">the Devottys&lt;/a>. It&amp;rsquo;s a sequence of
@@ -152,8 +150,7 @@ been added between puzzles. But if you look at each puzzle compared with
 the previous one, there is always something new. Sometimes it&amp;rsquo;s structural
 (now you need to do a join), sometimes it&amp;rsquo;s worldly (what is a pastry?),
 and sometimes it&amp;rsquo;s technical (it&amp;rsquo;s surprisingly difficult in most tools to
-filter based on a date range that doesn&amp;rsquo;t include the year).&lt;/p>
-&lt;/blockquote>
+filter based on a date range that doesn&amp;rsquo;t include the year).&lt;/p>&lt;/blockquote>
 &lt;p>It&amp;rsquo;s a really good observation &amp;mdash; I suppose I shouldn&amp;rsquo;t be surprised that
 Saul&amp;rsquo;s thought about the puzzle design a lot more than I have! 😅&lt;/p>
 &lt;/li>
@@ -308,8 +305,7 @@ in chronological order of first usage, and not, as I imagined, some kind of
 &lt;p>This is an at-most-monthly link bulletin, where I compile and post a handful
 of links that I&amp;rsquo;ve read and thought about with minimal explanation and
 commentary, on the theory that the links I find interesting might also be
-interesting to others.&lt;/p>
-&lt;/blockquote>
+interesting to others.&lt;/p>&lt;/blockquote>
 &lt;ul>
 &lt;li>&lt;a href="https://blog.ceejbot.com/posts/reduce-friction/">Reduce Friction&lt;/a>&lt;/li>
 &lt;li>&lt;a href="https://twitter.com/sh_reya/status/1521903041003225088">&lt;em>&amp;ldquo;Some MLOps principles I think every ML platform should
@@ -588,8 +584,7 @@ Butterick&lt;/a>:&lt;/p>
 &lt;blockquote>
 &lt;p>Semantically, headings relate to the text that follows, not the text before.
 Thus you’ll probably want the space below to be smaller than the space above
-so the heading is visually closer to the text it introduces.&lt;/p>
-&lt;/blockquote>
+so the heading is visually closer to the text it introduces.&lt;/p>&lt;/blockquote>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">p&lt;/span> { &lt;span style="color:#66d9ef">margin-top&lt;/span>: &lt;span style="color:#ae81ff">20&lt;/span>&lt;span style="color:#66d9ef">px&lt;/span>; &lt;span style="color:#66d9ef">margin-bottom&lt;/span>: &lt;span style="color:#ae81ff">20&lt;/span>&lt;span style="color:#66d9ef">px&lt;/span>; }
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">h1&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h2&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h3&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h4&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h5&lt;/span>&lt;span style="color:#f92672">,&lt;/span> &lt;span style="color:#f92672">h6&lt;/span> { &lt;span style="color:#66d9ef">margin-top&lt;/span>: &lt;span style="color:#ae81ff">8&lt;/span>&lt;span style="color:#66d9ef">%&lt;/span>; &lt;span style="color:#66d9ef">margin-bottom&lt;/span>: &lt;span style="color:#ae81ff">-1&lt;/span>&lt;span style="color:#66d9ef">%&lt;/span>; }
 &lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="choose-a-monospaced-font-and-display-font">Choose a monospaced font and display font&lt;/h3>
@@ -629,8 +624,7 @@ code had their font size increased for seemingly no reason:&lt;/p>
 &lt;blockquote>
 &lt;p>WebKit has the annoying behavior (for a properly designed responsive site) of
 trying to enlarge the font size for the &amp;ldquo;primary&amp;rdquo; text on the screen, where
-primary is simply its best guess.&lt;/p>
-&lt;/blockquote>
+primary is simply its best guess.&lt;/p>&lt;/blockquote>
 &lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-css" data-lang="css">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">pre&lt;/span> &lt;span style="color:#f92672">code&lt;/span> {
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">/* Don&amp;#39;t wrap long lines, force horizontal scrolling. */&lt;/span>
 &lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">white-space&lt;/span>: &lt;span style="color:#66d9ef">pre&lt;/span>;
@@ -1101,8 +1095,7 @@ Baeldung&lt;/a>:&lt;/p>
 communication defines the requirement more appropriately. Additionally,
 WebSocket works well for scenarios where a message needs to be pushed to
 multiple clients simultaneously. These are the cases where client and server
-communication over RESTful services will find it difficult if not prohibitive.&lt;/p>
-&lt;/blockquote>
+communication over RESTful services will find it difficult if not prohibitive.&lt;/p>&lt;/blockquote>
 &lt;p>Tangentially, there&amp;rsquo;s one alternative that seems to be better than WebSockets
 from a protocol standpoint, but unfortunately doesn&amp;rsquo;t seem to have support from
 many Python web frameworks, and that is &lt;a href="https://www.smashingmagazine.com/2018/02/sse-websockets-data-flow-http2/">Server-Sent Events (a.k.a.
@@ -1117,8 +1110,7 @@ sockets for this application:&lt;/p>
 &lt;p>Websockets make you sad. [&amp;hellip;] Websockets are complex, way more complex than I
 anticipated. I can understand that they work that way but I definitely don&amp;rsquo;t
 see a value in using websockets instead of regular TCP connections if all you
-want is to exchange data between different endpoints and neither is a browser.&lt;/p>
-&lt;/blockquote>
+want is to exchange data between different endpoints and neither is a browser.&lt;/p>&lt;/blockquote>
 &lt;p>My thought after reading these criticisms is that perhaps WebSockets aren&amp;rsquo;t the
 ideal technology for handling streaming data (from a maintainability or
 architectural point of view), but that doesn&amp;rsquo;t mean that they aren&amp;rsquo;t good
@@ -1601,8 +1593,7 @@ result node with respect to that intermediate node. JAX on the other hand makes 
 your computation as a Python function, and by transforming it with &lt;code>grad()&lt;/code> gives you a
 gradient function that you can evaluate like your computation function — but instead of the
 output it gives you the gradient of the output with respect to (by default) the first
-parameter that your function took as input.&lt;/p>
-&lt;/blockquote>
+parameter that your function took as input.&lt;/p>&lt;/blockquote>
 &lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -1624,8 +1615,7 @@ autodifferentiation.&lt;/li>
 &lt;p>JAX uses XLA to compile and run your NumPy code on [&amp;hellip;] GPUs and TPUs. Compilation happens
 under the hood by default, with library calls getting just-in-time compiled and executed. But
 JAX even lets you just-in-time compile your own Python functions into XLA-optimized kernels
-[&amp;hellip;] Compilation and automatic differentiation can be composed arbitrarily [&amp;hellip;]&lt;/p>
-&lt;/blockquote>
+[&amp;hellip;] Compilation and automatic differentiation can be composed arbitrarily [&amp;hellip;]&lt;/p>&lt;/blockquote>
 &lt;/li>
 &lt;li>
 &lt;p>For more detail on JAX’s four-function API (&lt;code>grad&lt;/code>, &lt;code>jit&lt;/code>, &lt;code>vmap&lt;/code> and &lt;code>pmap&lt;/code>), see
@@ -1639,8 +1629,7 @@ JAX even lets you just-in-time compile your own Python functions into XLA-optimi
 &lt;p>&lt;strong>Note:&lt;/strong> the &lt;a href="https://github.com/Theano/Theano">original Theano&lt;/a> (maintained by
 &lt;a href="https://mila.quebec/en/">MILA&lt;/a>) has been discontinued, and the PyMC developers have forked the
 project: &lt;a href="https://github.com/pymc-devs/Theano-PyMC">Theano-PyMC&lt;/a> (soon to be renamed Aesara). I&amp;rsquo;ll
-discuss both the original and forked projects below.&lt;/p>
-&lt;/blockquote>
+discuss both the original and forked projects below.&lt;/p>&lt;/blockquote>
 &lt;ol>
 &lt;li>How is the computational graph represented and built?
 &lt;ul>
@@ -2039,8 +2028,7 @@ NVIDIA developer blog,&lt;/p>
 &lt;blockquote>
 &lt;p>Applications using NVIDIA libraries enable users to harness the benefits of TF32 with no
 code change required. TF32 Tensor Cores operate on FP32 inputs and produce results in
-FP32. Non-matrix operations continue to use FP32.&lt;/p>
-&lt;/blockquote>
+FP32. Non-matrix operations continue to use FP32.&lt;/p>&lt;/blockquote>
 &lt;p>You can read more about TF32 &lt;a href="https://blogs.nvidia.com/blog/2020/05/14/tensorfloat-32-precision-format/">on the NVIDIA
 blog&lt;/a>, and
 about its hardware support in the Ampere architecture on &lt;a href="https://developer.nvidia.com/blog/nvidia-ampere-architecture-in-depth/">the NVIDIA developer
@@ -2286,8 +2274,7 @@ throw at it.&lt;/p>
 &lt;p>We find that BERT was significantly under-trained, and can match or exceed the
 performance of every model published after it. [&amp;hellip;] These results highlight the
 importance of previously overlooked design choices, and raise questions about the
-source of recently reported improvements.&lt;/p>
-&lt;/blockquote>
+source of recently reported improvements.&lt;/p>&lt;/blockquote>
 &lt;/li>
 &lt;li>
 &lt;p>The authors use an identical architecture to BERT, but propose several improvements
@@ -2409,8 +2396,7 @@ transformer, either for translation tasks or by transforming other tasks to
 sequence-to-sequence problems. They can be fine-tuned to many tasks but their most
 natural applications are translation, summarization and question answering. The
 original transformer model is an example of such a model (only for translation), T5
-is an example that can be fine-tuned on other tasks.&lt;/p>
-&lt;/blockquote>
+is an example that can be fine-tuned on other tasks.&lt;/p>&lt;/blockquote>
 &lt;/li>
 &lt;li>
 &lt;p>Different NLP models learn different kinds of embeddings, and it&amp;rsquo;s worth
@@ -2875,8 +2861,7 @@ second is shown in bold italics.&lt;/p>
 &lt;h2 id="observations">Observations&lt;/h2>
 &lt;blockquote>
 &lt;p>&lt;strong>tldr:&lt;/strong> As is typical with these sorts of things, no one adaptation method
-uniformly outperforms the others.&lt;/p>
-&lt;/blockquote>
+uniformly outperforms the others.&lt;/p>&lt;/blockquote>
 &lt;ul>
 &lt;li>A full mass matrix can provide significant improvements over a diagonal mass
 matrix for both the tuning time and the number of effective samples per
@@ -3328,8 +3313,7 @@ similar.&amp;#160;&lt;a href="#fnref:4" class="footnote-backref" role="doc-backl
 quote a (nameless) PyMC core developer:&lt;/p>
 &lt;blockquote>
 &lt;p>I think that maintaining your own autodifferentiation library is the
-path of a crazy person.&lt;/p>
-&lt;/blockquote>
+path of a crazy person.&lt;/p>&lt;/blockquote>
 &amp;#160;&lt;a href="#fnref:5" class="footnote-backref" role="doc-backlink">&amp;#x21a9;&amp;#xfe0e;&lt;/a>&lt;/li>
 &lt;/ol>
 &lt;/div></content></entry><entry><title>Graduated Cooper Union, Joining Point72</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/joining-point72/"/><id>https://www.georgeho.org/joining-point72/</id><updated>2019-07-22T00:00:00Z</updated><published>2019-07-22T00:00:00Z</published><content type="html">&lt;p>Some exciting personal news: I&amp;rsquo;ve &lt;em>(finally)&lt;/em> graduated from &lt;a href="http://cooper.edu/welcome">The Cooper
@@ -3358,8 +3342,7 @@ blog&lt;/a>,
 &lt;a href="https://github.com/eigenfoo/tests-as-linear">GitHub&lt;/a>, or
 &lt;a href="https://gke.mybinder.org/v2/gh/eigenfoo/tests-as-linear/master?filepath=tests-as-linear.ipynb">Binder&lt;/a>!&lt;/p></content></entry><entry><title>Decaying Evidence and Contextual Bandits — Bayesian Reinforcement Learning (Part 2)</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/bayesian-bandits-2/"/><id>https://www.georgeho.org/bayesian-bandits-2/</id><updated>2019-06-02T00:00:00Z</updated><published>2019-06-02T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
-Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
-&lt;/blockquote>
+Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>&lt;/blockquote>
 &lt;p>&lt;a href="https://www.georgeho.org/bayesian-bandits/">Previously&lt;/a>, I introduced the
 multi-armed bandit problem, and a Bayesian approach to solving/modelling it
 (Thompson sampling). We saw that conjugate models made it possible to run the
@@ -3481,8 +3464,7 @@ compared to other bandit algorithms. In the words of the authors:&lt;/p>
 &lt;p>We believe [&lt;code>NeuralLinear&lt;/code>&amp;rsquo;s] main strength is that it is able to
 &lt;em>simultaneously&lt;/em> learn a data representation that greatly simplifies the task
 at hand, and to accurately quantify the uncertainty over linear models that
-explain the observed rewards in terms of the proposed representation.&lt;/p>
-&lt;/blockquote>
+explain the observed rewards in terms of the proposed representation.&lt;/p>&lt;/blockquote>
 &lt;p>For more information, be sure to check out the &lt;a href="https://arxiv.org/abs/1802.09127">Google Brain
 paper&lt;/a> and the accompanying &lt;a href="https://github.com/tensorflow/models/tree/master/research/deep_contextual_bandits">TensorFlow
 code&lt;/a>.&lt;/p>
@@ -3499,8 +3481,7 @@ Szepesvári&amp;rsquo;s book&lt;/a> covers a breathtaking amount of
 ground.&lt;/p>
 &lt;blockquote>
 &lt;p>This is the second of a two-part series about Bayesian bandit algorithms.
-Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>
-&lt;/blockquote>
+Check out the first post &lt;a href="https://www.georgeho.org/bayesian-bandits/">here&lt;/a>.&lt;/p>&lt;/blockquote>
 &lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
@@ -3786,8 +3767,7 @@ lab&lt;/a>:&lt;/p>
 This could happen either because truncated backpropagation through time
 cannot learn patterns significantly longer than $k$ steps, or, more
 provocatively, because models &lt;em>trainable by gradient descent&lt;/em> cannot have
-long-term memory.&lt;/p>
-&lt;/blockquote>
+long-term memory.&lt;/p>&lt;/blockquote>
 &lt;/li>
 &lt;/ul>
 &lt;/li>
@@ -4011,8 +3991,7 @@ that&lt;/a>:&lt;/p>
 &lt;blockquote>
 &lt;p>“despite good performance on benchmark datasets, modern NLP techniques are
 nowhere near the skill of humans at language understanding and reasoning when
-making sense of novel natural language inputs”.&lt;/p>
-&lt;/blockquote>
+making sense of novel natural language inputs”.&lt;/p>&lt;/blockquote>
 &lt;p>I am confident that I am &lt;em>very&lt;/em> bad at making lofty predictions about the
 future. Instead, I&amp;rsquo;ll talk about something I know a bit about: simple solutions
 to concrete problems, with some Bayesianism thrown in for good measure!&lt;/p>
@@ -4148,8 +4127,7 @@ learning&lt;/a>&amp;#160;&lt;a href="#fnref:1" class="footnote-backref" role="do
 &lt;/ol>
 &lt;/div></content></entry><entry><title>Multi-Armed Bandits and Conjugate Models — Bayesian Reinforcement Learning (Part 1)</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/bayesian-bandits/"/><id>https://www.georgeho.org/bayesian-bandits/</id><updated>2018-08-31T00:00:00Z</updated><published>2018-08-31T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
-out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
-&lt;/blockquote>
+out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>&lt;/blockquote>
 &lt;p>Let&amp;rsquo;s talk about Bayesianism. It&amp;rsquo;s developed a reputation (not entirely
 justified, but not entirely unjustified either) for being too mathematically
 sophisticated or too computationally intensive to work at scale. For instance,
@@ -4401,8 +4379,7 @@ and of course, read around papers on arXiv if you want to go deeper!&lt;/p>
 here&lt;/a>.&lt;/p>
 &lt;blockquote>
 &lt;p>This is the first of a two-part series about Bayesian bandit algorithms. Check
-out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>
-&lt;/blockquote>
+out the second post &lt;a href="https://www.georgeho.org/bayesian-bandits-2/">here&lt;/a>.&lt;/p>&lt;/blockquote>
 &lt;div class="footnotes" role="doc-endnotes">
 &lt;hr>
 &lt;ol>
@@ -4475,8 +4452,7 @@ is cool, Bayesian and (if you&amp;rsquo;re lucky) even easy. Dive in!&lt;/li>
 &lt;p>&lt;strong>EDIT (1/24/2020):&lt;/strong> I published a &lt;a href="https://www.georgeho.org/bayesian-inference-reading/">subsequent blog
 post&lt;/a> with a reading list
 for Bayesian inference and modelling. Check it out for reading material in
-addition to the ones I list below!&lt;/p>
-&lt;/blockquote>
+addition to the ones I list below!&lt;/p>&lt;/blockquote>
 &lt;h3 id="bayesian-modelling">Bayesian modelling&lt;/h3>
 &lt;ul>
 &lt;li>
@@ -4771,15 +4747,13 @@ why the trace looks horrible.&lt;/p>
 errors are notoriously hard to debug. I can only point to the &lt;a href="http://andrewgelman.com/2008/05/13/the_folk_theore/">Folk Theorem of
 Statistical Computing&lt;/a>:&lt;/p>
 &lt;blockquote>
-&lt;p>If you&amp;rsquo;re having computational problems, probably your model is wrong.&lt;/p>
-&lt;/blockquote>
+&lt;p>If you&amp;rsquo;re having computational problems, probably your model is wrong.&lt;/p>&lt;/blockquote>
 &lt;/li>
 &lt;/ol>
 &lt;h3 id="fixing-divergences">Fixing divergences&lt;/h3>
 &lt;blockquote>
 &lt;p>&lt;code>There were N divergences after tuning. Increase 'target_accept' or reparameterize.&lt;/code>&lt;/p>
-&lt;p>— The &lt;em>Magic Inference Button™&lt;/em>&lt;/p>
-&lt;/blockquote>
+&lt;p>— The &lt;em>Magic Inference Button™&lt;/em>&lt;/p>&lt;/blockquote>
 &lt;ul>
 &lt;li>
 &lt;p>Divergences in HMC occur when the sampler finds itself in regions of extremely
@@ -4992,8 +4966,7 @@ job to adequately fit your data!&lt;/li>
 &lt;/li>
 &lt;/ol></content></entry><entry><title>Understanding Hate Speech on Reddit through Text Clustering</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/reddit-clusters/"/><id>https://www.georgeho.org/reddit-clusters/</id><updated>2018-03-18T00:00:00Z</updated><published>2018-03-18T00:00:00Z</published><content type="html">&lt;blockquote>
 &lt;p>Note: the following article contains several examples of hate speech
-(including but not limited to racist, misogynistic and homophobic views).&lt;/p>
-&lt;/blockquote>
+(including but not limited to racist, misogynistic and homophobic views).&lt;/p>&lt;/blockquote>
 &lt;p>Have you heard of &lt;code>/r/TheRedPill&lt;/code>? It’s an online forum (a subreddit, but I’ll
 explain that later) where people (usually men) espouse an ideology predicated
 entirely on gender. “Swallowers of the red pill”, as they call themselves,
@@ -5027,8 +5000,7 @@ a related blog.&lt;/p>
 &lt;blockquote>
 &lt;p>&amp;hellip; when somebody “gives you shit” and fucks around with your head to see how
 you will react, what you are experiencing is typically a (series of) shit
-test(s).&lt;/p>
-&lt;/blockquote>
+test(s).&lt;/p>&lt;/blockquote>
 &lt;p>A shit test is designed to test your temperament, or more colloquially,
 &lt;em>“determine your frame”&lt;/em>.&lt;/p>
 &lt;blockquote>
@@ -5037,8 +5009,7 @@ test(s).&lt;/p>
 despite a shit test, generally speaking you will be considered to have passed
 the shit test. If you get upset, offended, doubt yourself or show weakness in
 any discernible way when shit tested, it will be generally considered that you
-failed the test.&lt;/p>
-&lt;/blockquote>
+failed the test.&lt;/p>&lt;/blockquote>
 &lt;p>Finally, not only do shit tests test your frame, but they also serve a specific,
 critical social function:&lt;/p>
 &lt;blockquote>
@@ -5049,8 +5020,7 @@ level”, so to speak. This is where the evolutionary theory comes into play:
 you’re demonstrating her faux negativity doesn’t phase you [sic] and that
 you’re an emotionally developed person who isn’t going to melt down at the
 first sign of trouble. Ergo you’ll be able to protect her when threats to
-her safety emerge.&lt;/p>
-&lt;/blockquote>
+her safety emerge.&lt;/p>&lt;/blockquote>
 &lt;p>If you want to learn more, I took all the above quotes from
 &lt;a href="https://www.reddit.com/r/TheRedPill/comments/22qnmk/newbies_read_this_the_definitive_guide_to_shit/">here&lt;/a>
 and &lt;a href="https://illimitablemen.com/2014/12/14/the-shit-test-encyclopedia/">here&lt;/a>:
@@ -5099,8 +5069,7 @@ CEO&lt;/a>:&lt;/p>
 &lt;p>“I believe the best defense against racism and other repugnant views, both
 on Reddit and in the world, is instead of trying to control what people
 can and cannot say through rules, is to repudiate these views in a free
-conversation, and empower our communities to do so on Reddit.”&lt;/p>
-&lt;/blockquote>
+conversation, and empower our communities to do so on Reddit.”&lt;/p>&lt;/blockquote>
 &lt;p>And there’s no way we can refute and repudiate these deplorable views without
 knowing what those views are. And instead of spending hours of each of these
 subreddits ourselves, let’s have a machine learn what gets talked about on these
@@ -5264,8 +5233,7 @@ that a lot of resources out there go something like this:&lt;/p>
 that was impossible/hard to do before! Look how well it does! So good! So
 fast!&lt;/p>
 &lt;p>Take this! It&amp;rsquo;s our algorithm/code/paper! We used it to do the thing! And now
-you can do the thing too!&lt;/p>
-&lt;/blockquote>
+you can do the thing too!&lt;/p>&lt;/blockquote>
 &lt;p>Jokes aside, I do think it’s true that a lot of research and resources focus on
 what things &lt;em>can&lt;/em> do, or what things are &lt;em>good&lt;/em> at doing. Whenever I actually
 implement the hyped-up “thing”, I’m invariably frustrated when it doesn’t
@@ -5503,8 +5471,7 @@ most instructive here is to think of them as solving the following optimization
 problem:&lt;/p>
 &lt;blockquote>
 &lt;p>Minimize $ \frac{1}{2} |w|^2 $&lt;/p>
-&lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1, 1 \leq i \leq l$.&lt;/p>
-&lt;/blockquote>
+&lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1, 1 \leq i \leq l$.&lt;/p>&lt;/blockquote>
 &lt;p>Basically all this is saying is that we want to find the hyperplane that
 separates our data by the maximum margin. More technically speaking, this finds
 the parameters ($w$ and $b$) of the maximum margin hyperplane, with $l_2$
@@ -5517,8 +5484,7 @@ example. With that, the optimization becomes:&lt;/p>
 &lt;blockquote>
 &lt;p>Minimize $\frac{1}{2} |w|^2 + C\sum_{i=1}^{l}{\xi_i}$&lt;/p>
 &lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - \xi_i, \xi_i \geq 0, 1
-\leq i \leq l$.&lt;/p>
-&lt;/blockquote>
+\leq i \leq l$.&lt;/p>&lt;/blockquote>
 &lt;p>where $C$ is some regularization parameter.&lt;/p>
 &lt;p>This says the same thing as the previous optimization problem, but now allows
 points to be (a) classified properly ($\xi_i = 0$), (b) within the margin but
@@ -5557,8 +5523,7 @@ optimization problem:&lt;/p>
 &lt;p>Minimize $\frac{1}{2} (|w|^2 + \gamma |w^{*}|^2) +
 C \sum_{i=1}^{l}{(w^{*} \cdot x_i^{*} + b^{*})}$&lt;/p>
 &lt;p>subject to $y_i [ w \cdot x_i + b ] \geq 1 - (w^{*} \cdot x^{*} + b^{*}),
-(w^{*} \cdot x^{*} + b^{*}) \geq 0, 1 \leq i \leq l$.&lt;/p>
-&lt;/blockquote>
+(w^{*} \cdot x^{*} + b^{*}) \geq 0, 1 \leq i \leq l$.&lt;/p>&lt;/blockquote>
 &lt;p>where $\gamma$ indicates the extent to which the slack estimation should be
 regularized in comparison to the SVM. Notice how this optimization problem is
 essentially identical to the non-separable classical SVM, except the slacks
@@ -5947,8 +5912,7 @@ analysis, which also attempt to express one dependent variable as a linear
 combination of other features or measurements. However, ANOVA uses
 &lt;strong>categorical&lt;/strong> independent variables and a &lt;strong>continuous&lt;/strong> dependent variable,
 whereas discriminant analysis has &lt;strong>continuous&lt;/strong> independent variables and a
-&lt;strong>categorical&lt;/strong> dependent variable (i.e. the class label).&lt;/p>
-&lt;/blockquote></content></entry><entry><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/pyfolio/"/><id>https://www.georgeho.org/pyfolio/</id><updated>2017-12-16T00:00:00Z</updated><published>2017-12-16T00:00:00Z</published><content type="html">&lt;p>I was lucky enough to have the chance to intern at
+&lt;strong>categorical&lt;/strong> dependent variable (i.e. the class label).&lt;/p>&lt;/blockquote></content></entry><entry><title>Portfolio Risk Analytics and Performance Attribution with Pyfolio</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/pyfolio/"/><id>https://www.georgeho.org/pyfolio/</id><updated>2017-12-16T00:00:00Z</updated><published>2017-12-16T00:00:00Z</published><content type="html">&lt;p>I was lucky enough to have the chance to intern at
 &lt;a href="https://www.quantopian.com/">Quantopian&lt;/a> this summer. During that time I
 contributed some exciting stuff to their open-source portfolio analytics engine,
 &lt;a href="https://github.com/quantopian/pyfolio">&lt;code>pyfolio&lt;/code>&lt;/a>, and learnt a truckload of
