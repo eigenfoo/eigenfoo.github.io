@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2025-02-17T07:39:16Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/machine-learning/" hreflang="en-US"/><entry><title>Data is Plural Podcast — Crossword Data</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/data-is-plural-podcast/"/><id>https://www.georgeho.org/data-is-plural-podcast/</id><updated>2023-12-20T00:00:00Z</updated><published>2023-12-20T00:00:00Z</published><content type="html">&lt;p>I was on a podcast!&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US"><title>George Ho</title><id>https://www.georgeho.org/</id><author><name>George Ho</name><uri>https://www.georgeho.org/</uri></author><generator>Hugo gohugo.io</generator><rights>Copyright © 2022, George Ho.</rights><updated>2025-02-18T07:39:01Z</updated><link rel="alternate" type="text/html" href="https://www.georgeho.org/blog/machine-learning/" hreflang="en-US"/><entry><title>Data is Plural Podcast — Crossword Data</title><link rel="alternate" type="text/html" href="https://www.georgeho.org/data-is-plural-podcast/"/><id>https://www.georgeho.org/data-is-plural-podcast/</id><updated>2023-12-20T00:00:00Z</updated><published>2023-12-20T00:00:00Z</published><content type="html">&lt;p>I was on a podcast!&lt;/p>
 &lt;p>Check out &lt;a href="https://podcast.data-is-plural.com/2159594/14179132-s2e5-crosswords">the latest episode of the Data Is Plural
 postcast&lt;/a>
 to hear me and fellow crossword archivist &lt;a href="http://saul.pw/">Saul Pwanson&lt;/a> talk
@@ -1413,15 +1413,15 @@ contemporary tensor computation libraries.&lt;/p>
 &lt;ul>
 &lt;li>&lt;a href="#dissecting-tensor-computation-libraries">Dissecting Tensor Computation Libraries&lt;/a>
 &lt;ul>
-&lt;li>&lt;a href="#tensor-computation-library-----maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; &amp;mdash; Maybe Not The Best Name&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#tensor-computation-library--maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; &amp;mdash; Maybe Not The Best Name&lt;/a>&lt;/li>
 &lt;li>&lt;a href="#some-differences-between-tensor-computation-libraries">(Some) Differences Between Tensor Computation Libraries&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>&lt;a href="#a-zoo-of-tensor-computation-libraries">A Zoo of Tensor Computation Libraries&lt;/a>
 &lt;ul>
-&lt;li>&lt;a href="#pytorchhttpspytorchorg">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#jaxhttpsjaxreadthedocsioenlatest">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/a>&lt;/li>
-&lt;li>&lt;a href="#theanohttpstheano-pymcreadthedocsioenlatest">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#pytorch">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#jax">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/a>&lt;/li>
+&lt;li>&lt;a href="#theano">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/a>&lt;/li>
 &lt;/ul>
 &lt;/li>
 &lt;li>&lt;a href="#an-observation-on-static-graphs-and-theano">An Observation on Static Graphs and Theano&lt;/a>&lt;/li>
@@ -1447,7 +1447,7 @@ for small values of &lt;code>x&lt;/code>&lt;/a>).&lt;/li>
 (just-in-time) compiling it, by utilizing special hardware (GPUs/TPUs), by vectorizing the
 computation, or in any other way.&lt;/li>
 &lt;/ol>
-&lt;h3 id="tensor-computation-library-----maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; &amp;mdash; Maybe Not The Best Name&lt;/h3>
+&lt;h3 id="tensor-computation-library--maybe-not-the-best-name">&amp;ldquo;Tensor Computation Library&amp;rdquo; &amp;mdash; Maybe Not The Best Name&lt;/h3>
 &lt;p>As an aside: I realize that the name &amp;ldquo;tensor computation library&amp;rdquo; is too broad, and that the
 characterization above precludes some libraries that might also justifiably be called &amp;ldquo;tensor
 computation libraries&amp;rdquo;. Better names might be &amp;ldquo;graph computation library&amp;rdquo; (although that might get
@@ -1545,7 +1545,7 @@ code&lt;/a>?&lt;/li>
 &lt;p>Having outlined the basic similarities and differences of tensor computation libraries, I think
 it&amp;rsquo;ll be helpful to go through several of the popular libraries as examples. I&amp;rsquo;ve tried to link to
 the relevant documentation where possible.&lt;sup id="fnref:1">&lt;a href="#fn:1" class="footnote-ref" role="doc-noteref">1&lt;/a>&lt;/sup>&lt;/p>
-&lt;h3 id="pytorchhttpspytorchorg">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/h3>
+&lt;h3 id="pytorch">&lt;a href="https://pytorch.org/">PyTorch&lt;/a>&lt;/h3>
 &lt;ol>
 &lt;li>How is the computational graph represented and built?
 &lt;ul>
@@ -1573,7 +1573,7 @@ on &lt;a href="https://pytorch.org/docs/stable/notes/autograd.html">autodifferen
 &lt;/ul>
 &lt;/li>
 &lt;/ol>
-&lt;h3 id="jaxhttpsjaxreadthedocsioenlatest">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/h3>
+&lt;h3 id="jax">&lt;a href="https://jax.readthedocs.io/en/latest/">JAX&lt;/a>&lt;/h3>
 &lt;ol>
 &lt;li>
 &lt;p>How is the computational graph represented and built?&lt;/p>
@@ -1624,7 +1624,7 @@ JAX even lets you just-in-time compile your own Python functions into XLA-optimi
 &lt;/ul>
 &lt;/li>
 &lt;/ol>
-&lt;h3 id="theanohttpstheano-pymcreadthedocsioenlatest">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/h3>
+&lt;h3 id="theano">&lt;a href="https://theano-pymc.readthedocs.io/en/latest/">Theano&lt;/a>&lt;/h3>
 &lt;blockquote>
 &lt;p>&lt;strong>Note:&lt;/strong> the &lt;a href="https://github.com/Theano/Theano">original Theano&lt;/a> (maintained by
 &lt;a href="https://mila.quebec/en/">MILA&lt;/a>) has been discontinued, and the PyMC developers have forked the
@@ -1897,7 +1897,7 @@ floating-point formats made specifically for deep learning?&lt;/li>
 &lt;li>&lt;a href="#advice-for-practitioners">What practical advice is there&lt;/a> on using floating-point
 formats for deep learning?&lt;/li>
 &lt;/ol>
-&lt;h2 id="floating-point-in-_my_-deep-learning">Floating-Point? In &lt;em>My&lt;/em> Deep Learning?&lt;/h2>
+&lt;h2 id="floating-point-in-my-deep-learning">Floating-Point? In &lt;em>My&lt;/em> Deep Learning?&lt;/h2>
 &lt;p>&lt;a href="https://knowyourmeme.com/photos/6052-its-more-likely-than-you-think">It&amp;rsquo;s more likely than you
 think!&lt;/a>&lt;/p>
 &lt;p>It&amp;rsquo;s been known for quite some time that &lt;a href="https://arxiv.org/abs/1502.02551">deep neural networks can
